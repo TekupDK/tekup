@@ -1,22 +1,33 @@
-# 🚀 Tekup Workspace
+# 🚀 Tekup Workspace (MONOREPO)
 
-**Unified development workspace** for all Tekup projects and services.
+**Complete development monorepo** with ALL Tekup projects in one repository.
+
+**Type:** Monorepo (single repository, all projects included)  
+**Repository:** https://github.com/TekupDK/tekup-workspace-docs  
+**Workspace File:** `Tekup-Portfolio.code-workspace`
 
 ---
 
 ## 📁 Workspace Structure
 
 ```
-Tekup/
-├── apps/          → Applications (production, web, desktop)
-├── services/      → Backend services & APIs
-├── packages/      → Shared libraries & utilities
-├── tools/         → Development tools
-├── scripts/       → Build & deployment automation
-├── configs/       → Workspace-level configurations
-├── docs/          → Documentation hub
-├── tests/         → Integration & E2E tests
-└── archive/       → Legacy projects (read-only)
+Tekup/ (MONOREPO - everything in one repo!)
+├── apps/
+│   ├── production/        → Live production services
+│   │   ├── tekup-database/
+│   │   ├── tekup-vault/
+│   │   └── tekup-billy/
+│   └── web/               → Web applications
+│       ├── rendetalje/
+│       └── tekup-cloud-dashboard/
+├── services/              → Backend services & APIs
+│   ├── tekup-ai/
+│   └── tekup-gmail-services/
+├── tekup-secrets/         → Encrypted secrets (git-crypt)
+├── archive/               → Legacy projects (read-only)
+├── docs/                  → Documentation hub
+├── scripts/               → Build & deployment automation
+└── Tekup-Portfolio.code-workspace ← Open this in VS Code!
 ```
 
 ---
