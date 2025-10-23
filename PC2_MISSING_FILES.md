@@ -9,6 +9,7 @@
 ## 🎯 PROBLEM: PC2 kan ikke bruge MCP servere i GitHub Copilot
 
 ### Årsag:
+
 1. ❌ `tekup-secrets` er git-crypt encrypted (kan ikke læse API keys)
 2. ❌ `apps/production/tekup-billy/` er TOM (mangler kode)
 3. ❌ `apps/production/tekup-vault/` er TOM (mangler kode)
@@ -21,6 +22,7 @@
 ### ✅ Step 1: Git-Crypt Setup (PRIORITET 1)
 
 #### 1.1 Eksporter encryption key
+
 ```powershell
 # På PC1 (empir)
 cd C:\Users\empir\Tekup
@@ -38,6 +40,7 @@ git-crypt export-key C:\Users\empir\Desktop\tekup-git-crypt.key
 ```
 
 #### 1.2 Verificer .gitattributes er korrekt
+
 ```powershell
 # Tjek at denne fil indeholder:
 cat .gitattributes | Select-String "tekup-secrets"
@@ -50,6 +53,7 @@ cat .gitattributes | Select-String "tekup-secrets"
 ```
 
 #### 1.3 Commit og push encrypted secrets
+
 ```powershell
 # Tilføj secrets (bliver auto-encrypted)
 git add tekup-secrets/.env.development
@@ -70,6 +74,7 @@ git push origin master
 **Problem:** PC2 har tomme mapper fordi projekterne ikke er committet til monorepo endnu.
 
 #### 2.1 Tekup-Billy
+
 ```powershell
 # På PC1 - Find original Tekup-Billy projekt
 cd C:\Users\empir\Tekup-Billy
@@ -79,7 +84,7 @@ $source = "C:\Users\empir\Tekup-Billy"
 $dest = "C:\Users\empir\Tekup\apps\production\tekup-billy"
 
 # Ekskluder node_modules, .git, dist
-Get-ChildItem $source -Exclude node_modules,.git,dist | 
+Get-ChildItem $source -Exclude node_modules,.git,dist |
   Copy-Item -Destination $dest -Recurse -Force
 
 # Commit til monorepo
@@ -90,6 +95,7 @@ git push origin master
 ```
 
 #### 2.2 TekupVault
+
 ```powershell
 # På PC1 - Find original TekupVault projekt
 cd C:\Users\empir\TekupVault
@@ -98,7 +104,7 @@ cd C:\Users\empir\TekupVault
 $source = "C:\Users\empir\TekupVault"
 $dest = "C:\Users\empir\Tekup\apps\production\tekup-vault"
 
-Get-ChildItem $source -Exclude node_modules,.git,dist | 
+Get-ChildItem $source -Exclude node_modules,.git,dist |
   Copy-Item -Destination $dest -Recurse -Force
 
 # Commit til monorepo
@@ -127,9 +133,7 @@ Opret `.vscode/settings.json.template`:
   "github.copilot.chat.mcp.servers": {
     "tekup-billy": {
       "command": "node",
-      "args": [
-        "${workspaceFolder}/apps/production/tekup-billy/dist/index.js"
-      ],
+      "args": ["${workspaceFolder}/apps/production/tekup-billy/dist/index.js"],
       "env": {
         "NODE_ENV": "development",
         "BILLY_API_KEY": "${MCP_BILLY_API_KEY}",
@@ -141,9 +145,7 @@ Opret `.vscode/settings.json.template`:
     },
     "tekupvault": {
       "command": "node",
-      "args": [
-        "${workspaceFolder}/apps/production/tekup-vault/dist/index.js"
-      ],
+      "args": ["${workspaceFolder}/apps/production/tekup-vault/dist/index.js"],
       "env": {
         "NODE_ENV": "development",
         "SUPABASE_URL": "${SUPABASE_URL}",
@@ -171,6 +173,7 @@ Opret `.vscode/settings.json.template`:
 ```
 
 Commit template:
+
 ```powershell
 git add .vscode/settings.json.template
 git commit -m "docs: Add MCP configuration template for GitHub Copilot"
@@ -183,17 +186,20 @@ git push origin master
 
 Tilføj til eksisterende `tekup-secrets/PC2_SETUP.md`:
 
-```markdown
+````markdown
 ## Step 6: Byg MCP Servere (Efter git-crypt unlock)
 
 ### 6.1 Tekup-Billy
+
 ```powershell
 cd C:\Users\empir\Tekup\apps\production\tekup-billy
 npm install
 npm run build
 ```
+````
 
 ### 6.2 TekupVault
+
 ```powershell
 cd C:\Users\empir\Tekup\apps\production\tekup-vault
 npm install
@@ -201,6 +207,7 @@ npm run build
 ```
 
 ### 6.3 RenOS Calendar MCP
+
 ```powershell
 cd C:\Users\empir\Tekup\apps\rendetalje\services\calendar-mcp
 npm install
@@ -216,7 +223,8 @@ Copy-Item ".vscode\settings.json.template" ".vscode\settings.json"
 # Secrets er nu tilgængelige fra .env filer!
 # GitHub Copilot vil auto-loade dem når MCP servere starter
 ```
-```
+
+````
 
 ---
 
@@ -263,15 +271,17 @@ MCP_HTTP_API_KEY=d674eb2e69973fa399888fa3d5a84f414dd7d89bd86ff6140bdcb363aeede4b
 # TekupVault
 TEKUPVAULT_API_KEY=tekup_vault_api_key_2025_secure
 TEKUPVAULT_API_URL=https://tekupvault-api.onrender.com
-```
+````
 
 ### Fra `tekup-secrets/config/ai-services.env`:
+
 ```bash
 # OpenAI
 OPENAI_API_KEY=sk-proj-WCwMYK5Nm1_1UhzOKsb6z... (truncated)
 ```
 
 ### Fra `tekup-secrets/config/databases.env`:
+
 ```bash
 # Supabase
 SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
