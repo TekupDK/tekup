@@ -17,9 +17,17 @@ if (!(Get-Command gh -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-# Check if authenticated
-$authStatus = gh auth status 2>&1
-if ($authStatus -notlike "*Logged in*") {
+# Check if authenticated (more robust)
+$authOk = $false
+try {
+    $authOutput = gh auth status | Out-String
+    if ($LASTEXITCODE -eq 0 -and $authOutput -match "Logged in") {
+        $authOk = $true
+    }
+} catch {
+    $authOk = $false
+}
+if (-not $authOk) {
     Write-Host "❌ Not authenticated with GitHub!" -ForegroundColor Red
     Write-Host "Run: gh auth login" -ForegroundColor Yellow
     exit 1
