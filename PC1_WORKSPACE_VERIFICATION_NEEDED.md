@@ -17,6 +17,7 @@ Directory: C:\Users\Jonas-dev\Tekup-Monorepo ✅
 ```
 
 **Alle filer modtaget:**
+
 - ✅ ANALYSIS_COMPLETE_REPORT.md
 - ✅ COMPLETE_ANALYSIS_2025-10-23.md
 - ✅ FIX_SUMMARY.md
@@ -28,12 +29,14 @@ Directory: C:\Users\Jonas-dev\Tekup-Monorepo ✅
 ## ⚠️ PC1 - VERIFICER DIN WORKSPACE
 
 ### Problem Observation:
+
 I din terminal kan vi se at du er i en mappe der hedder **"bruger/omvendt Tekup"** eller lignende.  
 Dette er **IKKE** det samme som PC2's mappe (`Tekup-Monorepo`).
 
 ### Vi skal verificere:
 
 #### 1️⃣ Hvilken branch arbejder PC1 i?
+
 ```powershell
 # Kør dette på PC1 (empir):
 git branch --show-current
@@ -45,12 +48,14 @@ git branch --show-current
 ---
 
 #### 2️⃣ Hvilket repository peger PC1 på?
+
 ```powershell
 # Kør dette på PC1 (empir):
 git remote -v
 ```
 
 **Forventet:**
+
 ```
 origin  https://github.com/TekupDK/tekup.git (fetch)
 origin  https://github.com/TekupDK/tekup.git (push)
@@ -61,6 +66,7 @@ origin  https://github.com/TekupDK/tekup.git (push)
 ---
 
 #### 3️⃣ Hvilken mappe er PC1 faktisk i?
+
 ```powershell
 # Kør dette på PC1 (empir):
 pwd
@@ -69,6 +75,7 @@ git rev-parse --show-toplevel
 ```
 
 **Forventet:** En af disse:
+
 - `C:\Users\empir\Tekup` ✅
 - `C:\Users\empir\Tekup-Monorepo` ✅
 
@@ -79,24 +86,30 @@ git rev-parse --show-toplevel
 ## 🎯 HVORFOR ER DETTE VIGTIGT?
 
 ### Scenario A: PC1 og PC2 i forskellige repos
+
 ```
 PC1: C:\Users\empir\bruger-omvendt-Tekup → ??? repo
 PC2: C:\Users\Jonas-dev\Tekup-Monorepo → github.com/TekupDK/tekup
 ```
+
 ❌ **Problem:** Vi committer til forskellige steder!
 
 ### Scenario B: PC1 og PC2 i samme repo, forskellige branches
+
 ```
 PC1: master branch → github.com/TekupDK/tekup
 PC2: master branch → github.com/TekupDK/tekup
 ```
+
 ✅ **OK:** Vi kan synce via push/pull
 
 ### Scenario C: PC1 i lokal mappe uden git
+
 ```
 PC1: C:\Users\empir\bruger-omvendt-Tekup → INTET GIT REPO
 PC2: C:\Users\Jonas-dev\Tekup-Monorepo → github.com/TekupDK/tekup
 ```
+
 ❌ **Problem:** PC1 arbejde bliver ikke synced!
 
 ---
@@ -166,6 +179,7 @@ git push origin master
 ## 🔄 MULIGE LØSNINGER
 
 ### Hvis PC1 er i forkert repo:
+
 ```powershell
 # Opdater remote til korrekt repo
 git remote set-url origin https://github.com/TekupDK/tekup.git
@@ -175,6 +189,7 @@ git remote -v
 ```
 
 ### Hvis PC1 er i forkert branch:
+
 ```powershell
 # Switch til master
 git checkout master
@@ -184,6 +199,7 @@ git pull origin master
 ```
 
 ### Hvis PC1 ikke er i et git repo:
+
 ```powershell
 # Clone det korrekte repo
 cd C:\Users\empir
@@ -200,6 +216,7 @@ cd Tekup
 PC1 og PC2 er synced når:
 
 **PC1:**
+
 ```
 Directory: C:\Users\empir\Tekup (eller lignende)
 Remote: github.com/TekupDK/tekup
@@ -208,6 +225,7 @@ Latest commit: 0e6b299 (PC2 migration success)
 ```
 
 **PC2:**
+
 ```
 Directory: C:\Users\Jonas-dev\Tekup-Monorepo
 Remote: github.com/TekupDK/tekup

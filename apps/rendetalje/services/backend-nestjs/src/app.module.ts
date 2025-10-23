@@ -11,6 +11,7 @@ import { IntegrationsModule } from './modules/integrations/integrations.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { SupabaseModule } from './modules/supabase/supabase.module';
+import { LoggerModule } from './common/logger/logger.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -31,6 +32,7 @@ import configuration from './config/configuration';
     ]),
 
     // Core modules
+    LoggerModule,
     SupabaseModule,
     AuthModule,
     JobsModule,
