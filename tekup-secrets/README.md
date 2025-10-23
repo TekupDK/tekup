@@ -10,8 +10,9 @@
 Tekup Secrets is the **central nervous system** for all secret configurations across the entire Tekup Portfolio. Instead of scattered `.env` files everywhere, it consolidates **all secret configurations in one place** with intelligent distribution to all services.
 
 ### 🔧 Core Problems It Solves:
+
 - **Secrets Sprawl:** No more scattered `.env` files across services
-- **Inconsistency:** Same API keys used consistently across all services  
+- **Inconsistency:** Same API keys used consistently across all services
 - **Security Risks:** Git protection prevents accidental commits
 - **Maintenance:** Update one API key, automatically distributed everywhere
 - **Environment Management:** Clean separation of development vs production
@@ -21,13 +22,14 @@ Tekup Secrets is the **central nervous system** for all secret configurations ac
 ## 📁 Architecture
 
 **Structure:**
+
 ```bash
 tekup-secrets/
 ├── 📄 Documentation
 │   ├── README.md                    # This file (complete guide)
 │   ├── QUICK_START.md              # 5-minute getting started
 │   ├── CHANGELOG.md                # Version history & updates
-│   ├── SYSTEM_OVERVIEW.md          # High-level system overview  
+│   ├── SYSTEM_OVERVIEW.md          # High-level system overview
 │   ├── TEKUP_WORKSPACE_INTEGRATION.md # Workspace integration guide
 │   ├── SETUP_GIT_CRYPT.md         # Git encryption setup
 │   └── PC2_SETUP.md               # Multi-PC setup instructions
@@ -54,24 +56,26 @@ tekup-secrets/
 
 ## 📚 Documentation Index
 
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| **QUICK_START.md** | Get running in 5 minutes | New developers |
-| **SYSTEM_OVERVIEW.md** | High-level architecture | Technical overview |
+| Document                           | Purpose                                | Audience           |
+| ---------------------------------- | -------------------------------------- | ------------------ |
+| **QUICK_START.md**                 | Get running in 5 minutes               | New developers     |
+| **SYSTEM_OVERVIEW.md**             | High-level architecture                | Technical overview |
 | **TEKUP_WORKSPACE_INTEGRATION.md** | How it integrates with Tekup Portfolio | DevOps, Architects |
-| **CHANGELOG.md** | Version history & breaking changes | All users |
-| **SETUP_GIT_CRYPT.md** | Secure git synchronization | Multi-PC setups |
-| **PC2_SETUP.md** | Instructions for second PC | Setup team |
+| **CHANGELOG.md**                   | Version history & breaking changes     | All users          |
+| **SETUP_GIT_CRYPT.md**             | Secure git synchronization             | Multi-PC setups    |
+| **PC2_SETUP.md**                   | Instructions for second PC             | Setup team         |
 
 ## 🔐 Security Architecture
 
 ### File Permissions (Windows)
+
 ```powershell
 # Set restricted access (owner only)
 icacls "C:\Users\empir\tekup-secrets" /inheritance:r /grant:r "$env:USERNAME:(OI)(CI)F"
 ```
 
 ### Git Protection
+
 ```gitignore
 # tekup-secrets/.gitignore
 *.env
@@ -89,6 +93,7 @@ secrets/
 ## 📋 Environment File Structure
 
 ### .env.production (Master Production Secrets)
+
 ```bash
 # ==================== LLM PROVIDERS ====================
 OPENAI_API_KEY=sk-proj-REAL_PRODUCTION_KEY
@@ -120,6 +125,7 @@ SENTRY_DSN=https://REAL_SENTRY_DSN@sentry.io/PROJECT_ID
 ```
 
 ### .env.shared (Non-sensitive defaults)
+
 ```bash
 # Application defaults (safe to share)
 NODE_ENV=development
@@ -151,6 +157,7 @@ TEKUPVAULT_API_URL=https://tekupvault-api.onrender.com
 ## 🤖 AI Agent Integration
 
 ### Auto-Sync Script (scripts/sync-to-project.ps1) - UPDATED for TekupDK
+
 ```powershell
 <#
 .SYNOPSIS
@@ -162,7 +169,7 @@ param(
     [Parameter(Mandatory=$true)]
     [ValidateSet("tekup-ai", "tekup-billy", "tekup-vault", "tekup-gmail-services", "RendetaljeOS")]
     [string]$Project,
-    
+
     [Parameter(Mandatory=$false)]
     [ValidateSet("production", "development")]
     [string]$Environment = "development"
@@ -226,13 +233,15 @@ Write-Host "📁 Target: $targetEnvFile" -ForegroundColor Cyan
 ```
 
 ### AI-Readable Config Loader (TypeScript)
+
 ```typescript
 // packages/tekup-config/src/secrets-loader.ts
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
-import { z } from 'zod';
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
+import { z } from "zod";
 
-const SECRETS_ROOT = process.env.TEKUP_SECRETS_PATH || 'C:\\Users\\empir\\tekup-secrets';
+const SECRETS_ROOT =
+  process.env.TEKUP_SECRETS_PATH || "C:\\Users\\empir\\tekup-secrets";
 
 export class SecretsLoader {
   private static cache: Record<string, string> = {};
@@ -241,15 +250,17 @@ export class SecretsLoader {
    * Load secrets from centralized location
    * AI agents can call this to get fresh secrets
    */
-  static load(environment: 'production' | 'development' = 'development'): Record<string, string> {
+  static load(
+    environment: "production" | "development" = "development"
+  ): Record<string, string> {
     const files = [
-      '.env.shared',
+      ".env.shared",
       `.env.${environment}`,
-      'config/ai-services.env',
-      'config/databases.env',
-      'config/google-workspace.env',
-      'config/apis.env',
-      'config/monitoring.env'
+      "config/ai-services.env",
+      "config/databases.env",
+      "config/google-workspace.env",
+      "config/apis.env",
+      "config/monitoring.env",
     ];
 
     const secrets: Record<string, string> = {};
@@ -257,7 +268,7 @@ export class SecretsLoader {
     for (const file of files) {
       const filePath = join(SECRETS_ROOT, file);
       if (existsSync(filePath)) {
-        const content = readFileSync(filePath, 'utf-8');
+        const content = readFileSync(filePath, "utf-8");
         const parsed = this.parseEnvFile(content);
         Object.assign(secrets, parsed);
       }
@@ -269,7 +280,10 @@ export class SecretsLoader {
   /**
    * Get specific secret by key
    */
-  static get(key: string, environment?: 'production' | 'development'): string | undefined {
+  static get(
+    key: string,
+    environment?: "production" | "development"
+  ): string | undefined {
     if (!this.cache[key]) {
       const secrets = this.load(environment);
       this.cache = secrets;
@@ -280,45 +294,50 @@ export class SecretsLoader {
   /**
    * Validate secrets against schema
    */
-  static validate<T extends z.ZodTypeAny>(schema: T, secrets?: Record<string, string>): z.infer<T> {
+  static validate<T extends z.ZodTypeAny>(
+    schema: T,
+    secrets?: Record<string, string>
+  ): z.infer<T> {
     const data = secrets || this.load();
     return schema.parse(data);
   }
 
   private static parseEnvFile(content: string): Record<string, string> {
     const result: Record<string, string> = {};
-    
-    for (const line of content.split('\n')) {
+
+    for (const line of content.split("\n")) {
       const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) continue;
-      
-      const [key, ...valueParts] = trimmed.split('=');
+      if (!trimmed || trimmed.startsWith("#")) continue;
+
+      const [key, ...valueParts] = trimmed.split("=");
       if (key && valueParts.length > 0) {
-        let value = valueParts.join('=').trim();
+        let value = valueParts.join("=").trim();
         // Remove quotes
-        if ((value.startsWith('"') && value.endsWith('"')) || 
-            (value.startsWith("'") && value.endsWith("'"))) {
+        if (
+          (value.startsWith('"') && value.endsWith('"')) ||
+          (value.startsWith("'") && value.endsWith("'"))
+        ) {
           value = value.slice(1, -1);
         }
         result[key.trim()] = value;
       }
     }
-    
+
     return result;
   }
 }
 
 /**
  * Example usage in AI agent:
- * 
+ *
  * import { SecretsLoader } from '@tekup/config';
- * 
+ *
  * // Load all secrets
  * const secrets = SecretsLoader.load('development');
- * 
+ *
  * // Get specific secret
  * const openaiKey = SecretsLoader.get('OPENAI_API_KEY');
- * 
+ *
  * // Validate with Zod
  * const config = SecretsLoader.validate(MyConfigSchema);
  */
@@ -327,6 +346,7 @@ export class SecretsLoader {
 ## 🔄 Sync Workflows
 
 ### 1. Initial Setup
+
 ```powershell
 # Create secrets directory
 New-Item -ItemType Directory -Path "C:\Users\empir\tekup-secrets" -Force
@@ -344,30 +364,34 @@ git remote add origin git@github.com:JonasAbde/tekup-secrets-private.git  # MUST
 ```
 
 ### 2. AI Agent Auto-Sync
+
 ```typescript
 // In AI agent startup:
-import { SecretsLoader } from '@tekup/config';
+import { SecretsLoader } from "@tekup/config";
 
 async function initializeAgent() {
   // Load secrets
-  const secrets = SecretsLoader.load(process.env.NODE_ENV === 'production' ? 'production' : 'development');
-  
+  const secrets = SecretsLoader.load(
+    process.env.NODE_ENV === "production" ? "production" : "development"
+  );
+
   // Inject into process.env
   Object.assign(process.env, secrets);
-  
+
   // Validate critical secrets
-  const requiredKeys = ['OPENAI_API_KEY', 'SUPABASE_URL', 'GITHUB_TOKEN'];
-  const missing = requiredKeys.filter(key => !process.env[key]);
-  
+  const requiredKeys = ["OPENAI_API_KEY", "SUPABASE_URL", "GITHUB_TOKEN"];
+  const missing = requiredKeys.filter((key) => !process.env[key]);
+
   if (missing.length > 0) {
-    throw new Error(`Missing required secrets: ${missing.join(', ')}`);
+    throw new Error(`Missing required secrets: ${missing.join(", ")}`);
   }
-  
-  console.log('✅ Secrets loaded from tekup-secrets');
+
+  console.log("✅ Secrets loaded from tekup-secrets");
 }
 ```
 
 ### 3. Manual Sync (For specific project)
+
 ```powershell
 # Sync to tekup-ai development
 .\tekup-secrets\scripts\sync-to-project.ps1 -Project "tekup-ai" -Environment "development"
@@ -382,6 +406,7 @@ async function initializeAgent() {
 ## 🛡️ Security Best Practices
 
 ### DO ✅
+
 - ✅ Use separate `.env.production` and `.env.development`
 - ✅ Set strict file permissions (owner only)
 - ✅ Use private Git repo if versioning (recommended: NO git at all)
@@ -390,6 +415,7 @@ async function initializeAgent() {
 - ✅ Validate with Zod schemas before use
 
 ### DON'T ❌
+
 - ❌ Never commit `.env` files to public repos
 - ❌ Never share production secrets in chat/Slack
 - ❌ Never hardcode secrets in source code
@@ -399,13 +425,13 @@ async function initializeAgent() {
 
 ## 📊 Integration Status (Updated October 2025)
 
-| Project | Status | Location | Lines | Last Sync |
-|---------|--------|----------|-------|-----------|
-| **tekup-ai** | ✅ Active | `/services/tekup-ai` | 229 | 2025-10-23 |
-| **tekup-billy** | ✅ Active | `/apps/production/tekup-billy` | 229 | 2025-10-23 |
-| **tekup-vault** | ✅ Active | `/apps/production/tekup-vault` | 229 | 2025-10-23 |
-| **tekup-gmail-services** | ✅ Active | `/services/tekup-gmail-services` | 229 | 2025-10-23 |
-| **RendetaljeOS** | ✅ Active | `/apps/rendetalje/monorepo` | 229 | 2025-10-23 |
+| Project                  | Status    | Location                         | Lines | Last Sync  |
+| ------------------------ | --------- | -------------------------------- | ----- | ---------- |
+| **tekup-ai**             | ✅ Active | `/services/tekup-ai`             | 229   | 2025-10-23 |
+| **tekup-billy**          | ✅ Active | `/apps/production/tekup-billy`   | 229   | 2025-10-23 |
+| **tekup-vault**          | ✅ Active | `/apps/production/tekup-vault`   | 229   | 2025-10-23 |
+| **tekup-gmail-services** | ✅ Active | `/services/tekup-gmail-services` | 229   | 2025-10-23 |
+| **RendetaljeOS**         | ✅ Active | `/apps/rendetalje/monorepo`      | 229   | 2025-10-23 |
 
 **Summary:** All 5 projects successfully integrated with TekupDK/Tekup-Portfolio workspace structure.
 

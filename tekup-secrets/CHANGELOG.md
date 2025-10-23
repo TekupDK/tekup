@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🔄 MAJOR UPDATE - TekupDK/Tekup-Portfolio Workspace Migration
 
 #### Added
+
 - **Updated path mapping** for new Tekup-Portfolio workspace structure
 - **RendetaljeOS integration** - Now supports the complete monorepo
 - **Enhanced documentation** with practical examples and integration guides
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Improved error handling** in PowerShell scripts
 
 #### Changed
+
 - **BREAKING:** All project paths updated for new workspace structure:
   - `tekup-ai` → `C:\Users\empir\Tekup\services\tekup-ai`
   - `tekup-billy` → `C:\Users\empir\Tekup\apps\production\tekup-billy`
@@ -28,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **README.md** completely refreshed with new architecture
 
 #### Fixed
+
 - **Duplicate key errors** in PowerShell hash tables
 - **Path validation** now works with new directory structure
 - **Sync script compatibility** with all 5 portfolio projects
@@ -39,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🎉 Initial Release - Production Ready
 
 #### Added
+
 - **Centralized secrets management** system
 - **Component-based organization** (5 config files):
   - `ai-services.env` - LLM providers (OpenAI, Gemini, Ollama)
@@ -55,13 +59,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Security documentation** and setup guides
 
 #### Supported Projects (Initial)
+
 - ✅ tekup-ai (188 lines)
-- ✅ Tekup-Billy (188 lines) 
+- ✅ Tekup-Billy (188 lines)
 - ✅ TekupVault (188 lines)
 - ✅ Tekup Google AI (188 lines)
 - ⏸️ RendetaljeOS (pending .env.example)
 
 #### Security Features
+
 - **Git-crypt setup** for secure git synchronization
 - **Windows file permissions** (owner-only access)
 - **API key encryption** for sensitive storage
@@ -74,6 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚧 Development Phase
 
 #### Added
+
 - **Initial directory structure** creation
 - **Basic PowerShell scripts** (prototype)
 - **Component configuration** templates
@@ -81,6 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation foundation** (README, SYSTEM_OVERVIEW)
 
 #### Known Issues
+
 - Manual path management required
 - Limited error handling in scripts
 - No automated testing
@@ -89,23 +97,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 📊 Version Summary
 
-| Version | Status | Projects | Lines/Project | Key Features |
-|---------|--------|----------|---------------|--------------|
-| 2.0.0 | 🚀 **Current** | 5 | 229 | TekupDK workspace, RendetaljeOS |
-| 1.0.0 | ✅ Stable | 4 | 188 | Production ready, TypeScript API |
-| 0.5.0 | 🛠️ Archive | 0 | 0 | Initial development |
+| Version | Status         | Projects | Lines/Project | Key Features                     |
+| ------- | -------------- | -------- | ------------- | -------------------------------- |
+| 2.0.0   | 🚀 **Current** | 5        | 229           | TekupDK workspace, RendetaljeOS  |
+| 1.0.0   | ✅ Stable      | 4        | 188           | Production ready, TypeScript API |
+| 0.5.0   | 🛠️ Archive     | 0        | 0             | Initial development              |
 
 ---
 
 ## 🔮 Upcoming (Future Versions)
 
 ### [2.1.0] - Planned
+
 - **Production secrets** configuration completion
 - **Git-crypt encryption** for PC2 synchronization
 - **Automated testing** for PowerShell scripts
 - **Performance monitoring** for sync operations
 
 ### [3.0.0] - Vision
+
 - **Web UI** for secrets management
 - **Role-based access control** (RBAC)
 - **Audit logging** for all secret access
