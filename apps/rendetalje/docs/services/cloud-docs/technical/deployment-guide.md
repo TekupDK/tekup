@@ -104,6 +104,10 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=[google-maps-key]
 NEXT_PUBLIC_GA_TRACKING_ID=[google-analytics-id]
 NEXT_PUBLIC_HOTJAR_ID=[hotjar-id]
 
+# Monitoring & Error Tracking
+NEXT_PUBLIC_SENTRY_DSN=[sentry-frontend-dsn]
+NEXT_PUBLIC_SENTRY_ENVIRONMENT=production
+
 # Feature Flags
 NEXT_PUBLIC_ENABLE_AI_FRIDAY=true
 NEXT_PUBLIC_ENABLE_REAL_TIME=true
@@ -136,6 +140,8 @@ NEXT_PUBLIC_CDN_URL=https://cdn.rendetalje.dk
    # Or run individual migration files
    psql $DATABASE_URL -f database/migrations/001_initial_schema.sql
    psql $DATABASE_URL -f database/migrations/002_add_indexes.sql
+   psql $DATABASE_URL -f database/migrations/003_rls_policies.sql
+   psql $DATABASE_URL -f database/migrations/004_application_logs.sql
    # ... continue for all migration files
    ```
 

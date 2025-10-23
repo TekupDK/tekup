@@ -43,6 +43,12 @@ services:
         sync: false
       - key: SENTRY_DSN
         sync: false
+      - key: SENTRY_ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: info
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
       - key: SMTP_HOST
         sync: false
       - key: SMTP_USER
@@ -72,6 +78,10 @@ services:
         sync: false
       - key: NEXT_PUBLIC_GA_TRACKING_ID
         sync: false
+      - key: NEXT_PUBLIC_SENTRY_DSN
+        sync: false
+      - key: NEXT_PUBLIC_SENTRY_ENVIRONMENT
+        value: production
     domains:
       - portal.rendetalje.dk
 
