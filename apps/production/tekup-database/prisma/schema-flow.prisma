@@ -1,0 +1,316 @@
+// Flow Schema - Workflow Automation
+// Will be integrated into main schema.prisma later
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["flow"]
+}
+
+// ===================================
+// WORKFLOWS & TEMPLATES
+// ===================================
+
+model FlowWorkflow {
+  id           String    @id @default(cuid())
+  name         String
+  description  String?   @db.Text
+  
+  // Template or instance
+  isTemplate   Boolean   @default(false)
+  templateId   String?
+  
+  // Status
+  status       String    @default("draft") // draft, active, paused, archived
+  
+  // Configuration
+  trigger      Json      // Trigger configuration
+  nodes        Json      // Workflow nodes/steps
+  edges        Json      // Connections between nodes
+  
+  // Execution settings
+  timeout      Int       @default(3600) // seconds
+  retryAttempts Int      @default(3)
+  
+  // Ownership
+  owner        String    // User ID
+  
+  // Statistics
+  executionCount Int     @default(0)
+  successCount   Int     @default(0)
+  failureCount   Int     @default(0)
+  avgDurationMs  Int?
+  
+  // Timestamps
+  lastExecutedAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relations
+  executions   FlowExecution[]
+  schedules    FlowSchedule[]
+  
+  @@index([status])
+  @@index([owner])
+  @@index([isTemplate])
+  @@schema("flow")
+}
+
+// ===================================
+// EXECUTIONS & RUNS
+// ===================================
+
+model FlowExecution {
+  id           String    @id @default(cuid())
+  workflowId   String
+  workflow     FlowWorkflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  
+  // Execution info
+  status       String    @default("running") // running, completed, failed, cancelled
+  
+  // Input/Output
+  input        Json?
+  output       Json?
+  error        String?   @db.Text
+  
+  // Steps
+  currentStep  String?
+  completedSteps String[] @default([])
+  failedStep   String?
+  
+  // Timing
+  startedAt    DateTime  @default(now())
+  completedAt  DateTime?
+  durationMs   Int?
+  
+  // Metadata
+  triggeredBy  String?   // manual, schedule, webhook, event
+  metadata     Json?
+  
+  // Relations
+  steps        FlowExecutionStep[]
+  logs         FlowExecutionLog[]
+  
+  @@index([workflowId])
+  @@index([status])
+  @@index([startedAt])
+  @@schema("flow")
+}
+
+model FlowExecutionStep {
+  id           String    @id @default(cuid())
+  executionId  String
+  execution    FlowExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  
+  // Step info
+  stepId       String    // Node ID from workflow
+  stepName     String
+  stepType     String    // action, condition, loop, etc.
+  
+  // Status
+  status       String    @default("pending") // pending, running, completed, failed, skipped
+  
+  // Input/Output
+  input        Json?
+  output       Json?
+  error        String?   @db.Text
+  
+  // Timing
+  startedAt    DateTime?
+  completedAt  DateTime?
+  durationMs   Int?
+  
+  // Retries
+  attemptNumber Int      @default(1)
+  maxAttempts  Int      @default(3)
+  
+  createdAt    DateTime  @default(now())
+  
+  @@index([executionId])
+  @@index([status])
+  @@schema("flow")
+}
+
+model FlowExecutionLog {
+  id           String    @id @default(cuid())
+  executionId  String
+  execution    FlowExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  
+  // Log details
+  level        String    // debug, info, warn, error
+  message      String    @db.Text
+  data         Json?
+  
+  // Context
+  stepId       String?
+  timestamp    DateTime  @default(now())
+  
+  @@index([executionId])
+  @@index([level])
+  @@index([timestamp])
+  @@schema("flow")
+}
+
+// ===================================
+// SCHEDULING
+// ===================================
+
+model FlowSchedule {
+  id           String    @id @default(cuid())
+  workflowId   String
+  workflow     FlowWorkflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  
+  // Schedule configuration
+  name         String
+  description  String?
+  
+  // Cron expression or interval
+  cronExpression String?
+  intervalMinutes Int?
+  
+  // Status
+  isActive     Boolean   @default(true)
+  
+  // Execution window
+  timezone     String    @default("Europe/Copenhagen")
+  startDate    DateTime?
+  endDate      DateTime?
+  
+  // Limits
+  maxRuns      Int?      // Maximum number of runs (null = unlimited)
+  currentRuns  Int       @default(0)
+  
+  // Timestamps
+  lastRun      DateTime?
+  nextRun      DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  @@index([workflowId])
+  @@index([isActive])
+  @@index([nextRun])
+  @@schema("flow")
+}
+
+// ===================================
+// INTEGRATIONS & WEBHOOKS
+// ===================================
+
+model FlowWebhook {
+  id           String    @id @default(cuid())
+  workflowId   String
+  
+  // Webhook details
+  name         String
+  url          String    @unique // Generated webhook URL
+  method       String    @default("POST") // POST, GET, etc.
+  
+  // Security
+  secret       String?   // Webhook secret for verification
+  allowedIps   String[]  @default([])
+  
+  // Status
+  isActive     Boolean   @default(true)
+  
+  // Statistics
+  requestCount Int       @default(0)
+  lastRequestAt DateTime?
+  
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  @@index([workflowId])
+  @@index([isActive])
+  @@schema("flow")
+}
+
+model FlowIntegration {
+  id           String    @id @default(cuid())
+  
+  // Integration details
+  name         String    // slack, email, http, database, etc.
+  type         String
+  
+  // Configuration
+  config       Json      // Connection details, credentials, etc.
+  
+  // Status
+  status       String    @default("active") // active, inactive, error
+  lastError    String?   @db.Text
+  
+  // Ownership
+  owner        String    // User ID
+  
+  // Statistics
+  usageCount   Int       @default(0)
+  lastUsedAt   DateTime?
+  
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  @@index([owner])
+  @@index([type])
+  @@index([status])
+  @@schema("flow")
+}
+
+// ===================================
+// VARIABLES & STATE
+// ===================================
+
+model FlowVariable {
+  id           String    @id @default(cuid())
+  workflowId   String?   // null = global variable
+  
+  // Variable details
+  key          String
+  value        String    @db.Text
+  type         String    @default("string") // string, number, boolean, json
+  
+  // Security
+  isSecret     Boolean   @default(false)
+  encrypted    Boolean   @default(false)
+  
+  // Description
+  description  String?
+  
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  @@unique([workflowId, key])
+  @@index([workflowId])
+  @@schema("flow")
+}
+
+// ===================================
+// ANALYTICS
+// ===================================
+
+model FlowMetric {
+  id           String    @id @default(cuid())
+  date         DateTime  @db.Date
+  
+  // Metrics
+  metric       String    // executions, success_rate, avg_duration, etc.
+  value        Float
+  
+  // Context
+  workflowId   String?
+  metadata     Json?
+  
+  createdAt    DateTime  @default(now())
+  
+  @@unique([date, metric, workflowId])
+  @@index([date])
+  @@index([metric])
+  @@index([workflowId])
+  @@schema("flow")
+}

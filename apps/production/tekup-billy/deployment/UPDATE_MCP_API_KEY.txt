@@ -1,0 +1,37 @@
+═══════════════════════════════════════════════════════════════
+  OPDATER MCP_API_KEY PÅ RENDER
+═══════════════════════════════════════════════════════════════
+
+🔴 VIGTIG: Du skal opdatere denne environment variable på Render!
+
+Gå til: https://dashboard.render.com/web/srv-d3kk30t6ubrc73e1qon0
+Tab: Environment
+Find: MCP_API_KEY
+
+Nuværende værdi: your_secure_api_key_here (UGYLDIG!)
+Ny værdi: bd674eb2e69973fa399888fa3d5a84f414dd7d89bd86ff6140bdcb363aeede4b
+
+═══════════════════════════════════════════════════════════════
+  INSTRUKTIONER
+═══════════════════════════════════════════════════════════════
+
+1. Gå til Tekup-Billy service → Environment tab
+2. Find MCP_API_KEY i "Direct Variables" eller tilføj den
+3. Click Edit (✏️)
+4. Erstat med: bd674eb2e69973fa399888fa3d5a84f414dd7d89bd86ff6140bdcb363aeede4b
+5. Save
+6. Render vil auto-redeploy (~2-3 min)
+
+═══════════════════════════════════════════════════════════════
+  EFTER OPDATERING
+═══════════════════════════════════════════════════════════════
+
+Når deployed, test med:
+
+PowerShell:
+npx tsx test-production-operations.ts
+
+Dette vil teste alle Billy.dk operations gennem production serveren
+med den nye API key.
+
+═══════════════════════════════════════════════════════════════

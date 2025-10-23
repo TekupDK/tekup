@@ -1,0 +1,17 @@
+# =====================================================
+# Tekup Database - Render.com Deployment
+# =====================================================
+
+databases:
+  - name: tekup-database
+    region: frankfurt  # EU Central - closest to Denmark
+    plan: starter      # $7/month (upgrade to Pro for production)
+    databaseName: tekup_db
+    user: tekup
+    ipAllowList: []    # Leave empty for public access
+    
+    # PostgreSQL configuration
+    postgresMajorVersion: 16
+    
+    # Auto-suspend after 30 days of inactivity (Free tier only)
+    # suspendAfterDays: 30

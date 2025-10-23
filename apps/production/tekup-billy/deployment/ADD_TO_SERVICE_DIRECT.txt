@@ -1,0 +1,51 @@
+═══════════════════════════════════════════════════════════════
+  TILFØJ DISSE 5 VARIABLES DIREKTE TIL TEKUP-BILLY SERVICE
+═══════════════════════════════════════════════════════════════
+
+Gå til: https://dashboard.render.com/web/srv-d3kk30t6ubrc73e1qon0
+Tab: Environment
+Klik: "Add Environment Variable" for hver af disse:
+
+═══════════════════════════════════════════════════════════════
+
+Variable 1:
+-----------
+Key:   SUPABASE_URL
+Value: https://oaevagdgrasfppbrxbey.supabase.co
+
+
+Variable 2:
+-----------
+Key:   SUPABASE_ANON_KEY
+Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4Nzc3NjQsImV4cCI6MjA3NTQ1Mzc2NH0.M0Kt1Xi-3VVoq6NJ7VbhqBC0z9EK-JQ7ypssayMw7s8
+
+
+Variable 3:
+-----------
+Key:   SUPABASE_SERVICE_KEY
+Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTg3Nzc2NCwiZXhwIjoyMDc1NDUzNzY0fQ.94lDERK4Enw8YTH_OtE9BpQhQWs8fg_7GZQGnYS8rNo
+
+
+Variable 4:
+-----------
+Key:   ENCRYPTION_KEY
+Value: 9c22d3c2cebd332a194ca9f30b99e57112d10a290d9188eda881fe09eaa01947
+
+
+Variable 5:
+-----------
+Key:   ENCRYPTION_SALT
+Value: 9b2af923a0665b2f47c7a799b9484b28
+
+
+═══════════════════════════════════════════════════════════════
+  EFTER TILFØJELSE
+═══════════════════════════════════════════════════════════════
+
+Render vil automatisk redeploy servicen (~2-3 min)
+
+Total env vars efter tilføjelse: 14 variables
+- 9 eksisterende (Billy + config)
+- 5 nye (Supabase + Encryption)
+
+═══════════════════════════════════════════════════════════════

@@ -1,0 +1,556 @@
+// =====================================================
+// RENOS SCHEMA (Tekup Google AI - RenOS)
+// =====================================================
+// Copy this into main schema.prisma after billy schema
+
+// Chat System
+model RenosChatSession {
+  id        String              @id @default(cuid())
+  userId    String?
+  channel   String?
+  locale    String?
+  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+  messages  RenosChatMessage[]
+
+  @@map("chat_sessions")
+  @@schema("renos")
+}
+
+model RenosChatMessage {
+  id        String            @id @default(cuid())
+  sessionId String            @map("session_id")
+  role      String
+  content   String            @db.Text
+  timestamp DateTime          @default(now()) @db.Timestamptz
+  session   RenosChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
+  @@schema("renos")
+}
+
+// Lead Management
+model RenosLead {
+  id               String              @id @default(cuid())
+  sessionId        String?             @map("session_id")
+  customerId       String?             @map("customer_id")
+  source           String?
+  name             String?
+  email            String?
+  phone            String?
+  address          String?
+  squareMeters     Float?              @map("square_meters")
+  rooms            Int?
+  taskType         String?             @map("task_type")
+  preferredDates   String[]            @map("preferred_dates")
+  status           String              @default("new")
+  emailThreadId    String?             @map("email_thread_id")
+  followUpAttempts Int                 @default(0) @map("follow_up_attempts")
+  lastFollowUpDate DateTime?           @map("last_follow_up_date") @db.Timestamptz
+  idempotencyKey   String?             @unique @map("idempotency_key")
+  
+  // Firecrawl Enrichment
+  companyName      String?             @map("company_name")
+  industry         String?
+  estimatedSize    String?             @map("estimated_size")
+  estimatedValue   Float?              @map("estimated_value")
+  enrichmentData   Json?               @map("enrichment_data")
+  lastEnriched     DateTime?           @map("last_enriched") @db.Timestamptz
+  
+  // Lead Scoring
+  score            Int?                @default(0)
+  priority         String?             @default("medium")
+  lastScored       DateTime?           @map("last_scored") @db.Timestamptz
+  scoreMetadata    Json?               @map("score_metadata")
+  
+  createdAt        DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+  
+  bookings         RenosBooking[]
+  conversations    RenosConversation[]
+  customer         RenosCustomer?      @relation(fields: [customerId], references: [id])
+  quotes           RenosQuote[]
+  emailResponses   RenosEmailResponse[]
+  escalations      RenosEscalation[]
+
+  @@index([email, createdAt])
+  @@index([estimatedValue])
+  @@index([score, priority])
+  @@map("leads")
+  @@schema("renos")
+}
+
+model RenosQuote {
+  id             String       @id @default(cuid())
+  leadId         String       @map("lead_id")
+  hourlyRate     Float        @map("hourly_rate")
+  estimatedHours Float        @map("estimated_hours")
+  subtotal       Float
+  vatRate        Float        @map("vat_rate")
+  total          Float
+  notes          String?      @db.Text
+  validUntil     DateTime?    @map("valid_until") @db.Timestamptz
+  status         String       @default("draft")
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+  lead           RenosLead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("quotes")
+  @@schema("renos")
+}
+
+model RenosBooking {
+  id                String                   @id @default(cuid())
+  customerId        String?                  @map("customer_id")
+  leadId            String?                  @map("lead_id")
+  quoteId           String?                  @map("quote_id")
+  serviceType       String?                  @map("service_type")
+  address           String?
+  scheduledAt       DateTime                 @default(now()) @map("scheduled_at") @db.Timestamptz
+  estimatedDuration Int                      @default(120) @map("estimated_duration")
+  startTime         DateTime?                @map("start_time") @db.Timestamptz
+  endTime           DateTime?                @map("end_time") @db.Timestamptz
+  status            String                   @default("scheduled")
+  calendarEventId   String?                  @map("calendar_event_id")
+  calendarLink      String?                  @map("calendar_link")
+  notes             String?                  @db.Text
+
+  // Time Tracking
+  actualStartTime DateTime?                  @map("actual_start_time") @db.Timestamptz
+  actualEndTime   DateTime?                  @map("actual_end_time") @db.Timestamptz
+  actualDuration  Int?                       @map("actual_duration")
+  timeVariance    Int?                       @map("time_variance")
+  efficiencyScore Float?                     @map("efficiency_score")
+  timeNotes       String?                    @map("time_notes") @db.Text
+  timerStatus     String                     @default("not_started") @map("timer_status")
+
+  createdAt DateTime                         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime                         @updatedAt @map("updated_at") @db.Timestamptz
+
+  customer    RenosCustomer?               @relation(fields: [customerId], references: [id])
+  lead        RenosLead?                   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  planBooking RenosCleaningPlanBooking?
+  breaks      RenosBreak[]
+  invoices    RenosInvoice[]
+
+  @@index([customerId])
+  @@index([leadId])
+  @@index([scheduledAt])
+  @@index([status])
+  @@index([timerStatus])
+  @@map("bookings")
+  @@schema("renos")
+}
+
+model RenosCustomer {
+  id            String                  @id @default(cuid())
+  name          String
+  email         String?                 @unique
+  phone         String?
+  address       String?
+  companyName   String?                 @map("company_name")
+  notes         String?                 @db.Text
+  status        String                  @default("active")
+  tags          String[]
+  totalLeads    Int                     @default(0) @map("total_leads")
+  totalBookings Int                     @default(0) @map("total_bookings")
+  totalRevenue  Float                   @default(0) @map("total_revenue")
+  lastContactAt DateTime?               @map("last_contact_at") @db.Timestamptz
+  createdAt     DateTime                @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime                @updatedAt @map("updated_at") @db.Timestamptz
+  
+  conversations RenosConversation[]
+  leads         RenosLead[]
+  emailThreads  RenosEmailThread[]
+  bookings      RenosBooking[]
+  cleaningPlans RenosCleaningPlan[]
+
+  @@index([email])
+  @@index([status])
+  @@map("customers")
+  @@schema("renos")
+}
+
+model RenosConversation {
+  id            String             @id @default(cuid())
+  customerId    String?            @map("customer_id")
+  leadId        String?            @map("lead_id")
+  subject       String?
+  channel       String             @default("email")
+  status        String             @default("active")
+  gmailThreadId String?            @unique @map("gmail_thread_id")
+  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+  closedAt      DateTime?          @map("closed_at") @db.Timestamptz
+  
+  customer      RenosCustomer?     @relation(fields: [customerId], references: [id])
+  lead          RenosLead?         @relation(fields: [leadId], references: [id])
+  messages      RenosEmailMessage[] @relation("ConversationMessages")
+
+  @@index([customerId])
+  @@index([leadId])
+  @@index([gmailThreadId])
+  @@index([status])
+  @@map("conversations")
+  @@schema("renos")
+}
+
+// Email System
+model RenosEmailIngestRun {
+  id            String    @id @default(cuid())
+  startedAt     DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  finishedAt    DateTime? @map("finished_at") @db.Timestamptz
+  status        String    @default("running")
+  totalEmails   Int       @default(0) @map("total_emails")
+  newEmails     Int       @default(0) @map("new_emails")
+  updatedEmails Int       @default(0) @map("updated_emails")
+  errors        Int       @default(0)
+  errorLog      Json?     @map("error_log")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("email_ingest_runs")
+  @@schema("renos")
+}
+
+model RenosEmailThread {
+  id            String             @id @default(cuid())
+  gmailThreadId String             @unique @map("gmail_thread_id")
+  customerId    String?            @map("customer_id")
+  subject       String
+  snippet       String?            @db.Text
+  lastMessageAt DateTime           @map("last_message_at") @db.Timestamptz
+  participants  String[]
+  messageCount  Int                @default(0) @map("message_count")
+  labels        String[]
+  isMatched     Boolean            @default(false) @map("is_matched")
+  matchedAt     DateTime?          @map("matched_at") @db.Timestamptz
+  matchedBy     String?            @map("matched_by")
+  confidence    Float?
+  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  customer RenosCustomer?       @relation(fields: [customerId], references: [id])
+  messages RenosEmailMessage[]
+
+  @@index([customerId])
+  @@index([gmailThreadId])
+  @@index([lastMessageAt])
+  @@index([isMatched])
+  @@map("email_threads")
+  @@schema("renos")
+}
+
+model RenosEmailMessage {
+  id             String              @id @default(cuid())
+  gmailMessageId String?             @unique @map("gmail_message_id")
+  gmailThreadId  String              @map("gmail_thread_id")
+  threadId       String?             @map("thread_id")
+  from           String
+  to             String[]
+  subject        String?
+  body           String              @db.Text
+  bodyPreview    String?             @map("body_preview") @db.Text
+  direction      String              @default("inbound")
+  status         String              @default("delivered")
+  isAiGenerated  Boolean             @default(false) @map("is_ai_generated")
+  aiModel        String?             @map("ai_model")
+  sentAt         DateTime            @map("sent_at") @db.Timestamptz
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+  conversationId String?             @map("conversation_id")
+
+  thread       RenosEmailThread?     @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  conversation RenosConversation?    @relation("ConversationMessages", fields: [conversationId], references: [id])
+
+  @@index([threadId])
+  @@index([conversationId])
+  @@index([gmailMessageId])
+  @@index([sentAt])
+  @@index([direction])
+  @@map("email_messages")
+  @@schema("renos")
+}
+
+model RenosEmailResponse {
+  id             String    @id @default(cuid())
+  leadId         String    @map("lead_id")
+  recipientEmail String    @map("recipient_email")
+  subject        String
+  body           String    @db.Text
+  status         String    @default("pending")
+  gmailThreadId  String?   @map("gmail_thread_id")
+  gmailMessageId String?   @map("gmail_message_id")
+  sentAt         DateTime? @map("sent_at") @db.Timestamptz
+  rejectedReason String?   @map("rejected_reason") @db.Text
+  aiModel        String?   @map("ai_model")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  lead RenosLead @relation(fields: [leadId], references: [id])
+
+  @@index([leadId])
+  @@index([status])
+  @@map("email_responses")
+  @@schema("renos")
+}
+
+model RenosEscalation {
+  id              String    @id @default(cuid())
+  leadId          String    @map("lead_id")
+  customerEmail   String    @map("customer_email")
+  customerName    String?   @map("customer_name")
+  threadId        String    @map("thread_id")
+  severity        String
+  conflictScore   Int       @map("conflict_score")
+  matchedKeywords String[]  @map("matched_keywords")
+  emailSnippet    String    @map("email_snippet") @db.Text
+  escalatedAt     DateTime  @default(now()) @map("escalated_at") @db.Timestamptz
+  escalatedBy     String    @map("escalated_by")
+  jonasNotified   Boolean   @default(false) @map("jonas_notified")
+  resolvedAt      DateTime? @map("resolved_at") @db.Timestamptz
+  resolution      String?   @db.Text
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  lead RenosLead @relation(fields: [leadId], references: [id])
+
+  @@index([leadId])
+  @@index([severity])
+  @@index([escalatedAt])
+  @@map("escalations")
+  @@schema("renos")
+}
+
+// Cleaning Plans
+model RenosCleaningPlan {
+  id                String                      @id @default(cuid())
+  customerId        String                      @map("customer_id")
+  name              String
+  description       String?                     @db.Text
+  serviceType       String                      @map("service_type")
+  frequency         String                      @default("once")
+  isTemplate        Boolean                     @default(false) @map("is_template")
+  isActive          Boolean                     @default(true) @map("is_active")
+  estimatedDuration Int                         @default(120) @map("estimated_duration")
+  estimatedPrice    Float?                      @map("estimated_price")
+  squareMeters      Float?                      @map("square_meters")
+  address           String?
+  notes             String?                     @db.Text
+  createdAt         DateTime                    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime                    @updatedAt @map("updated_at") @db.Timestamptz
+
+  customer     RenosCustomer                 @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tasks        RenosCleaningTask[]
+  planBookings RenosCleaningPlanBooking[]
+
+  @@index([customerId])
+  @@index([serviceType])
+  @@index([isActive])
+  @@index([isTemplate])
+  @@map("cleaning_plans")
+  @@schema("renos")
+}
+
+model RenosCleaningTask {
+  id            String            @id @default(cuid())
+  planId        String            @map("plan_id")
+  name          String
+  description   String?           @db.Text
+  category      String
+  estimatedTime Int               @default(15) @map("estimated_time")
+  isRequired    Boolean           @default(true) @map("is_required")
+  isCompleted   Boolean           @default(false) @map("is_completed")
+  sortOrder     Int               @default(0) @map("sort_order")
+  pricePerTask  Float?            @map("price_per_task")
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  plan RenosCleaningPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@index([category])
+  @@map("cleaning_tasks")
+  @@schema("renos")
+}
+
+model RenosCleaningPlanBooking {
+  id             String            @id @default(cuid())
+  planId         String            @map("plan_id")
+  bookingId      String            @unique @map("booking_id")
+  completedTasks String[]          @map("completed_tasks")
+  actualDuration Int?              @map("actual_duration")
+  notes          String?           @db.Text
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  plan    RenosCleaningPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  booking RenosBooking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@index([bookingId])
+  @@map("cleaning_plan_bookings")
+  @@schema("renos")
+}
+
+// Time Tracking
+model RenosBreak {
+  id        String    @id @default(cuid())
+  bookingId String    @map("booking_id")
+  startTime DateTime  @map("start_time") @db.Timestamptz
+  endTime   DateTime? @map("end_time") @db.Timestamptz
+  duration  Int?
+  reason    String?
+  notes     String?   @db.Text
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  booking RenosBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@index([startTime])
+  @@map("breaks")
+  @@schema("renos")
+}
+
+// Invoicing
+model RenosInvoice {
+  id              String                 @id @default(cuid())
+  invoiceNumber   String                 @unique @map("invoice_number")
+  bookingId       String?                @map("booking_id")
+  customerId      String                 @map("customer_id")
+  customerName    String                 @map("customer_name")
+  customerEmail   String?                @map("customer_email")
+  customerAddress String?                @map("customer_address") @db.Text
+
+  issueDate DateTime @default(now()) @map("issue_date") @db.Timestamptz
+  dueDate   DateTime @map("due_date") @db.Timestamptz
+  status    String   @default("draft")
+
+  subtotal  Float
+  vatRate   Float @default(25.0) @map("vat_rate")
+  vatAmount Float @map("vat_amount")
+  total     Float
+
+  paidAt        DateTime? @map("paid_at") @db.Timestamptz
+  paidAmount    Float?    @map("paid_amount")
+  paymentMethod String?   @map("payment_method")
+  paymentRef    String?   @map("payment_ref")
+
+  billyInvoiceId String?   @unique @map("billy_invoice_id")
+  billyContactId String?   @map("billy_contact_id")
+  billySyncedAt  DateTime? @map("billy_synced_at") @db.Timestamptz
+  billyPdfUrl    String?   @map("billy_pdf_url")
+
+  notes          String?   @db.Text
+  internalNotes  String?   @map("internal_notes") @db.Text
+  sentAt         DateTime? @map("sent_at") @db.Timestamptz
+  reminderSentAt DateTime? @map("reminder_sent_at") @db.Timestamptz
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  booking   RenosBooking?           @relation(fields: [bookingId], references: [id])
+  lineItems RenosInvoiceLineItem[]
+
+  @@index([customerId])
+  @@index([bookingId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([invoiceNumber])
+  @@map("invoices")
+  @@schema("renos")
+}
+
+model RenosInvoiceLineItem {
+  id          String        @id @default(cuid())
+  invoiceId   String        @map("invoice_id")
+  description String
+  quantity    Float         @default(1.0)
+  unitPrice   Float         @map("unit_price")
+  amount      Float
+  sortOrder   Int           @default(0) @map("sort_order")
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  invoice RenosInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@map("invoice_line_items")
+  @@schema("renos")
+}
+
+// Analytics & Tracking
+model RenosAnalytics {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  metric    String
+  value     Float
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([date, metric])
+  @@map("analytics")
+  @@schema("renos")
+}
+
+model RenosTaskExecution {
+  id              String   @id @default(cuid())
+  taskType        String   @map("task_type")
+  taskPayload     Json     @map("task_payload")
+  status          String
+  result          Json?
+  error           String?  @db.Text
+  duration        Int?
+  traceId         String?  @map("trace_id")
+  sessionId       String?  @map("session_id")
+  userId          String?  @map("user_id")
+  intent          String?
+  confidence      Float?
+  correctionType  String?  @map("correction_type")
+  executedAt      DateTime @default(now()) @map("executed_at") @db.Timestamptz
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([taskType, status])
+  @@index([executedAt])
+  @@index([traceId])
+  @@index([sessionId])
+  @@map("task_executions")
+  @@schema("renos")
+}
+
+// Competitor Analysis
+model RenosCompetitorPricing {
+  id          String   @id @default(cuid())
+  competitor  String
+  websiteUrl  String   @map("website_url")
+  pricingData Json     @map("pricing_data")
+  scrapedAt   DateTime @default(now()) @map("scraped_at") @db.Timestamptz
+  creditsUsed Int      @default(1) @map("credits_used")
+
+  @@index([competitor, scrapedAt])
+  @@map("competitor_pricing")
+  @@schema("renos")
+}
+
+// Service Catalog
+model RenosService {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  price       Float
+  duration    Int
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("services")
+  @@schema("renos")
+}
+
+model RenosLabel {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("labels")
+  @@schema("renos")
+}

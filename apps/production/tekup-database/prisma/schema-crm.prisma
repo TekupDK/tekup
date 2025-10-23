@@ -1,0 +1,322 @@
+// CRM Schema - Customer Relationship Management
+// Will be integrated into main schema.prisma later
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["crm"]
+}
+
+// ===================================
+// CONTACTS & COMPANIES
+// ===================================
+
+model CrmContact {
+  id           String    @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String?   @unique
+  phone        String?
+  mobile       String?
+  title        String?   // Job title
+  
+  // Company relation
+  companyId    String?
+  company      CrmCompany? @relation(fields: [companyId], references: [id])
+  
+  // Social & web
+  linkedIn     String?
+  twitter      String?
+  website      String?
+  
+  // Address
+  address      String?
+  city         String?
+  postalCode   String?
+  country      String?   @default("Denmark")
+  
+  // Lifecycle
+  status       String    @default("active") // active, inactive, lead
+  source       String?   // website, referral, cold_outreach, etc.
+  owner        String?   // User ID who owns this contact
+  
+  // Engagement
+  lastContactAt DateTime?
+  nextFollowUp  DateTime?
+  
+  // Notes & metadata
+  notes        String?   @db.Text
+  tags         String[]  @default([])
+  customFields Json?
+  
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relations
+  deals        CrmDeal[]
+  activities   CrmActivity[]
+  emails       CrmEmail[]
+  tasks        CrmTask[]
+  
+  @@index([email])
+  @@index([companyId])
+  @@index([status])
+  @@index([owner])
+  @@schema("crm")
+}
+
+model CrmCompany {
+  id           String    @id @default(cuid())
+  name         String
+  website      String?
+  industry     String?
+  size         String?   // 1-10, 11-50, 51-200, etc.
+  revenue      Float?
+  
+  // Contact info
+  email        String?
+  phone        String?
+  
+  // Address
+  address      String?
+  city         String?
+  postalCode   String?
+  country      String?   @default("Denmark")
+  
+  // Business info
+  vatNumber    String?
+  registrationNumber String?
+  
+  // Relationship
+  status       String    @default("active") // active, inactive, prospect, customer
+  owner        String?   // User ID
+  
+  // Engagement
+  lastContactAt DateTime?
+  
+  // Notes & metadata
+  notes        String?   @db.Text
+  tags         String[]  @default([])
+  customFields Json?
+  
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relations
+  contacts     CrmContact[]
+  deals        CrmDeal[]
+  activities   CrmActivity[]
+  
+  @@index([name])
+  @@index([status])
+  @@index([owner])
+  @@schema("crm")
+}
+
+// ===================================
+// DEALS & PIPELINE
+// ===================================
+
+model CrmDeal {
+  id           String    @id @default(cuid())
+  title        String
+  value        Float
+  currency     String    @default("DKK")
+  
+  // Pipeline
+  stage        String    @default("qualification") // qualification, proposal, negotiation, closed_won, closed_lost
+  pipeline     String    @default("sales") // sales, partnerships, etc.
+  probability  Int?      // 0-100%
+  
+  // Relations
+  contactId    String?
+  contact      CrmContact? @relation(fields: [contactId], references: [id])
+  companyId    String?
+  company      CrmCompany? @relation(fields: [companyId], references: [id])
+  
+  // Ownership
+  owner        String    // User ID
+  
+  // Dates
+  expectedCloseDate DateTime?
+  actualCloseDate   DateTime?
+  
+  // Status
+  status       String    @default("open") // open, won, lost
+  lostReason   String?
+  
+  // Notes & metadata
+  description  String?   @db.Text
+  tags         String[]  @default([])
+  customFields Json?
+  
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relations
+  activities   CrmActivity[]
+  products     CrmDealProduct[]
+  
+  @@index([stage])
+  @@index([status])
+  @@index([owner])
+  @@index([contactId])
+  @@index([companyId])
+  @@index([expectedCloseDate])
+  @@schema("crm")
+}
+
+model CrmDealProduct {
+  id           String    @id @default(cuid())
+  dealId       String
+  deal         CrmDeal   @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  
+  productName  String
+  quantity     Int       @default(1)
+  unitPrice    Float
+  discount     Float     @default(0)
+  total        Float
+  
+  description  String?   @db.Text
+  
+  createdAt    DateTime  @default(now())
+  
+  @@index([dealId])
+  @@schema("crm")
+}
+
+// ===================================
+// ACTIVITIES & ENGAGEMENT
+// ===================================
+
+model CrmActivity {
+  id           String    @id @default(cuid())
+  type         String    // call, email, meeting, note, task_completed
+  subject      String?
+  description  String?   @db.Text
+  
+  // Relations
+  contactId    String?
+  contact      CrmContact? @relation(fields: [contactId], references: [id])
+  companyId    String?
+  company      CrmCompany? @relation(fields: [companyId], references: [id])
+  dealId       String?
+  deal         CrmDeal?    @relation(fields: [dealId], references: [id])
+  
+  // Ownership
+  owner        String    // User ID
+  
+  // Duration (for calls/meetings)
+  durationMinutes Int?
+  
+  // Outcome
+  outcome      String?   // successful, unsuccessful, no_answer, etc.
+  
+  // Timestamp
+  occurredAt   DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+  
+  @@index([contactId])
+  @@index([companyId])
+  @@index([dealId])
+  @@index([occurredAt])
+  @@index([owner])
+  @@schema("crm")
+}
+
+model CrmEmail {
+  id           String    @id @default(cuid())
+  
+  // Email details
+  subject      String
+  body         String    @db.Text
+  from         String
+  to           String[]
+  cc           String[]  @default([])
+  bcc          String[]  @default([])
+  
+  // Direction
+  direction    String    // inbound, outbound
+  
+  // Status
+  status       String    @default("sent") // draft, sent, delivered, opened, clicked, bounced
+  
+  // Tracking
+  openedAt     DateTime?
+  clickedAt    DateTime?
+  
+  // Relations
+  contactId    String?
+  contact      CrmContact? @relation(fields: [contactId], references: [id])
+  
+  // External IDs
+  externalId   String?   // Gmail message ID, etc.
+  threadId     String?
+  
+  // Timestamps
+  sentAt       DateTime?
+  createdAt    DateTime  @default(now())
+  
+  @@index([contactId])
+  @@index([direction])
+  @@index([status])
+  @@schema("crm")
+}
+
+model CrmTask {
+  id           String    @id @default(cuid())
+  title        String
+  description  String?   @db.Text
+  
+  // Assignment
+  assignedTo   String    // User ID
+  
+  // Relations
+  contactId    String?
+  contact      CrmContact? @relation(fields: [contactId], references: [id])
+  
+  // Status
+  status       String    @default("todo") // todo, in_progress, done, cancelled
+  priority     String    @default("medium") // low, medium, high, urgent
+  
+  // Dates
+  dueDate      DateTime?
+  completedAt  DateTime?
+  
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  @@index([assignedTo])
+  @@index([contactId])
+  @@index([status])
+  @@index([dueDate])
+  @@schema("crm")
+}
+
+// ===================================
+// ANALYTICS & REPORTING
+// ===================================
+
+model CrmMetric {
+  id           String    @id @default(cuid())
+  date         DateTime  @db.Date
+  metric       String    // deals_created, deals_won, deals_lost, revenue, etc.
+  value        Float
+  metadata     Json?
+  
+  createdAt    DateTime  @default(now())
+  
+  @@unique([date, metric])
+  @@index([date])
+  @@index([metric])
+  @@schema("crm")
+}

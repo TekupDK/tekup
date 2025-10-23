@@ -1,0 +1,63 @@
+# Render.com Blueprint for Tekup-Billy MCP Server
+# Auto-deploy to Render.com via this configuration
+
+services:
+  - type: web
+    name: tekup-billy-mcp
+    env: docker
+    region: frankfurt  # EU region for GDPR compliance
+    plan: starter  # Free tier or upgrade to Standard/Pro
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    
+    # Auto-deploy settings
+    autoDeploy: true
+    branch: main
+    
+    # Environment variables (set in Render.com dashboard)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      
+      - key: PORT
+        value: 3000
+      
+      - key: BILLY_API_KEY
+        sync: false  # Set manually in dashboard
+      
+      - key: BILLY_ORGANIZATION_ID
+        sync: false  # Set manually in dashboard
+      
+      - key: BILLY_API_BASE
+        value: https://api.billysbilling.com/v2
+      
+      - key: MCP_API_KEY
+        generateValue: true  # Auto-generate secure API key
+      
+      - key: BILLY_TEST_MODE
+        value: false
+      
+      - key: BILLY_DRY_RUN
+        value: false
+      
+      - key: CORS_ORIGIN
+        value: '*'  # Update for production (e.g., https://renos.dk)
+    
+    # Health check configuration
+    healthCheckPath: /health
+    
+    # Build settings
+    buildCommand: echo "Using Docker build"
+    
+    # Scaling (upgrade plan for autoscaling)
+    numInstances: 1
+    
+    # Domains (optional - add custom domain)
+    # domains:
+    #   - billy-mcp.renos.dk
+
+# Database (if needed in future)
+# databases:
+#   - name: billy-cache
+#     plan: starter
+#     region: frankfurt
