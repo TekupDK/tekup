@@ -1,6 +1,14 @@
-# 🚀 TEKUP WORKSPACE - PC 2 QUICK START GUIDE
+# ⚠️ DEPRECATED - See README_PC2_SETUP.md instead
+
+**This file is outdated. Please use:**
+- **README_PC2_SETUP.md** (updated for monorepo)
+
+---
+
+# 🚀 TEKUP WORKSPACE - PC 2 QUICK START GUIDE (OLD)
 
 **Dato:** 23. Oktober 2025  
+**Status:** DEPRECATED - Based on old multi-repo structure  
 **Formål:** Setup anden computer med komplet Tekup workspace  
 **Estimeret tid:** 45 minutter
 
@@ -113,8 +121,8 @@ mkdir Tekup
 cd Tekup
 
 # Download clone script fra GitHub
-gh repo clone TekupDK/tekup-workspace-docs
-cd tekup-workspace-docs\scripts
+gh repo clone TekupDK/tekup
+cd tekup\scripts
 
 # Run automatic clone script
 .\clone-all-repos.ps1
