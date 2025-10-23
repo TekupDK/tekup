@@ -2,11 +2,11 @@
 # Only track workspace-level documentation, not individual projects
 
 # Exclude all project folders (they have their own repos)
-apps/
+# apps/ - NOW INCLUDED (Rendetalje consolidation)
 services/
 packages/
 tools/
-archive/
+# archive/ - NOW INCLUDED (archived projects)
 
 # Keep only workspace-level files
 # Tracked:
