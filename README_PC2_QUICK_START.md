@@ -121,8 +121,8 @@ mkdir Tekup
 cd Tekup
 
 # Download clone script fra GitHub
-gh repo clone TekupDK/tekup-workspace-docs
-cd tekup-workspace-docs\scripts
+gh repo clone TekupDK/tekup
+cd tekup\scripts
 
 # Run automatic clone script
 .\clone-all-repos.ps1

@@ -24,7 +24,7 @@
 
 param(
     [Parameter(Mandatory=$true)]
-    [ValidateSet("tekup-ai", "Tekup-Billy", "TekupVault", "Tekup Google AI", "tekup-chat", "RendetaljeOS")]
+    [ValidateSet("tekup-ai", "tekup-billy", "tekup-vault", "tekup-gmail-services", "tekup-chat", "RendetaljeOS")]
     [string]$Project,
     
     [Parameter(Mandatory=$false)]
@@ -39,16 +39,16 @@ $ErrorActionPreference = "Stop"
 
 # Paths
 $secretsRoot = "C:\Users\empir\Tekup\tekup-secrets"
-$projectsRoot = "C:\Users\empir"
+$projectsRoot = "C:\Users\empir\Tekup"
 
-# Project path mapping
+# Project path mapping (updated for new Tekup-Portfolio workspace structure)
 $projectPaths = @{
-    "tekup-ai" = "$projectsRoot\tekup-ai"
-    "Tekup-Billy" = "$projectsRoot\Tekup-Billy"
-    "TekupVault" = "$projectsRoot\TekupVault"
-    "Tekup Google AI" = "$projectsRoot\Tekup Google AI"
-    "tekup-chat" = "$projectsRoot\tekup-ai\apps\ai-chat"  # Migrated
-    "RendetaljeOS" = "$projectsRoot\RendetaljeOS"
+    "tekup-ai" = "$projectsRoot\services\tekup-ai"
+    "tekup-billy" = "$projectsRoot\apps\production\tekup-billy"
+    "tekup-vault" = "$projectsRoot\apps\production\tekup-vault"
+    "tekup-gmail-services" = "$projectsRoot\services\tekup-gmail-services"
+    "tekup-chat" = "$projectsRoot\services\tekup-ai\apps\ai-chat"  # Migrated
+    "RendetaljeOS" = "$projectsRoot\apps\rendetalje\monorepo"
 }
 
 $projectPath = $projectPaths[$Project]

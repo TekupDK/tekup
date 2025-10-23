@@ -35,12 +35,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# Active projects
+# Active projects (updated for new Tekup-Portfolio workspace structure)
 $projects = @(
     "tekup-ai",
-    "Tekup-Billy",
-    "TekupVault",
-    "Tekup Google AI",
+    "tekup-billy",
+    "tekup-vault",
+    "tekup-gmail-services",
     "RendetaljeOS"
 )
 

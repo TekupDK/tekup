@@ -102,4 +102,4 @@ To: C:\Users\empir\Tekup\tekup-secrets
 
 **Implemented by**: GitHub Copilot
 **Organization**: TekupDK
-**Repository**: Tekup (tekup-workspace-docs)
+**Repository**: Tekup
