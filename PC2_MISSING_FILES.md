@@ -228,12 +228,22 @@ Copy-Item ".vscode\settings.json.template" ".vscode\settings.json"
 - `apps/rendetalje/services/frontend-nextjs/` ✅ KOMPLET
 - `docs/` ✅ KOMPLET
 - `tekup-secrets/` 🔒 ENCRYPTED (venter på unlock)
+- `.gitattributes` ✅ KONFIGURERET (git-crypt encryption rules)
 
 ### ❌ Manglende:
-- `apps/production/tekup-billy/` ❌ TOM MAPPE
-- `apps/production/tekup-vault/` ❌ TOM MAPPE
+- `apps/production/tekup-billy/` ❌ TOM (git submodule uden .gitmodules)
+- `apps/production/tekup-vault/` ❌ TOM (git submodule uden .gitmodules)
+- `.gitmodules` ❌ MANGLER (submodules kan ikke initialiseres)
 - `.vscode/settings.json` ❌ MANGLER MCP CONFIG
 - Git-crypt key ❌ IKKE MODTAGET
+
+### ⚠️ VIGTIGT: Submodule Problem Opdaget
+PC2 kan se at `tekup-billy` og `tekup-vault` er tilføjet som git submodules, men `.gitmodules` fil mangler.
+Dette betyder at submodules ikke kan initialiseres.
+
+**PC1 skal vælge:**
+- **Option A (Anbefalet):** Kopiér filer direkte ind (ikke submodules) - Se Step 2
+- **Option B:** Opret korrekt `.gitmodules` fil med repository URLs
 
 ---
 
