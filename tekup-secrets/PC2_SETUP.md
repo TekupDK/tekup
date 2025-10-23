@@ -131,7 +131,7 @@ Test-Path C:\Users\empir\Desktop\tekup-secrets.key
 
 # Verify you're in correct repo
 git remote -v
-# Should show: TekupDK/tekup-workspace-docs
+# Should show: TekupDK/tekup
 ```
 
 ---
