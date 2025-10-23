@@ -1,0 +1,35 @@
+﻿version: '3.8'
+
+# Override/override.yml - Customize ports without modifying docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f override.yml up
+
+services:
+  mcp-server:
+    ports:
+      - '\:3001'
+    environment:
+      - PORT=\
+      - MCP_PORT=\
+
+  dashboard:
+    ports:
+      - '\:3006'
+    environment:
+      - VITE_PORT=\
+      - DASHBOARD_PORT=\
+
+  chatbot:
+    ports:
+      - '\:3005'
+    environment:
+      - VITE_PORT=\
+      - CHATBOT_PORT=\
+
+  nginx:
+    ports:
+      - '\:80'
+      - '\:443'
+
+  redis:
+    ports:
+      - '\:6379'

@@ -1,0 +1,82 @@
+# Render.com Blueprint for RenOS Calendar Intelligence MCP
+# Auto-deploy to Render.com via this configuration
+
+services:
+  - type: web
+    name: renos-calendar-mcp
+    env: docker
+    region: frankfurt  # EU region for GDPR compliance
+    plan: starter  # Free tier or upgrade to Standard/Pro
+    dockerfilePath: ./renos-calendar-mcp/Dockerfile
+    dockerContext: ./renos-calendar-mcp
+    
+    # Auto-deploy settings
+    autoDeploy: true
+    branch: main
+    
+    # Health check configuration
+    healthCheckPath: /health
+    
+    # Environment variables
+    # Note: Sensitive values should be set via Environment Groups in Render dashboard
+    envVars:
+      - key: NODE_ENV
+        value: production
+      
+      - key: PORT
+        value: 3001
+      
+      - key: MCP_SERVER_NAME
+        value: renos-calendar-intelligence
+      
+      # Link to existing Environment Groups
+      - fromGroup: RenOS Calendar MCP  # Google Calendar, MCP keys
+      - fromGroup: Tekup Database Environment  # Supabase, Encryption keys
+      
+      # Feature flags (can override in dashboard)
+      - key: ENABLE_AUTO_INVOICE
+        value: true
+      
+      - key: ENABLE_FAIL_SAFE_MODE
+        value: true
+      
+      - key: FAIL_SAFE_CONFIDENCE_THRESHOLD
+        value: 80
+      
+      - key: CORS_ORIGIN
+        value: '*'  # Update for production (e.g., https://renos-calendar-dashboard.onrender.com)
+    
+    # Scaling (upgrade plan for autoscaling)
+    numInstances: 1
+    
+    # Domains (optional - add custom domain)
+    # domains:
+    #   - calendar-mcp.rendetalje.dk
+
+  # Dashboard static site
+  - type: web
+    name: renos-calendar-dashboard
+    env: static
+    region: frankfurt
+    plan: starter
+    buildCommand: cd renos-calendar-mcp/dashboard && npm install && npm run build
+    staticPublishPath: ./renos-calendar-mcp/dashboard/dist
+    
+    # Auto-deploy settings
+    autoDeploy: true
+    branch: main
+    
+    # Environment variables
+    envVars:
+      - key: VITE_API_URL
+        value: https://renos-calendar-mcp.onrender.com
+    
+    # Custom headers for PWA
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+

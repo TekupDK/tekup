@@ -1,0 +1,15 @@
+# Tekup Database Environment Group
+# GENBRUGES FRA EKSISTERENDE GROUP - KUN TIL REFERENCE
+
+# Link denne group til renos-calendar-mcp service i Render Dashboard
+# Den indeholder allerede:
+
+SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4Nzc3NjQsImV4cCI6MjA3NTQ1Mzc2NH0.M0Kt1Xi-3VVoq6NJ7VbhqBC0z9EK-JQ7ypssayMw7s8
+SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTg3Nzc2NCwiZXhwIjoyMDc1NDUzNzY0fQ.94lDERK4Enw8YTH_OtE9BpQhQWs8fg_7GZQGnYS8rNo
+ENCRYPTION_KEY=9c22d3c2cebd332a194ca9f30b99e57112d10a290d9188eda881fe09eaa01947
+ENCRYPTION_SALT=9b2af923a0665b2f47c7a799b9484b28
+
+# VIGTIGT: Link denne group i Render, opret IKKE en ny!
+# Dette sikrer at alle Tekup services deler samme database credentials
+

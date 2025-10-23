@@ -1,0 +1,14 @@
+node_modules
+dist
+.env
+logs
+
+# Deployment secrets (NEVER commit!)
+deployment/.secrets/
+*.secret
+*.key
+*-key.txt
+*-token.txt
+
+# Supabase local
+.supabase/

@@ -1,0 +1,80 @@
+{
+  "expo": {
+    "name": "RendetaljeOS",
+    "slug": "rendetaljeos-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "dk.rendetalje.rendetaljeos",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "RendetaljeOS needs location access to track job locations and optimize routes for cleaning services.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "RendetaljeOS needs location access to track job locations and optimize routes for cleaning services.",
+        "NSCameraUsageDescription": "RendetaljeOS needs camera access to take before/after photos of cleaning jobs for quality documentation.",
+        "NSPhotoLibraryUsageDescription": "RendetaljeOS needs photo library access to save and manage job documentation photos.",
+        "NSMicrophoneUsageDescription": "RendetaljeOS needs microphone access for voice commands with AI Friday assistant."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "dk.rendetalje.rendetaljeos",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow RendetaljeOS to use your location to track job locations and optimize routes."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow RendetaljeOS to access your camera to take photos for job documentation."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#ffffff"
+        }
+      ]
+    ],
+    "scheme": "rendetaljeos",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    }
+  }
+}

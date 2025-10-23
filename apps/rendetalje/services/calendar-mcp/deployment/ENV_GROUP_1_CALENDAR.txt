@@ -1,0 +1,29 @@
+# RenOS Calendar MCP Environment Group
+# Opret denne group i Render Dashboard → Environment → New Group
+
+# Google Calendar (Service Account)
+GOOGLE_CLIENT_EMAIL=renos-319@renos-465008.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY=(paste from deployment/.secrets/google-private-key.txt)
+GOOGLE_PROJECT_ID=renos-465008
+GOOGLE_CALENDAR_ID=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com
+GOOGLE_IMPERSONATED_USER=info@rendetalje.dk
+
+# Billy MCP Integration
+BILLY_MCP_URL=https://tekup-billy.onrender.com
+BILLY_MCP_API_KEY=
+
+# MCP Security
+MCP_API_KEY=renos-calendar-mcp-secret-key-2025
+
+# Feature Flags
+ENABLE_VOICE_ALERTS=false
+ENABLE_AUTO_INVOICE=true
+ENABLE_FAIL_SAFE_MODE=true
+FAIL_SAFE_CONFIDENCE_THRESHOLD=80
+
+# Twilio (Optional - for voice alerts)
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_PHONE_NUMBER=
+JONAS_PHONE_NUMBER=
+

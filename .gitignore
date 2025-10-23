@@ -1,24 +1,7 @@
 # Tekup Workspace - Git Ignore
-# Only track workspace-level documentation, not individual projects
+# This is a MONOREPO - tracks entire workspace structure
 
-# Exclude all project folders (they have their own repos)
-# apps/ - NOW INCLUDED (Rendetalje consolidation)
-services/
-packages/
-tools/
-# archive/ - NOW INCLUDED (archived projects)
-
-# Keep only workspace-level files
-# Tracked:
-# - README*.md
-# - *.md in root
-# - docs/
-# - scripts/
-# - configs/
-# - CODEOWNERS
-# - CONTRIBUTING.md
-# - CHANGELOG.md
-# - LICENSE
+# Track everything EXCEPT:
 
 # OS files
 .DS_Store
