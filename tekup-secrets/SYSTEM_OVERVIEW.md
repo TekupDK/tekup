@@ -35,12 +35,14 @@ C:\Users\empir\tekup-secrets\
 ## 🔑 Secrets oversigt
 
 ### LLM Providers (ai-services.env)
+
 - **OpenAI**: sk-proj-WCwMYK5Nm1_1UhzOKsb6z... (gpt-4o-mini)
 - **Gemini**: AIzaSyAYOUR_GEMINI_KEY_HERE (placeholder)
 - **Anthropic**: Ikke konfigureret endnu
 - **Ollama**: Lokal (http://localhost:11434)
 
 ### Databases (databases.env)
+
 - **Primary DB**: postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=renos
 - **Supabase**: https://oaevagdgrasfppbrxbey.supabase.co
   - Anon key: yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -48,19 +50,22 @@ C:\Users\empir\tekup-secrets\
 - **Encryption**: Billy.dk API key encryption (32-char key, 16-char salt)
 
 ### Google Workspace (google-workspace.env)
+
 - **Service Account**: Placeholders (skal udfyldes med rigtige værdier)
 - **Calendar ID**: c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com
 - **Gmail OAuth2**: Konfigureret med redirect til http://localhost:3000/oauth/callback
 
 ### External APIs (apis.env)
+
 - **Billy.dk**: 43e7439bccb58a8a96dd57dd06dae10add009111 (org: pmf9tU56RoyZdcX3k69z1g)
 - **GitHub**: [REDACTED - Set locally in .env files]
 - **Firecrawl**: Placeholder (skal udfyldes)
 - **Twilio**: Placeholders (skal udfyldes)
 - **MCP HTTP**: d674eb2e69973fa399888fa3d5a84f414dd7d89bd86ff6140bdcb363aeede4b
-- **Vault API**: 	ekup_vault_api_key_2025_secure
+- **Vault API**: ekup_vault_api_key_2025_secure
 
 ### Monitoring (monitoring.env)
+
 - **Sentry**: Placeholder (skal udfyldes)
 - **Feature Flags**: VOICE_ALERTS, AUTO_INVOICE, AUDIT_LOGGING enabled
 - **CORS**: Tillader localhost + tekup.ai + renos.dk
@@ -75,9 +80,10 @@ cd C:\Users\empir\tekup-secrets
 ```
 
 Dette merger:
+
 1. .env.shared (non-sensitive defaults)
 2. .env.development (environment-specific secrets)
-3. Alle config/*.env filer (component-specific secrets)
+3. Alle config/\*.env filer (component-specific secrets)
 
 Resultatet skrives til C:\Users\empir\tekup-ai\.env (188 linjer)
 
@@ -89,6 +95,7 @@ cd C:\Users\empir\tekup-secrets
 ```
 
 Syncer automatisk til:
+
 - tekup-ai ✅
 - Tekup-Billy ✅
 - TekupVault ✅
@@ -98,26 +105,26 @@ Syncer automatisk til:
 ### 3. Brug TypeScript API i kode
 
 ```typescript
-import { SecretsLoader } from '@tekup-ai/config';
+import { SecretsLoader } from "@tekup-ai/config";
 
 // Load all secrets for development
-const secrets = SecretsLoader.load('development');
+const secrets = SecretsLoader.load("development");
 console.log(secrets.OPENAI_API_KEY);
 
 // Or inject into process.env
-SecretsLoader.injectIntoProcessEnv('development');
+SecretsLoader.injectIntoProcessEnv("development");
 console.log(process.env.OPENAI_API_KEY);
 
 // Validate with Zod schema
-import { z } from 'zod';
+import { z } from "zod";
 const schema = z.object({
-  OPENAI_API_KEY: z.string().startsWith('sk-'),
+  OPENAI_API_KEY: z.string().startsWith("sk-"),
   DATABASE_URL: z.string().url(),
 });
 const validated = SecretsLoader.validate(schema);
 
 // Check required keys
-SecretsLoader.checkRequired(['OPENAI_API_KEY', 'DATABASE_URL'], true);
+SecretsLoader.checkRequired(["OPENAI_API_KEY", "DATABASE_URL"], true);
 ```
 
 ### 4. Dry-run test (uden at skrive filer)
@@ -131,6 +138,7 @@ Viser preview af hvad der ville blive skrevet, uden faktisk at ændre noget.
 ## ✅ Status
 
 ### Completed
+
 - ✅ Directory struktur oprettet
 - ✅ .gitignore beskytter secrets
 - ✅ .env.shared med non-sensitive defaults (24 linjer)
@@ -156,6 +164,7 @@ Viser preview af hvad der ville blive skrevet, uden faktisk at ændre noget.
 - ✅ Verificeret: pnpm build succeeds i tekup-ai
 
 ### TODO
+
 - ⏸️ Udfyld Google Workspace credentials med rigtige værdier
 - ⏸️ Udfyld Firecrawl API key
 - ⏸️ Udfyld Twilio credentials (hvis relevant)
@@ -167,21 +176,25 @@ Viser preview af hvad der ville blive skrevet, uden faktisk at ændre noget.
 ## 🔒 Sikkerhed
 
 ### Git Protection
+
 .gitignore beskytter:
-- *.env og *.env.* filer
-- config/*.env filer
+
+- _.env og _.env.\* filer
+- config/\*.env filer
 - secrets/ mappe
-- *.key, *.pem, *.p12 filer
-- credentials*.json filer
+- _.key, _.pem, \*.p12 filer
+- credentials\*.json filer
 
 ### Best Practices
+
 - ✅ **Development keys** er i .env.development
 - ✅ **Production keys** skal være i .env.production (IKKE committet)
-- ✅ **Placeholders** tydelig markeret med YOUR_ prefix eller REPLACE_WITH
+- ✅ **Placeholders** tydelig markeret med YOUR\_ prefix eller REPLACE_WITH
 - ✅ **Encryption keys** for Billy.dk API key storage er genereret og gemt
 - ✅ **MCP API keys** er unikke per projekt (HTTP server authentication)
 
 ### File Permissions
+
 Forsøgt at sætte owner-only permissions med icacls, men kommando havde syntaksfejl. Kan rettes med:
 
 ```powershell
@@ -190,7 +203,7 @@ icacls "C:\Users\empir\tekup-secrets" /inheritance:r /grant:r "empir:(OI)(CI)F"
 
 ## 📊 Statistik
 
-- **Total secrets filer**: 8 (.env.shared, .env.development, .env.production, 5x config/*.env)
+- **Total secrets filer**: 8 (.env.shared, .env.development, .env.production, 5x config/\*.env)
 - **Total PowerShell scripts**: 2 (sync-to-project.ps1, sync-all.ps1)
 - **TypeScript API**: 1 class (SecretsLoader med 8 public methods)
 - **Projekter synkroniseret**: 5 af 5 (tekup-ai, tekup-billy, tekup-vault, tekup-gmail-services, RendetaljeOS)
@@ -201,6 +214,7 @@ icacls "C:\Users\empir\tekup-secrets" /inheritance:r /grant:r "empir:(OI)(CI)F"
 ## 🎯 Næste skridt
 
 1. **Udfyld manglende keys** i .env.development:
+
    - Gemini API key
    - Google Workspace credentials (private key)
    - Firecrawl API key
@@ -208,12 +222,14 @@ icacls "C:\Users\empir\tekup-secrets" /inheritance:r /grant:r "empir:(OI)(CI)F"
    - Sentry DSN
 
 2. **Opret production secrets** i .env.production:
+
    - Production database credentials (med SSL)
    - Production Supabase project
    - Production API keys (FORSKELLIG fra dev!)
    - Production encryption keys (FORSKELLIG fra dev!)
 
 3. **Test production sync**:
+
    ```powershell
    .\scripts\sync-to-project.ps1 -Project "tekup-ai" -Environment "production" -DryRun
    ```
@@ -227,7 +243,7 @@ icacls "C:\Users\empir\tekup-secrets" /inheritance:r /grant:r "empir:(OI)(CI)F"
 
 - **Fuld guide**: C:\Users\empir\tekup-secrets\README.md (411 linjer)
 - **Copilot instructions**: .github\copilot-instructions.md i hvert projekt
-- **Original spec**: 	ekup-ai\TEKUP_SECRETS_MANAGEMENT.md
+- **Original spec**: ekup-ai\TEKUP_SECRETS_MANAGEMENT.md
 
 ---
 

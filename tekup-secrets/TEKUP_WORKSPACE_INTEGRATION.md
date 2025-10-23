@@ -24,7 +24,7 @@ Tekup Secrets serves as the **central configuration backbone** for all Tekup Por
 │   ├── tekup-vault/     ← Gets .env (229 lines)
 │   └── tekup-database/
 │
-├── ⚙️ services/                         # Backend services  
+├── ⚙️ services/                         # Backend services
 │   ├── tekup-ai/        ← Gets .env (229 lines)
 │   └── tekup-gmail-services/ ← Gets .env (229 lines)
 │
@@ -49,13 +49,13 @@ graph TD
 
 ### 2. **Config Components** → **Service Mapping**
 
-| Component | Used By | Purpose |
-|-----------|---------|---------|
-| `ai-services.env` | tekup-ai, tekup-vault, RendetaljeOS | LLM API access |
-| `databases.env` | tekup-vault, RendetaljeOS | Database connections |
-| `google-workspace.env` | tekup-gmail-services, RendetaljeOS | Google APIs |
-| `apis.env` | tekup-billy, tekup-vault | External API keys |
-| `monitoring.env` | All services | Logging, Sentry, CORS |
+| Component              | Used By                             | Purpose               |
+| ---------------------- | ----------------------------------- | --------------------- |
+| `ai-services.env`      | tekup-ai, tekup-vault, RendetaljeOS | LLM API access        |
+| `databases.env`        | tekup-vault, RendetaljeOS           | Database connections  |
+| `google-workspace.env` | tekup-gmail-services, RendetaljeOS  | Google APIs           |
+| `apis.env`             | tekup-billy, tekup-vault            | External API keys     |
+| `monitoring.env`       | All services                        | Logging, Sentry, CORS |
 
 ---
 
@@ -76,6 +76,7 @@ graph TD
 ```
 
 **Critical for:**
+
 - 🔐 Billy.dk API authentication
 - 🌐 MCP HTTP server security
 - 📊 Audit trail logging
@@ -85,7 +86,7 @@ graph TD
 **Integration Purpose:** AI-powered document indexing across all Tekup repositories
 
 ```powershell
-# Sync command  
+# Sync command
 .\scripts\sync-to-project.ps1 -Project "tekup-vault" -Environment "development"
 
 # Key configs used:
@@ -95,6 +96,7 @@ graph TD
 ```
 
 **Critical for:**
+
 - 🤖 OpenAI text embeddings generation
 - 📊 Supabase vector database storage
 - 🔗 GitHub repository synchronization
@@ -114,6 +116,7 @@ graph TD
 ```
 
 **Critical for:**
+
 - 🧠 Multi-LLM provider access (OpenAI, Gemini, Anthropic)
 - 📈 AI usage analytics
 - 🔄 Cross-service AI coordination
@@ -133,6 +136,7 @@ graph TD
 ```
 
 **Critical for:**
+
 - 📨 Gmail API access
 - 📅 Google Calendar integration
 - 🔐 Service account authentication
@@ -151,6 +155,7 @@ graph TD
 ```
 
 **Critical for:**
+
 - 🏢 Complete business operations
 - 🤖 AI-enhanced features
 - 📊 Multi-service coordination
@@ -168,7 +173,7 @@ cd C:\Users\empir\Tekup\tekup-secrets
 
 # Output:
 # ✅ tekup-ai (229 lines)
-# ✅ tekup-billy (229 lines)  
+# ✅ tekup-billy (229 lines)
 # ✅ tekup-vault (229 lines)
 # ✅ tekup-gmail-services (229 lines)
 # ✅ RendetaljeOS (229 lines)
@@ -207,6 +212,7 @@ OPENAI_API_KEY=sk-proj-NEW_KEY
 ### Multi-Layer Protection
 
 1. **Git Protection**
+
    ```gitignore
    # All secrets excluded from git
    *.env
@@ -215,6 +221,7 @@ OPENAI_API_KEY=sk-proj-NEW_KEY
    ```
 
 2. **Component Isolation**
+
    - AI keys separated from database credentials
    - Google services isolated from external APIs
    - Monitoring separated from business logic
@@ -226,12 +233,12 @@ OPENAI_API_KEY=sk-proj-NEW_KEY
 
 ### Access Control
 
-| Layer | Protection | Implementation |
-|-------|------------|----------------|
+| Layer           | Protection        | Implementation             |
+| --------------- | ----------------- | -------------------------- |
 | **File System** | Owner-only access | Windows ICACLS permissions |
-| **Git** | Ignore patterns | Comprehensive .gitignore |
-| **Process** | Validation | Zod schema validation |
-| **Runtime** | Encryption | Billy.dk key encryption |
+| **Git**         | Ignore patterns   | Comprehensive .gitignore   |
+| **Process**     | Validation        | Zod schema validation      |
+| **Runtime**     | Encryption        | Billy.dk key encryption    |
 
 ---
 
