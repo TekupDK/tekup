@@ -1,0 +1,11 @@
+export declare const userRoleSchema: any;
+export declare const createUserSchema: any;
+export declare const loginSchema: any;
+export declare const serviceTypeSchema: any;
+export declare const jobStatusSchema: any;
+export declare const addressSchema: any;
+export declare const createJobSchema: any;
+export declare const createCustomerSchema: any;
+export declare const validateEmail: (email: string) => boolean;
+export declare const validatePhone: (phone: string) => boolean;
+export declare const validatePostalCode: (postalCode: string) => boolean;

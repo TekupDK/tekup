@@ -1,0 +1,107 @@
+{
+  "createdAt": "2025-10-22T00:11:07.778Z",
+  "host": "jonaslenovo",
+  "node": "v24.8.0",
+  "platform": "win32",
+  "arch": "x64",
+  "process": {
+    "pid": 43164,
+    "cwd": "C:\\Users\\empir\\Tekup-Cloud\\renos-calendar-mcp",
+    "memoryMB": {
+      "rss": 52,
+      "heapTotal": 11,
+      "heapUsed": 7,
+      "external": 3,
+      "arrayBuffers": 0
+    },
+    "uptimeSeconds": 0
+  },
+  "system": {
+    "cpus": 16,
+    "totalMemMB": 65114,
+    "freeMemMB": 41066,
+    "loadAvg": [
+      0,
+      0,
+      0
+    ]
+  },
+  "mcp": {
+    "health": {
+      "status": "degraded",
+      "version": "0.1.0",
+      "uptime": 23.8205216,
+      "checks": {
+        "database": true,
+        "googleCalendar": true,
+        "billyMcp": false,
+        "twilio": true
+      },
+      "configuration": {
+        "valid": false,
+        "errors": [
+          "Billy MCP not configured but ENABLE_AUTO_INVOICE=true - set BILLY_MCP_API_KEY or disable feature"
+        ]
+      },
+      "features": {
+        "voiceAlerts": true,
+        "autoInvoice": true,
+        "failSafeMode": true,
+        "failSafeThreshold": 80
+      },
+      "timestamp": "2025-10-22T00:11:07.801Z"
+    },
+    "diagnostics": {
+      "status": "ok",
+      "timestamp": "2025-10-22T00:11:07.804Z",
+      "version": "0.1.0",
+      "environment": "production",
+      "uptimeSeconds": 24,
+      "process": {
+        "pid": 44800,
+        "node": "v24.8.0",
+        "platform": "win32",
+        "arch": "x64",
+        "cwd": "C:\\Users\\empir\\Tekup-Cloud\\renos-calendar-mcp"
+      },
+      "system": {
+        "hostname": "jonaslenovo",
+        "cpus": 16,
+        "totalMemMB": 65114,
+        "freeMemMB": 41067,
+        "loadAvg": [
+          0,
+          0,
+          0
+        ]
+      },
+      "memoryMB": {
+        "rss": 121,
+        "heapTotal": 71,
+        "heapUsed": 69,
+        "external": 4
+      },
+      "services": {
+        "databaseConfigured": true,
+        "googleCalendarConfigured": true,
+        "billyMcpConfigured": false,
+        "twilioConfigured": true
+      },
+      "features": {
+        "voiceAlerts": true,
+        "autoInvoice": true,
+        "failSafeMode": true,
+        "failSafeThreshold": 80
+      },
+      "endpoints": {
+        "health": "/health",
+        "tools": "/api/v1/tools",
+        "validateBookingDate": "/api/v1/tools/validate_booking_date",
+        "checkBookingConflicts": "/api/v1/tools/check_booking_conflicts",
+        "autoCreateInvoice": "/api/v1/tools/auto_create_invoice",
+        "trackOvertimeRisk": "/api/v1/tools/track_overtime_risk",
+        "getCustomerMemory": "/api/v1/tools/get_customer_memory"
+      }
+    }
+  }
+}
