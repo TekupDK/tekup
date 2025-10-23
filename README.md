@@ -3,7 +3,7 @@
 **Complete development monorepo** with ALL Tekup projects in one repository.
 
 **Type:** Monorepo (single repository, all projects included)  
-**Repository:** https://github.com/TekupDK/tekup-workspace-docs  
+**Repository:** https://github.com/TekupDK/tekup  
 **Workspace File:** `Tekup-Portfolio.code-workspace`
 
 ---

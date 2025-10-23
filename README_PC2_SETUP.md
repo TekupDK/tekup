@@ -100,7 +100,7 @@ gh auth status
 cd c:\Users\$env:USERNAME
 
 # Clone MONOREPO (ALT på én gang!)
-gh repo clone TekupDK/tekup-workspace-docs Tekup
+gh repo clone TekupDK/tekup Tekup
 
 # Gå ind i workspace
 cd Tekup
@@ -286,7 +286,7 @@ gh repo clone TekupDK/tekup-billy
 ### **Nu (Monorepo):**
 ```powershell
 # Clone ÉT repo (med ALT indeni)
-gh repo clone TekupDK/tekup-workspace-docs Tekup
+gh repo clone TekupDK/tekup Tekup
 ```
 ✅ 1 clone command  
 ✅ 1 folder  
