@@ -13,7 +13,7 @@ Current operational scripts for daily Tekup workflow
 Utility scripts for documentation and repository management
 
 - `push-docs.bat` - Push documentation updates to GitHub
-- `update-docs.bat` - Update and commit documentation changes  
+- `update-docs.bat` - Update and commit documentation changes
 - `quick-commit.ps1` - Quick commit and push for daily logs
 
 ### `/archive/`
