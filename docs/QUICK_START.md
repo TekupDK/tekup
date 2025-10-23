@@ -179,7 +179,7 @@ git push origin master
 
 ## 🔗 Links
 
-- **GitHub**: [TekupDK/tekup-workspace-docs](https://github.com/TekupDK/tekup-workspace-docs)
+- **GitHub**: [TekupDK/tekup](https://github.com/TekupDK/tekup)
 - **Latest Commit**: `9fb0a7e` (October 23, 2025)
 - **Branch**: `master`
 

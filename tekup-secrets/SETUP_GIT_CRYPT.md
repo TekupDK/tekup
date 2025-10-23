@@ -141,7 +141,7 @@ Get-Content tekup-secrets/.env.development
 # Output: Readable secrets (good!)
 
 # GitHub: Se raw file
-# https://github.com/TekupDK/tekup-workspace-docs/blob/master/tekup-secrets/.env.development
+# https://github.com/TekupDK/tekup/blob/master/tekup-secrets/.env.development
 # Output: Binary encrypted data (good!)
 ```
 

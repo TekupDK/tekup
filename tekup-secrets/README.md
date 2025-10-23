@@ -1,30 +1,67 @@
-# Tekup Secrets - Centralized Secret Management
+# 🔐 Tekup Secrets - Centralized Secret Management
 
-**Purpose:** Centralized, secure environment variable management for all Tekup Portfolio projects
+**Purpose:** Centralized, secure environment variable management for all Tekup Portfolio projects  
+**Status:** ✅ Production Ready (Updated for TekupDK/Tekup-Portfolio workspace)  
+**Location:** `C:\Users\empir\Tekup\tekup-secrets\`  
+**Last Updated:** October 23, 2025
 
-**Location:** `C:\Users\empir\tekup-secrets\`
+## 🎯 What is Tekup Secrets?
+
+Tekup Secrets is the **central nervous system** for all secret configurations across the entire Tekup Portfolio. Instead of scattered `.env` files everywhere, it consolidates **all secret configurations in one place** with intelligent distribution to all services.
+
+### 🔧 Core Problems It Solves:
+- **Secrets Sprawl:** No more scattered `.env` files across services
+- **Inconsistency:** Same API keys used consistently across all services  
+- **Security Risks:** Git protection prevents accidental commits
+- **Maintenance:** Update one API key, automatically distributed everywhere
+- **Environment Management:** Clean separation of development vs production
+
+## 📁 Architecture
+
+## 📁 Architecture
 
 **Structure:**
-```
+```bash
 tekup-secrets/
-├── .env.production              # Production secrets (NEVER commit)
-├── .env.development             # Development secrets (local only)
-├── .env.shared                  # Shared non-sensitive config
-├── README.md                    # This file
-├── config/
-│   ├── ai-services.env          # OpenAI, Gemini, Ollama
-│   ├── databases.env            # Supabase, PostgreSQL
-│   ├── google-workspace.env     # Gmail, Calendar, Drive
-│   ├── apis.env                 # Billy.dk, TekupVault, etc.
-│   └── monitoring.env           # Sentry, logging
-├── scripts/
-│   ├── sync-to-project.ps1      # Copy .env to specific project
-│   ├── sync-all.ps1             # Sync to all projects
-│   ├── validate.ps1             # Validate env vars with Zod
-│   └── rotate-secrets.ps1       # Helper for key rotation
-└── .gitignore                   # CRITICAL: Ignore all .env files
-
+├── 📄 Documentation
+│   ├── README.md                    # This file (complete guide)
+│   ├── QUICK_START.md              # 5-minute getting started
+│   ├── CHANGELOG.md                # Version history & updates
+│   ├── SYSTEM_OVERVIEW.md          # High-level system overview  
+│   ├── TEKUP_WORKSPACE_INTEGRATION.md # Workspace integration guide
+│   ├── SETUP_GIT_CRYPT.md         # Git encryption setup
+│   └── PC2_SETUP.md               # Multi-PC setup instructions
+│
+├── 🔧 Configuration
+│   ├── .env.production             # Production secrets (NEVER commit)
+│   ├── .env.development            # Development secrets (local only)
+│   ├── .env.shared                 # Shared non-sensitive config
+│   └── config/
+│       ├── ai-services.env         # OpenAI, Gemini, Ollama
+│       ├── databases.env           # Supabase, PostgreSQL
+│       ├── google-workspace.env    # Gmail, Calendar, Drive
+│       ├── apis.env               # Billy.dk, GitHub, external APIs
+│       └── monitoring.env         # Sentry, logging, feature flags
+│
+├── 🤖 Automation
+│   └── scripts/
+│       ├── sync-to-project.ps1     # Copy .env to specific project
+│       └── sync-all.ps1           # Sync to all projects (most used)
+│
+└── 🛡️ Security
+    └── .gitignore                  # CRITICAL: Ignore all .env files
 ```
+
+## 📚 Documentation Index
+
+| Document | Purpose | Audience |
+|----------|---------|----------|
+| **QUICK_START.md** | Get running in 5 minutes | New developers |
+| **SYSTEM_OVERVIEW.md** | High-level architecture | Technical overview |
+| **TEKUP_WORKSPACE_INTEGRATION.md** | How it integrates with Tekup Portfolio | DevOps, Architects |
+| **CHANGELOG.md** | Version history & breaking changes | All users |
+| **SETUP_GIT_CRYPT.md** | Secure git synchronization | Multi-PC setups |
+| **PC2_SETUP.md** | Instructions for second PC | Setup team |
 
 ## 🔐 Security Architecture
 
@@ -113,17 +150,17 @@ TEKUPVAULT_API_URL=https://tekupvault-api.onrender.com
 
 ## 🤖 AI Agent Integration
 
-### Auto-Sync Script (scripts/sync-to-project.ps1)
+### Auto-Sync Script (scripts/sync-to-project.ps1) - UPDATED for TekupDK
 ```powershell
 <#
 .SYNOPSIS
     Sync environment variables to a specific project
 .EXAMPLE
-    .\sync-to-project.ps1 -Project "tekup-ai" -Environment "development"
+    .\sync-to-project.ps1 -Project "tekup-billy" -Environment "development"
 #>
 param(
     [Parameter(Mandatory=$true)]
-    [ValidateSet("tekup-ai", "Tekup-Billy", "TekupVault", "Tekup Google AI", "tekup-chat")]
+    [ValidateSet("tekup-ai", "tekup-billy", "tekup-vault", "tekup-gmail-services", "RendetaljeOS")]
     [string]$Project,
     
     [Parameter(Mandatory=$false)]
@@ -131,26 +168,26 @@ param(
     [string]$Environment = "development"
 )
 
-$secretsRoot = "C:\Users\empir\tekup-secrets"
-$projectsRoot = "C:\Users\empir"
+$secretsRoot = "C:\Users\empir\Tekup\tekup-secrets"
+$projectsRoot = "C:\Users\empir\Tekup"
 
-# Project path mapping
+# Project path mapping (updated for new Tekup-Portfolio workspace structure)
 $projectPaths = @{
-    "tekup-ai" = "$projectsRoot\tekup-ai"
-    "Tekup-Billy" = "$projectsRoot\Tekup-Billy"
-    "TekupVault" = "$projectsRoot\TekupVault"
-    "Tekup Google AI" = "$projectsRoot\Tekup Google AI"
-    "tekup-chat" = "$projectsRoot\tekup-chat"
+    "tekup-ai" = "$projectsRoot\services\tekup-ai"
+    "tekup-billy" = "$projectsRoot\apps\production\tekup-billy"
+    "tekup-vault" = "$projectsRoot\apps\production\tekup-vault"
+    "tekup-gmail-services" = "$projectsRoot\services\tekup-gmail-services"
+    "RendetaljeOS" = "$projectsRoot\apps\rendetalje\monorepo"
 }
 
 $projectPath = $projectPaths[$Project]
 
 if (-not (Test-Path $projectPath)) {
-    Write-Error "Project path not found: $projectPath"
+    Write-Error "❌ Project path not found: $projectPath"
     exit 1
 }
 
-# Merge files
+# Merge files (.env.shared + .env.{environment} + all component configs)
 $envContent = @()
 
 # Add shared config
@@ -360,32 +397,34 @@ async function initializeAgent() {
 - ❌ Never store secrets in browser localStorage
 - ❌ Never log full secret values (mask them)
 
-## 📊 Integration Status
+## 📊 Integration Status (Updated October 2025)
 
-| Project | Status | Sync Script | Notes |
-|---------|--------|-------------|-------|
-| tekup-ai | ✅ Ready | `sync-to-project.ps1` | Monorepo, needs all secrets |
-| Tekup-Billy | ✅ Ready | `sync-to-project.ps1` | Billy API + Supabase |
-| TekupVault | ✅ Ready | `sync-to-project.ps1` | GitHub + OpenAI + Supabase |
-| Tekup Google AI | ✅ Ready | `sync-to-project.ps1` | Google Workspace + LLMs |
-| tekup-chat | 🗄️ Archived | N/A | Migrated to tekup-ai |
+| Project | Status | Location | Lines | Last Sync |
+|---------|--------|----------|-------|-----------|
+| **tekup-ai** | ✅ Active | `/services/tekup-ai` | 229 | 2025-10-23 |
+| **tekup-billy** | ✅ Active | `/apps/production/tekup-billy` | 229 | 2025-10-23 |
+| **tekup-vault** | ✅ Active | `/apps/production/tekup-vault` | 229 | 2025-10-23 |
+| **tekup-gmail-services** | ✅ Active | `/services/tekup-gmail-services` | 229 | 2025-10-23 |
+| **RendetaljeOS** | ✅ Active | `/apps/rendetalje/monorepo` | 229 | 2025-10-23 |
+
+**Summary:** All 5 projects successfully integrated with TekupDK/Tekup-Portfolio workspace structure.
 
 ## 🚀 Quick Start
 
+**New to Tekup Secrets? Start here:**
+
 ```powershell
-# 1. Clone/create secrets repo
-cd C:\Users\empir
-New-Item -ItemType Directory -Path "tekup-secrets"
+# 1. Navigate to secrets folder
+cd C:\Users\empir\Tekup\tekup-secrets
 
-# 2. Copy this README
-Copy-Item "tekup-ai\TEKUP_SECRETS_MANAGEMENT.md" "tekup-secrets\README.md"
+# 2. Read the quick start guide (recommended)
+notepad QUICK_START.md
 
-# 3. Copy current .env as starting point
-Copy-Item "tekup-ai\.env" "tekup-secrets\.env.development"
+# 3. Test sync (safe - doesn't change anything)
+.\scripts\sync-all.ps1 -Environment "development" -DryRun
 
-# 4. Split into components (manual editing)
-# - Move OpenAI/Gemini keys → config/ai-services.env
-# - Move Supabase → config/databases.env
+# 4. Actually sync all projects
+.\scripts\sync-all.ps1 -Environment "development"
 # - etc.
 
 # 5. Sync to project
