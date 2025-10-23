@@ -397,32 +397,34 @@ async function initializeAgent() {
 - ❌ Never store secrets in browser localStorage
 - ❌ Never log full secret values (mask them)
 
-## 📊 Integration Status
+## 📊 Integration Status (Updated October 2025)
 
-| Project | Status | Sync Script | Notes |
-|---------|--------|-------------|-------|
-| tekup-ai | ✅ Ready | `sync-to-project.ps1` | Monorepo, needs all secrets |
-| Tekup-Billy | ✅ Ready | `sync-to-project.ps1` | Billy API + Supabase |
-| TekupVault | ✅ Ready | `sync-to-project.ps1` | GitHub + OpenAI + Supabase |
-| Tekup Google AI | ✅ Ready | `sync-to-project.ps1` | Google Workspace + LLMs |
-| tekup-chat | 🗄️ Archived | N/A | Migrated to tekup-ai |
+| Project | Status | Location | Lines | Last Sync |
+|---------|--------|----------|-------|-----------|
+| **tekup-ai** | ✅ Active | `/services/tekup-ai` | 229 | 2025-10-23 |
+| **tekup-billy** | ✅ Active | `/apps/production/tekup-billy` | 229 | 2025-10-23 |
+| **tekup-vault** | ✅ Active | `/apps/production/tekup-vault` | 229 | 2025-10-23 |
+| **tekup-gmail-services** | ✅ Active | `/services/tekup-gmail-services` | 229 | 2025-10-23 |
+| **RendetaljeOS** | ✅ Active | `/apps/rendetalje/monorepo` | 229 | 2025-10-23 |
+
+**Summary:** All 5 projects successfully integrated with TekupDK/Tekup-Portfolio workspace structure.
 
 ## 🚀 Quick Start
 
+**New to Tekup Secrets? Start here:**
+
 ```powershell
-# 1. Clone/create secrets repo
-cd C:\Users\empir
-New-Item -ItemType Directory -Path "tekup-secrets"
+# 1. Navigate to secrets folder
+cd C:\Users\empir\Tekup\tekup-secrets
 
-# 2. Copy this README
-Copy-Item "tekup-ai\TEKUP_SECRETS_MANAGEMENT.md" "tekup-secrets\README.md"
+# 2. Read the quick start guide (recommended)
+notepad QUICK_START.md
 
-# 3. Copy current .env as starting point
-Copy-Item "tekup-ai\.env" "tekup-secrets\.env.development"
+# 3. Test sync (safe - doesn't change anything)
+.\scripts\sync-all.ps1 -Environment "development" -DryRun
 
-# 4. Split into components (manual editing)
-# - Move OpenAI/Gemini keys → config/ai-services.env
-# - Move Supabase → config/databases.env
+# 4. Actually sync all projects
+.\scripts\sync-all.ps1 -Environment "development"
 # - etc.
 
 # 5. Sync to project
