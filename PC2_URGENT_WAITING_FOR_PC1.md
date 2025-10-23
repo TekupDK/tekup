@@ -12,18 +12,21 @@
 PC2 kan **IKKE arbejde videre** uden følgende fra PC1:
 
 ### 🔴 KRITISK #1: Git-crypt Key
+
 ```
 Status: ❌ IKKE MODTAGET
 Location Expected: C:\Users\Jonas-dev\Desktop\tekup-git-crypt.key
 ```
 
 **Hvorfor kritisk:**
+
 - Alle secrets i `tekup-secrets/` er encrypted
 - Kan ikke læse API keys
 - Kan ikke konfigurere MCP servere
 - Kan ikke bygge projekter med secrets
 
 **PC1 Action Required:**
+
 ```powershell
 # På PC1 (empir):
 cd C:\Users\empir\Tekup
@@ -40,6 +43,7 @@ git-crypt export-key C:\Users\empir\Desktop\tekup-git-crypt.key
 ---
 
 ### 🔴 KRITISK #2: Tekup-Billy Kode
+
 ```
 Status: ❌ EMPTY FOLDER
 Location: apps/production/tekup-billy/
@@ -47,18 +51,20 @@ Current: 0 files
 ```
 
 **Hvorfor kritisk:**
+
 - MCP server kan ikke bygges
 - GitHub Copilot kan ikke bruge Billy MCP lokalt
 - PC2 har kun production URL (https://tekup-billy.onrender.com)
 
 **PC1 Action Required:**
+
 ```powershell
 # Option A: Kopiér filer ind i monorepo (ANBEFALET)
 $source = "C:\Users\empir\Tekup-Billy"  # Original projekt
 $dest = "C:\Users\empir\Tekup\apps\production\tekup-billy"
 
 # Kopiér ALT undtagen node_modules, .git, dist
-Get-ChildItem $source -Exclude node_modules,.git,dist | 
+Get-ChildItem $source -Exclude node_modules,.git,dist |
   Copy-Item -Destination $dest -Recurse -Force
 
 # Commit
@@ -74,6 +80,7 @@ git push origin master
 ---
 
 ### 🔴 KRITISK #3: TekupVault Kode
+
 ```
 Status: ❌ EMPTY FOLDER
 Location: apps/production/tekup-vault/
@@ -81,17 +88,19 @@ Current: 0 files
 ```
 
 **Hvorfor kritisk:**
+
 - Knowledge base MCP server kan ikke bygges
 - GitHub Copilot kan ikke søge i Tekup dokumentation
 - PC2 har kun production URL (https://tekupvault.onrender.com)
 
 **PC1 Action Required:**
+
 ```powershell
 # Kopiér TekupVault ind i monorepo
 $source = "C:\Users\empir\TekupVault"  # Original projekt
 $dest = "C:\Users\empir\Tekup\apps\production\tekup-vault"
 
-Get-ChildItem $source -Exclude node_modules,.git,dist | 
+Get-ChildItem $source -Exclude node_modules,.git,dist |
   Copy-Item -Destination $dest -Recurse -Force
 
 # Commit
@@ -105,6 +114,7 @@ git push origin master
 ## 📊 HVAD PC2 ALLEREDE HAR
 
 ### ✅ Fungerer:
+
 - RenOS Calendar MCP (lokal kode tilgængelig)
 - RenOS Backend NestJS
 - RenOS Frontend Next.js
@@ -112,6 +122,7 @@ git push origin master
 - Workspace struktur
 
 ### ⏳ Venter på PC1:
+
 - Git-crypt key (til secrets unlock)
 - Tekup-Billy kode
 - TekupVault kode
@@ -123,6 +134,7 @@ git push origin master
 **Når PC2 modtager ovenstående:**
 
 ### Step 1: Git-crypt unlock (2 min)
+
 ```powershell
 # PC2 vil køre:
 cd C:\Users\Jonas-dev\Tekup-Monorepo
@@ -138,6 +150,7 @@ cat tekup-secrets\.env.development  # Should show readable text
 ```
 
 ### Step 2: Pull projektkode (1 min)
+
 ```powershell
 # PC2 vil køre:
 git pull origin master
@@ -148,6 +161,7 @@ ls apps\production\tekup-vault\*.ts
 ```
 
 ### Step 3: Byg MCP servere (10 min)
+
 ```powershell
 # Tekup-Billy
 cd apps\production\tekup-billy
@@ -166,12 +180,14 @@ npm run build
 ```
 
 ### Step 4: Konfigurer GitHub Copilot (5 min)
+
 ```powershell
 # PC2 vil oprette .vscode\settings.json med MCP config
 # Alle 3 MCP servere klar til brug i Copilot
 ```
 
 ### Step 5: Test MCP servere (5 min)
+
 ```powershell
 # Verificer at GitHub Copilot kan bruge alle tools
 ```
@@ -215,6 +231,7 @@ git push origin master
 ## 🔴 PRIORITET: HØYEST
 
 Dette blokerer **ALT** PC2 arbejde:
+
 - ❌ MCP konfiguration
 - ❌ GitHub Copilot setup
 - ❌ Projekter med secrets
