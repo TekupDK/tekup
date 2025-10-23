@@ -1,0 +1,96 @@
+# Tekup Workspace - Code Ownership
+
+# This file defines code ownership for automated PR review assignments
+# Format: <file pattern> <owner(s)>
+# Learn more: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# =============================================================================
+# WORKSPACE ROOT
+# =============================================================================
+* @JonasAbde
+
+# Workspace configuration files
+/.github/ @JonasAbde
+/configs/ @JonasAbde
+/scripts/ @JonasAbde
+README.md @JonasAbde
+CODEOWNERS @JonasAbde
+
+# =============================================================================
+# PRODUCTION SERVICES
+# =============================================================================
+
+# Central Database (CRITICAL)
+/apps/production/tekup-database/ @JonasAbde
+/apps/production/tekup-database/prisma/ @JonasAbde
+/apps/production/tekup-database/migrations/ @JonasAbde
+
+# TekupVault (Knowledge Layer)
+/apps/production/tekup-vault/ @JonasAbde
+
+# Tekup-Billy (Billy.dk MCP)
+/apps/production/tekup-billy/ @JonasAbde
+
+# =============================================================================
+# WEB APPLICATIONS
+# =============================================================================
+
+# RendetaljeOS (Cleaning Platform)
+/apps/web/rendetalje-os/ @JonasAbde
+
+# Tekup Cloud Dashboard
+/apps/web/tekup-cloud-dashboard/ @JonasAbde
+
+# Tekup Chat
+/apps/web/tekup-chat/ @JonasAbde
+
+# =============================================================================
+# BACKEND SERVICES
+# =============================================================================
+
+# Tekup AI (AI Infrastructure)
+/services/tekup-ai/ @JonasAbde
+/services/tekup-ai/packages/ai-llm/ @JonasAbde
+/services/tekup-ai/packages/ai-agents/ @JonasAbde
+
+# Gmail Services
+/services/tekup-gmail-services/ @JonasAbde
+
+# Tekup Cloud (RenOS Tools)
+/services/tekup-cloud/ @JonasAbde
+/services/tekup-cloud/renos-calendar-mcp/ @JonasAbde
+
+# =============================================================================
+# SHARED PACKAGES
+# =============================================================================
+
+# All shared packages require workspace owner review
+/packages/ @JonasAbde
+
+# =============================================================================
+# DOCUMENTATION
+# =============================================================================
+
+# All documentation
+/docs/ @JonasAbde
+
+# Architecture decisions
+/docs/architecture/ @JonasAbde
+
+# =============================================================================
+# TESTS
+# =============================================================================
+
+# Workspace-level tests
+/tests/ @JonasAbde
+
+# =============================================================================
+# SPECIAL CASES
+# =============================================================================
+
+# Archive (read-only, no PRs expected)
+/archive/ @JonasAbde
+
+# Tools and scripts
+/tools/ @JonasAbde
+/scripts/ @JonasAbde

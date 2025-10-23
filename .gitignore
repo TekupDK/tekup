@@ -1,0 +1,37 @@
+# Tekup Workspace - Git Ignore
+# Only track workspace-level documentation, not individual projects
+
+# Exclude all project folders (they have their own repos)
+apps/
+services/
+packages/
+tools/
+archive/
+
+# Keep only workspace-level files
+# Tracked:
+# - README*.md
+# - *.md in root
+# - docs/
+# - scripts/
+# - configs/
+# - CODEOWNERS
+# - CONTRIBUTING.md
+# - CHANGELOG.md
+# - LICENSE
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temp files
+*.tmp
+*.bak
+*~
