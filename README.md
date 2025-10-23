@@ -1,10 +1,15 @@
-# 🚀 Tekup Workspace (MONOREPO)
+# 🚀 Tekup Portfolio Monorepo
 
-**Complete development monorepo** with ALL Tekup projects in one repository.
+**Complete development workspace** with ALL Tekup projects unified in one repository.
 
-**Type:** Monorepo (single repository, all projects included)  
 **Repository:** https://github.com/TekupDK/tekup  
-**Workspace File:** `Tekup-Portfolio.code-workspace`
+**Type:** Multi-workspace monorepo (production services + web apps + backend)  
+**Workspace File:** `Tekup-Portfolio.code-workspace`  
+**Last Sync:** 23. Oktober 2025 (PC1 → PC2)
+
+> 📊 **Status:** ✅ Fully synced across PC1 (empir) and PC2 (Jonas-dev)  
+> 📁 **Total:** 700+ files, 150,000+ lines of code  
+> 🔐 **Secrets:** Git-crypt encrypted (requires unlock)
 
 ---
 
@@ -34,65 +39,148 @@ Tekup/ (MONOREPO - everything in one repo!)
 
 ## 🎯 Active Projects
 
-### **Production Services** (`apps/production/`)
-- **tekup-database** (v1.4.0) - Central PostgreSQL database
-- **tekup-vault** (v0.1.0) - Knowledge layer with semantic search
-- **tekup-billy** (v1.4.3) - Billy.dk MCP server
+### **🏭 Production Services** (`apps/production/`)
 
-### **Web Applications** (`apps/web/`)
-- **rendetalje-os** - Cleaning management platform (monorepo)
-- **tekup-cloud-dashboard** - Unified service dashboard
-- **tekup-chat** (v1.1.0) - ChatGPT-style interface
+#### **tekup-billy** (v1.4.3)
+- **Purpose:** MCP server for Billy.dk accounting API integration
+- **Tech:** TypeScript, Express, Supabase, Redis
+- **Status:** ✅ Production ready (https://tekup-billy.onrender.com)
+- **Features:** 32 MCP tools, caching, audit logging, Sentry monitoring
+- **Quick Start:** `cd apps/production/tekup-billy && npm install && npm start`
 
-### **Backend Services** (`services/`)
-- **tekup-ai** - AI infrastructure monorepo
-- **tekup-gmail-services** (v1.0.0) - Email automation
-- **tekup-cloud** - RenOS tools + calendar MCP
+#### **tekup-database** (v1.1.0)
+- **Purpose:** Centralized Prisma database layer for all Tekup projects
+- **Tech:** TypeScript, Prisma ORM, PostgreSQL
+- **Status:** ✅ Active development
+- **Schemas:** RenOS, Billy, Vault, CRM, Flow (1456+ lines)
+- **Quick Start:** `cd apps/production/tekup-database && pnpm install && npx prisma generate`
+
+#### **tekup-vault** (v0.1.0)
+- **Purpose:** AI-searchable knowledge base with semantic search
+- **Tech:** TypeScript, Turborepo, OpenAI embeddings, pgvector
+- **Status:** ✅ Production ready (https://tekupvault-api.onrender.com)
+- **Features:** GitHub auto-sync, MCP server, vector search
+- **Quick Start:** `cd apps/production/tekup-vault && pnpm install && pnpm dev`
+
+---
+
+### **🌐 Web Applications** (`apps/web/` & `apps/rendetalje/`)
+
+#### **Rendetalje OS** (Complete Platform)
+- **Purpose:** Renovation management + booking system
+- **Tech:** NestJS (backend), Next.js (frontend), PostgreSQL
+- **Status:** ✅ Active development with monitoring
+- **Recent:** Winston logging, Sentry integration, .env templates
+- **Structure:**
+  - `backend-nestjs/` - NestJS API with monitoring
+  - `frontend-nextjs/` - Next.js UI with Sentry
+  - `calendar-mcp/` - Calendar MCP server (local)
+  - `database/` - PostgreSQL migrations
+  - `deployment/` - Render.com configs
+
+#### **tekup-cloud-dashboard**
+- **Purpose:** Future unified dashboard for all services
+- **Status:** 📦 Placeholder
+
+---
+
+### **⚙️ Backend Services** (`services/`)
+
+#### **tekup-ai**
+- **Purpose:** AI infrastructure and utilities
+- **Status:** 🤖 Workspace reference
+
+#### **tekup-gmail-services** (v1.0.0)
+- **Purpose:** Email automation and integrations
+- **Status:** 📧 Service layer
 
 ---
 
 ## 🚀 Quick Start
 
-### **Prerequisites**
-- Node.js 18+
-- pnpm 8+
-- PostgreSQL 14+
-- Docker (optional)
+### **Setup for PC2 (First Time)**
 
-### **Setup Workspace**
+1. **Clone or navigate to workspace:**
+   ```bash
+   cd C:\Users\Jonas-dev\Tekup-Monorepo
+   git pull origin master
+   ```
+
+2. **Unlock secrets (requires git-crypt):**
+   ```bash
+   # Install git-crypt: https://github.com/AGWA/git-crypt/releases
+   git-crypt unlock tekup-git-crypt.key
+   
+   # Verify secrets are readable:
+   cat tekup-secrets/.env.development
+   ```
+
+3. **Install dependencies (choose project):**
+   ```bash
+   # Billy MCP Server
+   cd apps/production/tekup-billy
+   npm install
+   
+   # Database Layer
+   cd apps/production/tekup-database
+   pnpm install
+   
+   # TekupVault
+   cd apps/production/tekup-vault
+   pnpm install
+   
+   # RenOS Backend
+   cd apps/rendetalje/services/backend-nestjs
+   npm install
+   ```
+
+### **Run Development Servers**
+
 ```bash
-# Clone workspace (or navigate to it)
-cd c:\Users\empir\Tekup
+# Billy MCP (requires BILLY_API_KEY in .env)
+cd apps/production/tekup-billy
+npm run build
+npm start
 
-# Install dependencies (if monorepo)
-pnpm install
-
-# Start development database
-cd apps/production/tekup-database
-docker-compose up -d
-```
-
-### **Run a Project**
-```bash
-# Example: Start TekupVault
+# TekupVault (requires Supabase + OpenAI keys)
 cd apps/production/tekup-vault
-pnpm install
 pnpm dev
 
-# Example: Start RendetaljeOS
-cd apps/web/rendetalje-os
-pnpm install
-pnpm dev
+# RenOS Backend (local development)
+cd apps/rendetalje/services/backend-nestjs
+npm run start:dev
+
+# RenOS Frontend
+cd apps/rendetalje/services/frontend-nextjs
+npm run dev
 ```
 
 ---
 
 ## 📚 Documentation
 
-- [**Getting Started**](docs/guides/getting-started.md) - Setup guide
-- [**Architecture**](docs/architecture/) - System design
-- [**API Reference**](docs/api/) - API documentation
-- [**Deployment**](docs/deployment/) - Deploy guides
+### **Project-Specific Docs:**
+- **Tekup-Billy:** [apps/production/tekup-billy/README.md](apps/production/tekup-billy/README.md)
+  - [START_HERE.md](apps/production/tekup-billy/docs/START_HERE.md) - Quick intro
+  - [DEPLOYMENT_COMPLETE.md](apps/production/tekup-billy/docs/DEPLOYMENT_COMPLETE.md) - Production guide
+  - [COPILOT_INSTRUCTIONS.md](apps/production/tekup-billy/.github/copilot-instructions.md) - AI context
+
+- **Tekup-Database:** [apps/production/tekup-database/README.md](apps/production/tekup-database/README.md)
+  - [QUICK_START.md](apps/production/tekup-database/QUICK_START.md) - Setup guide
+  - [SUPABASE_SETUP.md](apps/production/tekup-database/SUPABASE_SETUP.md) - Database config
+
+- **TekupVault:** [apps/production/tekup-vault/README.md](apps/production/tekup-vault/README.md)
+  - [QUICK_START_DANSK.md](apps/production/tekup-vault/QUICK_START_DANSK.md) - Dansk guide
+  - [MCP_IMPLEMENTATION_COMPLETE.md](apps/production/tekup-vault/docs/MCP_IMPLEMENTATION_COMPLETE.md)
+
+- **RenOS:** [apps/rendetalje/docs/](apps/rendetalje/docs/)
+  - [FINAL_STATUS_REPORT.md](apps/rendetalje/services/FINAL_STATUS_REPORT.md) - Latest status
+  - [RENDER_CLI_GUIDE.md](apps/rendetalje/services/RENDER_CLI_GUIDE.md) - Deployment
+
+### **Workspace Docs:**
+- **[WORKSPACE_STATUS_PC2_2025-10-23.md](WORKSPACE_STATUS_PC2_2025-10-23.md)** - Complete status overview
+- **[CHANGELOG.md](CHANGELOG.md)** - Workspace-level changes
+- **[Tekup-Portfolio.code-workspace](Tekup-Portfolio.code-workspace)** - VS Code multi-root setup
 
 ---
 
@@ -156,13 +244,45 @@ See individual project LICENSE files. Workspace-level coordination: MIT License.
 
 ---
 
-## 🔗 Links
+## 🔗 Production Links
 
-- **TekupVault:** https://tekupvault.onrender.com
-- **Tekup-Billy:** https://tekup-billy.onrender.com
-- **GitHub:** https://github.com/JonasAbde
+- **Tekup-Billy MCP:** https://tekup-billy.onrender.com
+- **TekupVault API:** https://tekupvault-api.onrender.com  
+- **GitHub Repository:** https://github.com/TekupDK/tekup
+- **Organization:** https://github.com/TekupDK
+
+---
+
+## 🔐 Secrets Management
+
+All sensitive credentials are encrypted with **git-crypt**:
+
+```
+tekup-secrets/
+├─ .env.development    # Local development keys
+├─ .env.production     # Production credentials
+├─ .env.billy          # Billy.dk API keys
+├─ .env.database       # Database URLs
+├─ .env.vault          # Vault service keys
+└─ ... (12+ files total)
+```
+
+**Unlock:** `git-crypt unlock tekup-git-crypt.key`  
+**Status:** 🔒 Encrypted (requires git-crypt installation)
+
+---
+
+## 📊 Workspace Statistics
+
+- **Total Files:** 700+ source files
+- **Lines of Code:** 150,000+ (TypeScript, JavaScript, SQL)
+- **Documentation:** 100+ markdown files
+- **Projects:** 7 active (3 production, 1 web platform, 3 services)
+- **Languages:** TypeScript (primary), JavaScript, SQL, Prisma Schema
+- **Frameworks:** NestJS, Next.js, Express, Turborepo
 
 ---
 
 **Built with ❤️ by Tekup Team**  
-**Last Updated:** 23. Oktober 2025
+**Last Updated:** 23. Oktober 2025, 21:45 CET  
+**PC1 ↔ PC2 Sync:** ✅ Synchronized
