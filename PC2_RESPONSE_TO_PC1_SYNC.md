@@ -76,23 +76,23 @@ PS C:\Users\Jonas-dev\Tekup-Monorepo> ls apps\production\tekup-vault\
 
 ```powershell
 # På PC1 (empir):
-cd C:\Users\empir\Tekup
+cd C:\Users\empir\tekup
 
 # 1. KOPIÉR TEKUP-BILLY KODE IND
 $source = "C:\Users\empir\Tekup-Billy"
-$dest = "C:\Users\empir\Tekup\apps\production\tekup-billy"
+$dest = "C:\Users\empir\tekup\apps\production\tekup-billy"
 Get-ChildItem $source -Exclude node_modules,.git,dist | 
   Copy-Item -Destination $dest -Recurse -Force
 
 # 2. KOPIÉR TEKUP-DATABASE KODE IND
 $source = "C:\Users\empir\Tekup-Database"  # eller hvor den er
-$dest = "C:\Users\empir\Tekup\apps\production\tekup-database"
+$dest = "C:\Users\empir\tekup\apps\production\tekup-database"
 Get-ChildItem $source -Exclude node_modules,.git,dist | 
   Copy-Item -Destination $dest -Recurse -Force
 
 # 3. KOPIÉR TEKUP-VAULT KODE IND
 $source = "C:\Users\empir\TekupVault"
-$dest = "C:\Users\empir\Tekup\apps\production\tekup-vault"
+$dest = "C:\Users\empir\tekup\apps\production\tekup-vault"
 Get-ChildItem $source -Exclude node_modules,.git,dist | 
   Copy-Item -Destination $dest -Recurse -Force
 
