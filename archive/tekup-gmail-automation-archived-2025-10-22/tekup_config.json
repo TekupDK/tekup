@@ -1,0 +1,25 @@
+{
+  "organization": "TekUp",
+  "economic_email": "788bilag1714566@e-conomic.dk",
+  "processed_label": "TekUp_Processed",
+  "max_emails": 50,
+  "file_size_limit_mb": 10,
+  "duplicate_detection": true,
+  "photo_processing": true,
+  "renos_integration": true,
+  "gmail_credentials": {
+    "service_account": "config/credentials.json",
+    "token_file": "config/token.json"
+  },
+  "economic_api": {
+    "enabled": true,
+    "api_url": "https://restapi.e-conomic.com",
+    "app_secret_token": "your_app_secret_token",
+    "agreement_grant_token": "your_agreement_grant_token"
+  },
+  "renos_integration": {
+    "enabled": true,
+    "api_url": "https://api.renos.dk",
+    "api_key": "your_renos_api_key"
+  }
+}

@@ -1,0 +1,99 @@
+{
+	"folders": [
+		{
+			"name": "📊 Tekup Portfolio (Root)",
+			"path": "."
+		},
+		{
+			"name": "🧹 Rendetalje - Complete",
+			"path": "apps/rendetalje"
+		},
+		{
+			"name": "  ├─ Monorepo (Primary Dev)",
+			"path": "apps/rendetalje/monorepo"
+		},
+		{
+			"name": "  ├─ Calendar MCP Service",
+			"path": "apps/rendetalje/services/calendar-mcp"
+		},
+		{
+			"name": "  ├─ Backend NestJS",
+			"path": "apps/rendetalje/services/backend-nestjs"
+		},
+		{
+			"name": "  ├─ Frontend Next.js",
+			"path": "apps/rendetalje/services/frontend-nextjs"
+		},
+		{
+			"name": "  └─ Documentation",
+			"path": "apps/rendetalje/docs"
+		},
+		{
+			"name": "🤖 Tekup AI (Monorepo)",
+			"path": "../tekup-ai"
+		},
+		{
+			"name": "💾 Tekup Database",
+			"path": "../tekup-database"
+		},
+		{
+			"name": "📚 TekupVault (Knowledge Layer)",
+			"path": "../TekupVault"
+		},
+		{
+			"name": "💰 Tekup Billy (MCP Server)",
+			"path": "../Tekup-Billy"
+		},
+		{
+			"name": "📧 Tekup Gmail Services",
+			"path": "../tekup-gmail-services"
+		},
+		{
+			"name": "📊 Tekup Cloud Dashboard",
+			"path": "../tekup-cloud-dashboard"
+		},
+		{
+			"name": "🔮 Tekup Google AI",
+			"path": "../Tekup Google AI"
+		},
+		{
+			"name": "🔐 Tekup Secrets",
+			"path": "tekup-secrets"
+		},
+		{
+			"name": "📦 Archive",
+			"path": "archive"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/node_modules": true,
+			"**/.git": false,
+			"**/dist": true,
+			"**/.next": true,
+			"**/.turbo": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/dist": true,
+			"**/.next": true,
+			"**/pnpm-lock.yaml": true
+		},
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": "explicit"
+		},
+		"typescript.tsdk": "node_modules/typescript/lib",
+		"typescript.enablePromptUseWorkspaceTsdk": true
+	},
+	"extensions": {
+		"recommendations": [
+			"esbenp.prettier-vscode",
+			"dbaeumer.vscode-eslint",
+			"bradlc.vscode-tailwindcss",
+			"Prisma.prisma",
+			"ms-vscode.vscode-typescript-next"
+		]
+	}
+}
