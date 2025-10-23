@@ -5,56 +5,64 @@
 			"path": "."
 		},
 		{
-			"name": "🧹 Rendetalje - Complete",
+			"name": "🏭 Production Services",
+			"path": "apps/production"
+		},
+		{
+			"name": "  ├─ 💾 Tekup Database",
+			"path": "apps/production/tekup-database"
+		},
+		{
+			"name": "  ├─ 📚 TekupVault (Knowledge Layer)",
+			"path": "apps/production/tekup-vault"
+		},
+		{
+			"name": "  └─ 💰 Tekup Billy (MCP Server)",
+			"path": "apps/production/tekup-billy"
+		},
+		{
+			"name": "🌐 Web Applications",
+			"path": "apps/web"
+		},
+		{
+			"name": "  ├─ 🧹 Rendetalje - Complete",
 			"path": "apps/rendetalje"
 		},
 		{
-			"name": "  ├─ Monorepo (Primary Dev)",
+			"name": "  │  ├─ Monorepo (Primary Dev)",
 			"path": "apps/rendetalje/monorepo"
 		},
 		{
-			"name": "  ├─ Calendar MCP Service",
+			"name": "  │  ├─ Calendar MCP Service",
 			"path": "apps/rendetalje/services/calendar-mcp"
 		},
 		{
-			"name": "  ├─ Backend NestJS",
+			"name": "  │  ├─ Backend NestJS",
 			"path": "apps/rendetalje/services/backend-nestjs"
 		},
 		{
-			"name": "  ├─ Frontend Next.js",
+			"name": "  │  ├─ Frontend Next.js",
 			"path": "apps/rendetalje/services/frontend-nextjs"
 		},
 		{
-			"name": "  └─ Documentation",
+			"name": "  │  └─ Documentation",
 			"path": "apps/rendetalje/docs"
 		},
 		{
-			"name": "🤖 Tekup AI (Monorepo)",
-			"path": "../tekup-ai"
+			"name": "  └─ 📊 Tekup Cloud Dashboard",
+			"path": "apps/web/tekup-cloud-dashboard"
 		},
 		{
-			"name": "💾 Tekup Database",
-			"path": "../tekup-database"
+			"name": "⚙️ Backend Services",
+			"path": "services"
 		},
 		{
-			"name": "📚 TekupVault (Knowledge Layer)",
-			"path": "../TekupVault"
+			"name": "  ├─ 🤖 Tekup AI (Monorepo)",
+			"path": "services/tekup-ai"
 		},
 		{
-			"name": "💰 Tekup Billy (MCP Server)",
-			"path": "../Tekup-Billy"
-		},
-		{
-			"name": "📧 Tekup Gmail Services",
-			"path": "../tekup-gmail-services"
-		},
-		{
-			"name": "📊 Tekup Cloud Dashboard",
-			"path": "../tekup-cloud-dashboard"
-		},
-		{
-			"name": "🔮 Tekup Google AI",
-			"path": "../Tekup Google AI"
+			"name": "  └─ 📧 Tekup Gmail Services",
+			"path": "services/tekup-gmail-services"
 		},
 		{
 			"name": "🔐 Tekup Secrets",
