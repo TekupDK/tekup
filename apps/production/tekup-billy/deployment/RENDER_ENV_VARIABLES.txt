@@ -1,0 +1,106 @@
+# Environment Variables for Render.com - Tekup-Billy MCP
+
+## Copy-Paste Format (Hver linje er: NAME=VALUE)
+
+```
+BILLY_API_KEY=REDACTED_BILLY_API_KEY
+BILLY_ORGANIZATION_ID=pmf9tU56RoyZdcX3k69z1g
+BILLY_API_BASE=https://api.billysbilling.com/v2
+MCP_API_KEY=sp0ZLWofqSDXPx5OjQa64FHVwRYzeuyr
+NODE_ENV=production
+PORT=3000
+CORS_ORIGIN=*
+BILLY_TEST_MODE=false
+BILLY_DRY_RUN=false
+```
+
+---
+
+## Eller brug "Add from .env" funktion i Render.com
+
+Hvis Render.com har "Add from .env" knap, kopier alt nedenfor:
+
+```
+BILLY_API_KEY=REDACTED_BILLY_API_KEY
+BILLY_ORGANIZATION_ID=pmf9tU56RoyZdcX3k69z1g
+BILLY_API_BASE=https://api.billysbilling.com/v2
+MCP_API_KEY=sp0ZLWofqSDXPx5OjQa64FHVwRYzeuyr
+NODE_ENV=production
+PORT=3000
+CORS_ORIGIN=*
+BILLY_TEST_MODE=false
+BILLY_DRY_RUN=false
+```
+
+---
+
+## Eller individuelt (hvis du skal tilføje én ad gangen):
+
+### 1. BILLY_API_KEY
+```
+Name:  BILLY_API_KEY
+Value: REDACTED_BILLY_API_KEY
+```
+
+### 2. BILLY_ORGANIZATION_ID
+```
+Name:  BILLY_ORGANIZATION_ID
+Value: pmf9tU56RoyZdcX3k69z1g
+```
+
+### 3. BILLY_API_BASE
+```
+Name:  BILLY_API_BASE
+Value: https://api.billysbilling.com/v2
+```
+
+### 4. MCP_API_KEY
+```
+Name:  MCP_API_KEY
+Value: sp0ZLWofqSDXPx5OjQa64FHVwRYzeuyr
+```
+
+### 5. NODE_ENV
+```
+Name:  NODE_ENV
+Value: production
+```
+
+### 6. PORT
+```
+Name:  PORT
+Value: 3000
+```
+
+### 7. CORS_ORIGIN
+```
+Name:  CORS_ORIGIN
+Value: *
+```
+
+### 8. BILLY_TEST_MODE
+```
+Name:  BILLY_TEST_MODE
+Value: false
+```
+
+### 9. BILLY_DRY_RUN
+```
+Name:  BILLY_DRY_RUN
+Value: false
+```
+
+---
+
+## Total: 9 Environment Variables
+
+All values are verified and tested! ✅
+
+---
+
+## After Deployment - Update CORS_ORIGIN
+
+When RenOS backend is deployed, update CORS_ORIGIN to:
+```
+CORS_ORIGIN=https://renos-backend.onrender.com
+```

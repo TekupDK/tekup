@@ -1,0 +1,46 @@
+{
+    "version": "2025-03-26",
+    "name": "Tekup Billy MCP Server",
+    "description": "Model Context Protocol server for Billy.dk accounting API - invoice, customer, product, and revenue management",
+    "vendor": {
+        "name": "Tekup - Rendetalje ApS",
+        "url": "https://tekup.dk"
+    },
+    "endpoints": {
+        "mcp": {
+            "url": "/mcp",
+            "transport": "streamable-http",
+            "methods": [
+                "POST",
+                "GET",
+                "DELETE"
+            ],
+            "authentication": {
+                "type": "none",
+                "note": "MCP endpoint is public. Use /api/v1 for authenticated REST API."
+            }
+        },
+        "health": {
+            "url": "/health",
+            "method": "GET"
+        },
+        "openapi": {
+            "url": "/openapi.json",
+            "method": "GET"
+        }
+    },
+    "capabilities": {
+        "tools": true,
+        "resources": false,
+        "prompts": false,
+        "sampling": false
+    },
+    "protocolVersions": [
+        "2025-03-26",
+        "2025-06-18"
+    ],
+    "contact": {
+        "email": "support@tekup.dk",
+        "url": "https://github.com/JonasAbde/Tekup-Billy"
+    }
+}

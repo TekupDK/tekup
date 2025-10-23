@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  # PostgreSQL 16 with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: tekup-database-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tekup
+      POSTGRES_PASSWORD: tekup123
+      POSTGRES_DB: tekup_db
+      POSTGRES_INITDB_ARGS: '--encoding=UTF8 --locale=C'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U tekup -d tekup_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tekup-network
+
+  # pgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: tekup-database-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@tekup.local
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+      - '5050:5050'
+    depends_on:
+      - postgres
+    networks:
+      - tekup-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+    name: tekup-postgres-data
+  pgadmin_data:
+    name: tekup-pgadmin-data
+
+networks:
+  tekup-network:
+    name: tekup-network
+    driver: bridge

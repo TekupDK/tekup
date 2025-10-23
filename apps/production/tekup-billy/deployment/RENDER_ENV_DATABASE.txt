@@ -1,0 +1,49 @@
+═══════════════════════════════════════════════════════════════
+  TEKUP DATABASE ENVIRONMENT GROUP - COPY/PASTE TIL RENDER
+═══════════════════════════════════════════════════════════════
+
+Environment Group Name: Tekup Database Environment
+
+═══════════════════════════════════════════════════════════════
+VARIABLE 1/5
+═══════════════════════════════════════════════════════════════
+Key:   SUPABASE_URL
+Value: https://oaevagdgrasfppbrxbey.supabase.co
+
+═══════════════════════════════════════════════════════════════
+VARIABLE 2/5
+═══════════════════════════════════════════════════════════════
+Key:   SUPABASE_ANON_KEY
+Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4Nzc3NjQsImV4cCI6MjA3NTQ1Mzc2NH0.M0Kt1Xi-3VVoq6NJ7VbhqBC0z9EK-JQ7ypssayMw7s8
+
+═══════════════════════════════════════════════════════════════
+VARIABLE 3/5 - ⚠️ VIGTIG: NY NØGLE!
+═══════════════════════════════════════════════════════════════
+Key:   SUPABASE_SERVICE_KEY
+Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTg3Nzc2NCwiZXhwIjoyMDc1NDUzNzY0fQ.94lDERK4Enw8YTH_OtE9BpQhQWs8fg_7GZQGnYS8rNo
+
+🔴 DENNE NØGLE ER NY! Opdater også "RenOS Production Environment"!
+
+═══════════════════════════════════════════════════════════════
+VARIABLE 4/5
+═══════════════════════════════════════════════════════════════
+Key:   ENCRYPTION_KEY
+Value: 9c22d3c2cebd332a194ca9f30b99e57112d10a290d9188eda881fe09eaa01947
+
+═══════════════════════════════════════════════════════════════
+VARIABLE 5/5
+═══════════════════════════════════════════════════════════════
+Key:   ENCRYPTION_SALT
+Value: 9b2af923a0665b2f47c7a799b9484b28
+
+═══════════════════════════════════════════════════════════════
+  ✅ TEKUP DATABASE ENVIRONMENT GROUP - FÆRDIG!
+═══════════════════════════════════════════════════════════════
+
+⚠️⚠️⚠️ HUSK AT OPDATERE "RenOS Production Environment" ⚠️⚠️⚠️
+
+Gå til RenOS Production Environment og ERSTAT den gamle 
+SUPABASE_SERVICE_KEY med den nye nøgle ovenfor!
+
+Gammel nøgle slutter med: ...YZmGZ_4rVE
+Ny nøgle slutter med:     ...YS8rNo

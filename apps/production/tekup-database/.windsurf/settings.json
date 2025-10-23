@@ -1,0 +1,32 @@
+{
+  "cascade.commandAllowlist": [
+    "pnpm install",
+    "pnpm db:generate",
+    "pnpm db:push",
+    "pnpm db:studio",
+    "pnpm db:migrate",
+    "pnpm db:health",
+    "pnpm db:backup",
+    "pnpm db:restore",
+    "pnpm db:seed",
+    "pnpm test",
+    "pnpm build",
+    "docker-compose up -d",
+    "docker-compose down",
+    "docker ps",
+    "docker logs*",
+    "git status",
+    "git add*",
+    "git commit*",
+    "git push*",
+    "git pull",
+    "psql*",
+    "prisma*",
+    "npm*",
+    "node*",
+    "tsx*"
+  ],
+  "cascade.autoApproveCommands": true,
+  "cascade.autoApproveGitCommands": false,
+  "cascade.autoApproveDatabaseCommands": true
+}

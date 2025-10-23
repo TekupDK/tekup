@@ -1,0 +1,470 @@
+# Tekup-Billy MCP Server - Cursor AI Rules
+
+## Project Identity
+- **Name:** Tekup-Billy MCP Server
+- **Type:** Model Context Protocol Server for Billy.dk Accounting API
+- **Language:** TypeScript (strict mode, ES modules)
+- **Runtime:** Node.js 18+
+- **Status:** ✅ Production Ready (Live on Render.com)
+- **Version:** 1.0.0
+
+## Core Architecture
+
+### Entry Points
+- **MCP Server:** `src/index.ts` (stdio + HTTP transport)
+- **HTTP Wrapper:** `src/http-server.ts` (REST API + SSE)
+- **Billy Client:** `src/billy-client.ts` (API wrapper, rate limiting)
+- **Types:** `src/types.ts` (all interfaces, TypeScript definitions)
+
+### Tool Structure
+```
+src/tools/
+├── invoices.ts    # 4 tools: list, create, get, send
+├── customers.ts   # 3 tools: list, create, get
+├── products.ts    # 2 tools: list, create
+├── revenue.ts     # 1 tool: get_revenue
+└── test-runner.ts # 3 tools: test scenarios
+```
+
+### Data Flow
+```
+User/AI → MCP Tool → Billy Client → Billy.dk API
+                           ↓
+                    Data Logger (metrics)
+                           ↓
+                    Supabase (audit logs)
+```
+
+## Key Patterns & Conventions
+
+### 1. Tool Implementation Pattern
+```typescript
+// Every tool follows this structure:
+
+import { z } from 'zod';
+import { BillyClient } from '../billy-client.js';
+import { dataLogger } from '../utils/data-logger.js';
+
+// 1. Define Zod schema for validation
+const toolInputSchema = z.object({
+  param1: z.string().describe('Clear description'),
+  param2: z.number().optional().describe('Optional param'),
+});
+
+// 2. Export async tool function
+export async function toolName(client: BillyClient, args: unknown) {
+  const startTime = Date.now();
+  
+  try {
+    // 3. Validate input
+    const params = toolInputSchema.parse(args);
+    
+    // 4. Log action start
+    await dataLogger.logAction({
+      action: 'toolName',
+      tool: 'domain',
+      parameters: params,
+    });
+    
+    // 5. Call Billy API via client
+    const data = await client.someMethod(params);
+    
+    // 6. Log success
+    await dataLogger.logAction({
+      action: 'toolName',
+      tool: 'domain',
+      parameters: params,
+      result: 'success',
+      metadata: {
+        executionTime: Date.now() - startTime,
+        dataSize: data.length,
+      },
+    });
+    
+    // 7. Return MCP response
+    return {
+      content: [{
+        type: 'text' as const,
+        text: JSON.stringify(data, null, 2),
+      }],
+      structuredContent: data,
+    };
+    
+  } catch (error) {
+    // 8. Log error
+    await dataLogger.logAction({
+      action: 'toolName',
+      tool: 'domain',
+      parameters: args,
+      result: 'error',
+      metadata: {
+        executionTime: Date.now() - startTime,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      },
+    });
+    
+    // 9. Return structured error
+    return {
+      content: [{
+        type: 'text' as const,
+        text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      }],
+      isError: true,
+    };
+  }
+}
+```
+
+### 2. Billy.dk API Format (CRITICAL)
+
+**✅ CORRECT Format:**
+```typescript
+// Use query parameters, NOT path parameters
+await axios.get('/invoices', {
+  params: {
+    organizationId: 'xxx',
+    entryDateGte: '2025-01-01',  // Note: Gte/Lte, not From/To
+    entryDateLte: '2025-12-31',
+  }
+});
+
+// Contact types
+type: 'company'  // NOT 'customer'
+type: 'person'   // NOT 'supplier'
+```
+
+**❌ WRONG Format:**
+```typescript
+// DON'T use path parameters
+await axios.get(`/organizations/${orgId}/invoices?entryDateFrom=2025-01-01`);
+
+// DON'T use these types
+type: 'customer'  // Billy rejects this
+type: 'supplier'  // Billy rejects this
+```
+
+### 3. Error Handling Rules
+
+```typescript
+// ALWAYS catch errors
+try {
+  const result = await billyClient.someMethod();
+} catch (error) {
+  // NEVER throw raw errors to MCP
+  // ALWAYS return structured error response
+  return {
+    content: [{
+      type: 'text' as const,
+      text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    }],
+    isError: true,
+  };
+}
+```
+
+### 4. Logging Metadata Rules
+
+```typescript
+// ONLY use these metadata fields (dataLogger validates):
+metadata: {
+  executionTime: number,   // Always include
+  errorMessage: string,    // On errors
+  dataSize: number,        // On success (optional)
+}
+
+// DON'T add random fields - they'll be rejected
+```
+
+### 5. Configuration Access
+
+```typescript
+// ✅ CORRECT: Use getter function
+import { getBillyConfig } from './config.js';
+const config = getBillyConfig();
+
+// ❌ WRONG: Direct access (config is private)
+const config = billyClient.config;  // TypeScript error
+```
+
+## Billy.dk API Reference
+
+### Authentication
+```typescript
+headers: {
+  'X-Access-Token': process.env.BILLY_API_KEY,
+  'Content-Type': 'application/json',
+}
+```
+
+### Key Endpoints
+```
+GET  /invoices?organizationId={id}&entryDateGte={date}&entryDateLte={date}
+POST /invoices (body: { organizationId, invoice: {...} })
+GET  /invoices/{id}?organizationId={id}
+
+GET  /contacts?organizationId={id}&type=company
+POST /contacts (body: { organizationId, contact: {...} })
+
+GET  /products?organizationId={id}
+POST /products (body: { organizationId, product: {...} })
+
+GET  /organizations/{id} (this one uses path param)
+```
+
+### Rate Limiting
+- Built-in rate limiter: 100 requests/minute
+- Handled by `BillyClient` class
+- No manual throttling needed
+
+## Development Workflow
+
+### Build & Run
+```bash
+npm install          # Install dependencies
+npm run build        # Compile TypeScript (dist/)
+npm run dev          # Development mode (watch)
+npm start            # Production mode
+npm run inspect      # MCP Inspector (debug)
+```
+
+### Environment Variables
+```bash
+# Required
+BILLY_API_KEY=xxx
+BILLY_ORGANIZATION_ID=xxx  # or BILLY_ORG_ID
+BILLY_API_BASE=https://api.billysbilling.com/v2
+
+# Optional
+BILLY_TEST_MODE=false
+BILLY_DRY_RUN=false
+PORT=3000
+```
+
+### Testing
+```typescript
+// Use built-in test scenarios
+const scenarios = await listTestScenarios();
+const result = await runTestScenario('freelancer');
+
+// Or test directly via MCP Inspector
+npm run inspect
+```
+
+### Deployment
+```bash
+git add .
+git commit -m "feat: description"
+git push origin main
+# Render auto-deploys in 30-60 seconds
+```
+
+## Code Style & Standards
+
+### TypeScript
+- Strict mode enabled
+- No `any` types (use `unknown` + validation)
+- Explicit return types on functions
+- ES modules (`import`/`export`, not `require`)
+
+### Naming
+- Files: kebab-case (`billy-client.ts`)
+- Functions: camelCase (`listInvoices`)
+- Types/Interfaces: PascalCase (`BillyInvoice`)
+- Constants: UPPER_SNAKE_CASE (`API_BASE`)
+
+### Async/Await
+- Always use `async`/`await` (no callbacks)
+- Handle promises explicitly
+- Never use `.then()` chains
+
+### Comments
+- JSDoc for public functions
+- Inline comments for complex logic only
+- Self-documenting code preferred
+
+## File Organization
+
+### When Adding New Features
+
+1. **New Billy API endpoint?**
+   - Add method to `src/billy-client.ts`
+   - Update `src/types.ts` if new interfaces needed
+
+2. **New MCP tool?**
+   - Create/update file in `src/tools/`
+   - Follow tool implementation pattern above
+   - Register in `src/index.ts` (both stdio and HTTP)
+
+3. **New validation?**
+   - Define Zod schema in tool file
+   - Add to input schema validation
+
+4. **New documentation?**
+   - Update `README.md` (tool list)
+   - Add to relevant guide in `docs/`
+   - Update API reference if needed
+
+## Integration Points
+
+### Supabase (Optional)
+```typescript
+// Audit logging (if SUPABASE_URL set)
+await supabase.from('mcp_logs').insert({
+  action: 'toolName',
+  parameters: {...},
+  result: 'success',
+});
+```
+
+### Render.com Deployment
+- Environment Groups:
+  - "Billy MCP Environment" (Billy.dk credentials)
+  - "Tekup Database Environment" (Supabase credentials)
+- Auto-deploy on push to main
+- Health check: GET /
+- MCP endpoint: POST /mcp
+
+### Claude.ai Web
+- URL: https://tekup-billy.onrender.com
+- Auth: API key in X-API-Key header
+- Guide: docs/CLAUDE_WEB_SETUP.md
+
+### ChatGPT
+- Custom connector to same URL
+- Guide: docs/CHATGPT_SETUP.md
+
+## Common Tasks
+
+### Add New Invoice Field
+```typescript
+// 1. Update type in src/types.ts
+export interface BillyInvoice {
+  // existing fields...
+  newField: string;
+}
+
+// 2. Update Zod schema in src/tools/invoices.ts
+const createInvoiceSchema = z.object({
+  // existing fields...
+  newField: z.string().optional(),
+});
+
+// 3. Update Billy client call
+const invoice = await client.createInvoice({
+  ...params,
+  newField: params.newField,
+});
+
+// 4. Test & deploy
+```
+
+### Debug API Call
+```typescript
+// In src/billy-client.ts, add logging:
+console.log('Billy API Request:', {
+  method,
+  endpoint,
+  data,
+});
+
+const response = await this.client.request({...});
+
+console.log('Billy API Response:', response.data);
+```
+
+### Add Rate Limit Override
+```typescript
+// In src/billy-client.ts constructor:
+this.rateLimiter = new RateLimiter(
+  config.maxRequests || 100,
+  config.windowMs || 60000
+);
+```
+
+## Troubleshooting
+
+### "Unknown error" from Billy API
+- Check endpoint format (query vs path params)
+- Verify contact type ('company' not 'customer')
+- Check date params (Gte/Lte not From/To)
+- Test with direct API call (see test-billy-api.js)
+
+### TypeScript Errors
+- Run `npm run build` to see full errors
+- Check imports end with `.js` (ES modules)
+- Verify Zod schemas match types
+
+### Deployment Fails
+- Check Render logs
+- Verify environment variables set
+- Test build locally first
+- Check package.json scripts
+
+### Tools Not Showing in Claude
+- Verify server is running (GET /)
+- Check MCP endpoint (POST /mcp)
+- Confirm tools registered in index.ts
+- Test with MCP Inspector
+
+## Important Files Reference
+
+| File | Purpose | When to Edit |
+|------|---------|--------------|
+| `README.md` | Project overview, quickstart | Tool list changes |
+| `docs/PROJECT_SPEC.md` | Full specification | Architecture changes |
+| `docs/BILLY_API_REFERENCE.md` | API patterns | New Billy endpoints |
+| `.github/copilot-instructions.md` | AI context | Project conventions |
+| `src/index.ts` | MCP server, tool registry | New tools |
+| `src/billy-client.ts` | Billy API wrapper | New API methods |
+| `src/types.ts` | TypeScript interfaces | New data structures |
+| `.env.example` | Env var template | New config options |
+
+## Security Notes
+
+- **API Keys:** Never commit to git (use .env)
+- **Organization ID:** Sensitive, keep private
+- **Supabase Keys:** Anon key is OK, service key is SECRET
+- **MCP API Key:** Rotate regularly
+- **Billy Webhooks:** Not implemented (future consideration)
+
+## Performance Tips
+
+- Use rate limiter (built-in)
+- Cache frequently accessed data (consider Redis)
+- Batch API calls when possible
+- Use Supabase for analytics (not real-time)
+- Monitor Render metrics
+
+## Future Enhancements
+
+Potential areas for Cursor AI to assist:
+
+1. **Caching Layer:** Add Redis for invoice/customer cache
+2. **Webhooks:** Receive Billy.dk events (invoice paid, etc)
+3. **Analytics Dashboard:** Supabase + Vercel frontend
+4. **Multi-org Support:** Handle multiple Billy organizations
+5. **PDF Generation:** Custom invoice templates
+6. **Email Integration:** Shortwave + Billy (deeper integration)
+7. **Calendar Sync:** Billy invoices → Google Calendar
+8. **Payment Reminders:** Automated overdue notifications
+
+---
+
+**When in doubt:**
+1. Check existing patterns in `src/tools/`
+2. Review `docs/BILLY_API_REFERENCE.md`
+3. Test with MCP Inspector
+4. Ask Cursor to analyze similar code
+
+**For complex changes:**
+1. Use Cursor Composer (Ctrl+Shift+K)
+2. Describe in plain English
+3. Review generated code carefully
+4. Test before committing
+5. Update documentation
+
+---
+
+**Last Updated:** 11. Oktober 2025  
+**For:** Tekup-Billy MCP Server v1.0.0  
+**Cursor AI Version:** Optimized for Cursor Pro

@@ -1,0 +1,63 @@
+═══════════════════════════════════════════════════════════════
+  BILLY MCP ENVIRONMENT - KOMPLET OVERSIGT
+═══════════════════════════════════════════════════════════════
+
+Environment Group Name: Billy MCP Environment
+
+═══════════════════════════════════════════════════════════════
+  📋 ALLE 5 VARIABLES - COPY/PASTE ÉN AD GANGEN
+═══════════════════════════════════════════════════════════════
+
+Variable 1:
+-----------
+Key:   BILLY_API_KEY
+Value: REDACTED_BILLY_API_KEY
+
+
+Variable 2:
+-----------
+Key:   BILLY_ORGANIZATION_ID
+Value: pmf9tU56RoyZdcX3k69z1g
+
+Variable 3:
+-----------
+Key:   BILLY_TEST_MODE
+Value: false
+
+Variable 4:
+-----------
+Key:   BILLY_DRY_RUN
+Value: false
+
+
+Variable 5:
+-----------
+Key:   NODE_ENV
+Value: production
+
+
+═══════════════════════════════════════════════════════════════
+  ✅ SUMMARY
+═══════════════════════════════════════════════════════════════
+Organization: Rendetalje (CVR: 45564096)
+Organization ID: pmf9tU56RoyZdcX3k69z1g
+API Token: RenOS (verified working)
+Total Invoices: 89
+Total Contacts: 105
+Total Products: 67
+
+═══════════════════════════════════════════════════════════════
+  🎯 DEPLOYMENT INSTRUKTIONER
+═══════════════════════════════════════════════════════════════
+
+1. Gå til: https://dashboard.render.com/env-groups
+2. Klik: "New Environment Group"
+3. Name: Billy MCP Environment
+4. Tilføj hver variable:
+   - Klik "Add Environment Variable"
+   - Copy/paste Key
+   - Copy/paste Value
+   - Gentag for alle 5 variables
+5. Klik: "Create Environment Group"
+
+═══════════════════════════════════════════════════════════════
