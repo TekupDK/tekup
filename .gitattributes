@@ -1,0 +1,5 @@
+# Git-crypt encryption rules
+tekup-secrets/.env.development filter=git-crypt diff=git-crypt
+tekup-secrets/.env.production filter=git-crypt diff=git-crypt
+tekup-secrets/.env.shared filter=git-crypt diff=git-crypt
+tekup-secrets/config/*.env filter=git-crypt diff=git-crypt
