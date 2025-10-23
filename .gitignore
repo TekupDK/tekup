@@ -18,3 +18,7 @@ desktop.ini
 *.tmp
 *.bak
 *~
+
+# Dependencies
+node_modules/
+package-lock.json
