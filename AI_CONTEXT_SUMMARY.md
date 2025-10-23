@@ -11,11 +11,11 @@
 ### **Basic Info:**
 ```yaml
 Organization: TekupDK
-GitHub: https://github.com/TekupDK
-Structure: Multi-repo (9+ separate repositories)
+GitHub: https://github.com/TekupDK/tekup
+Structure: Monorepo (all projects in one repository)
 Owner: Jonas Abde (@JonasAbde)
 Setup Date: Oktober 2025
-Purpose: Development workspace for Tekup ecosystem
+Purpose: Complete development monorepo for Tekup ecosystem
 ```
 
 ### **Tech Stack:**
