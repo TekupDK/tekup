@@ -1,0 +1,121 @@
+# 📱 RendetaljeOS Mobile Development Stack
+#
+# Starter komplet live miljø:
+# - PostgreSQL database
+# - Redis cache
+# - NestJS Backend API
+# - Expo Development Server (mobile)
+#
+# Brug: docker-compose -f docker-compose.mobile.yml up
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: rendetalje-postgres
+    environment:
+      POSTGRES_DB: rendetalje
+      POSTGRES_USER: rendetalje_user
+      POSTGRES_PASSWORD: rendetalje_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rendetalje_user -d rendetalje"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: rendetalje-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # NestJS Backend API
+  backend:
+    build:
+      context: ./apps/rendetalje/services/backend-nestjs
+      dockerfile: Dockerfile
+    container_name: rendetalje-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://rendetalje_user:rendetalje_password@postgres:5432/rendetalje
+      - REDIS_URL=redis://redis:6379
+      - PORT=3001
+      - JWT_SECRET=your-jwt-secret-change-in-production
+      - CORS_ORIGIN=*
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./apps/rendetalje/services/backend-nestjs/src:/app/src
+      - ./apps/rendetalje/services/backend-nestjs/prisma:/app/prisma
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Expo Development Server (Mobile)
+  mobile:
+    build:
+      context: ./apps/rendetalje/services/mobile
+      dockerfile: Dockerfile
+    container_name: rendetalje-mobile-expo
+    depends_on:
+      - backend
+    environment:
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - REACT_NATIVE_PACKAGER_HOSTNAME=${HOST_IP:-0.0.0.0}
+      - EXPO_PUBLIC_API_URL=http://${HOST_IP:-localhost}:3001/api
+    ports:
+      - "19000:19000"  # Expo DevTools
+      - "19001:19001"  # Expo Metro Bundler
+      - "19002:19002"  # Expo Web Interface
+      - "8081:8081"    # React Native Packager
+    volumes:
+      - ./apps/rendetalje/services/mobile/src:/app/src
+      - ./apps/rendetalje/services/mobile/assets:/app/assets
+      - ./apps/rendetalje/services/mobile/app.json:/app/app.json
+      - /app/node_modules  # Anonymous volume for node_modules
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+networks:
+  rendetalje-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
