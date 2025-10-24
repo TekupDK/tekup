@@ -1,4 +1,4 @@
-﻿import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { Customer } from './entities/customer.entity';
 import { 
@@ -41,8 +41,8 @@ export class CustomersService {
     }
 
     const [data, total] = await Promise.all([
-      this.prisma.customers.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
-      this.prisma.customers.count({ where }),
+      this.prisma.renosCustomer.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
+      this.prisma.renosCustomer.count({ where }),
     ]);
 
     const totalPages = Math.ceil(total / limit);
@@ -50,24 +50,24 @@ export class CustomersService {
   }
 
   async findOne(id: string): Promise<Customer> {
-    const customer = await this.prisma.customers.findUnique({ where: { id } });
+    const customer = await this.prisma.renosCustomer.findUnique({ where: { id } });
     if (!customer) throw new NotFoundException(`Customer with ID ${id} not found`);
     return customer;
   }
 
   async create(data: CreateCustomerDto): Promise<Customer> {
-    return this.prisma.customers.create({
+    return this.prisma.renosCustomer.create({
       data: { ...data, tags: data.tags || [], status: 'active' },
     });
   }
 
   async update(id: string, data: UpdateCustomerDto): Promise<Customer> {
     await this.findOne(id);
-    return this.prisma.customers.update({ where: { id }, data });
+    return this.prisma.renosCustomer.update({ where: { id }, data });
   }
 
   async remove(id: string): Promise<void> {
     await this.findOne(id);
-    await this.prisma.customers.delete({ where: { id } });
+    await this.prisma.renosCustomer.delete({ where: { id } });
   }
 }

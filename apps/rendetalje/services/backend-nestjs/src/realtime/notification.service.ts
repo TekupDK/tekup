@@ -292,27 +292,8 @@ export class NotificationService {
   ): Promise<void> {
     const notifications: Notification[] = [];
 
-    // Get team members assigned to the job
-    const bookings = await this.prisma.renosBooking.findMany({
-      where: { leadId: jobId },
-      include: {
-        teamMember: {
-          select: { userId: true },
-        },
-      },
-    });
-
-    // Add team members
-    bookings.forEach(booking => {
-      notifications.push({
-        organizationId,
-        userId: booking.teamMember.userId,
-        type: 'customer_message',
-        title: 'Ny besked fra kunde',
-        message: 'Du har modtaget en ny besked fra en kunde',
-        data: { customerId, jobId },
-      });
-    });
+    // TODO: Add teamMember relation to Booking or find alternative way to get assigned team members
+    // For now, only notify admins and owners
 
     // Add admins and owners
     const users = await this.prisma.renosUser.findMany({
@@ -386,26 +367,8 @@ export class NotificationService {
       });
     }
 
-    // Notify assigned team members
-    const bookings = await this.prisma.renosBooking.findMany({
-      where: { leadId: jobId },
-      include: {
-        teamMember: {
-          select: { userId: true },
-        },
-      },
-    });
-
-    bookings.forEach(booking => {
-      notifications.push({
-        organizationId,
-        userId: booking.teamMember.userId,
-        type: 'schedule_change',
-        title: 'Tidsplan ændret',
-        message: `Job flyttet til ${new Date(newDate).toLocaleDateString('da-DK')}`,
-        data: { jobId, oldDate, newDate },
-      });
-    });
+    // TODO: Add teamMember relation to Booking or find alternative way to get assigned team members
+    // For now, skip team member notifications
 
     if (notifications.length > 0) {
       await this.createBulkNotifications(notifications);
