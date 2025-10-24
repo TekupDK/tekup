@@ -16,10 +16,9 @@ class UpdateProfileDto {
 }
 exports.UpdateProfileDto = UpdateProfileDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({
+    (0, swagger_1.ApiPropertyOptional)({
         example: 'John Doe',
-        description: 'Full name of the user',
-        required: false
+        description: 'Full name of the user'
     }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
@@ -28,33 +27,12 @@ __decorate([
     __metadata("design:type", String)
 ], UpdateProfileDto.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        example: '+45 12 34 56 78',
-        description: 'Phone number',
-        required: false
-    }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsPhoneNumber)(),
-    __metadata("design:type", String)
-], UpdateProfileDto.prototype, "phone", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        example: 'https://example.com/avatar.jpg',
-        description: 'Avatar URL',
-        required: false
+    (0, swagger_1.ApiPropertyOptional)({
+        example: '+4512345678',
+        description: 'Phone number'
     }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateProfileDto.prototype, "avatar_url", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        example: { notifications: { email: true, sms: false } },
-        description: 'User settings object',
-        required: false
-    }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
-], UpdateProfileDto.prototype, "settings", void 0);
+], UpdateProfileDto.prototype, "phone", void 0);
 //# sourceMappingURL=update-profile.dto.js.map

@@ -1,6 +1,6 @@
-import { IsEmail, IsString, IsEnum, IsUUID, IsOptional, MinLength, MaxLength, IsPhoneNumber } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { UserRole } from '../../common/enums/user-role.enum';
+import { IsEmail, IsString, IsEnum, IsOptional, MinLength, MaxLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { UserRole } from '../entities/user.entity';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'john.doe@example.com', description: 'User email address' })
@@ -18,27 +18,21 @@ export class CreateUserDto {
   @MaxLength(100)
   name: string;
 
-  @ApiProperty({ 
+  @ApiPropertyOptional({ 
     enum: UserRole, 
     example: UserRole.EMPLOYEE, 
-    description: 'User role in the organization' 
-  })
-  @IsEnum(UserRole)
-  role: UserRole;
-
-  @ApiProperty({ 
-    example: '00000000-0000-0000-0000-000000000001', 
-    description: 'Organization ID the user belongs to' 
-  })
-  @IsUUID()
-  organizationId: string;
-
-  @ApiProperty({ 
-    example: '+45 12 34 56 78', 
-    description: 'Phone number (optional)',
-    required: false 
+    description: 'User role in the system',
+    default: UserRole.EMPLOYEE
   })
   @IsOptional()
-  @IsPhoneNumber()
+  @IsEnum(UserRole)
+  role?: UserRole;
+
+  @ApiPropertyOptional({ 
+    example: '+4512345678', 
+    description: 'Phone number (optional)'
+  })
+  @IsOptional()
+  @IsString()
   phone?: string;
 }

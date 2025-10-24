@@ -12,6 +12,7 @@ const config_1 = require("@nestjs/config");
 const throttler_1 = require("@nestjs/throttler");
 const customers_module_1 = require("./customers/customers.module");
 const leads_module_1 = require("./leads/leads.module");
+const auth_module_1 = require("./auth/auth.module");
 const database_module_1 = require("./database/database.module");
 const health_module_1 = require("./health/health.module");
 const configuration_1 = require("./config/configuration");
@@ -36,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
             health_module_1.HealthModule,
             customers_module_1.CustomersModule,
             leads_module_1.LeadsModule,
+            auth_module_1.AuthModule,
         ],
     })
 ], AppModule);
