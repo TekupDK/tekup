@@ -14,37 +14,44 @@ const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 class CreateTimeEntryDto {
     constructor() {
-        this.break_duration = 0;
+        this.breakDuration = 0;
     }
 }
 exports.CreateTimeEntryDto = CreateTimeEntryDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '00000000-0000-0000-0000-000000000001', description: 'Job ID' }),
+    (0, swagger_1.ApiProperty)({ example: 'clxxx...', description: 'Team member ID' }),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], CreateTimeEntryDto.prototype, "job_id", void 0);
+], CreateTimeEntryDto.prototype, "teamMemberId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '00000000-0000-0000-0000-000000000002', description: 'Team member ID' }),
+    (0, swagger_1.ApiPropertyOptional)({ example: 'clyyy...', description: 'Lead ID' }),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], CreateTimeEntryDto.prototype, "team_member_id", void 0);
+], CreateTimeEntryDto.prototype, "leadId", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'clzzz...', description: 'Booking ID' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], CreateTimeEntryDto.prototype, "bookingId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '2024-01-15T08:00:00.000Z', description: 'Start time' }),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], CreateTimeEntryDto.prototype, "start_time", void 0);
+], CreateTimeEntryDto.prototype, "startTime", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: '2024-01-15T10:30:00.000Z', description: 'End time' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], CreateTimeEntryDto.prototype, "end_time", void 0);
+], CreateTimeEntryDto.prototype, "endTime", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 15, description: 'Break duration in minutes' }),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.Min)(0),
     __metadata("design:type", Number)
-], CreateTimeEntryDto.prototype, "break_duration", void 0);
+], CreateTimeEntryDto.prototype, "breakDuration", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 'Completed all tasks on schedule', description: 'Notes about the time entry' }),
     (0, class_validator_1.IsOptional)(),

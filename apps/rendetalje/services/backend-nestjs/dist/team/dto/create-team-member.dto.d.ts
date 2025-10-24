@@ -1,9 +1,9 @@
 import { WeeklyAvailability } from '../entities/team-member.entity';
 export declare class CreateTeamMemberDto {
-    user_id: string;
-    employee_id?: string;
+    userId: string;
+    employeeId?: string;
     skills: string[];
-    hourly_rate?: number;
+    hourlyRate?: number;
     availability: WeeklyAvailability;
-    hire_date?: string;
+    hireDate?: string;
 }

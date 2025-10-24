@@ -8,7 +8,7 @@ export class TeamFiltersDto extends PaginationDto {
   @IsOptional()
   @IsBoolean()
   @Type(() => Boolean)
-  is_active?: boolean;
+  isActive?: boolean;
 
   @ApiPropertyOptional({ 
     description: 'Filter by skills',
@@ -22,10 +22,10 @@ export class TeamFiltersDto extends PaginationDto {
   @ApiPropertyOptional({ example: '2024-01-01', description: 'Hired after date (YYYY-MM-DD)' })
   @IsOptional()
   @IsDateString()
-  hired_after?: string;
+  hiredAfter?: string;
 
   @ApiPropertyOptional({ example: '2024-12-31', description: 'Hired before date (YYYY-MM-DD)' })
   @IsOptional()
   @IsDateString()
-  hired_before?: string;
+  hiredBefore?: string;
 }

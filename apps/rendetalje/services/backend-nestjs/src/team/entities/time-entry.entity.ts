@@ -1,26 +1,31 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { BaseEntity } from '../../common/entities/base.entity';
 
 export interface LocationCoordinates {
   lat: number;
   lng: number;
 }
 
-export class TimeEntry extends BaseEntity {
-  @ApiProperty({ example: '00000000-0000-0000-0000-000000000001', description: 'Job ID' })
-  job_id: string;
+export class TimeEntry {
+  @ApiProperty({ example: 'clxxx...', description: 'Time entry ID' })
+  id: string;
 
-  @ApiProperty({ example: '00000000-0000-0000-0000-000000000002', description: 'Team member ID' })
-  team_member_id: string;
+  @ApiProperty({ example: 'clyyy...', description: 'Team member ID' })
+  teamMemberId: string;
+
+  @ApiPropertyOptional({ example: 'clzzz...', description: 'Lead ID' })
+  leadId?: string;
+
+  @ApiPropertyOptional({ example: 'clkkk...', description: 'Booking ID' })
+  bookingId?: string;
 
   @ApiProperty({ example: '2024-01-15T08:00:00.000Z', description: 'Start time' })
-  start_time: string;
+  startTime: Date;
 
   @ApiPropertyOptional({ example: '2024-01-15T10:30:00.000Z', description: 'End time' })
-  end_time?: string;
+  endTime?: Date;
 
   @ApiProperty({ example: 15, description: 'Break duration in minutes' })
-  break_duration: number;
+  breakDuration: number;
 
   @ApiPropertyOptional({ example: 'Completed all tasks on schedule', description: 'Notes about the time entry' })
   notes?: string;
@@ -30,4 +35,10 @@ export class TimeEntry extends BaseEntity {
     example: { lat: 55.6761, lng: 12.5683 }
   })
   location?: LocationCoordinates;
+
+  @ApiProperty({ description: 'Creation timestamp' })
+  createdAt: Date;
+
+  @ApiProperty({ description: 'Last update timestamp' })
+  updatedAt: Date;
 }

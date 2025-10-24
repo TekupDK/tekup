@@ -1,4 +1,3 @@
-import { OrganizationEntity } from '../../common/entities/base.entity';
 export interface WeeklyAvailability {
     monday?: {
         start: string;
@@ -37,22 +36,25 @@ export interface WeeklyAvailability {
     };
 }
 export interface PerformanceMetrics {
-    jobs_completed: number;
-    average_job_duration: number;
-    average_quality_score: number;
-    customer_satisfaction: number;
-    punctuality_score: number;
-    efficiency_rating: number;
-    total_hours_worked: number;
-    overtime_hours: number;
+    jobsCompleted: number;
+    averageJobDuration: number;
+    averageQualityScore: number;
+    customerSatisfaction: number;
+    punctualityScore: number;
+    efficiencyRating: number;
+    totalHoursWorked: number;
+    overtimeHours: number;
 }
-export declare class TeamMember extends OrganizationEntity {
-    user_id: string;
-    employee_id: string;
+export declare class TeamMember {
+    id: string;
+    userId: string;
+    employeeId: string;
     skills: string[];
-    hourly_rate?: number;
+    hourlyRate?: number;
     availability: WeeklyAvailability;
-    performance_metrics: PerformanceMetrics;
-    is_active: boolean;
-    hire_date?: string;
+    performanceMetrics: PerformanceMetrics;
+    isActive: boolean;
+    hireDate?: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }

@@ -3,23 +3,28 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 
 export class TimeEntryFiltersDto extends PaginationDto {
-  @ApiPropertyOptional({ example: '00000000-0000-0000-0000-000000000001', description: 'Filter by job ID' })
+  @ApiPropertyOptional({ example: 'clxxx...', description: 'Filter by lead ID' })
   @IsOptional()
   @IsUUID()
-  job_id?: string;
+  leadId?: string;
 
-  @ApiPropertyOptional({ example: '00000000-0000-0000-0000-000000000002', description: 'Filter by team member ID' })
+  @ApiPropertyOptional({ example: 'clyyy...', description: 'Filter by booking ID' })
   @IsOptional()
   @IsUUID()
-  team_member_id?: string;
+  bookingId?: string;
+
+  @ApiPropertyOptional({ example: 'clzzz...', description: 'Filter by team member ID' })
+  @IsOptional()
+  @IsUUID()
+  teamMemberId?: string;
 
   @ApiPropertyOptional({ example: '2024-01-01', description: 'Filter by date from (YYYY-MM-DD)' })
   @IsOptional()
   @IsDateString()
-  date_from?: string;
+  dateFrom?: string;
 
   @ApiPropertyOptional({ example: '2024-01-31', description: 'Filter by date to (YYYY-MM-DD)' })
   @IsOptional()
   @IsDateString()
-  date_to?: string;
+  dateTo?: string;
 }

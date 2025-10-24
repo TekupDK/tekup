@@ -281,9 +281,58 @@ model RenosUser {
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
+  teamMember   RenosTeamMember?
+
   @@index([email])
   @@index([role])
   @@map("users")
+  @@schema("renos")
+}
+
+// Team Management
+model RenosTeamMember {
+  id                 String   @id @default(cuid())
+  userId             String   @unique @map("user_id")
+  employeeId         String   @unique @map("employee_id")
+  skills             String[]
+  hourlyRate         Float?   @map("hourly_rate")
+  availability       Json     @default("{}")
+  performanceMetrics Json     @default("{}") @map("performance_metrics")
+  isActive           Boolean  @default(true) @map("is_active")
+  hireDate           DateTime? @map("hire_date") @db.Date
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user        RenosUser       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timeEntries RenosTimeEntry[]
+
+  @@index([userId])
+  @@index([employeeId])
+  @@index([isActive])
+  @@map("team_members")
+  @@schema("renos")
+}
+
+model RenosTimeEntry {
+  id             String    @id @default(cuid())
+  teamMemberId   String    @map("team_member_id")
+  leadId         String?   @map("lead_id")
+  bookingId      String?   @map("booking_id")
+  startTime      DateTime  @map("start_time") @db.Timestamptz
+  endTime        DateTime? @map("end_time") @db.Timestamptz
+  breakDuration  Int       @default(0) @map("break_duration")
+  notes          String?   @db.Text
+  location       Json?
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  teamMember RenosTeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@index([teamMemberId])
+  @@index([leadId])
+  @@index([bookingId])
+  @@index([startTime])
+  @@map("time_entries")
   @@schema("renos")
 }
 

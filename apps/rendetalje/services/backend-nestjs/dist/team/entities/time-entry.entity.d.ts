@@ -1,14 +1,17 @@
-import { BaseEntity } from '../../common/entities/base.entity';
 export interface LocationCoordinates {
     lat: number;
     lng: number;
 }
-export declare class TimeEntry extends BaseEntity {
-    job_id: string;
-    team_member_id: string;
-    start_time: string;
-    end_time?: string;
-    break_duration: number;
+export declare class TimeEntry {
+    id: string;
+    teamMemberId: string;
+    leadId?: string;
+    bookingId?: string;
+    startTime: Date;
+    endTime?: Date;
+    breakDuration: number;
     notes?: string;
     location?: LocationCoordinates;
+    createdAt: Date;
+    updatedAt: Date;
 }

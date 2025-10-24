@@ -23,7 +23,7 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     (0, class_transformer_1.Type)(() => Boolean),
     __metadata("design:type", Boolean)
-], TeamFiltersDto.prototype, "is_active", void 0);
+], TeamFiltersDto.prototype, "isActive", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({
         description: 'Filter by skills',
@@ -39,11 +39,11 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], TeamFiltersDto.prototype, "hired_after", void 0);
+], TeamFiltersDto.prototype, "hiredAfter", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: '2024-12-31', description: 'Hired before date (YYYY-MM-DD)' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], TeamFiltersDto.prototype, "hired_before", void 0);
+], TeamFiltersDto.prototype, "hiredBefore", void 0);
 //# sourceMappingURL=team-filters.dto.js.map
