@@ -351,7 +351,7 @@ export const flow = {
     return prisma.flowVariable.upsert({
       where: {
         workflowId_key: {
-          workflowId: workflowId || null,
+          workflowId: workflowId ?? '',
           key,
         },
       },
@@ -373,7 +373,7 @@ export const flow = {
     return prisma.flowVariable.findUnique({
       where: {
         workflowId_key: {
-          workflowId: workflowId || null,
+          workflowId: workflowId ?? '',
           key,
         },
       },
@@ -400,7 +400,7 @@ export const flow = {
         date_metric_workflowId: {
           date,
           metric,
-          workflowId: workflowId || null,
+          workflowId: workflowId ?? '',
         },
       },
       create: { date, metric, value, workflowId, metadata },

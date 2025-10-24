@@ -1,17 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { AuthModule } from './modules/auth/auth.module';
-import { JobsModule } from './modules/jobs/jobs.module';
-import { CustomersModule } from './modules/customers/customers.module';
-import { TeamModule } from './modules/team/team.module';
-import { BillingModule } from './modules/billing/billing.module';
-import { AiFridayModule } from './modules/ai-friday/ai-friday.module';
-import { IntegrationsModule } from './modules/integrations/integrations.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
-import { AnalyticsModule } from './modules/analytics/analytics.module';
-import { SupabaseModule } from './modules/supabase/supabase.module';
+// import { AuthModule } from './auth/auth.module';  // Disabled - needs Prisma conversion
+// import { JobsModule } from './jobs/jobs.module';  // Disabled - needs Prisma conversion
+// import { CustomersModule } from './customers/customers.module'; // Disabled - field name mismatches
+// import { TeamModule } from './team/team.module';  // Disabled - needs Prisma conversion
+// import { AiFridayModule } from './ai-friday/ai-friday.module';  // Disabled - needs Prisma conversion
+// import { IntegrationsModule } from './integrations/integrations.module'; // Disabled - check dependencies
 import { LoggerModule } from './common/logger/logger.module';
+import { DatabaseModule } from './database/database.module';
+import { HealthModule } from './health/health.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -32,17 +30,19 @@ import configuration from './config/configuration';
     ]),
 
     // Core modules
-    LoggerModule,
-    SupabaseModule,
-    AuthModule,
-    JobsModule,
-    CustomersModule,
-    TeamModule,
-    BillingModule,
-    AiFridayModule,
-    IntegrationsModule,
-    NotificationsModule,
-    AnalyticsModule,
+    // LoggerModule,  // Temporarily disabled - dependency issue
+    DatabaseModule,
+    HealthModule,
+
+    // Business modules - All disabled for minimal backend
+    // CustomersModule, // DISABLED: Field name mismatches with new Prisma schema (35+ errors)
+    
+    // TODO: Convert remaining modules from Supabase to Prisma
+    // AuthModule, // Uses Supabase Auth
+    // JobsModule, // 100+ Supabase queries
+    // TeamModule, // 50+ Supabase queries
+    // AiFridayModule, // Uses Supabase
+    // IntegrationsModule, // Check dependencies
   ],
 })
 export class AppModule {}
