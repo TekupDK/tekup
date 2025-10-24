@@ -281,7 +281,10 @@ model RenosUser {
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
-  teamMember   RenosTeamMember?
+  teamMember                RenosTeamMember?
+  submittedCorrections      RenosTimeCorrection[] @relation("CorrectionSubmitter")
+  approvedCorrections       RenosTimeCorrection[] @relation("CorrectionApprover")
+  rejectedCorrections       RenosTimeCorrection[] @relation("CorrectionRejecter")
 
   @@index([email])
   @@index([role])
@@ -326,13 +329,47 @@ model RenosTimeEntry {
   createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
-  teamMember RenosTeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  teamMember  RenosTeamMember      @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  corrections RenosTimeCorrection[]
 
   @@index([teamMemberId])
   @@index([leadId])
   @@index([bookingId])
   @@index([startTime])
   @@map("time_entries")
+  @@schema("renos")
+}
+
+model RenosTimeCorrection {
+  id                     String    @id @default(cuid())
+  originalEntryId        String    @map("original_entry_id")
+  originalStartTime      DateTime  @map("original_start_time") @db.Timestamptz
+  originalEndTime        DateTime? @map("original_end_time") @db.Timestamptz
+  originalBreakDuration  Int       @map("original_break_duration")
+  correctedStartTime     DateTime  @map("corrected_start_time") @db.Timestamptz
+  correctedEndTime       DateTime? @map("corrected_end_time") @db.Timestamptz
+  correctedBreakDuration Int       @map("corrected_break_duration")
+  reason                 String    @db.Text
+  status                 String    @default("pending")
+  submittedBy            String    @map("submitted_by")
+  approvedBy             String?   @map("approved_by")
+  approvedAt             DateTime? @map("approved_at") @db.Timestamptz
+  rejectedBy             String?   @map("rejected_by")
+  rejectedAt             DateTime? @map("rejected_at") @db.Timestamptz
+  rejectionReason        String?   @map("rejection_reason") @db.Text
+  createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  originalEntry RenosTimeEntry @relation(fields: [originalEntryId], references: [id], onDelete: Cascade)
+  submitter     RenosUser      @relation("CorrectionSubmitter", fields: [submittedBy], references: [id])
+  approver      RenosUser?     @relation("CorrectionApprover", fields: [approvedBy], references: [id])
+  rejecter      RenosUser?     @relation("CorrectionRejecter", fields: [rejectedBy], references: [id])
+
+  @@index([originalEntryId])
+  @@index([submittedBy])
+  @@index([status])
+  @@index([createdAt])
+  @@map("time_corrections")
   @@schema("renos")
 }
 

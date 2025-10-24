@@ -1,18 +1,20 @@
-import { BaseEntity } from '../../common/entities/base.entity';
-export declare class TimeCorrection extends BaseEntity {
-    original_entry_id: string;
-    original_start_time: string;
-    original_end_time?: string;
-    original_break_duration: number;
-    corrected_start_time: string;
-    corrected_end_time?: string;
-    corrected_break_duration: number;
+export declare class TimeCorrection {
+    id: string;
+    originalEntryId: string;
+    originalStartTime: Date;
+    originalEndTime?: Date;
+    originalBreakDuration: number;
+    correctedStartTime: Date;
+    correctedEndTime?: Date;
+    correctedBreakDuration: number;
     reason: string;
-    status: 'pending' | 'approved' | 'rejected';
-    submitted_by: string;
-    approved_by?: string;
-    approved_at?: string;
-    rejected_by?: string;
-    rejected_at?: string;
-    rejection_reason?: string;
+    status: string;
+    submittedBy: string;
+    approvedBy?: string;
+    approvedAt?: Date;
+    rejectedBy?: string;
+    rejectedAt?: Date;
+    rejectionReason?: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
