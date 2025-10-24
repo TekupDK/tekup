@@ -244,26 +244,34 @@ model BillyRateLimit {
 
 // Chat System
 model RenosChatSession {
-  id        String              @id @default(cuid())
-  userId    String?
-  channel   String?
-  locale    String?
-  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime            @updatedAt @map("updated_at") @db.Timestamptz
-  messages  RenosChatMessage[]
+  id             String              @id @default(cuid())
+  userId         String              @map("user_id")
+  organizationId String              @map("organization_id")
+  context        String              // User role context (owner, admin, employee, customer)
+  title          String?
+  metadata       Json?               // Store current page, selected IDs, preferences
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+  messages       RenosChatMessage[]
 
+  @@index([userId])
+  @@index([organizationId])
+  @@index([updatedAt])
   @@map("chat_sessions")
   @@schema("renos")
 }
 
 model RenosChatMessage {
-  id        String            @id @default(cuid())
-  sessionId String            @map("session_id")
-  role      String
-  content   String            @db.Text
-  timestamp DateTime          @default(now()) @db.Timestamptz
+  id        String           @id @default(cuid())
+  sessionId String           @map("session_id")
+  role      String           // 'user' or 'assistant'
+  content   String           @db.Text
+  metadata  Json?            // Store actions, suggestions, data from AI response
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz
   session   RenosChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
+  @@index([sessionId])
+  @@index([createdAt])
   @@map("chat_messages")
   @@schema("renos")
 }
