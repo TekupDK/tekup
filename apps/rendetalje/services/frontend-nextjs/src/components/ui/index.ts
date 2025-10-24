@@ -13,3 +13,5 @@ export type { BadgeProps } from './Badge';
 
 export { Modal, ModalFooter } from './Modal';
 export type { ModalProps, ModalFooterProps } from './Modal';
+
+export { Spinner, LoadingOverlay, LoadingState } from './Spinner';
