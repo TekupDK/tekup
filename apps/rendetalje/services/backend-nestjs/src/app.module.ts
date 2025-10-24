@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CustomersModule } from './customers/customers.module';
 // import { AuthModule } from './auth/auth.module';  // Disabled - needs Prisma conversion
 // import { JobsModule } from './jobs/jobs.module';  // Disabled - needs Prisma conversion
-// import { CustomersModule } from './customers/customers.module'; // Disabled - field name mismatches
 // import { TeamModule } from './team/team.module';  // Disabled - needs Prisma conversion
 // import { AiFridayModule } from './ai-friday/ai-friday.module';  // Disabled - needs Prisma conversion
 // import { IntegrationsModule } from './integrations/integrations.module'; // Disabled - check dependencies
@@ -34,8 +34,8 @@ import configuration from './config/configuration';
     DatabaseModule,
     HealthModule,
 
-    // Business modules - All disabled for minimal backend
-    // CustomersModule, // DISABLED: Field name mismatches with new Prisma schema (35+ errors)
+    // Business modules
+    CustomersModule, // ✅ ENABLED: Converted to Prisma
     
     // TODO: Convert remaining modules from Supabase to Prisma
     // AuthModule, // Uses Supabase Auth
