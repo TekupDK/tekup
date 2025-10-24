@@ -290,6 +290,7 @@ model RenosUser {
   consentRecords            RenosConsentRecord[]
   qualityAssessments        RenosQualityAssessment[]
   uploadedPhotos            RenosPhotoDocumentation[]
+  notifications             RenosNotification[] @relation("UserNotifications")
 
   @@index([email])
   @@index([role])
@@ -445,6 +446,31 @@ model RenosPhotoDocumentation {
   @@index([uploadedBy])
   @@index([timestamp])
   @@map("photo_documentation")
+  @@schema("renos")
+}
+
+// Notifications & Real-time
+model RenosNotification {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String   @map("user_id")
+  type           String
+  title          String
+  message        String   @db.Text
+  data           Json?
+  isRead         Boolean  @default(false) @map("is_read")
+  readAt         DateTime? @map("read_at") @db.Timestamptz
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user RenosUser @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([isRead])
+  @@index([type])
+  @@index([createdAt])
+  @@map("notifications")
   @@schema("renos")
 }
 
