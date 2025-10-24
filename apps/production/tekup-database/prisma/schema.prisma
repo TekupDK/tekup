@@ -290,6 +290,7 @@ model RenosUser {
   consentRecords            RenosConsentRecord[]
   qualityAssessments        RenosQualityAssessment[]
   uploadedPhotos            RenosPhotoDocumentation[]
+  notifications             RenosNotification[] @relation("UserNotifications")
 
   @@index([email])
   @@index([role])
@@ -445,6 +446,79 @@ model RenosPhotoDocumentation {
   @@index([uploadedBy])
   @@index([timestamp])
   @@map("photo_documentation")
+  @@schema("renos")
+}
+
+// Notifications & Real-time
+model RenosNotification {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String   @map("user_id")
+  type           String
+  title          String
+  message        String   @db.Text
+  data           Json?
+  isRead         Boolean  @default(false) @map("is_read")
+  readAt         DateTime? @map("read_at") @db.Timestamptz
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user RenosUser @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([isRead])
+  @@index([type])
+  @@index([createdAt])
+  @@map("notifications")
+  @@schema("renos")
+}
+
+// Security & Audit
+model RenosAuditLog {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String?  @map("user_id")
+  action         String
+  entityType     String   @map("entity_type")
+  entityId       String?  @map("entity_id")
+  oldValues      Json?    @map("old_values")
+  newValues      Json?    @map("new_values")
+  ipAddress      String?  @map("ip_address")
+  userAgent      String?  @map("user_agent") @db.Text
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([action])
+  @@index([entityType])
+  @@index([createdAt])
+  @@map("audit_logs")
+  @@schema("renos")
+}
+
+model RenosSecurityEvent {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String?  @map("user_id")
+  eventType      String   @map("event_type")
+  severity       String   // low, medium, high, critical
+  description    String   @db.Text
+  metadata       Json?
+  ipAddress      String?  @map("ip_address")
+  userAgent      String?  @map("user_agent") @db.Text
+  resolved       Boolean  @default(false)
+  resolvedAt     DateTime? @map("resolved_at") @db.Timestamptz
+  resolvedBy     String?  @map("resolved_by")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([eventType])
+  @@index([severity])
+  @@index([resolved])
+  @@index([createdAt])
+  @@map("security_events")
   @@schema("renos")
 }
 
