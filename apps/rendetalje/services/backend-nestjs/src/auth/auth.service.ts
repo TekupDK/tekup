@@ -17,9 +17,14 @@ export class AuthService {
   async register(createUserDto: CreateUserDto): Promise<{ user: User; accessToken: string }> {
     const { email, password, name, role, organizationId, phone } = createUserDto;
 
-    // Check if user already exists
-    const { data: existingUser } = await this.supabaseService.client.auth.admin.getUserByEmail(email);
-    if (existingUser.user) {
+    // Check if user already exists by querying database
+    const { data: existingUser } = await this.supabaseService.client
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (existingUser) {
       throw new ConflictException('User with this email already exists');
     }
 
