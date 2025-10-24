@@ -9,7 +9,7 @@
 
 > 📊 **Status:** ✅ Fully synced across PC1 (empir) and PC2 (Jonas-dev)  
 > 📁 **Total:** 700+ files, 150,000+ lines of code  
-> 🔐 **Secrets:** Git-crypt encrypted (requires unlock)
+> 🔐 **Secrets:** Git submodule (private repo: TekupDK/tekup-secrets)
 
 ---
 
@@ -28,7 +28,7 @@ Tekup/ (MONOREPO - everything in one repo!)
 ├── services/              → Backend services & APIs
 │   ├── tekup-ai/
 │   └── tekup-gmail-services/
-├── tekup-secrets/         → Encrypted secrets (git-crypt)
+├── tekup-secrets/         → Git submodule (TekupDK/tekup-secrets - private)
 ├── archive/               → Legacy projects (read-only)
 ├── docs/                  → Documentation hub
 ├── scripts/               → Build & deployment automation
@@ -107,22 +107,29 @@ Tekup/ (MONOREPO - everything in one repo!)
 
 ### **Setup for PC2 (First Time)**
 
-1. **Clone or navigate to workspace:**
+1. **Clone workspace:**
 
    ```bash
-   cd C:\Users\Jonas-dev\Tekup-Monorepo
-   git pull origin master
+   git clone https://github.com/TekupDK/tekup.git
+   cd tekup
    ```
 
-2. **Unlock secrets (requires git-crypt):**
+2. **Initialize secrets submodule:**
 
-   ```bash
-   # Install git-crypt: https://github.com/AGWA/git-crypt/releases
-   git-crypt unlock tekup-git-crypt.key
+   ```powershell
+   # Automated setup (recommended)
+   .\setup-new-machine.ps1
 
+   # Or manual setup:
+   git submodule init
+   git submodule update --recursive
+   
    # Verify secrets are readable:
-   cat tekup-secrets/.env.development
+   Get-Content tekup-secrets\config\mcp.env -First 5
    ```
+
+   **Note:** Requires access to `TekupDK/tekup-secrets` (private repo).  
+   Request access from @JonasAbde if you get "repository not found" error.
 
 3. **Install dependencies (choose project):**
 
