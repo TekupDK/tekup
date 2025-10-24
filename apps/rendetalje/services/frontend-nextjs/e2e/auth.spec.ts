@@ -37,24 +37,26 @@ test.describe('Authentication Flow', () => {
   });
 
   test('should login with valid credentials', async ({ page }) => {
-    // Fill in login form
-    await page.getByLabel(/e-mail/i).fill('owner@example.com');
-    await page.getByLabel(/adgangskode/i).fill('securePassword123');
-    await page.getByRole('button', { name: /log ind/i }).click();
+    // Fill in login form (use v1.2.0 credentials)
+    await page.fill('input[type="email"]', 'admin@rendetalje.dk');
+    await page.fill('input[type="password"]', 'admin123');
+    await page.click('button[type="submit"]');
     
     // Should redirect to dashboard
+    await page.waitForURL('**/dashboard');
     await expect(page).toHaveURL(/\/dashboard/);
     
-    // Should show user menu
-    await expect(page.getByRole('button', { name: /bruger menu/i })).toBeVisible();
+    // Should show user email in header
+    await expect(page.getByText('admin@rendetalje.dk')).toBeVisible();
   });
 
   test('should persist session after page reload', async ({ page }) => {
-    // Login first
-    await page.getByLabel(/e-mail/i).fill('owner@example.com');
-    await page.getByLabel(/adgangskode/i).fill('securePassword123');
-    await page.getByRole('button', { name: /log ind/i }).click();
+    // Login first (use v1.2.0 credentials)
+    await page.fill('input[type="email"]', 'admin@rendetalje.dk');
+    await page.fill('input[type="password"]', 'admin123');
+    await page.click('button[type="submit"]');
     
+    await page.waitForURL('**/dashboard');
     await expect(page).toHaveURL(/\/dashboard/);
     
     // Reload page
@@ -62,7 +64,7 @@ test.describe('Authentication Flow', () => {
     
     // Should still be logged in
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.getByRole('button', { name: /bruger menu/i })).toBeVisible();
+    await expect(page.getByText('admin@rendetalje.dk')).toBeVisible();
   });
 
   test('should logout successfully', async ({ page }) => {
