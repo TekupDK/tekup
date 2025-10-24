@@ -12,11 +12,13 @@
 ### ❓ Spørgsmål 1: Hvad hedder PC1's mappe?
 
 **Svar:**
+
 ```
 C:\Users\empir\Tekup\
 ```
 
 **Details:**
+
 - ✅ Mappe navn: `Tekup` (PascalCase, uden "-Monorepo")
 - ✅ GitHub repo: `TekupDK/tekup`
 - ⚠️ **INKONSISTENT:** PC1 bruger `Tekup`, PC2 bruger `Tekup-Monorepo`
@@ -30,25 +32,29 @@ C:\Users\empir\Tekup\
 **Svar:** ✅ JA - fundet i 3 scripts:
 
 #### 1. `scripts/push-all-to-github.ps1`
+
 ```powershell
 # Linje 85:
 $baseDir = "c:\Users\empir\Tekup"
 ```
 
 #### 2. `scripts/utilities/quick-commit.ps1`
+
 ```powershell
 # Linje 1:
 cd c:\Users\empir\Tekup
 ```
 
 #### 3. `tekup-secrets/scripts/sync-to-project.ps1`
+
 ```powershell
 # Linje 41-42:
 $secretsRoot = "C:\Users\empir\Tekup\tekup-secrets"
 $projectsRoot = "C:\Users\empir\Tekup"
 ```
 
-**Konklusion:** 
+**Konklusion:**
+
 - Alle 3 scripts bruger hardcoded `C:\Users\empir\Tekup`
 - Hvis jeg omdøber, skal disse opdateres
 
@@ -59,11 +65,13 @@ $projectsRoot = "C:\Users\empir\Tekup"
 **Svar:** 🎯 **SENERE** (men snart)
 
 **Rationale:**
+
 1. **Stabilitet først:** Git-crypt lige blevet sat op, PC2 lige unlocked ✅
 2. **Koordinering:** Vi skal omdøbe BEGGE PC1 og PC2 samtidigt
 3. **Testing:** Vil teste scripts efter omdøbning grundigt
 
 **Forslag timing:**
+
 - ⏰ **Weekend (26-27 okt)** når vi begge har tid
 - ✅ PC1 og PC2 koordinerer i samme session
 - ✅ Tester alt bagefter før production arbejde
@@ -82,13 +90,14 @@ $projectsRoot = "C:\Users\empir\Tekup"
 
 **Rationale:**
 
-| Machine | Nuværende | Target | Rationale |
-|---------|-----------|--------|-----------|
-| **PC1** | `Tekup` (PascalCase) | `tekup` ✅ | Match GitHub repo |
-| **PC2** | `Tekup-Monorepo` | `tekup` ✅ | Match GitHub repo |
-| **GitHub** | `tekup` | N/A | Already correct ✅ |
+| Machine    | Nuværende            | Target     | Rationale          |
+| ---------- | -------------------- | ---------- | ------------------ |
+| **PC1**    | `Tekup` (PascalCase) | `tekup` ✅ | Match GitHub repo  |
+| **PC2**    | `Tekup-Monorepo`     | `tekup` ✅ | Match GitHub repo  |
+| **GitHub** | `tekup`              | N/A        | Already correct ✅ |
 
 **Fordele:**
+
 - ✅ Konsistent på tværs af PC1, PC2, og GitHub
 - ✅ Standard git convention: `git clone tekup.git` → `tekup/`
 - ✅ Lowercase = Linux-friendly (hvis vi deployer til Linux servers)
@@ -104,6 +113,7 @@ $projectsRoot = "C:\Users\empir\Tekup"
 **Koordineret plan:**
 
 ### PC1 vil:
+
 1. ✅ Omdøbe `C:\Users\empir\Tekup` → `C:\Users\empir\tekup`
 2. ✅ Opdatere 3 scripts med hardcoded paths
 3. ✅ Opdatere `Tekup-Portfolio.code-workspace` paths
@@ -111,6 +121,7 @@ $projectsRoot = "C:\Users\empir\Tekup"
 5. ✅ Notificere PC2 når klar
 
 ### PC2 skal:
+
 1. ✅ Omdøbe `C:\Users\Jonas-dev\Tekup-Monorepo` → `C:\Users\Jonas-dev\tekup`
 2. ✅ Opdatere workspace file
 3. ✅ Pull PC1's ændringer (scripts updates)
@@ -123,12 +134,14 @@ $projectsRoot = "C:\Users\empir\Tekup"
 **Når:** 🗓️ Weekend (26-27 Oktober 2025)
 
 **Hvorfor ikke nu:**
+
 - ⏰ Torsdag eftermiddag - midt i arbejdsuge
 - ✅ Git-crypt lige blevet sat op og testet
 - ✅ PC2 lige unlocked secrets successfully
 - 🎯 Vil ikke risikere breaking changes midt i produktivt arbejde
 
 **Hvad vi gør indtil da:**
+
 - ✅ Fortsæt med nuværende mappe navne
 - ✅ Git fungerer perfekt (det er kun lokale paths)
 - ✅ Planlæg migration scripts
@@ -138,6 +151,7 @@ $projectsRoot = "C:\Users\empir\Tekup"
 ## 🔧 MIGRATION PLAN (PC1)
 
 ### Pre-migration Checklist:
+
 ```powershell
 # 1. Backup git-crypt key (hvis ikke allerede)
 Copy-Item C:\Users\empir\Desktop\tekup-git-crypt.key D:\Backup\
@@ -153,6 +167,7 @@ git push origin master
 ```
 
 ### Migration Steps:
+
 ```powershell
 # 1. Omdøb mappe
 cd C:\Users\empir\
@@ -192,6 +207,7 @@ code Tekup-Portfolio.code-workspace
 ```
 
 ### Post-migration Validation:
+
 ```powershell
 # 1. Test git operations
 git status
@@ -214,18 +230,22 @@ cd ..\scripts
 ## 📢 TIL PC2
 
 ### Status:
+
 ✅ **PC1 er enig i at omdøbe til `tekup` (lowercase)**
 
 ### Koordinering:
+
 🗓️ **Lad os gøre det i weekend (26-27 okt)** når vi begge har ro til det
 
 ### Hvad PC2 skal vide:
+
 1. ✅ PC1 bruger `Tekup` (PascalCase) - skal også omdøbes
 2. ✅ PC1 har 3 scripts med hardcoded paths
 3. ✅ Vi omdøber BEGGE til `tekup` (lowercase) for konsistens
 4. ✅ PC1 committer script updates først, så PC2 kan pull
 
 ### Workflow i weekend:
+
 ```
 PC1 (empir):                    PC2 (Jonas-dev):
 ├─ Omdøb Tekup → tekup          ├─ Vent på PC1's commit
@@ -242,12 +262,14 @@ PC1 (empir):                    PC2 (Jonas-dev):
 ## 🎓 OPSUMMERING
 
 ### PC1's Svar:
+
 1. ✅ **PC1's mappe:** `C:\Users\empir\Tekup` (PascalCase, inkonsistent)
 2. ✅ **Hardcoded paths:** Ja - 3 scripts fundet
 3. 🗓️ **Timing:** Weekend (26-27 okt) - koordineret med PC2
 4. 🎯 **Beslutning:** PC1 omdøber også til `tekup` (lowercase)
 
 ### Endeligt mål:
+
 ```
 ✅ PC1:     C:\Users\empir\tekup\
 ✅ PC2:     C:\Users\Jonas-dev\tekup\
@@ -258,6 +280,7 @@ PC1 (empir):                    PC2 (Jonas-dev):
 ```
 
 ### Indtil weekend:
+
 - ✅ Fortsæt som nu (intet går i stykker)
 - ✅ Git virker perfekt
 - ✅ Planlæg migration i ro og mag
