@@ -28,7 +28,7 @@ import { ApiPaginatedResponse } from '../common/decorators/api-paginated-respons
 import { PaginatedResponseDto } from '../common/dto/pagination.dto';
 
 @ApiTags('Team')
-@Controller('api/v1/team')
+@Controller('team')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class TeamController {
