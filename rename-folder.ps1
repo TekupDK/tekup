@@ -135,22 +135,25 @@ if ($commit -eq "yes") {
     Write-Host "📤 Committing changes..." -ForegroundColor Cyan
     
     git add -A
-    git commit -m "refactor(pc2): rename workspace folder Tekup-Monorepo -> tekup for consistency with GitHub repo
+    $commitMsg = @"
+refactor(pc2): rename workspace folder Tekup-Monorepo -> tekup for consistency with GitHub repo
 
 BREAKING CHANGE: Workspace folder renamed
-- Local path: C:\Users\Jonas-dev\Tekup-Monorepo -> C:\Users\Jonas-dev\tekup
-- Updated workspace file paths
-- Updated $updatedCount markdown documentation files
-- Git remote unchanged (TekupDK/tekup)
-- All functionality preserved
+* Local path: C:\Users\Jonas-dev\Tekup-Monorepo -> C:\Users\Jonas-dev\tekup
+* Updated workspace file paths
+* Updated $updatedCount markdown documentation files
+* Git remote unchanged (TekupDK/tekup)
+* All functionality preserved
 
 Coordinated with PC1 (empir) who will rename C:\Users\empir\Tekup -> tekup
 
 Rationale:
-- Match GitHub repository name (tekup)
-- Standard git convention (repo name = folder name)
-- Consistency across PC1 and PC2
-- Linux-friendly lowercase naming"
+* Match GitHub repository name (tekup)
+* Standard git convention (repo name = folder name)
+* Consistency across PC1 and PC2
+* Linux-friendly lowercase naming
+"@
+    git commit -m $commitMsg
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✓ Changes committed" -ForegroundColor Green
