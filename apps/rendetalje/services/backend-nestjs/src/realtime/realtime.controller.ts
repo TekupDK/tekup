@@ -23,6 +23,7 @@ import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UserRole } from "../common/enums/user-role.enum";
+import { SupabaseService } from '../supabase/supabase.service';
 
 @ApiTags("Real-time & Notifications")
 @Controller("realtime")
@@ -31,7 +32,8 @@ import { UserRole } from "../common/enums/user-role.enum";
 export class RealtimeController {
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly realtimeGateway: RealtimeGateway
+    private readonly realtimeGateway: RealtimeGateway,
+    private readonly supabaseService: SupabaseService
   ) {}
 
   // Notifications

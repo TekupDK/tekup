@@ -17,6 +17,9 @@ export class QualityChecklistsService extends BaseService<QualityChecklist> {
   protected tableName = "quality_checklists";
   protected searchFields = ["name", "description"];
 
+  
+  protected readonly modelName = 'quality_checklists';
+
   constructor(protected readonly supabaseService: SupabaseService) {
     super(supabaseService);
   }

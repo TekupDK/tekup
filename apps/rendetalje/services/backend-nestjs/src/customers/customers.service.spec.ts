@@ -25,7 +25,7 @@ describe("CustomersService", () => {
       country: "Denmark",
     },
     preferences: {
-      preferred_contact_method: "email",
+      contact_method: "email",
       service_frequency: "weekly",
     },
     total_jobs: 10,
@@ -34,8 +34,8 @@ describe("CustomersService", () => {
     is_active: true,
     tags: ["premium", "recurring"],
     notes: "Good customer",
-    created_at: new Date(),
-    updated_at: new Date(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 
   beforeEach(async () => {

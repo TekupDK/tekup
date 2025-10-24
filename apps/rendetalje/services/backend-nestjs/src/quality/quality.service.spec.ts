@@ -340,8 +340,8 @@ describe("QualityService", () => {
 
       const updatesWithItems = {
         completed_items: [
-          { id: "item-1", completed: true, points_earned: 5, notes: "" },
-          { id: "item-2", completed: true, points_earned: 5, notes: "" },
+          { id: "item-1", completed: true, points_earned: 5, notes: "" , photo_urls: []},
+          { id: "item-2", completed: true, points_earned: 5, notes: "" , photo_urls: []},
         ],
       };
 
@@ -608,9 +608,9 @@ describe("QualityService", () => {
   describe("Score Calculation", () => {
     it("should calculate scores correctly for all completed items", () => {
       const items: CompletedChecklistItem[] = [
-        { id: "1", completed: true, points_earned: 5, notes: "" },
-        { id: "2", completed: true, points_earned: 5, notes: "" },
-        { id: "3", completed: true, points_earned: 5, notes: "" },
+        { id: "1", completed: true, points_earned: 5, notes: "" , photo_urls: []},
+        { id: "2", completed: true, points_earned: 5, notes: "" , photo_urls: []},
+        { id: "3", completed: true, points_earned: 5, notes: "" , photo_urls: []},
       ];
 
       const result = service["calculateScores"](items);
@@ -622,9 +622,9 @@ describe("QualityService", () => {
 
     it("should calculate scores correctly for partial completion", () => {
       const items: CompletedChecklistItem[] = [
-        { id: "1", completed: true, points_earned: 5, notes: "" },
-        { id: "2", completed: false, points_earned: 0, notes: "" },
-        { id: "3", completed: true, points_earned: 3, notes: "" },
+        { id: "1", completed: true, points_earned: 5, notes: "" , photo_urls: []},
+        { id: "2", completed: false, points_earned: 0, notes: "" , photo_urls: []},
+        { id: "3", completed: true, points_earned: 3, notes: "" , photo_urls: []},
       ];
 
       const result = service["calculateScores"](items);
@@ -646,8 +646,8 @@ describe("QualityService", () => {
   describe("Extract Issues", () => {
     it("should extract incomplete items as issues", () => {
       const items: CompletedChecklistItem[] = [
-        { id: "item-1", completed: false, points_earned: 0, notes: "" },
-        { id: "item-2", completed: true, points_earned: 5, notes: "" },
+        { id: "item-1", completed: false, points_earned: 0, notes: "" , photo_urls: []},
+        { id: "item-2", completed: true, points_earned: 5, notes: "" , photo_urls: []},
       ];
 
       const result = service["extractIssuesFromCompletedItems"](items);

@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  Req,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -164,5 +165,13 @@ export class AuthController {
   @ApiResponse({ status: 403, description: "Forbidden" })
   async activateUser(@Param("userId") userId: string) {
     return this.authService.activateUser(userId);
+  }
+
+  @Post("logout")
+  @HttpCode(204)
+  async logout(@Req() _req: any) {
+    // For stateless JWT we simply return 204; clients should delete tokens.
+    // If refresh tokens/whitelist are used, revoke here.
+    return;
   }
 }
