@@ -28,7 +28,7 @@ export default defineConfig({
 
   use: {
     // Base URL for all tests (v1.2.0 uses port 3001)
-    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://localhost:3001",
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://localhost:3002",
 
     // Collect trace on first retry
     trace: "on-first-retry",
@@ -68,7 +68,7 @@ export default defineConfig({
   // Start dev server before tests (v1.2.0 uses port 3001)
   webServer: {
     command: "npm run dev",
-    url: "http://localhost:3001",
+    url: "http://localhost:3002",
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
