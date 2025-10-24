@@ -25,8 +25,7 @@ describe("CustomersService", () => {
       country: "Denmark",
     },
     preferences: {
-      contact_method: "email",
-      service_frequency: "weekly",
+      contact_method: "email"
     },
     total_jobs: 10,
     total_revenue: 15000,

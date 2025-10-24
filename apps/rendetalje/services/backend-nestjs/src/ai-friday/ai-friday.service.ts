@@ -361,7 +361,7 @@ Svar altid på dansk og vær hjælpsom og professionel.`;
   async transcribeAudio(audioBuffer: Buffer, language: string = 'da'): Promise<string> {
     try {
       const formData = new FormData();
-      formData.append('audio', new Blob([audioBuffer]), 'audio.wav');
+      formData.append('audio', new Blob([audioBuffer as any]), 'audio.wav');
       formData.append('language', language);
 
       const response = await firstValueFrom(

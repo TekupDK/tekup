@@ -203,7 +203,7 @@ export const validateSchema = <T>(schema: z.ZodSchema<T>, data: unknown): T => {
   return result.data;
 };
 
-export const validatePartialSchema = <T>(schema: z.ZodSchema<T>, data: unknown): Partial<T> => {
+export const validatePartialSchema = <T>(schema: z.ZodObject<any>, data: unknown): Partial<T> => {
   const partialSchema = schema.partial();
   return validateSchema(partialSchema, data);
 };

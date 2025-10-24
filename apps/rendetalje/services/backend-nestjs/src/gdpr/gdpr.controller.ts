@@ -119,7 +119,7 @@ export class GdprController {
   // Admin endpoints
   @Post('privacy-policy')
   @UseGuards(RolesGuard)
-  @Roles('owner', 'admin')
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Update privacy policy (Admin only)' })
   @ApiResponse({ status: 201, description: 'Privacy policy updated successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -134,7 +134,7 @@ export class GdprController {
 
   @Post('cleanup-expired')
   @UseGuards(RolesGuard)
-  @Roles('owner', 'admin')
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Cleanup expired data (Admin only)' })
   @ApiResponse({ status: 200, description: 'Expired data cleanup completed' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -147,7 +147,7 @@ export class GdprController {
 
   @Post('process-deletions')
   @UseGuards(RolesGuard)
-  @Roles('owner', 'admin')
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Process scheduled deletions (Admin only)' })
   @ApiResponse({ status: 200, description: 'Scheduled deletions processed' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

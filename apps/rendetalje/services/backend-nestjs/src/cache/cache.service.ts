@@ -43,9 +43,12 @@ export class CacheService {
           host: redisHost,
           port: redisPort,
           password: redisPassword,
-          retryDelayOnFailover: 100,
           maxRetriesPerRequest: 3,
           lazyConnect: true,
+          retryStrategy: (times) => {
+            if (times > 3) return null; // Stop retrying
+            return Math.min(times * 100, 2000); // Exponential backoff
+          },
         });
       }
 
