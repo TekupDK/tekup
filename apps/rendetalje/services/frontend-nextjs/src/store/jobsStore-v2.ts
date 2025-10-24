@@ -6,6 +6,7 @@
 
 import { create } from 'zustand';
 import { apiClient, ApiError } from '@/lib/api-client';
+import { toastService } from '@/lib/toast';
 import type { Job as ApiJob } from '@/lib/api-client';
 
 export interface Job {
@@ -107,6 +108,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      
+      toastService.error(errorMessage);
     }
   },
   
@@ -142,6 +145,7 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         isLoading: false,
       }));
       
+      toastService.success('Job oprettet succesfuldt');
       return newJob;
     } catch (error) {
       const errorMessage = error instanceof ApiError
@@ -152,6 +156,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      
+      toastService.error(errorMessage);
       throw error;
     }
   },
@@ -169,6 +175,7 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         isLoading: false,
       }));
       
+      toastService.success('Job opdateret succesfuldt');
       return updatedJob;
     } catch (error) {
       const errorMessage = error instanceof ApiError
@@ -179,6 +186,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      
+      toastService.error(errorMessage);
       throw error;
     }
   },
@@ -194,6 +203,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         selectedJob: state.selectedJob?.id === id ? null : state.selectedJob,
         isLoading: false,
       }));
+      
+      toastService.success('Job slettet succesfuldt');
     } catch (error) {
       const errorMessage = error instanceof ApiError
         ? (error.data as { message?: string })?.message || 'Kunne ikke slette job'
@@ -203,6 +214,8 @@ export const useJobsStore = create<JobsState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      
+      toastService.error(errorMessage);
       throw error;
     }
   },

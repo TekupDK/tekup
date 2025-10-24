@@ -6,6 +6,7 @@
 
 import { create } from 'zustand';
 import { apiClient, ApiError } from '@/lib/api-client';
+import { toastService } from '@/lib/toast';
 import type { Customer as ApiCustomer } from '@/lib/api-client';
 
 export interface Customer {
@@ -101,6 +102,8 @@ export const useCustomersStore = create<CustomersState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      
+      toastService.error(errorMessage);
     }
   },
   
@@ -136,6 +139,7 @@ export const useCustomersStore = create<CustomersState>((set, get) => ({
         isLoading: false,
       }));
       
+      toastService.success('Kunde oprettet succesfuldt');
       return newCustomer;
     } catch (error) {
       const errorMessage = error instanceof ApiError
@@ -146,6 +150,8 @@ export const useCustomersStore = create<CustomersState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      
+      toastService.error(errorMessage);
       throw error;
     }
   },
@@ -167,6 +173,7 @@ export const useCustomersStore = create<CustomersState>((set, get) => ({
         isLoading: false,
       }));
       
+      toastService.success('Kunde opdateret succesfuldt');
       return updatedCustomer;
     } catch (error) {
       const errorMessage = error instanceof ApiError
@@ -177,6 +184,8 @@ export const useCustomersStore = create<CustomersState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      
+      toastService.error(errorMessage);
       throw error;
     }
   },
@@ -192,6 +201,8 @@ export const useCustomersStore = create<CustomersState>((set, get) => ({
         selectedCustomer: state.selectedCustomer?.id === id ? null : state.selectedCustomer,
         isLoading: false,
       }));
+      
+      toastService.success('Kunde slettet succesfuldt');
     } catch (error) {
       const errorMessage = error instanceof ApiError
         ? (error.data as { message?: string })?.message || 'Kunne ikke slette kunde'
@@ -201,6 +212,8 @@ export const useCustomersStore = create<CustomersState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      
+      toastService.error(errorMessage);
       throw error;
     }
   },

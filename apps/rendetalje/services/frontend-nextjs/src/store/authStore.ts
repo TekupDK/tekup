@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { apiClient, ApiError } from '@/lib/api-client';
+import { toastService } from '@/lib/toast';
 import type { User as ApiUser } from '@/lib/api-client';
 
 export interface User {
@@ -57,6 +58,8 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error: null,
           });
+          
+          toastService.success(`Velkommen tilbage, ${user.name}!`);
         } catch (error) {
           const errorMessage = error instanceof ApiError 
             ? (error.data as { message?: string })?.message || 'Login fejlede'
@@ -66,6 +69,8 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error: errorMessage,
           });
+          
+          toastService.error(errorMessage);
           throw error;
         }
       },
@@ -98,6 +103,8 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error: null,
           });
+          
+          toastService.success(`Konto oprettet! Velkommen, ${name}!`);
         } catch (error) {
           const errorMessage = error instanceof ApiError 
             ? (error.data as { message?: string })?.message || 'Registrering fejlede'
@@ -107,6 +114,8 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error: errorMessage,
           });
+          
+          toastService.error(errorMessage);
           throw error;
         }
       },
@@ -118,6 +127,7 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
           error: null,
         });
+        toastService.success('Du er nu logget ud');
       },
       
       clearError: () => {
