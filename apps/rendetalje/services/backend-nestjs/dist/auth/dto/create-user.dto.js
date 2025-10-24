@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateUserDto = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
-const user_role_enum_1 = require("../../common/enums/user-role.enum");
+const user_entity_1 = require("../entities/user.entity");
 class CreateUserDto {
 }
 exports.CreateUserDto = CreateUserDto;
@@ -35,30 +35,23 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        enum: user_role_enum_1.UserRole,
-        example: user_role_enum_1.UserRole.EMPLOYEE,
-        description: 'User role in the organization'
+    (0, swagger_1.ApiPropertyOptional)({
+        enum: user_entity_1.UserRole,
+        example: user_entity_1.UserRole.EMPLOYEE,
+        description: 'User role in the system',
+        default: user_entity_1.UserRole.EMPLOYEE
     }),
-    (0, class_validator_1.IsEnum)(user_role_enum_1.UserRole),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(user_entity_1.UserRole),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "role", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        example: '00000000-0000-0000-0000-000000000001',
-        description: 'Organization ID the user belongs to'
-    }),
-    (0, class_validator_1.IsUUID)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "organizationId", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        example: '+45 12 34 56 78',
-        description: 'Phone number (optional)',
-        required: false
+    (0, swagger_1.ApiPropertyOptional)({
+        example: '+4512345678',
+        description: 'Phone number (optional)'
     }),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsPhoneNumber)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "phone", void 0);
 //# sourceMappingURL=create-user.dto.js.map

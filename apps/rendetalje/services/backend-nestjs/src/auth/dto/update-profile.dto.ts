@@ -1,11 +1,10 @@
-import { IsString, IsOptional, MinLength, MaxLength, IsPhoneNumber, IsObject } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsOptional, MinLength, MaxLength } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateProfileDto {
-  @ApiProperty({ 
+  @ApiPropertyOptional({ 
     example: 'John Doe', 
-    description: 'Full name of the user',
-    required: false 
+    description: 'Full name of the user'
   })
   @IsOptional()
   @IsString()
@@ -13,30 +12,11 @@ export class UpdateProfileDto {
   @MaxLength(100)
   name?: string;
 
-  @ApiProperty({ 
-    example: '+45 12 34 56 78', 
-    description: 'Phone number',
-    required: false 
-  })
-  @IsOptional()
-  @IsPhoneNumber()
-  phone?: string;
-
-  @ApiProperty({ 
-    example: 'https://example.com/avatar.jpg', 
-    description: 'Avatar URL',
-    required: false 
+  @ApiPropertyOptional({ 
+    example: '+4512345678', 
+    description: 'Phone number'
   })
   @IsOptional()
   @IsString()
-  avatar_url?: string;
-
-  @ApiProperty({ 
-    example: { notifications: { email: true, sms: false } }, 
-    description: 'User settings object',
-    required: false 
-  })
-  @IsOptional()
-  @IsObject()
-  settings?: Record<string, any>;
+  phone?: string;
 }
