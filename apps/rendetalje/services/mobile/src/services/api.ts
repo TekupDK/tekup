@@ -132,7 +132,7 @@ export const jobsApi = {
     status: 'pending' | 'in_progress' | 'completed' | 'cancelled'
   ) => apiClient.patch(`/jobs/${jobId}/status`, { status }),
 
-  addJobPhoto: (jobId: string, photo: { uri: string; type: 'before' | 'after' }) =>
+  addJobPhoto: (jobId: string, photo: { uri: string; type: 'before' | 'after'; data?: string; timestamp?: number }) =>
     apiClient.post(`/jobs/${jobId}/photos`, photo),
 
   getUpcomingJobs: async (userId?: string): Promise<Job[]> => {
