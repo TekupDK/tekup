@@ -8,8 +8,8 @@ services:
     env: node
     region: frankfurt
     plan: standard
-    buildCommand: cd backend && npm ci && npm run build
-    startCommand: cd backend && npm run start:prod
+    buildCommand: cd services/backend-nestjs && npm ci && npm run build
+    startCommand: cd services/backend-nestjs && npm run start:prod
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -63,8 +63,8 @@ services:
     name: rendetalje-frontend-owner
     env: static
     region: frankfurt
-    buildCommand: cd frontend && npm ci && npm run build:owner
-    staticPublishPath: frontend/out
+    buildCommand: cd services/frontend-nextjs && npm ci && npm run build
+    staticPublishPath: services/frontend-nextjs/out
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://api.rendetalje.dk
@@ -90,8 +90,8 @@ services:
     name: rendetalje-frontend-customer
     env: static
     region: frankfurt
-    buildCommand: cd frontend && npm ci && npm run build:customer
-    staticPublishPath: frontend/out
+    buildCommand: cd services/frontend-nextjs && npm ci && npm run build
+    staticPublishPath: services/frontend-nextjs/out
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://api.rendetalje.dk

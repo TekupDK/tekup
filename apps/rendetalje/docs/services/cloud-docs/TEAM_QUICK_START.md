@@ -1,10 +1,10 @@
-# 🚀 RendetaljeOS Team Quick Start Guide
+# 🚀 RenOS Team Quick Start Guide
 
-**Velkommen til RendetaljeOS Production! Dit team kan begynde at bruge systemet med det samme.**
+**Velkommen til RenOS Production! Dit team kan begynde at bruge systemet med det samme.**
 
-## 📋 Hvad er RendetaljeOS?
+## 📋 Hvad er RenOS?
 
-RendetaljeOS er jeres komplette operations management system der konsoliderer alle forretningsprocesser til én platform:
+RenOS er jeres komplette operations management system der konsoliderer alle forretningsprocesser til én platform:
 
 - **👑 Owner Portal**: Business management & analytics
 - **👷 Employee Portal**: Daglige opgaver & tidsregistrering  

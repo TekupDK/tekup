@@ -1,5 +1,5 @@
 "use strict";
-// RendetaljeOS Shared Types
+// RenOS Shared Types
 // Centralized type definitions for all applications
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -19,8 +19,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./user.types"), exports);
 __exportStar(require("./job.types"), exports);
 __exportStar(require("./customer.types"), exports);
-__exportStar(require("./team.types"), exports);
-__exportStar(require("./billing.types"), exports);
-__exportStar(require("./ai-friday.types"), exports);
-__exportStar(require("./api.types"), exports);
-__exportStar(require("./common.types"), exports);
+__exportStar(require("./organization.types"), exports);
