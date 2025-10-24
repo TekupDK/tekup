@@ -10,16 +10,20 @@
 ## 📊 EXECUTIVE SUMMARY
 
 ### Problem:
+
 Rendetalje/RenOS projektet er spredt med inkonsistent navngivning:
+
 - **3 forskellige navnekonventioner** brugt samtidigt
 - **1 tom mappe** (monorepo/) uden formål
 - **Integration spredt** på tværs af 3 production services
 - **Forvirring** mellem "Rendetalje" (brand) vs "RenOS" (platform)
 
 ### Løsning:
+
 **Standardiser til "RenOS" som platform-navn** med klar struktur og konsistent naming.
 
 ### Impact:
+
 - ✅ Klarhed for udviklere
 - ✅ Konsistent package naming
 - ✅ Lettere at finde kode
@@ -60,21 +64,22 @@ apps/rendetalje/                      ← Hovedmappe
 
 ### 2. Package Names - INKONSISTENS FUNDET
 
-| Package | Nuværende Navn | Problem |
-|---------|---------------|---------|
-| Backend | `@rendetaljeos/backend` | "rendetaljeos" (15 chars) |
-| Frontend | `@rendetaljeos/frontend` | "rendetaljeos" |
-| Mobile | `@rendetaljeos/mobile` | "rendetaljeos" |
-| Shared | `@rendetaljeos/shared` | "rendetaljeos" |
-| Calendar MCP | `@renos/calendar-mcp` | "renos" ← Kun denne! |
-| Chatbot | `renos-calendar-chatbot` | Ingen namespace |
-| Dashboard | `renos-calendar-dashboard` | Ingen namespace |
+| Package      | Nuværende Navn             | Problem                   |
+| ------------ | -------------------------- | ------------------------- |
+| Backend      | `@rendetaljeos/backend`    | "rendetaljeos" (15 chars) |
+| Frontend     | `@rendetaljeos/frontend`   | "rendetaljeos"            |
+| Mobile       | `@rendetaljeos/mobile`     | "rendetaljeos"            |
+| Shared       | `@rendetaljeos/shared`     | "rendetaljeos"            |
+| Calendar MCP | `@renos/calendar-mcp`      | "renos" ← Kun denne!      |
+| Chatbot      | `renos-calendar-chatbot`   | Ingen namespace           |
+| Dashboard    | `renos-calendar-dashboard` | Ingen namespace           |
 
 **Konklusion:** Calendar MCP bruger `@renos`, alt andet bruger `@rendetaljeos`. INGEN konsistens!
 
 ### 3. Integration med Tekup Production Services
 
 #### A) tekup-database Integration:
+
 ```
 apps/production/tekup-database/
 └── prisma/schema-renos.prisma        ← RENOS schema (557 linjer)
@@ -90,6 +95,7 @@ apps/production/tekup-database/
 **Konklusion:** Database bruger "renos" prefix overalt.
 
 #### B) tekup-billy Integration:
+
 ```
 apps/production/tekup-billy/
 └── renos-backend-client/
@@ -100,6 +106,7 @@ apps/production/tekup-billy/
 **Konklusion:** Billy refererer til "RenOS" som klient-navn.
 
 #### C) Backend References:
+
 ```typescript
 // apps/rendetalje/services/backend-nestjs/src/main.ts
 customSiteTitle: 'RendetaljeOS API Documentation'  ← "RendetaljeOS"
@@ -111,13 +118,13 @@ origin: 'https://rendetaljeos.onrender.com'        ← "rendetaljeos" URL
 
 ### 4. Navngivnings-Analyse
 
-| Variant | Hvor Brugt | Formål |
-|---------|-----------|--------|
-| **Rendetalje** | - Brand/virksomhed<br>- Domæne: rendetalje.dk<br>- Docs/user guides | Kunde-facing |
-| **RenOS** | - Database schema<br>- Billy client<br>- Calendar MCP<br>- Teknisk docs | Tech/Platform |
-| **RendetaljeOS** | - Backend UI/logs<br>- API title | Display navn |
-| **rendetaljeos** | - Package namespace<br>- Render URLs | Code/deployment |
-| **@renos** | - Calendar MCP package | Inkonsistent |
+| Variant          | Hvor Brugt                                                              | Formål          |
+| ---------------- | ----------------------------------------------------------------------- | --------------- |
+| **Rendetalje**   | - Brand/virksomhed<br>- Domæne: rendetalje.dk<br>- Docs/user guides     | Kunde-facing    |
+| **RenOS**        | - Database schema<br>- Billy client<br>- Calendar MCP<br>- Teknisk docs | Tech/Platform   |
+| **RendetaljeOS** | - Backend UI/logs<br>- API title                                        | Display navn    |
+| **rendetaljeos** | - Package namespace<br>- Render URLs                                    | Code/deployment |
+| **@renos**       | - Calendar MCP package                                                  | Inkonsistent    |
 
 ---
 
@@ -149,6 +156,7 @@ client  renos.prisma                    (0 files)
 ```
 
 **PROBLEM OMRÅDER:**
+
 - ❌ `monorepo/` tom mappe
 - ❌ Integration spredt (billy, database)
 - ❌ Inkonsistent naming (3 varianter)
@@ -179,6 +187,7 @@ client  renos.prisma                backend   frontend
 ```
 
 **FORBEDRINGER:**
+
 - ✅ Konsistent `@renos/*` namespace
 - ✅ `monorepo/` mappe slettet
 - ✅ Klar "renos" brand for tech
@@ -191,18 +200,21 @@ client  renos.prisma                backend   frontend
 ### Beslutning 1: Standardiser til "RenOS"
 
 **Rationale:**
+
 1. **Database allerede bruger "renos"** - schema navn er `@@schema("renos")`
 2. **Kortere og nemmere** - "renos" (5 chars) vs "rendetaljeos" (13 chars)
 3. **Tech branding** - "Renovation Operating System" er professionelt
 4. **Fremtidssikret** - Platform kan ekspandere ud over Rendetalje virksomhed
 
 **Pros:**
+
 - ✅ Konsistent med eksisterende database schema
 - ✅ Kortere package names
 - ✅ Professionelt tech-brand
 - ✅ Lettere at skrive og huske
 
 **Cons:**
+
 - ⚠️ Kræver package omdøbning (breaking change hvis published)
 - ⚠️ Import paths skal opdateres
 - ⚠️ URL ændring (rendetaljeos.onrender.com → renos.onrender.com)
@@ -210,11 +222,13 @@ client  renos.prisma                backend   frontend
 ### Beslutning 2: Behold "Rendetalje" i UI/Brand
 
 **Rationale:**
+
 - "Rendetalje.dk" er virksomhedens brand
 - Kunder kender "Rendetalje" navnet
 - "RenOS" er intern tech platform
 
 **Implementation:**
+
 ```typescript
 // Code (intern):
 import { RenosCustomer } from '@renos/backend';
@@ -230,6 +244,7 @@ console.log('🚀 RenOS API running...');
 ### Beslutning 3: Slet tom `monorepo/` mappe
 
 **Rationale:**
+
 - 0 filer - ingen funktion
 - Forvirring: "Er dette en monorepo structure?"
 - Services er allerede under `services/` mappen
@@ -241,6 +256,7 @@ console.log('🚀 RenOS API running...');
 ### FASE 1: Forberedelse (5 min)
 
 #### 1.1 Commit nuværende state
+
 ```powershell
 cd C:\Users\Jonas-dev\Tekup-Monorepo
 git add .
@@ -249,6 +265,7 @@ git push origin master
 ```
 
 #### 1.2 Opret backup branch
+
 ```powershell
 git checkout -b backup/rendetalje-pre-restructure
 git push origin backup/rendetalje-pre-restructure
@@ -256,6 +273,7 @@ git checkout master
 ```
 
 #### 1.3 Opret restructure branch
+
 ```powershell
 git checkout -b refactor/rendetalje-to-renos
 ```
@@ -265,12 +283,14 @@ git checkout -b refactor/rendetalje-to-renos
 ### FASE 2: Mappestruktur (10 min)
 
 #### 2.1 Omdøb hovedmappe
+
 ```powershell
 # Omdøb apps/rendetalje → apps/renos
 git mv apps/rendetalje apps/renos
 ```
 
 #### 2.2 Slet tom monorepo mappe
+
 ```powershell
 # Slet tom mappe
 Remove-Item apps/renos/monorepo -Force
@@ -278,6 +298,7 @@ git add -A
 ```
 
 #### 2.3 Verificer struktur
+
 ```powershell
 tree apps/renos /F | Select-Object -First 50
 ```
@@ -287,6 +308,7 @@ tree apps/renos /F | Select-Object -First 50
 ### FASE 3: Package Names (20 min)
 
 #### 3.1 Update Backend package.json
+
 ```powershell
 cd apps/renos/services/backend-nestjs
 
@@ -298,24 +320,28 @@ Copy-Item package.json package.json.backup
 ```
 
 #### 3.2 Update Frontend package.json
+
 ```powershell
 cd ../frontend-nextjs
 (Get-Content package.json) -replace '@rendetaljeos/frontend', '@renos/frontend' | Set-Content package.json
 ```
 
 #### 3.3 Update Mobile package.json
+
 ```powershell
 cd ../mobile
 (Get-Content package.json) -replace '@rendetaljeos/mobile', '@renos/mobile' | Set-Content package.json
 ```
 
 #### 3.4 Update Shared package.json
+
 ```powershell
 cd ../shared
 (Get-Content package.json) -replace '@rendetaljeos/shared', '@renos/shared' | Set-Content package.json
 ```
 
 #### 3.5 Update Calendar MCP sub-packages
+
 ```powershell
 cd ../calendar-mcp/chatbot
 (Get-Content package.json) -replace 'renos-calendar-chatbot', '@renos/calendar-chatbot' | Set-Content package.json
@@ -329,6 +355,7 @@ cd ../dashboard
 ### FASE 4: Import Paths (30 min)
 
 #### 4.1 Backend imports
+
 ```powershell
 cd apps/renos/services/backend-nestjs/src
 
@@ -339,6 +366,7 @@ Get-ChildItem -Recurse -Filter "*.ts" | ForEach-Object {
 ```
 
 #### 4.2 Frontend imports
+
 ```powershell
 cd ../../../frontend-nextjs/src
 
@@ -348,6 +376,7 @@ Get-ChildItem -Recurse -Filter "*.tsx","*.ts" | ForEach-Object {
 ```
 
 #### 4.3 Calendar MCP imports
+
 ```powershell
 cd ../../../calendar-mcp/src
 
@@ -361,6 +390,7 @@ Get-ChildItem -Recurse -Filter "*.ts" | ForEach-Object {
 ### FASE 5: Display Names & URLs (15 min)
 
 #### 5.1 Update Backend display names
+
 ```powershell
 cd apps/renos/services/backend-nestjs/src
 
@@ -371,6 +401,7 @@ $mainFile = "main.ts"
 ```
 
 #### 5.2 Update README files
+
 ```powershell
 cd apps/renos
 
@@ -385,6 +416,7 @@ Get-ChildItem -Recurse -Filter "README.md" | ForEach-Object {
 ### FASE 6: Deployment Configs (10 min)
 
 #### 6.1 Update render.yaml
+
 ```powershell
 cd apps/renos/services/deployment
 
@@ -396,6 +428,7 @@ Copy-Item render/render.yaml render/render.yaml.backup
 ```
 
 #### 6.2 Update docker-compose.yml
+
 ```powershell
 cd ../calendar-mcp
 (Get-Content docker-compose.yml) -replace 'rendetaljeos', 'renos' | Set-Content docker-compose.yml
@@ -406,6 +439,7 @@ cd ../calendar-mcp
 ### FASE 7: Documentation (15 min)
 
 #### 7.1 Update workspace README
+
 ```powershell
 cd C:\Users\Jonas-dev\Tekup-Monorepo
 
@@ -414,6 +448,7 @@ cd C:\Users\Jonas-dev\Tekup-Monorepo
 ```
 
 #### 7.2 Update AI context
+
 ```powershell
 # AI_CONTEXT_SUMMARY.md
 (Get-Content AI_CONTEXT_SUMMARY.md) -replace 'apps/rendetalje', 'apps/renos' | Set-Content AI_CONTEXT_SUMMARY.md
@@ -421,6 +456,7 @@ cd C:\Users\Jonas-dev\Tekup-Monorepo
 ```
 
 #### 7.3 Create migration notice
+
 ```powershell
 # Opret MIGRATION_RENDETALJE_TO_RENOS.md (denne fil)
 ```
@@ -430,6 +466,7 @@ cd C:\Users\Jonas-dev\Tekup-Monorepo
 ### FASE 8: Testing & Verification (20 min)
 
 #### 8.1 Verify package.json changes
+
 ```powershell
 Get-ChildItem -Path apps/renos -Filter package.json -Recurse | ForEach-Object {
     Write-Output "=== $($_.Directory.Name) ==="
@@ -447,16 +484,18 @@ Get-ChildItem -Path apps/renos -Filter package.json -Recurse | ForEach-Object {
 ```
 
 #### 8.2 Verify import paths
+
 ```powershell
 # Search for any remaining @rendetaljeos references
-Get-ChildItem -Path apps/renos -Recurse -Include "*.ts","*.tsx","*.js" | 
-    Select-String -Pattern '@rendetaljeos' | 
+Get-ChildItem -Path apps/renos -Recurse -Include "*.ts","*.tsx","*.js" |
+    Select-String -Pattern '@rendetaljeos' |
     Select-Object -First 10
 
 # Should return 0 results
 ```
 
 #### 8.3 Verify URLs
+
 ```powershell
 # Search for old URLs
 Get-ChildItem -Path apps/renos -Recurse -Include "*.ts","*.md","*.yaml" |
@@ -467,6 +506,7 @@ Get-ChildItem -Path apps/renos -Recurse -Include "*.ts","*.md","*.yaml" |
 ```
 
 #### 8.4 Test build (optional but recommended)
+
 ```powershell
 # Backend
 cd apps/renos/services/backend-nestjs
@@ -484,12 +524,14 @@ npm run build
 ### FASE 9: Commit & Push (5 min)
 
 #### 9.1 Stage all changes
+
 ```powershell
 cd C:\Users\Jonas-dev\Tekup-Monorepo
 git add -A
 ```
 
 #### 9.2 Commit with detailed message
+
 ```powershell
 git commit -m "refactor: standardize Rendetalje → RenOS naming
 
@@ -522,6 +564,7 @@ See: RENDETALJE_RESTRUCTURE_COMPLETE_PLAN.md for full details"
 ```
 
 #### 9.3 Push to remote
+
 ```powershell
 git push origin refactor/rendetalje-to-renos
 ```
@@ -533,18 +576,20 @@ git push origin refactor/rendetalje-to-renos
 **⚠️ VIGTIGT: Udføres EFTER merge til master**
 
 #### 10.1 Update Render.com services
+
 ```
 1. Log ind på https://dashboard.render.com
 2. Rename services:
    - rendetaljeos-backend → renos-backend
    - rendetaljeos-frontend → renos-frontend
-   
+
 3. Update environment variables (hvis nødvendigt)
 
 4. Trigger manual deploy for each service
 ```
 
 #### 10.2 Update domain mappings (hvis custom domain)
+
 ```
 rendetalje.dk → renos backend (API)
 www.rendetalje.dk → renos frontend (UI)
@@ -557,6 +602,7 @@ www.rendetalje.dk → renos frontend (UI)
 Hvis migration fejler:
 
 ### Quick Rollback (5 min)
+
 ```powershell
 # Gå tilbage til backup branch
 git checkout backup/rendetalje-pre-restructure
@@ -568,6 +614,7 @@ git push origin master --force
 ```
 
 ### Selective Rollback (10 min)
+
 ```powershell
 # Behold nogle ændringer, drop andre
 git checkout master
@@ -575,6 +622,7 @@ git cherry-pick <specific-commit-hash>
 ```
 
 ### Restore from backup files
+
 ```powershell
 # Hvis package.json backups blev lavet
 Get-ChildItem -Path apps/renos -Filter "*.backup" -Recurse | ForEach-Object {
@@ -588,6 +636,7 @@ Get-ChildItem -Path apps/renos -Filter "*.backup" -Recurse | ForEach-Object {
 ## 📋 POST-MIGRATION CHECKLIST
 
 ### Immediately After Merge:
+
 - [ ] Verify build succeeds: `npm run build` in all packages
 - [ ] Update Render.com service names
 - [ ] Test production deployments
@@ -595,12 +644,14 @@ Get-ChildItem -Path apps/renos -Filter "*.backup" -Recurse | ForEach-Object {
 - [ ] Check frontend loads without errors
 
 ### Within 24 Hours:
+
 - [ ] Update documentation links (internal wikis, etc.)
 - [ ] Notify team of new package names
 - [ ] Update CI/CD pipelines (if any)
 - [ ] Search & destroy any remaining old references
 
 ### Within 1 Week:
+
 - [ ] Monitor error logs for import issues
 - [ ] Check customer-facing apps still show "Rendetalje" brand
 - [ ] Verify integrations (Billy, Database, Vault) still work
@@ -611,6 +662,7 @@ Get-ChildItem -Path apps/renos -Filter "*.backup" -Recurse | ForEach-Object {
 ## 📊 IMPACT ANALYSIS
 
 ### Files Changed (Estimated):
+
 - **7 package.json** files (backend, frontend, mobile, shared, calendar-mcp, chatbot, dashboard)
 - **~50-100 TypeScript** files (import path updates)
 - **~10 Markdown** files (README, docs)
@@ -621,11 +673,13 @@ Get-ChildItem -Path apps/renos -Filter "*.backup" -Recurse | ForEach-Object {
 **Total estimated:** ~70-120 files touched
 
 ### Breaking Changes:
+
 1. **Package names** - Any external projects importing `@rendetaljeos/*` must update
 2. **API URLs** - Render deployment URLs change
 3. **Import paths** - All internal imports need update
 
 ### Non-Breaking:
+
 1. **Database schema** - Already uses `renos`, no change
 2. **Customer-facing UI** - Still shows "Rendetalje" brand
 3. **Functionality** - Zero functional changes, only naming
@@ -637,21 +691,25 @@ Get-ChildItem -Path apps/renos -Filter "*.backup" -Recurse | ForEach-Object {
 Migration successful if:
 
 ✅ **Build Success**
+
 - [ ] Backend builds without errors
 - [ ] Frontend builds without errors
 - [ ] Calendar MCP builds without errors
 
 ✅ **No Old References**
+
 - [ ] 0 matches for `@rendetaljeos` in source code
 - [ ] 0 matches for `rendetaljeos.onrender.com` in configs
 - [ ] No broken imports
 
 ✅ **Deployment Success**
+
 - [ ] Render.com services deploy successfully
 - [ ] API responds to health checks
 - [ ] Frontend loads in browser
 
 ✅ **Integration Intact**
+
 - [ ] Billy MCP client still works
 - [ ] Database connections work
 - [ ] Calendar MCP talks to backend
@@ -663,12 +721,14 @@ Migration successful if:
 **Før vi kører migrationen, skal PC1 reviewe:**
 
 ### Kritiske Beslutninger:
+
 1. ✅ Enig i "RenOS" som standard navn?
 2. ✅ OK at slette tom `monorepo/` mappe?
 3. ✅ OK med Render URL ændring (rendetaljeos → renos)?
 4. ✅ Timing: Kør migration nu eller senere?
 
 ### PC1 Review Checklist:
+
 - [ ] Læs igennem DESIGN DECISIONS sektion
 - [ ] Gennemgå VISUAL DIAGRAMS
 - [ ] Verificer MIGRATIONSPLAN er komplet
@@ -681,12 +741,14 @@ Migration successful if:
 ## 📞 NEXT STEPS
 
 ### For PC1 (Empir):
+
 1. Læs denne docs grundigt
 2. Beslut: Approve eller request changes?
 3. Hvis approved: Notify PC2 to proceed
 4. Hvis changes needed: Opdater plan sammen
 
 ### For PC2 (Jonas-dev):
+
 1. ✅ Research complete
 2. ✅ Plan dokumenteret
 3. ⏳ Awaiting PC1 approval
@@ -698,13 +760,13 @@ Migration successful if:
 
 ### A. Navngivnings-Ordliste
 
-| Term | Betydning | Brug |
-|------|----------|------|
-| **Rendetalje** | Virksomhedsnavn | Brand, kunde-facing UI |
-| **Rendetalje.dk** | Domæne | Website URL |
-| **RenOS** | Platform navn | Tech docs, logs, internal |
-| **@renos** | Package namespace | npm packages, imports |
-| **renos** | Schema navn | Database, backend code |
+| Term              | Betydning         | Brug                      |
+| ----------------- | ----------------- | ------------------------- |
+| **Rendetalje**    | Virksomhedsnavn   | Brand, kunde-facing UI    |
+| **Rendetalje.dk** | Domæne            | Website URL               |
+| **RenOS**         | Platform navn     | Tech docs, logs, internal |
+| **@renos**        | Package namespace | npm packages, imports     |
+| **renos**         | Schema navn       | Database, backend code    |
 
 ### B. File Extensions Affected
 
@@ -719,19 +781,19 @@ Migration successful if:
 
 ### C. Estimated Timeline
 
-| Fase | Tid | Kritikalitet |
-|------|-----|-------------|
-| Forberedelse | 5 min | 🔴 Critical |
-| Mappestruktur | 10 min | 🔴 Critical |
-| Package Names | 20 min | 🔴 Critical |
-| Import Paths | 30 min | 🟡 Important |
-| Display Names | 15 min | 🟢 Nice-to-have |
-| Deployment Configs | 10 min | 🔴 Critical |
-| Documentation | 15 min | 🟡 Important |
-| Testing | 20 min | 🔴 Critical |
-| Commit & Push | 5 min | 🔴 Critical |
-| Render Updates | 15 min | 🟡 Important |
-| **TOTAL** | **~2.5 timer** | |
+| Fase               | Tid            | Kritikalitet    |
+| ------------------ | -------------- | --------------- |
+| Forberedelse       | 5 min          | 🔴 Critical     |
+| Mappestruktur      | 10 min         | 🔴 Critical     |
+| Package Names      | 20 min         | 🔴 Critical     |
+| Import Paths       | 30 min         | 🟡 Important    |
+| Display Names      | 15 min         | 🟢 Nice-to-have |
+| Deployment Configs | 10 min         | 🔴 Critical     |
+| Documentation      | 15 min         | 🟡 Important    |
+| Testing            | 20 min         | 🔴 Critical     |
+| Commit & Push      | 5 min          | 🔴 Critical     |
+| Render Updates     | 15 min         | 🟡 Important    |
+| **TOTAL**          | **~2.5 timer** |                 |
 
 ---
 
@@ -740,6 +802,7 @@ Migration successful if:
 **Status:** Klar til PC1 review og approval.
 
 **Dokumenteret:**
+
 - ✅ Komplet current state analyse
 - ✅ Visual diagrammer (før/efter)
 - ✅ Design decisions med rationale

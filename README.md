@@ -42,6 +42,7 @@ Tekup/ (MONOREPO - everything in one repo!)
 ### **🏭 Production Services** (`apps/production/`)
 
 #### **tekup-billy** (v1.4.3)
+
 - **Purpose:** MCP server for Billy.dk accounting API integration
 - **Tech:** TypeScript, Express, Supabase, Redis
 - **Status:** ✅ Production ready (https://tekup-billy.onrender.com)
@@ -49,6 +50,7 @@ Tekup/ (MONOREPO - everything in one repo!)
 - **Quick Start:** `cd apps/production/tekup-billy && npm install && npm start`
 
 #### **tekup-database** (v1.1.0)
+
 - **Purpose:** Centralized Prisma database layer for all Tekup projects
 - **Tech:** TypeScript, Prisma ORM, PostgreSQL
 - **Status:** ✅ Active development
@@ -56,6 +58,7 @@ Tekup/ (MONOREPO - everything in one repo!)
 - **Quick Start:** `cd apps/production/tekup-database && pnpm install && npx prisma generate`
 
 #### **tekup-vault** (v0.1.0)
+
 - **Purpose:** AI-searchable knowledge base with semantic search
 - **Tech:** TypeScript, Turborepo, OpenAI embeddings, pgvector
 - **Status:** ✅ Production ready (https://tekupvault-api.onrender.com)
@@ -67,6 +70,7 @@ Tekup/ (MONOREPO - everything in one repo!)
 ### **🌐 Web Applications** (`apps/web/` & `apps/rendetalje/`)
 
 #### **Rendetalje OS** (Complete Platform)
+
 - **Purpose:** Renovation management + booking system
 - **Tech:** NestJS (backend), Next.js (frontend), PostgreSQL
 - **Status:** ✅ Active development with monitoring
@@ -79,6 +83,7 @@ Tekup/ (MONOREPO - everything in one repo!)
   - `deployment/` - Render.com configs
 
 #### **tekup-cloud-dashboard**
+
 - **Purpose:** Future unified dashboard for all services
 - **Status:** 📦 Placeholder
 
@@ -87,10 +92,12 @@ Tekup/ (MONOREPO - everything in one repo!)
 ### **⚙️ Backend Services** (`services/`)
 
 #### **tekup-ai**
+
 - **Purpose:** AI infrastructure and utilities
 - **Status:** 🤖 Workspace reference
 
 #### **tekup-gmail-services** (v1.0.0)
+
 - **Purpose:** Email automation and integrations
 - **Status:** 📧 Service layer
 
@@ -101,34 +108,37 @@ Tekup/ (MONOREPO - everything in one repo!)
 ### **Setup for PC2 (First Time)**
 
 1. **Clone or navigate to workspace:**
+
    ```bash
    cd C:\Users\Jonas-dev\Tekup-Monorepo
    git pull origin master
    ```
 
 2. **Unlock secrets (requires git-crypt):**
+
    ```bash
    # Install git-crypt: https://github.com/AGWA/git-crypt/releases
    git-crypt unlock tekup-git-crypt.key
-   
+
    # Verify secrets are readable:
    cat tekup-secrets/.env.development
    ```
 
 3. **Install dependencies (choose project):**
+
    ```bash
    # Billy MCP Server
    cd apps/production/tekup-billy
    npm install
-   
+
    # Database Layer
    cd apps/production/tekup-database
    pnpm install
-   
+
    # TekupVault
    cd apps/production/tekup-vault
    pnpm install
-   
+
    # RenOS Backend
    cd apps/rendetalje/services/backend-nestjs
    npm install
@@ -160,16 +170,20 @@ npm run dev
 ## 📚 Documentation
 
 ### **Project-Specific Docs:**
+
 - **Tekup-Billy:** [apps/production/tekup-billy/README.md](apps/production/tekup-billy/README.md)
+
   - [START_HERE.md](apps/production/tekup-billy/docs/START_HERE.md) - Quick intro
   - [DEPLOYMENT_COMPLETE.md](apps/production/tekup-billy/docs/DEPLOYMENT_COMPLETE.md) - Production guide
   - [COPILOT_INSTRUCTIONS.md](apps/production/tekup-billy/.github/copilot-instructions.md) - AI context
 
 - **Tekup-Database:** [apps/production/tekup-database/README.md](apps/production/tekup-database/README.md)
+
   - [QUICK_START.md](apps/production/tekup-database/QUICK_START.md) - Setup guide
   - [SUPABASE_SETUP.md](apps/production/tekup-database/SUPABASE_SETUP.md) - Database config
 
 - **TekupVault:** [apps/production/tekup-vault/README.md](apps/production/tekup-vault/README.md)
+
   - [QUICK_START_DANSK.md](apps/production/tekup-vault/QUICK_START_DANSK.md) - Dansk guide
   - [MCP_IMPLEMENTATION_COMPLETE.md](apps/production/tekup-vault/docs/MCP_IMPLEMENTATION_COMPLETE.md)
 
@@ -178,6 +192,7 @@ npm run dev
   - [RENDER_CLI_GUIDE.md](apps/rendetalje/services/RENDER_CLI_GUIDE.md) - Deployment
 
 ### **Workspace Docs:**
+
 - **[WORKSPACE_STATUS_PC2_2025-10-23.md](WORKSPACE_STATUS_PC2_2025-10-23.md)** - Complete status overview
 - **[CHANGELOG.md](CHANGELOG.md)** - Workspace-level changes
 - **[Tekup-Portfolio.code-workspace](Tekup-Portfolio.code-workspace)** - VS Code multi-root setup
@@ -187,12 +202,14 @@ npm run dev
 ## 🛠️ Development
 
 ### **Code Standards**
+
 - TypeScript strict mode
 - ESLint + Prettier (configs in `/configs`)
 - 80%+ test coverage target
 - Conventional commits
 
 ### **Testing**
+
 ```bash
 # Run workspace tests
 pnpm test
@@ -203,6 +220,7 @@ pnpm test
 ```
 
 ### **Linting**
+
 ```bash
 # Lint all projects
 pnpm lint
@@ -247,7 +265,7 @@ See individual project LICENSE files. Workspace-level coordination: MIT License.
 ## 🔗 Production Links
 
 - **Tekup-Billy MCP:** https://tekup-billy.onrender.com
-- **TekupVault API:** https://tekupvault-api.onrender.com  
+- **TekupVault API:** https://tekupvault-api.onrender.com
 - **GitHub Repository:** https://github.com/TekupDK/tekup
 - **Organization:** https://github.com/TekupDK
 

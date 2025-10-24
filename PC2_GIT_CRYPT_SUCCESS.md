@@ -9,22 +9,26 @@
 ## What Was Completed
 
 ### Step 1: ✅ Key File Retrieved
+
 - Key file `tekup-git-crypt.key` confirmed present in repo root
 - Size: 148 bytes (as expected)
 - Committed by PC1 in commit `12994d8`
 
 ### Step 2: ✅ Git-Crypt Installed
+
 - Version: `git-crypt 0.7.0`
 - Location: `C:\Users\Jonas-dev\bin\git-crypt.exe`
 - Method: Direct download from GitHub releases (Chocolatey didn't have package)
 - Added to PATH: `$env:USERPROFILE\bin`
 
 ### Step 3: ✅ Secrets Unlocked
+
 - Command: `git-crypt unlock tekup-git-crypt.key`
 - Result: SUCCESS (no error message = successful unlock)
 - Working directory: Stashed docs temporarily, unlocked, then restored
 
 ### Step 4: ✅ Verification Complete
+
 - Tested file: `tekup-secrets/.env.development`
 - Status: Fully readable, plain text environment variables
 - Confirmed keys visible:
@@ -68,31 +72,34 @@ All 10 encrypted files in `tekup-secrets/` are now readable:
 ## Next Steps for PC2
 
 1. **Install dependencies:**
+
    ```powershell
    # Tekup-Billy
    cd apps/production/tekup-billy
    npm install
-   
+
    # Tekup-Database
    cd ../tekup-database
    pnpm install
-   
+
    # TekupVault
    cd ../tekup-vault
    pnpm install
-   
+
    # RenOS Backend
    cd ../../rendetalje/services/backend-nestjs
    npm install
    ```
 
 2. **Copy secrets to project directories:**
+
    - Billy needs: `BILLY_API_KEY`, `BILLY_ORGANIZATION_ID`
    - Database needs: `DATABASE_URL`
    - Vault needs: `SUPABASE_URL`, `GITHUB_TOKEN`, `OPENAI_API_KEY`
    - RenOS needs: `DATABASE_URL`, `SENTRY_DSN`
 
 3. **Test MCP servers:**
+
    - Start Billy MCP: `npm start` (stdio) or `npm start:http` (HTTP)
    - Start Vault: `pnpm dev`
    - Test Calendar MCP: `npm run build && npm start`
