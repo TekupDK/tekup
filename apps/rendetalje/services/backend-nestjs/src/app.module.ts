@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { TeamModule } from './team/team.module';
 import { TimeTrackingModule } from './time-tracking/time-tracking.module';
 import { GdprModule } from './gdpr/gdpr.module';
+import { QualityModule } from './quality/quality.module';
 // import { AiFridayModule } from './ai-friday/ai-friday.module';  // Disabled - needs Prisma conversion
 // import { IntegrationsModule } from './integrations/integrations.module'; // Disabled - check dependencies
 import { LoggerModule } from './common/logger/logger.module';
@@ -43,6 +44,7 @@ import configuration from './config/configuration';
     TeamModule, // ✅ ENABLED: Converted to Prisma (team members + time entries)
     TimeTrackingModule, // ✅ ENABLED: Converted to Prisma (time corrections + overtime reports)
     GdprModule, // ✅ ENABLED: GDPR compliance (data export/deletion/consent/privacy policy)
+    QualityModule, // ✅ ENABLED: Quality control (checklists + assessments + photo documentation)
     
     // TODO: Convert remaining modules from Supabase to Prisma
     // AiFridayModule, // Uses Supabase
