@@ -38,30 +38,30 @@ let CustomersService = class CustomersService {
             ];
         }
         const [data, total] = await Promise.all([
-            this.prisma.customers.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
-            this.prisma.customers.count({ where }),
+            this.prisma.renosCustomer.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
+            this.prisma.renosCustomer.count({ where }),
         ]);
         const totalPages = Math.ceil(total / limit);
         return { data, total, page, limit, totalPages, hasNext: page < totalPages, hasPrev: page > 1 };
     }
     async findOne(id) {
-        const customer = await this.prisma.customers.findUnique({ where: { id } });
+        const customer = await this.prisma.renosCustomer.findUnique({ where: { id } });
         if (!customer)
             throw new common_1.NotFoundException(`Customer with ID ${id} not found`);
         return customer;
     }
     async create(data) {
-        return this.prisma.customers.create({
+        return this.prisma.renosCustomer.create({
             data: { ...data, tags: data.tags || [], status: 'active' },
         });
     }
     async update(id, data) {
         await this.findOne(id);
-        return this.prisma.customers.update({ where: { id }, data });
+        return this.prisma.renosCustomer.update({ where: { id }, data });
     }
     async remove(id) {
         await this.findOne(id);
-        await this.prisma.customers.delete({ where: { id } });
+        await this.prisma.renosCustomer.delete({ where: { id } });
     }
 };
 exports.CustomersService = CustomersService;

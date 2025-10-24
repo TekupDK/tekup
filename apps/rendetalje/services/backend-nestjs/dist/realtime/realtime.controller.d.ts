@@ -37,7 +37,12 @@ export declare class RealtimeController {
         userOnline: boolean;
     }>;
     getConnectedUsers(req: any): Promise<{
-        connectedUsers: any;
+        connectedUsers: {
+            name: string;
+            id: string;
+            email: string;
+            role: string;
+        }[];
         totalConnected: number;
     }>;
     broadcastJobUpdate(data: {

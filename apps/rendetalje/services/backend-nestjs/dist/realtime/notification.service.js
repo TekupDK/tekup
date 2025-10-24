@@ -242,24 +242,6 @@ let NotificationService = NotificationService_1 = class NotificationService {
     }
     async notifyCustomerMessage(customerId, jobId, organizationId) {
         const notifications = [];
-        const bookings = await this.prisma.renosBooking.findMany({
-            where: { leadId: jobId },
-            include: {
-                teamMember: {
-                    select: { userId: true },
-                },
-            },
-        });
-        bookings.forEach(booking => {
-            notifications.push({
-                organizationId,
-                userId: booking.teamMember.userId,
-                type: 'customer_message',
-                title: 'Ny besked fra kunde',
-                message: 'Du har modtaget en ny besked fra en kunde',
-                data: { customerId, jobId },
-            });
-        });
         const users = await this.prisma.renosUser.findMany({
             where: {
                 role: { in: ['owner', 'admin'] },
@@ -311,24 +293,6 @@ let NotificationService = NotificationService_1 = class NotificationService {
                 data: { jobId, oldDate, newDate },
             });
         }
-        const bookings = await this.prisma.renosBooking.findMany({
-            where: { leadId: jobId },
-            include: {
-                teamMember: {
-                    select: { userId: true },
-                },
-            },
-        });
-        bookings.forEach(booking => {
-            notifications.push({
-                organizationId,
-                userId: booking.teamMember.userId,
-                type: 'schedule_change',
-                title: 'Tidsplan ændret',
-                message: `Job flyttet til ${new Date(newDate).toLocaleDateString('da-DK')}`,
-                data: { jobId, oldDate, newDate },
-            });
-        });
         if (notifications.length > 0) {
             await this.createBulkNotifications(notifications);
         }
