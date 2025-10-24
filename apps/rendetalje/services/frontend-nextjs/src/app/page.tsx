@@ -1,29 +1,9 @@
-import { redirect } from 'next/navigation';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import { LandingPage } from '@/components/landing/LandingPage';
+import LoginForm from '@/components/LoginForm';
 
-export default async function HomePage() {
-  const supabase = createServerComponentClient({ cookies });
-  
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (session?.user) {
-      // Redirect authenticated users based on their role
-      const { data: profile } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-      
-      if (profile?.role) {
-        redirect(`/${profile.role}`);
-      }
-    }
-  } catch (error) {
-    console.error('Error checking session:', error);
-  }
-
-  return <LandingPage />;
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <LoginForm />
+    </main>
+  );
 }
