@@ -288,6 +288,8 @@ model RenosUser {
   dataExportRequests        RenosDataExportRequest[]
   dataDeletionRequests      RenosDataDeletionRequest[]
   consentRecords            RenosConsentRecord[]
+  qualityAssessments        RenosQualityAssessment[]
+  uploadedPhotos            RenosPhotoDocumentation[]
 
   @@index([email])
   @@index([role])
@@ -369,6 +371,80 @@ model RenosPrivacyPolicy {
   @@index([version])
   @@index([active])
   @@map("privacy_policies")
+  @@schema("renos")
+}
+
+// Quality Control
+model RenosQualityChecklist {
+  id           String   @id @default(cuid())
+  serviceType  String   @map("service_type")
+  name         String
+  description  String?  @db.Text
+  items        Json
+  isActive     Boolean  @default(true) @map("is_active")
+  version      Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  assessments RenosQualityAssessment[]
+
+  @@index([serviceType])
+  @@index([isActive])
+  @@index([version])
+  @@map("quality_checklists")
+  @@schema("renos")
+}
+
+model RenosQualityAssessment {
+  id                 String   @id @default(cuid())
+  leadId             String   @map("lead_id")
+  checklistId        String   @map("checklist_id")
+  assessedBy         String   @map("assessed_by")
+  completedItems     Json     @map("completed_items")
+  overallScore       Int      @map("overall_score")
+  percentageScore    Float    @map("percentage_score")
+  totalPointsEarned  Int      @map("total_points_earned")
+  maxPossiblePoints  Int      @map("max_possible_points")
+  notes              String?  @db.Text
+  status             String   @default("in_progress")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  lead      RenosLead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  checklist RenosQualityChecklist @relation(fields: [checklistId], references: [id])
+  assessor  RenosUser             @relation(fields: [assessedBy], references: [id])
+
+  @@index([leadId])
+  @@index([checklistId])
+  @@index([assessedBy])
+  @@index([overallScore])
+  @@index([status])
+  @@map("quality_assessments")
+  @@schema("renos")
+}
+
+model RenosPhotoDocumentation {
+  id              String   @id @default(cuid())
+  leadId          String   @map("lead_id")
+  checklistItemId String?  @map("checklist_item_id")
+  type            String
+  photoUrl        String   @map("photo_url") @db.Text
+  thumbnailUrl    String?  @map("thumbnail_url") @db.Text
+  description     String?  @db.Text
+  uploadedBy      String   @map("uploaded_by")
+  timestamp       DateTime @db.Timestamptz
+  metadata        Json?
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  lead     RenosLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  uploader RenosUser @relation(fields: [uploadedBy], references: [id])
+
+  @@index([leadId])
+  @@index([type])
+  @@index([uploadedBy])
+  @@index([timestamp])
+  @@map("photo_documentation")
   @@schema("renos")
 }
 
@@ -496,6 +572,8 @@ model RenosLead {
   quotes           RenosQuote[]
   emailResponses   RenosEmailResponse[]
   escalations      RenosEscalation[]
+  qualityAssessments RenosQualityAssessment[]
+  photoDocumentation RenosPhotoDocumentation[]
 
   @@index([email, createdAt])
   @@index([estimatedValue])

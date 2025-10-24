@@ -94,7 +94,25 @@
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
-    "powershell.cwd": "📊 Tekup Portfolio (Root)"
+    "powershell.cwd": "📊 Tekup Portfolio (Root)",
+    "MicroPython.executeButton": [
+      {
+        "text": "▶",
+        "tooltip": "Run",
+        "alignment": "left",
+        "command": "extension.executeFile",
+        "priority": 3.5
+      }
+    ],
+    "MicroPython.syncButton": [
+      {
+        "text": "$(sync)",
+        "tooltip": "sync",
+        "alignment": "left",
+        "command": "extension.execute",
+        "priority": 4
+      }
+    ]
   },
   "extensions": {
     "recommendations": [

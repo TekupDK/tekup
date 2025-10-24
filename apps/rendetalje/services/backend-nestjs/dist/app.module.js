@@ -15,6 +15,8 @@ const leads_module_1 = require("./leads/leads.module");
 const auth_module_1 = require("./auth/auth.module");
 const team_module_1 = require("./team/team.module");
 const time_tracking_module_1 = require("./time-tracking/time-tracking.module");
+const gdpr_module_1 = require("./gdpr/gdpr.module");
+const quality_module_1 = require("./quality/quality.module");
 const database_module_1 = require("./database/database.module");
 const health_module_1 = require("./health/health.module");
 const configuration_1 = require("./config/configuration");
@@ -42,6 +44,8 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             team_module_1.TeamModule,
             time_tracking_module_1.TimeTrackingModule,
+            gdpr_module_1.GdprModule,
+            quality_module_1.QualityModule,
         ],
     })
 ], AppModule);
