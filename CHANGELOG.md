@@ -18,6 +18,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2025-10-24 - Submodule Migration & Security Overhaul
+
+### Added
+
+- **🔐 tekup-secrets Submodule Migration** - Migrated to separate private repository
+  - Created `TekupDK/tekup-secrets` private GitHub repository
+  - Converted from tracked folder to git submodule
+  - Removed git-crypt encryption (using private repo access control instead)
+  - Full multi-workspace support (PC1, PC2, team members share same credentials)
+  
+- **📚 Documentation** - Comprehensive migration guides (1,200+ lines total)
+  - `PC2_SETUP_QUICK_REFERENCE.md` - One-page quick start for PC2 deployment (176 lines)
+  - `MIGRATION_TO_SUBMODULE.md` - Complete migration documentation (409 lines)
+  - `SUBMODULE_MIGRATION_CHANGELOG_2025-10-24.md` - Detailed changelog (410 lines)
+  - `setup-new-machine.ps1` - Automated setup script with error handling
+
+- **🔧 Configuration**
+  - Updated `.gitignore` - Exclude backup folders and .key files
+  - Updated `README.md` - Submodule instructions and setup commands
+
+### Fixed
+
+- **`.gitmodules` Configuration** - Added 9 missing submodule definitions
+  - `apps/rendetalje/monorepo` - Primary development environment
+  - `apps/web/tekup-cloud-dashboard` - Admin dashboard
+  - `services/tekup-ai` - AI services monorepo
+  - `services/tekup-gmail-services` - Gmail integration services
+  - 5 archived repos configured with `ignore=all`
+  - Resolved `fatal: No url found for submodule path` errors
+  - All `git submodule` commands now work correctly
+
+### Changed
+
+- **Security Model Shift** - git-crypt → private repository
+  - Rationale: Private repo provides sufficient security via GitHub access control
+  - Simplifies clone workflow for new team members and CI/CD
+  - Eliminates "encrypted file has been tampered with" submodule issues
+  - Standard industry practice (AWS, Terraform, etc. use private repos)
+
+### Commits
+
+- `07380f1` - Add PC2 Setup Quick Reference Card
+- `5ad8d71` - Update tekup-secrets submodule to latest (734f1ab)
+- `1cb3a11` - fix: complete .gitmodules with all submodule definitions
+- `f12f351` - Add new machine setup script and update README for submodule
+- `a49e1ad` - Add comprehensive submodule migration documentation
+- `abf47d2` - chore: add cleanup script for node_modules removal
+
+### Benefits
+
+- ✅ Better security through GitHub organization access control
+- ✅ Multi-workspace support (PC1, PC2, team members)
+- ✅ Independent version control for credentials vs code
+- ✅ Simplified CI/CD (Render uses env vars, dev uses submodule)
+- ✅ Standard industry practice for private configuration repos
+
+---
+
 ## [1.1.0] - 2025-10-23 (PM) - Major Consolidation
 
 ### Added - Rendetalje Ecosystem Consolidation
