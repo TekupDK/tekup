@@ -474,6 +474,54 @@ model RenosNotification {
   @@schema("renos")
 }
 
+// Security & Audit
+model RenosAuditLog {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String?  @map("user_id")
+  action         String
+  entityType     String   @map("entity_type")
+  entityId       String?  @map("entity_id")
+  oldValues      Json?    @map("old_values")
+  newValues      Json?    @map("new_values")
+  ipAddress      String?  @map("ip_address")
+  userAgent      String?  @map("user_agent") @db.Text
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([action])
+  @@index([entityType])
+  @@index([createdAt])
+  @@map("audit_logs")
+  @@schema("renos")
+}
+
+model RenosSecurityEvent {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String?  @map("user_id")
+  eventType      String   @map("event_type")
+  severity       String   // low, medium, high, critical
+  description    String   @db.Text
+  metadata       Json?
+  ipAddress      String?  @map("ip_address")
+  userAgent      String?  @map("user_agent") @db.Text
+  resolved       Boolean  @default(false)
+  resolvedAt     DateTime? @map("resolved_at") @db.Timestamptz
+  resolvedBy     String?  @map("resolved_by")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([eventType])
+  @@index([severity])
+  @@index([resolved])
+  @@index([createdAt])
+  @@map("security_events")
+  @@schema("renos")
+}
+
 // Team Management
 model RenosTeamMember {
   id                 String   @id @default(cuid())
