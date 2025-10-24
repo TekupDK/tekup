@@ -1,11 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { apiClient, ApiError } from '@/lib/api-client';
+import type { User as ApiUser } from '@/lib/api-client';
 
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'owner' | 'employee' | 'customer';
+  role: string;
+  organizationId?: string;
+  phone?: string;
 }
 
 interface AuthState {
@@ -20,6 +24,8 @@ interface AuthState {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
+  setToken: (token: string) => void;
+  setUser: (user: User, token: string) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -35,30 +41,30 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         
         try {
-          const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-          });
-          
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Login fejlede');
-          }
-          
-          const data = await response.json();
+          const { user, accessToken } = await apiClient.login(email, password);
           
           set({
-            user: data.user,
-            token: data.token,
+            user: {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              role: user.role,
+              organizationId: user.organization_id,
+              phone: user.phone,
+            },
+            token: accessToken,
             isAuthenticated: true,
             isLoading: false,
             error: null,
           });
         } catch (error) {
+          const errorMessage = error instanceof ApiError 
+            ? (error.data as { message?: string })?.message || 'Login fejlede'
+            : 'Login fejlede';
+          
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'Login fejlede',
+            error: errorMessage,
           });
           throw error;
         }
@@ -68,30 +74,38 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         
         try {
-          const response = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password }),
+          // For registration, we need an organizationId - in a real app, this would come from signup flow
+          // For now, use a default or require it as parameter
+          const { user, accessToken } = await apiClient.register({
+            name,
+            email,
+            password,
+            organizationId: 'default-org', // TODO: Get from signup flow
+            role: 'employee',
           });
           
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Registrering fejlede');
-          }
-          
-          const data = await response.json();
-          
           set({
-            user: data.user,
-            token: data.token,
+            user: {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              role: user.role,
+              organizationId: user.organization_id,
+              phone: user.phone,
+            },
+            token: accessToken,
             isAuthenticated: true,
             isLoading: false,
             error: null,
           });
         } catch (error) {
+          const errorMessage = error instanceof ApiError 
+            ? (error.data as { message?: string })?.message || 'Registrering fejlede'
+            : 'Registrering fejlede';
+          
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'Registrering fejlede',
+            error: errorMessage,
           });
           throw error;
         }
@@ -108,6 +122,19 @@ export const useAuthStore = create<AuthState>()(
       
       clearError: () => {
         set({ error: null });
+      },
+      
+      setToken: (token: string) => {
+        set({ token });
+      },
+      
+      setUser: (user: User, token: string) => {
+        set({
+          user,
+          token,
+          isAuthenticated: true,
+          error: null,
+        });
       },
     }),
     {
