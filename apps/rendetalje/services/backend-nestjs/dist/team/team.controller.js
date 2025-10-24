@@ -231,7 +231,7 @@ __decorate([
 ], TeamController.prototype, "deleteTimeEntry", null);
 exports.TeamController = TeamController = __decorate([
     (0, swagger_1.ApiTags)('Team'),
-    (0, common_1.Controller)('api/v1/team'),
+    (0, common_1.Controller)('team'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiBearerAuth)(),
     __metadata("design:paramtypes", [team_service_1.TeamService])

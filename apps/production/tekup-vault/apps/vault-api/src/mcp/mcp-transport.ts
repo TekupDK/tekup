@@ -240,6 +240,135 @@ async function getRepositoryInfo(args: any) {
   };
 }
 
+// New: Summarize repository tool
+async function summarizeRepository(args: any) {
+  const { repository, limit = 20 } = args;
+  
+  if (!repository) {
+    throw new Error('Repository parameter is required');
+  }
+
+  // Get recent documents from repository
+  const { data, error } = await supabase
+    .from('vault_documents')
+    .select('id, path, content, updated_at')
+    .eq('repository', repository)
+    .order('updated_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    throw new Error(`Failed to fetch repository documents: ${error.message}`);
+  }
+
+  const summary = {
+    repository,
+    totalDocuments: data?.length || 0,
+    recentFiles: data?.map(doc => ({
+      id: doc.id,
+      path: doc.path,
+      lastUpdated: doc.updated_at,
+      preview: doc.content?.slice(0, 200) + (doc.content?.length > 200 ? '...' : '')
+    })) || []
+  };
+
+  return {
+    content: [{
+      type: 'text' as const,
+      text: JSON.stringify({
+        success: true,
+        summary
+      }, null, 2)
+    }],
+    structuredContent: summary
+  };
+}
+
+// New: Get document by path tool
+async function getDocumentByPath(args: any) {
+  const { repository, path } = args;
+  
+  if (!repository || !path) {
+    throw new Error('Repository and path parameters are required');
+  }
+
+  const { data, error } = await supabase
+    .from('vault_documents')
+    .select('*')
+    .eq('repository', repository)
+    .eq('path', path)
+    .single();
+
+  if (error || !data) {
+    throw new Error(`Document not found: ${repository}/${path}`);
+  }
+
+  return {
+    content: [{
+      type: 'text' as const,
+      text: JSON.stringify({
+        success: true,
+        document: {
+          id: data.id,
+          repository: data.repository,
+          path: data.path,
+          content: data.content,
+          sha: data.sha,
+          lastUpdated: data.updated_at,
+          metadata: data.metadata
+        }
+      }, null, 2)
+    }],
+    structuredContent: data
+  };
+}
+
+// New: List repository files tool
+async function listRepositoryFiles(args: any) {
+  const { repository, pattern = '', limit = 50 } = args;
+  
+  if (!repository) {
+    throw new Error('Repository parameter is required');
+  }
+
+  let query = supabase
+    .from('vault_documents')
+    .select('id, path, updated_at, metadata')
+    .eq('repository', repository)
+    .order('path', { ascending: true })
+    .limit(limit);
+
+  // Apply pattern filter if provided
+  if (pattern) {
+    query = query.ilike('path', `%${pattern}%`);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(`Failed to list repository files: ${error.message}`);
+  }
+
+  const files = data?.map(doc => ({
+    id: doc.id,
+    path: doc.path,
+    lastUpdated: doc.updated_at,
+    size: doc.metadata?.size || 0
+  })) || [];
+
+  return {
+    content: [{
+      type: 'text' as const,
+      text: JSON.stringify({
+        success: true,
+        repository,
+        files,
+        count: files.length
+      }, null, 2)
+    }],
+    structuredContent: files
+  };
+}
+
 // Tool registry
 const tools = {
   // OpenAI-compatible tools for ChatGPT deep research

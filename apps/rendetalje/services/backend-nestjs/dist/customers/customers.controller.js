@@ -93,7 +93,7 @@ __decorate([
 ], CustomersController.prototype, "remove", null);
 exports.CustomersController = CustomersController = __decorate([
     (0, swagger_1.ApiTags)('Customers'),
-    (0, common_1.Controller)('api/v1/customers'),
+    (0, common_1.Controller)('customers'),
     __metadata("design:paramtypes", [customers_service_1.CustomersService])
 ], CustomersController);
 //# sourceMappingURL=customers.controller.js.map

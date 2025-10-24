@@ -137,7 +137,7 @@ __decorate([
 ], LeadsController.prototype, "incrementFollowUp", null);
 exports.LeadsController = LeadsController = __decorate([
     (0, swagger_1.ApiTags)('Leads'),
-    (0, common_1.Controller)('api/v1/leads'),
+    (0, common_1.Controller)('leads'),
     __metadata("design:paramtypes", [leads_service_1.LeadsService])
 ], LeadsController);
 //# sourceMappingURL=leads.controller.js.map

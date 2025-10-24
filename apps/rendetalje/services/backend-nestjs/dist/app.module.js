@@ -18,6 +18,8 @@ const time_tracking_module_1 = require("./time-tracking/time-tracking.module");
 const gdpr_module_1 = require("./gdpr/gdpr.module");
 const quality_module_1 = require("./quality/quality.module");
 const realtime_module_1 = require("./realtime/realtime.module");
+const security_module_1 = require("./security/security.module");
+const ai_friday_module_1 = require("./ai-friday/ai-friday.module");
 const database_module_1 = require("./database/database.module");
 const health_module_1 = require("./health/health.module");
 const configuration_1 = require("./config/configuration");
@@ -48,6 +50,8 @@ exports.AppModule = AppModule = __decorate([
             gdpr_module_1.GdprModule,
             quality_module_1.QualityModule,
             realtime_module_1.RealtimeModule,
+            security_module_1.SecurityModule,
+            ai_friday_module_1.AiFridayModule,
         ],
     })
 ], AppModule);
