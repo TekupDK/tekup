@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # PostgreSQL test database for integration tests
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: renos-postgres-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: renos_test
+      POSTGRES_PASSWORD: renos_test_password
+      POSTGRES_DB: renos_test
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+      - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U renos_test -d renos_test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - renos-test-network
+
+  # Redis for caching and session management in tests
+  redis-test:
+    image: redis:7-alpine
+    container_name: renos-redis-test
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    command: redis-server --requirepass renos_test_redis_password
+    volumes:
+      - redis-test-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - renos-test-network
+
+volumes:
+  postgres-test-data:
+    name: renos-postgres-test-data
+  redis-test-data:
+    name: renos-redis-test-data
+
+networks:
+  renos-test-network:
+    name: renos-test-network
+    driver: bridge
