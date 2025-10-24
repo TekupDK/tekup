@@ -1,0 +1,54 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build output
+.expo/
+.expo-shared/
+dist/
+build/
+web-build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Test files
+__tests__/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Logs
+logs/
+*.log
+
+# Temporary
+tmp/
+temp/
