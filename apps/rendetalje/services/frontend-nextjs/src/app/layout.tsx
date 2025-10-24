@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'RendetaljeOS - Operations Management System',
+  title: 'RenOS - Operations Management System',
   description: 'Complete operations management system for Rendetalje.dk',
   keywords: ['rendetalje', 'cleaning', 'operations', 'management'],
   authors: [{ name: 'Rendetalje.dk Team' }],
