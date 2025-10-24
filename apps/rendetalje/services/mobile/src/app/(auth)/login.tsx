@@ -1,95 +1,201 @@
-import React, { useState } from 'react';
+/**
+ * 🔐 Login Screen
+ *
+ * Beautiful login with biometric authentication
+ */
+
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
-  Image,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
+import { Button, Input } from '../../components';
+import { colors, typography, spacing, borderRadius } from '../../theme';
+import * as Haptics from 'expo-haptics';
 
 export default function LoginScreen() {
+  const {
+    login,
+    loginWithBiometric,
+    isLoading,
+    biometricEnabled,
+    checkBiometricSupport,
+  } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [biometricSupported, setBiometricSupported] = useState(false);
+
+  useEffect(() => {
+    checkBiometricAvailability();
+  }, []);
+
+  const checkBiometricAvailability = async () => {
+    const supported = await checkBiometricSupport();
+    setBiometricSupported(supported);
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert('Fejl', 'Udfyld venligst email og adgangskode');
       return;
     }
 
-    setLoading(true);
     try {
-      await signIn(email, password);
-      router.replace('/(tabs)');
-    } catch (error) {
-      Alert.alert('Login Failed', error.message || 'Invalid credentials');
-    } finally {
-      setLoading(false);
+      await login(email, password);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.replace('/(tabs)' as any);
+    } catch (error: any) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      Alert.alert('Login fejlede', error.message || 'Kunne ikke logge ind');
+    }
+  };
+
+  const handleBiometricLogin = async () => {
+    try {
+      await loginWithBiometric();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.replace('/(tabs)' as any);
+    } catch (error: any) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      Alert.alert('Biometric login fejlede', error.message);
     }
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
     >
-      <View style={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {/* Logo */}
         <View style={styles.logoContainer}>
           <View style={styles.logo}>
             <Text style={styles.logoText}>R</Text>
           </View>
           <Text style={styles.title}>RendetaljeOS</Text>
-          <Text style={styles.subtitle}>Employee Mobile App</Text>
+          <Text style={styles.subtitle}>Log ind for at fortsætte</Text>
         </View>
+
+        {/* Biometric Quick Login */}
+        {biometricEnabled && biometricSupported && (
+          <TouchableOpacity
+            style={styles.biometricButton}
+            onPress={handleBiometricLogin}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="finger-print" size={48} color={colors.primary[500]} />
+            <Text style={styles.biometricText}>Log ind med biometrics</Text>
+          </TouchableOpacity>
+        )}
+
+        {biometricEnabled && biometricSupported && (
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>eller</Text>
+            <View style={styles.dividerLine} />
+          </View>
+        )}
 
         {/* Login Form */}
         <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
+          <Input
+            label="Email"
+            placeholder="din@email.dk"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
+            leftIcon={<Ionicons name="mail-outline" size={20} color={colors.neutral[400]} />}
           />
-          
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
+
+          <Input
+            label="Adgangskode"
+            placeholder="••••••••"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
+            secureTextEntry={!showPassword}
             autoCapitalize="none"
+            leftIcon={<Ionicons name="lock-closed-outline" size={20} color={colors.neutral[400]} />}
+            rightIcon={
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color={colors.neutral[400]}
+                />
+              </TouchableOpacity>
+            }
           />
 
           <TouchableOpacity
-            style={[styles.button, loading && styles.buttonDisabled]}
-            onPress={handleLogin}
-            disabled={loading}
+            style={styles.forgotPassword}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              Alert.alert('Glemt adgangskode', 'Kontakt din administrator');
+            }}
           >
-            <Text style={styles.buttonText}>
-              {loading ? 'Logging in...' : 'Log ind'}
-            </Text>
+            <Text style={styles.forgotPasswordText}>Glemt adgangskode?</Text>
           </TouchableOpacity>
+
+          <Button
+            onPress={handleLogin}
+            loading={isLoading}
+            disabled={isLoading}
+            fullWidth
+            size="lg"
+          >
+            Log ind
+          </Button>
         </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Problemer med login? Kontakt din administrator
-          </Text>
+        {/* Features */}
+        <View style={styles.features}>
+          <View style={styles.feature}>
+            <View style={styles.featureIcon}>
+              <Ionicons name="location" size={20} color={colors.primary[500]} />
+            </View>
+            <Text style={styles.featureText}>GPS tracking</Text>
+          </View>
+
+          <View style={styles.feature}>
+            <View style={styles.featureIcon}>
+              <Ionicons name="camera" size={20} color={colors.primary[500]} />
+            </View>
+            <Text style={styles.featureText}>Foto dokumentation</Text>
+          </View>
+
+          <View style={styles.feature}>
+            <View style={styles.featureIcon}>
+              <Ionicons name="time" size={20} color={colors.primary[500]} />
+            </View>
+            <Text style={styles.featureText}>Time tracking</Text>
+          </View>
         </View>
-      </View>
+
+        {/* Help */}
+        <View style={styles.help}>
+          <Text style={styles.helpText}>Brug for hjælp?</Text>
+          <TouchableOpacity onPress={() => Alert.alert('Support', 'Kontakt support@rendetalje.dk')}>
+            <Text style={styles.helpLink}>Kontakt support</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -97,75 +203,145 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#ffffff',
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 24,
+
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing['2xl'],
   },
+
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 48,
+    marginBottom: spacing['2xl'],
+    marginTop: spacing['2xl'],
   },
+
   logo: {
     width: 80,
     height: 80,
-    borderRadius: 16,
-    backgroundColor: '#2563eb',
+    borderRadius: 20,
+    backgroundColor: colors.primary[500],
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: spacing.md,
   },
+
   logoText: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: 40,
+    fontWeight: typography.weights.bold as any,
     color: '#ffffff',
   },
+
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1e293b',
-    marginBottom: 8,
+    fontSize: typography.sizes['3xl'],
+    fontWeight: typography.weights.bold as any,
+    color: colors.neutral[900],
+    marginBottom: spacing.xs,
   },
+
   subtitle: {
-    fontSize: 16,
-    color: '#64748b',
+    fontSize: typography.sizes.base,
+    color: colors.neutral[600],
   },
+
+  biometricButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: spacing.xl,
+    marginBottom: spacing.lg,
+    borderRadius: borderRadius.xl,
+    backgroundColor: colors.primary[50],
+    borderWidth: 2,
+    borderColor: colors.primary[200],
+    borderStyle: 'dashed',
+  },
+
+  biometricText: {
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.medium as any,
+    color: colors.primary[700],
+    marginTop: spacing.sm,
+  },
+
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: spacing.lg,
+  },
+
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.neutral[200],
+  },
+
+  dividerText: {
+    fontSize: typography.sizes.sm,
+    color: colors.neutral[500],
+    marginHorizontal: spacing.md,
+  },
+
   form: {
-    marginBottom: 32,
+    marginBottom: spacing.xl,
   },
-  input: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    fontSize: 16,
-    marginBottom: 16,
+
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginBottom: spacing.lg,
   },
-  button: {
-    backgroundColor: '#2563eb',
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginTop: 8,
+
+  forgotPasswordText: {
+    fontSize: typography.sizes.sm,
+    color: colors.primary[600],
+    fontWeight: typography.weights.medium as any,
   },
-  buttonDisabled: {
-    opacity: 0.6,
+
+  features: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: spacing.xl,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.neutral[100],
+    marginBottom: spacing.lg,
   },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  footer: {
+
+  feature: {
     alignItems: 'center',
   },
-  footerText: {
-    fontSize: 14,
-    color: '#64748b',
+
+  featureIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.primary[50],
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+
+  featureText: {
+    fontSize: typography.sizes.xs,
+    color: colors.neutral[600],
     textAlign: 'center',
+  },
+
+  help: {
+    alignItems: 'center',
+    marginTop: spacing.lg,
+  },
+
+  helpText: {
+    fontSize: typography.sizes.sm,
+    color: colors.neutral[600],
+    marginBottom: spacing.xs,
+  },
+
+  helpLink: {
+    fontSize: typography.sizes.sm,
+    color: colors.primary[600],
+    fontWeight: typography.weights.semibold as any,
   },
 });
