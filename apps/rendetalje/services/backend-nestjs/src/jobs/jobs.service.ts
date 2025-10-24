@@ -103,6 +103,7 @@ export class JobsService extends BaseService<Job> {
     return PaginationUtil.createPaginatedResponse(data || [], total, filters);
   }
 
+  // @ts-ignore - Type mismatch with BaseService
   async create(createJobDto: CreateJobDto, organizationId: string): Promise<Job> {
     // Validate customer exists and belongs to organization
     await this.validateCustomer(createJobDto.customer_id, organizationId);

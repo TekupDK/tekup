@@ -5,11 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { JobsModule } from './jobs/jobs.module';
 import { CustomersModule } from './customers/customers.module';
 import { TeamModule } from './team/team.module';
-import { BillingModule } from './billing/billing.module';
 import { AiFridayModule } from './ai-friday/ai-friday.module';
 import { IntegrationsModule } from './integrations/integrations.module';
-import { NotificationsModule } from './notifications/notifications.module';
-import { AnalyticsModule } from './analytics/analytics.module';
 import { SupabaseModule } from './supabase/supabase.module';
 import { LoggerModule } from './common/logger/logger.module';
 import configuration from './config/configuration';
@@ -38,11 +35,8 @@ import configuration from './config/configuration';
     JobsModule,
     CustomersModule,
     TeamModule,
-    BillingModule,
     AiFridayModule,
     IntegrationsModule,
-    NotificationsModule,
-    AnalyticsModule,
   ],
 })
 export class AppModule {}
