@@ -73,12 +73,18 @@ Tekup/ (MONOREPO - everything in one repo!)
 
 - **Purpose:** Renovation management + booking system
 - **Tech:** NestJS (backend), Next.js (frontend), PostgreSQL
-- **Status:** ✅ Active development with monitoring
-- **Recent:** Winston logging, Sentry integration, .env templates
+- **Status:** ✅ Active development with monitoring + test infrastructure
+- **Recent:** Test infrastructure v1.0.0 (Oct 25, 2025)
+  - ✅ Full test suites (Jest, RTL, Playwright, Supertest)
+  - ✅ GitHub Actions CI/CD (5-job pipeline)
+  - ✅ UI Component Library (Button, Input, Card, Badge, Modal)
+  - ✅ State Management (Zustand stores)
+  - ✅ Docker test database (PostgreSQL + Redis)
 - **Structure:**
-  - `backend-nestjs/` - NestJS API with monitoring
-  - `frontend-nextjs/` - Next.js UI with Sentry
+  - `backend-nestjs/` - NestJS API with monitoring + tests
+  - `frontend-nextjs/` - Next.js UI with Sentry + E2E tests
   - `calendar-mcp/` - Calendar MCP server (local)
+  - `shared/` - Shared TypeScript library (32/32 tests passing)
   - `database/` - PostgreSQL migrations
   - `deployment/` - Render.com configs
 
