@@ -13,16 +13,17 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Job Management', () => {
   test.beforeEach(async ({ page }) => {
-    // Login as owner before each test
-    await page.goto('/');
-    await page.getByLabel(/e-mail/i).fill('owner@example.com');
-    await page.getByLabel(/adgangskode/i).fill('securePassword123');
-    await page.getByRole('button', { name: /log ind/i }).click();
+    // Login as admin before each test (v1.2.0 credentials)
+    await page.goto('http://localhost:3001/login');
+    await page.fill('input[type="email"]', 'admin@rendetalje.dk');
+    await page.fill('input[type="password"]', 'admin123');
+    await page.click('button[type="submit"]');
     
+    await page.waitForURL('**/dashboard');
     await expect(page).toHaveURL(/\/dashboard/);
     
     // Navigate to jobs page
-    await page.getByRole('link', { name: /jobs/i }).click();
+    await page.goto('http://localhost:3001/jobs');
     await expect(page).toHaveURL(/\/jobs/);
   });
 
