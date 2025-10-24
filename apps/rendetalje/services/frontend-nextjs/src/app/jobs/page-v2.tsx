@@ -1,44 +1,48 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/authStore';
-import { useJobsStore } from '@/store/jobsStore-v2';
-import { useCustomersStore } from '@/store/customersStore-v2';
-import { LoadingState, Spinner } from '@/components/ui/Spinner';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { Modal, ModalFooter } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
+import { useJobsStore } from "@/store/jobsStore-v2";
+import { useCustomersStore } from "@/store/customersStore-v2";
+import { LoadingState, Spinner } from "@/components/ui/Spinner";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Modal, ModalFooter } from "@/components/ui/Modal";
+import { Input } from "@/components/ui/Input";
 
-const statusColors: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'default'> = {
-  completed: 'success',
-  in_progress: 'info',
-  pending: 'warning',
-  cancelled: 'danger',
+const statusColors: Record<
+  string,
+  "success" | "warning" | "danger" | "info" | "default"
+> = {
+  completed: "success",
+  in_progress: "info",
+  pending: "warning",
+  cancelled: "danger",
 };
 
 const statusLabels: Record<string, string> = {
-  completed: 'Færdig',
-  in_progress: 'I gang',
-  pending: 'Afventende',
-  cancelled: 'Annulleret',
+  completed: "Færdig",
+  in_progress: "I gang",
+  pending: "Afventende",
+  cancelled: "Annulleret",
 };
 
 export default function JobsPage() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
-  const { jobs, isLoading, error, fetchJobs, createJob, deleteJob } = useJobsStore();
+  const { jobs, isLoading, error, fetchJobs, createJob, deleteJob } =
+    useJobsStore();
   const { customers, fetchCustomers } = useCustomersStore();
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [filterStatus, setFilterStatus] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  
+  const [filterStatus, setFilterStatus] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push('/');
+      router.push("/");
     }
   }, [isAuthenticated, router]);
 
@@ -51,9 +55,10 @@ export default function JobsPage() {
   }, [isAuthenticated, fetchJobs, fetchCustomers]);
 
   // Filter jobs
-  const filteredJobs = jobs.filter(job => {
+  const filteredJobs = jobs.filter((job) => {
     const matchesStatus = !filterStatus || job.status === filterStatus;
-    const matchesSearch = !searchQuery || 
+    const matchesSearch =
+      !searchQuery ||
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.description?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesStatus && matchesSearch;
@@ -62,18 +67,22 @@ export default function JobsPage() {
   const handleCreateJob = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     try {
       await createJob({
-        customerId: formData.get('customerId') as string,
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        status: 'pending',
-        priority: formData.get('priority') as 'low' | 'medium' | 'high' | 'urgent',
-        scheduledStart: formData.get('scheduledStart') as string,
-        estimatedHours: Number(formData.get('estimatedHours')),
+        customerId: formData.get("customerId") as string,
+        title: formData.get("title") as string,
+        description: formData.get("description") as string,
+        status: "pending",
+        priority: formData.get("priority") as
+          | "low"
+          | "medium"
+          | "high"
+          | "urgent",
+        scheduledStart: formData.get("scheduledStart") as string,
+        estimatedHours: Number(formData.get("estimatedHours")),
       });
-      
+
       setIsModalOpen(false);
       e.currentTarget.reset();
     } catch (error) {
@@ -95,16 +104,14 @@ export default function JobsPage() {
           <div className="flex justify-between items-center mb-2">
             <div>
               <button
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push("/dashboard")}
                 className="text-blue-600 hover:text-blue-700 text-sm mb-2 inline-flex items-center"
               >
                 ← Tilbage til dashboard
               </button>
               <h1 className="text-2xl font-bold text-gray-900">Jobs</h1>
             </div>
-            <Button onClick={() => setIsModalOpen(true)}>
-              + Opret job
-            </Button>
+            <Button onClick={() => setIsModalOpen(true)}>+ Opret job</Button>
           </div>
         </div>
       </header>
@@ -158,34 +165,46 @@ export default function JobsPage() {
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {job.title}
+                      </h3>
                       <Badge variant={statusColors[job.status]}>
                         {statusLabels[job.status]}
                       </Badge>
-                      {job.priority && job.priority !== 'medium' && (
-                        <Badge variant={job.priority === 'urgent' || job.priority === 'high' ? 'danger' : 'default'}>
+                      {job.priority && job.priority !== "medium" && (
+                        <Badge
+                          variant={
+                            job.priority === "urgent" || job.priority === "high"
+                              ? "danger"
+                              : "default"
+                          }
+                        >
                           {job.priority}
                         </Badge>
                       )}
                     </div>
-                    
+
                     {job.description && (
                       <p className="text-gray-600 mb-3">{job.description}</p>
                     )}
-                    
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       {job.scheduledStart && (
                         <div>
                           <span className="text-gray-500">Start:</span>
                           <p className="font-medium">
-                            {new Date(job.scheduledStart).toLocaleDateString('da-DK')}
+                            {new Date(job.scheduledStart).toLocaleDateString(
+                              "da-DK"
+                            )}
                           </p>
                         </div>
                       )}
                       {job.estimatedHours && (
                         <div>
                           <span className="text-gray-500">Estimeret:</span>
-                          <p className="font-medium">{job.estimatedHours} timer</p>
+                          <p className="font-medium">
+                            {job.estimatedHours} timer
+                          </p>
                         </div>
                       )}
                       {job.actualHours && (
@@ -197,17 +216,19 @@ export default function JobsPage() {
                       {job.assignedTo && job.assignedTo.length > 0 && (
                         <div>
                           <span className="text-gray-500">Tildelt:</span>
-                          <p className="font-medium">{job.assignedTo.length} personer</p>
+                          <p className="font-medium">
+                            {job.assignedTo.length} personer
+                          </p>
                         </div>
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex space-x-2 ml-4">
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={() => alert('Edit functionality coming soon')}
+                      onClick={() => alert("Edit functionality coming soon")}
                     >
                       Rediger
                     </Button>
@@ -312,9 +333,7 @@ export default function JobsPage() {
             >
               Annuller
             </Button>
-            <Button type="submit">
-              Opret job
-            </Button>
+            <Button type="submit">Opret job</Button>
           </ModalFooter>
         </form>
       </Modal>

@@ -5,6 +5,7 @@
 ## 📦 Services Overview
 
 ### Backend (NestJS)
+
 Enterprise-grade REST API with authentication, authorization, and real-time capabilities.
 
 **Stack:** NestJS 10, TypeScript 5, PostgreSQL, Prisma, JWT, Socket.io  
@@ -12,6 +13,7 @@ Enterprise-grade REST API with authentication, authorization, and real-time capa
 **Port:** 3001
 
 ### Frontend (Next.js)
+
 Multi-portal interface for owners, employees, and customers.
 
 **Stack:** Next.js 15, React 18, TypeScript, Tailwind CSS, React Query  
@@ -19,6 +21,7 @@ Multi-portal interface for owners, employees, and customers.
 **Port:** 3000
 
 ### Shared Library
+
 Type-safe contracts and utilities shared across services.
 
 **Stack:** TypeScript 5, Zod 3.22, date-fns  
@@ -30,6 +33,7 @@ Type-safe contracts and utilities shared across services.
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 20 LTS
 - Docker Desktop (for test database)
 - Git
@@ -73,6 +77,7 @@ npm run dev
 ```
 
 **Access:**
+
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3001
 - API Documentation: http://localhost:3001/api/docs
@@ -82,6 +87,7 @@ npm run dev
 ## 🧪 Testing Infrastructure
 
 ### Test Coverage
+
 - ✅ **Backend:** Unit tests + E2E tests with Supertest
 - ✅ **Frontend:** Component tests + Page tests + API route tests with Jest + RTL
 - ✅ **Shared:** Utilities + Schema validation tests (32/32 passing)
@@ -102,6 +108,7 @@ npm run dev
 ```
 
 **Test Database Details:**
+
 - PostgreSQL: `postgresql://renos_test:renos_test_password@localhost:5433/renos_test`
 - Redis: `redis://:renos_test_redis_password@localhost:6380`
 - Seed data: Test users, customers, jobs, and invoices pre-loaded
@@ -136,6 +143,7 @@ npm run test:coverage   # Coverage with 80% threshold
 
 **Browsers:** Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari  
 **Test Scenarios:**
+
 - Authentication flow (login, registration, logout, session persistence)
 - Job management (create, update, delete, status changes)
 - Customer management (CRUD operations, filtering, export)
@@ -164,13 +172,15 @@ npm run playwright:report
 GitHub Actions runs on every push/PR to `master` or `develop`:
 
 **Jobs:**
+
 1. **Backend Tests** → Lint → Unit tests → E2E tests → Upload coverage
-2. **Frontend Tests** → Lint → Tests → Build → Upload coverage  
+2. **Frontend Tests** → Lint → Tests → Build → Upload coverage
 3. **Shared Tests** → Lint → Tests → Coverage threshold → Build → Upload coverage
 4. **Frontend E2E Tests** → Install Playwright → E2E tests → Upload reports (runs after backend + frontend pass)
 5. **Quality Check** → Final verification (depends on all previous jobs)
 
 **View Results:**
+
 - GitHub Actions tab: [https://github.com/TekupDK/tekup/actions](https://github.com/TekupDK/tekup/actions)
 - Codecov Dashboard: Coverage tracking per service
 
@@ -196,12 +206,14 @@ users (owner, employee, customer roles)
 ```
 
 ### Authentication Flow
+
 1. User registers/logs in → JWT token issued (1h expiry)
 2. Token stored in httpOnly cookie
 3. Backend validates JWT on protected routes
 4. Frontend uses token for API calls via React Query
 
 ### Real-time Features (Socket.io)
+
 - Job status updates
 - Employee location tracking
 - Customer notifications
@@ -223,32 +235,34 @@ users (owner, employee, customer roles)
 
 ## 📊 Technology Standards
 
-| Category | Technology | Version | Purpose |
-|----------|-----------|---------|---------|
-| **Runtime** | Node.js | 20 LTS | JavaScript runtime |
-| **Backend** | NestJS | 10.0.0 | Enterprise API framework |
-| **Frontend** | Next.js | 15.0.0 | React framework with SSR |
-| **Language** | TypeScript | 5.1.3 | Type-safe development |
-| **Database** | PostgreSQL | 15+ | Primary data store |
-| **ORM** | Prisma | 5.0+ | Type-safe database access |
-| **Validation** | Zod | 3.22.0 | Runtime type validation |
-| **Testing** | Jest | 29.5.0 | Unit + integration tests |
-| **E2E Testing** | Playwright | 1.56+ | Browser automation |
-| **UI** | Tailwind CSS | 3.3.0 | Utility-first styling |
-| **State** | Zustand | 4.4.0 | Lightweight state management |
-| **API Client** | React Query | 5.0.0 | Server state management |
+| Category        | Technology   | Version | Purpose                      |
+| --------------- | ------------ | ------- | ---------------------------- |
+| **Runtime**     | Node.js      | 20 LTS  | JavaScript runtime           |
+| **Backend**     | NestJS       | 10.0.0  | Enterprise API framework     |
+| **Frontend**    | Next.js      | 15.0.0  | React framework with SSR     |
+| **Language**    | TypeScript   | 5.1.3   | Type-safe development        |
+| **Database**    | PostgreSQL   | 15+     | Primary data store           |
+| **ORM**         | Prisma       | 5.0+    | Type-safe database access    |
+| **Validation**  | Zod          | 3.22.0  | Runtime type validation      |
+| **Testing**     | Jest         | 29.5.0  | Unit + integration tests     |
+| **E2E Testing** | Playwright   | 1.56+   | Browser automation           |
+| **UI**          | Tailwind CSS | 3.3.0   | Utility-first styling        |
+| **State**       | Zustand      | 4.4.0   | Lightweight state management |
+| **API Client**  | React Query  | 5.0.0   | Server state management      |
 
 ---
 
 ## 🛠️ Development Workflow
 
 ### Branch Strategy
+
 - `master` - Production-ready code
 - `develop` - Integration branch
 - `feature/*` - New features
 - `fix/*` - Bug fixes
 
 ### Commit Convention
+
 ```
 feat(scope): description       # New feature
 fix(scope): description        # Bug fix
@@ -259,6 +273,7 @@ chore(scope): description      # Maintenance
 ```
 
 ### Pre-commit Checklist
+
 - [ ] Tests pass locally (`npm test`)
 - [ ] Linting passes (`npm run lint`)
 - [ ] TypeScript compiles (`npm run build`)
@@ -314,6 +329,7 @@ services/
 ## 🚢 Deployment
 
 ### Production Checklist
+
 - [ ] Environment variables configured
 - [ ] Database migrations applied
 - [ ] SSL certificates installed
@@ -350,6 +366,7 @@ docker-compose down
 5. Open Pull Request
 
 **Development Guidelines:**
+
 - Follow TypeScript strict mode
 - Write tests for new features
 - Update documentation
@@ -379,6 +396,7 @@ Proprietary - Tekup Portfolio © 2025
 **Last Updated:** January 2025
 
 ### Recent Updates
+
 - ✅ Comprehensive test infrastructure (Jest + Playwright)
 - ✅ GitHub Actions CI/CD pipeline with 5 jobs
 - ✅ Docker test database with seed data
@@ -390,6 +408,7 @@ Proprietary - Tekup Portfolio © 2025
 - ✅ Initial pages (Login, Register, Dashboard, Jobs)
 
 ### Next Steps
+
 - 🔜 Backend API integration (replace mock data with real endpoints)
 - 🔜 Real-time features with Socket.io
 - 🔜 Mobile app testing infrastructure

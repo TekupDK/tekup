@@ -1,6 +1,6 @@
 /**
  * Centralized API Client for Backend Communication
- * 
+ *
  * Handles:
  * - Authentication headers
  * - Error handling
@@ -8,18 +8,18 @@
  * - Token refresh
  */
 
-import { useAuthStore } from '@/store/authStore';
+import { useAuthStore } from "@/store/authStore";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export class ApiError extends Error {
   constructor(
     public status: number,
     public statusText: string,
-    public data?: unknown,
+    public data?: unknown
   ) {
     super(`API Error ${status}: ${statusText}`);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
@@ -36,13 +36,13 @@ class ApiClient {
 
   private async request<T>(
     endpoint: string,
-    options: RequestOptions = {},
+    options: RequestOptions = {}
   ): Promise<T> {
     const { requireAuth = true, headers = {}, ...fetchOptions } = options;
 
     // Build headers
     const requestHeaders: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(headers as Record<string, string>),
     };
 
@@ -50,7 +50,7 @@ class ApiClient {
     if (requireAuth) {
       const token = useAuthStore.getState().token;
       if (token) {
-        requestHeaders['Authorization'] = `Bearer ${token}`;
+        requestHeaders["Authorization"] = `Bearer ${token}`;
       }
     }
 
@@ -69,7 +69,7 @@ class ApiClient {
         // Retry original request with new token
         const newToken = useAuthStore.getState().token;
         if (newToken) {
-          requestHeaders['Authorization'] = `Bearer ${newToken}`;
+          requestHeaders["Authorization"] = `Bearer ${newToken}`;
         }
         const retryResponse = await fetch(url, {
           ...fetchOptions,
@@ -107,10 +107,10 @@ class ApiClient {
       if (!token) return false;
 
       const response = await fetch(`${this.baseURL}/auth/refresh`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
@@ -120,15 +120,15 @@ class ApiClient {
       useAuthStore.getState().setToken(accessToken);
       return true;
     } catch (error) {
-      console.error('Token refresh failed:', error);
+      console.error("Token refresh failed:", error);
       return false;
     }
   }
 
   // Auth endpoints
   async login(email: string, password: string) {
-    return this.request<{ user: User; accessToken: string }>('/auth/login', {
-      method: 'POST',
+    return this.request<{ user: User; accessToken: string }>("/auth/login", {
+      method: "POST",
       body: JSON.stringify({ email, password }),
       requireAuth: false,
     });
@@ -142,22 +142,22 @@ class ApiClient {
     phone?: string;
     role?: string;
   }) {
-    return this.request<{ user: User; accessToken: string }>('/auth/register', {
-      method: 'POST',
+    return this.request<{ user: User; accessToken: string }>("/auth/register", {
+      method: "POST",
       body: JSON.stringify(data),
       requireAuth: false,
     });
   }
 
   async getProfile() {
-    return this.request<User>('/auth/profile', {
-      method: 'GET',
+    return this.request<User>("/auth/profile", {
+      method: "GET",
     });
   }
 
   async updateProfile(data: Partial<User>) {
-    return this.request<User>('/auth/profile', {
-      method: 'PATCH',
+    return this.request<User>("/auth/profile", {
+      method: "PATCH",
       body: JSON.stringify(data),
     });
   }
@@ -170,40 +170,40 @@ class ApiClient {
     offset?: number;
   }) {
     const queryParams = new URLSearchParams();
-    if (params?.status) queryParams.append('status', params.status);
-    if (params?.customerId) queryParams.append('customerId', params.customerId);
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
-    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    if (params?.status) queryParams.append("status", params.status);
+    if (params?.customerId) queryParams.append("customerId", params.customerId);
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+    if (params?.offset) queryParams.append("offset", params.offset.toString());
 
     const query = queryParams.toString();
-    return this.request<Job[]>(`/jobs${query ? `?${query}` : ''}`, {
-      method: 'GET',
+    return this.request<Job[]>(`/jobs${query ? `?${query}` : ""}`, {
+      method: "GET",
     });
   }
 
   async getJob(id: string) {
     return this.request<Job>(`/jobs/${id}`, {
-      method: 'GET',
+      method: "GET",
     });
   }
 
   async createJob(data: Partial<Job>) {
-    return this.request<Job>('/jobs', {
-      method: 'POST',
+    return this.request<Job>("/jobs", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   async updateJob(id: string, data: Partial<Job>) {
     return this.request<Job>(`/jobs/${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(data),
     });
   }
 
   async deleteJob(id: string) {
     return this.request<void>(`/jobs/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
@@ -214,39 +214,39 @@ class ApiClient {
     offset?: number;
   }) {
     const queryParams = new URLSearchParams();
-    if (params?.search) queryParams.append('search', params.search);
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
-    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    if (params?.search) queryParams.append("search", params.search);
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+    if (params?.offset) queryParams.append("offset", params.offset.toString());
 
     const query = queryParams.toString();
-    return this.request<Customer[]>(`/customers${query ? `?${query}` : ''}`, {
-      method: 'GET',
+    return this.request<Customer[]>(`/customers${query ? `?${query}` : ""}`, {
+      method: "GET",
     });
   }
 
   async getCustomer(id: string) {
     return this.request<Customer>(`/customers/${id}`, {
-      method: 'GET',
+      method: "GET",
     });
   }
 
   async createCustomer(data: Partial<Customer>) {
-    return this.request<Customer>('/customers', {
-      method: 'POST',
+    return this.request<Customer>("/customers", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   async updateCustomer(id: string, data: Partial<Customer>) {
     return this.request<Customer>(`/customers/${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(data),
     });
   }
 
   async deleteCustomer(id: string) {
     return this.request<void>(`/customers/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 }
@@ -271,8 +271,8 @@ export interface Job {
   customer_id: string;
   title: string;
   description?: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  status: "pending" | "in_progress" | "completed" | "cancelled";
+  priority?: "low" | "medium" | "high" | "urgent";
   scheduled_start?: string;
   scheduled_end?: string;
   estimated_hours?: number;

@@ -1,14 +1,14 @@
 // Learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 // Mock Next.js router
-jest.mock('next/router', () => ({
+jest.mock("next/router", () => ({
   useRouter() {
     return {
-      route: '/',
-      pathname: '/',
+      route: "/",
+      pathname: "/",
       query: {},
-      asPath: '/',
+      asPath: "/",
       push: jest.fn(),
       pop: jest.fn(),
       reload: jest.fn(),
@@ -25,7 +25,7 @@ jest.mock('next/router', () => ({
 }));
 
 // Mock Next.js navigation (App Router)
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter() {
     return {
       push: jest.fn(),
@@ -42,13 +42,13 @@ jest.mock('next/navigation', () => ({
     };
   },
   usePathname() {
-    return '/';
+    return "/";
   },
 }));
 
 // Mock environment variables
 process.env = {
   ...process.env,
-  NODE_ENV: 'test',
-  NEXT_PUBLIC_API_URL: 'http://localhost:3001',
+  NODE_ENV: "test",
+  NEXT_PUBLIC_API_URL: "http://localhost:3001",
 };

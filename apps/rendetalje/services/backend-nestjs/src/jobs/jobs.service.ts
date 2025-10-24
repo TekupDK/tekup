@@ -1,18 +1,23 @@
 import { Injectable, BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
 import { BaseService } from '../common/services/base.service';
 import { PrismaService } from '../database/prisma.service';
+import { SupabaseService } from '../supabase/supabase.service';
 import { Job, JobStatus, ServiceType } from './entities/job.entity';
 import { JobAssignment } from './entities/job-assignment.entity';
 import { CreateJobDto, UpdateJobDto, UpdateJobStatusDto, AssignJobDto, JobFiltersDto } from './dto';
 import { PaginatedResponseDto } from '../common/dto/pagination.dto';
 import { PaginationUtil } from '../common/utils/pagination.util';
+import { QueryBuilderUtil } from '../common/utils/query-builder.util';
 
 @Injectable()
 export class JobsService extends BaseService<Job> {
   protected modelName = 'jobs';
   protected searchFields = ['job_number', 'special_instructions'];
 
-  constructor(protected readonly prismaService: PrismaService) {
+  constructor(
+    protected readonly prismaService: PrismaService,
+    protected readonly supabaseService: SupabaseService,
+  ) {
     super(prismaService);
   }
 

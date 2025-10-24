@@ -1,25 +1,25 @@
 /**
  * Toast Notification Service
- * 
+ *
  * Centralized toast notifications using react-hot-toast
  */
 
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 
 export const toastService = {
   success: (message: string) => {
     toast.success(message, {
       duration: 4000,
-      position: 'top-right',
+      position: "top-right",
       style: {
-        background: '#10b981',
-        color: '#fff',
-        padding: '16px',
-        borderRadius: '8px',
+        background: "#10b981",
+        color: "#fff",
+        padding: "16px",
+        borderRadius: "8px",
       },
       iconTheme: {
-        primary: '#fff',
-        secondary: '#10b981',
+        primary: "#fff",
+        secondary: "#10b981",
       },
     });
   },
@@ -27,33 +27,33 @@ export const toastService = {
   error: (message: string) => {
     toast.error(message, {
       duration: 5000,
-      position: 'top-right',
+      position: "top-right",
       style: {
-        background: '#ef4444',
-        color: '#fff',
-        padding: '16px',
-        borderRadius: '8px',
+        background: "#ef4444",
+        color: "#fff",
+        padding: "16px",
+        borderRadius: "8px",
       },
       iconTheme: {
-        primary: '#fff',
-        secondary: '#ef4444',
+        primary: "#fff",
+        secondary: "#ef4444",
       },
     });
   },
 
   loading: (message: string) => {
     return toast.loading(message, {
-      position: 'top-right',
+      position: "top-right",
       style: {
-        background: '#3b82f6',
-        color: '#fff',
-        padding: '16px',
-        borderRadius: '8px',
+        background: "#3b82f6",
+        color: "#fff",
+        padding: "16px",
+        borderRadius: "8px",
       },
     });
   },
 
-  promise: <T,>(
+  promise: <T>(
     promise: Promise<T>,
     messages: {
       loading: string;
@@ -69,10 +69,10 @@ export const toastService = {
         error: messages.error,
       },
       {
-        position: 'top-right',
+        position: "top-right",
         style: {
-          padding: '16px',
-          borderRadius: '8px',
+          padding: "16px",
+          borderRadius: "8px",
         },
       }
     );

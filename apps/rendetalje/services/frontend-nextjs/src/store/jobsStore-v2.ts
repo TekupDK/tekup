@@ -1,13 +1,13 @@
 /**
  * Jobs Store - Integrated with Backend API
- * 
+ *
  * Manages job state and operations with real backend
  */
 
-import { create } from 'zustand';
-import { apiClient, ApiError } from '@/lib/api-client';
-import { toastService } from '@/lib/toast';
-import type { Job as ApiJob } from '@/lib/api-client';
+import { create } from "zustand";
+import { apiClient, ApiError } from "@/lib/api-client";
+import { toastService } from "@/lib/toast";
+import type { Job as ApiJob } from "@/lib/api-client";
 
 export interface Job {
   id: string;
@@ -15,8 +15,8 @@ export interface Job {
   customerId: string;
   title: string;
   description?: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  status: "pending" | "in_progress" | "completed" | "cancelled";
+  priority?: "low" | "medium" | "high" | "urgent";
   scheduledStart?: string;
   scheduledEnd?: string;
   estimatedHours?: number;
@@ -38,9 +38,12 @@ interface JobsState {
   selectedJob: Job | null;
   isLoading: boolean;
   error: string | null;
-  
+
   // Actions
-  fetchJobs: (filters?: { status?: string; customerId?: string }) => Promise<void>;
+  fetchJobs: (filters?: {
+    status?: string;
+    customerId?: string;
+  }) => Promise<void>;
   fetchJobById: (id: string) => Promise<void>;
   createJob: (job: Partial<Job>) => Promise<Job>;
   updateJob: (id: string, updates: Partial<Job>) => Promise<Job>;
@@ -90,140 +93,151 @@ export const useJobsStore = create<JobsState>((set, get) => ({
   selectedJob: null,
   isLoading: false,
   error: null,
-  
+
   fetchJobs: async (filters) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const apiJobs = await apiClient.getJobs(filters);
       const jobs = apiJobs.map(apiJobToJob);
-      
+
       set({ jobs, isLoading: false });
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke hente jobs'
-        : 'Kunne ikke hente jobs';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke hente jobs"
+          : "Kunne ikke hente jobs";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
-      
+
       toastService.error(errorMessage);
     }
   },
-  
+
   fetchJobById: async (id: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const apiJob = await apiClient.getJob(id);
       const job = apiJobToJob(apiJob);
-      
+
       set({ selectedJob: job, isLoading: false });
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke hente job'
-        : 'Kunne ikke hente job';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke hente job"
+          : "Kunne ikke hente job";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
     }
   },
-  
+
   createJob: async (jobData: Partial<Job>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const apiJob = await apiClient.createJob(jobToApiJob(jobData));
       const newJob = apiJobToJob(apiJob);
-      
-      set(state => ({
+
+      set((state) => ({
         jobs: [newJob, ...state.jobs],
         isLoading: false,
       }));
-      
-      toastService.success('Job oprettet succesfuldt');
+
+      toastService.success("Job oprettet succesfuldt");
       return newJob;
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke oprette job'
-        : 'Kunne ikke oprette job';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke oprette job"
+          : "Kunne ikke oprette job";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
-      
+
       toastService.error(errorMessage);
       throw error;
     }
   },
-  
+
   updateJob: async (id: string, updates: Partial<Job>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const apiJob = await apiClient.updateJob(id, jobToApiJob(updates));
       const updatedJob = apiJobToJob(apiJob);
-      
-      set(state => ({
-        jobs: state.jobs.map(job => job.id === id ? updatedJob : job),
-        selectedJob: state.selectedJob?.id === id ? updatedJob : state.selectedJob,
+
+      set((state) => ({
+        jobs: state.jobs.map((job) => (job.id === id ? updatedJob : job)),
+        selectedJob:
+          state.selectedJob?.id === id ? updatedJob : state.selectedJob,
         isLoading: false,
       }));
-      
-      toastService.success('Job opdateret succesfuldt');
+
+      toastService.success("Job opdateret succesfuldt");
       return updatedJob;
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke opdatere job'
-        : 'Kunne ikke opdatere job';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke opdatere job"
+          : "Kunne ikke opdatere job";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
-      
+
       toastService.error(errorMessage);
       throw error;
     }
   },
-  
+
   deleteJob: async (id: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       await apiClient.deleteJob(id);
-      
-      set(state => ({
-        jobs: state.jobs.filter(job => job.id !== id),
+
+      set((state) => ({
+        jobs: state.jobs.filter((job) => job.id !== id),
         selectedJob: state.selectedJob?.id === id ? null : state.selectedJob,
         isLoading: false,
       }));
-      
-      toastService.success('Job slettet succesfuldt');
+
+      toastService.success("Job slettet succesfuldt");
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke slette job'
-        : 'Kunne ikke slette job';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke slette job"
+          : "Kunne ikke slette job";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
-      
+
       toastService.error(errorMessage);
       throw error;
     }
   },
-  
+
   setSelectedJob: (job: Job | null) => {
     set({ selectedJob: job });
   },
-  
+
   clearError: () => {
     set({ error: null });
   },

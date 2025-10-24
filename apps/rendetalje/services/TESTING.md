@@ -10,12 +10,10 @@ All RenOS services have comprehensive test coverage with automated CI/CD pipelin
   - Unit tests for services and controllers
   - E2E tests for API endpoints
   - Integration tests with database mocking
-  
 - ✅ **Frontend (@renos/frontend)**: Next.js + Jest + React Testing Library
   - Component tests with user interactions
   - Page rendering tests
   - API route tests
-  
 - ✅ **Shared (@renos/shared)**: Jest + ts-jest
   - Validation utility tests
   - Schema validation tests
@@ -25,6 +23,7 @@ All RenOS services have comprehensive test coverage with automated CI/CD pipelin
 ### Running Tests Locally
 
 **Backend:**
+
 ```bash
 cd apps/rendetalje/services/backend-nestjs
 npm test                 # Run unit tests
@@ -34,6 +33,7 @@ npm run test:e2e         # E2E tests
 ```
 
 **Frontend:**
+
 ```bash
 cd apps/rendetalje/services/frontend-nextjs
 npm test                 # Run all tests
@@ -42,6 +42,7 @@ npm run test:coverage    # With coverage
 ```
 
 **Shared Library:**
+
 ```bash
 cd apps/rendetalje/services/shared
 npm test                 # Run all tests
@@ -52,11 +53,13 @@ npm run test:coverage    # With coverage
 ### CI/CD Pipeline
 
 GitHub Actions automatically runs all tests on:
+
 - Push to `master` or `develop` branches
 - Pull requests to `master` or `develop`
 - Changes in `apps/rendetalje/**` paths
 
 **Pipeline Jobs:**
+
 1. **backend-tests**: Linting, unit tests, E2E tests
 2. **frontend-tests**: Linting, tests, build verification
 3. **shared-tests**: Linting, tests, coverage thresholds, build
@@ -65,6 +68,7 @@ GitHub Actions automatically runs all tests on:
 ### Coverage Reports
 
 Coverage reports are automatically uploaded to Codecov:
+
 - Backend: `backend-coverage`
 - Frontend: `frontend-coverage`
 - Shared: `shared-coverage`
@@ -74,6 +78,7 @@ View coverage at: https://codecov.io/gh/TekupDK/tekup
 ### Test Structure
 
 **Backend Tests:**
+
 ```
 backend-nestjs/
 ├── src/
@@ -90,6 +95,7 @@ backend-nestjs/
 ```
 
 **Frontend Tests:**
+
 ```
 frontend-nextjs/
 ├── __tests__/
@@ -106,6 +112,7 @@ frontend-nextjs/
 ```
 
 **Shared Tests:**
+
 ```
 shared/
 ├── src/
@@ -120,6 +127,7 @@ shared/
 ### Quality Standards
 
 **All tests must:**
+
 - ✅ Pass consistently without flakiness
 - ✅ Test both success and error scenarios
 - ✅ Mock external dependencies appropriately
@@ -127,6 +135,7 @@ shared/
 - ✅ Follow testing best practices from official docs
 
 **Test Patterns:**
+
 - Unit tests: Test individual functions/methods
 - Integration tests: Test component interactions
 - E2E tests: Test complete user workflows
@@ -135,6 +144,7 @@ shared/
 ### Continuous Integration
 
 **On every commit:**
+
 1. Checkout code
 2. Setup Node.js 20
 3. Install dependencies (cached)
@@ -145,6 +155,7 @@ shared/
 8. Verify quality gates
 
 **Pull Request Requirements:**
+
 - ✅ All tests must pass
 - ✅ Linting must pass
 - ✅ Build must succeed
@@ -161,19 +172,21 @@ shared/
 
 ---
 
-**Last Updated:** October 24, 2025
----
+## **Last Updated:** October 24, 2025
 
 ## Playwright E2E Testing
 
 ### Setup Complete ✅
+
 - Playwright 1.56+ installed in frontend-nextjs
 - Multi-browser configuration (Chromium, Firefox, WebKit)
 - Mobile viewport testing (Pixel 5, iPhone 12)
 - Automatic dev server startup for tests
 
 ### Test Scenarios
+
 **Authentication Flow** (`e2e/auth.spec.ts`)
+
 - Login page display and validation
 - Empty form validation errors
 - Invalid email format detection
@@ -185,6 +198,7 @@ shared/
 - Password mismatch error handling
 
 **Job Management** (`e2e/job-management.spec.ts`)
+
 - Jobs list page display with "Create Job" button
 - Job creation modal opening
 - Window cleaning job creation with all fields
@@ -198,6 +212,7 @@ shared/
 - Cancellation of job deletion
 
 **Customer Management** (`e2e/customer-management.spec.ts`)
+
 - Customer list page display
 - Customer creation with all details (name, email, phone, address, CVR)
 - Email format validation
@@ -241,6 +256,7 @@ npx playwright test --project=webkit
 ```
 
 ### E2E Test Configuration (`playwright.config.ts`)
+
 - **Timeout**: 30 seconds per test
 - **Retries**: 2 retries in CI, 0 locally
 - **Workers**: 1 in CI (sequential), unlimited locally (parallel)
@@ -252,9 +268,11 @@ npx playwright test --project=webkit
 - **Web Server**: Automatically starts `npm run dev` before tests
 
 ### CI/CD Integration ✅
+
 Playwright E2E tests are **fully integrated** into the GitHub Actions pipeline!
 
 **Pipeline Flow:**
+
 1. **backend-tests** → Unit + E2E tests
 2. **frontend-tests** → Jest + RTL component tests
 3. **shared-tests** → Utilities + schema tests
@@ -262,6 +280,7 @@ Playwright E2E tests are **fully integrated** into the GitHub Actions pipeline!
 5. **quality-check** → Final verification gate (depends on all previous jobs)
 
 **E2E Job Configuration:**
+
 - Runs only after basic tests pass (needs: [backend-tests, frontend-tests])
 - Installs Chromium, Firefox, and WebKit browsers
 - Executes all E2E test suites (auth, jobs, customers)
@@ -269,6 +288,7 @@ Playwright E2E tests are **fully integrated** into the GitHub Actions pipeline!
 - Uploads test results and traces (retained for 30 days)
 
 **View Results:**
+
 - GitHub Actions: [https://github.com/TekupDK/tekup/actions](https://github.com/TekupDK/tekup/actions)
 - Download Playwright Report artifact from completed workflow runs
 - View test traces for failed tests in Playwright UI mode locally
@@ -278,28 +298,32 @@ Playwright E2E tests are **fully integrated** into the GitHub Actions pipeline!
 ## Test Database Infrastructure
 
 ### Docker Setup Complete ✅
+
 **File:** `docker-compose.test.yml`
 
 **Services:**
+
 - **PostgreSQL 15** on port 5433 (`renos-postgres-test`)
   - User: `renos_test`
   - Password: `renos_test_password`
   - Database: `renos_test`
   - Health check: `pg_isready` every 10s
-  
 - **Redis 7** on port 6380 (`renos-redis-test`)
   - Password: `renos_test_redis_password`
   - Persistence: RDB snapshots to volume
   - Health check: `redis-cli ping` every 10s
 
 **Volumes:**
+
 - `renos-postgres-test-data` - PostgreSQL data persistence
 - `renos-redis-test-data` - Redis cache persistence
 
 **Network:**
+
 - `renos-test-network` - Bridge network for inter-service communication
 
 ### Database Schema (`scripts/init-test-db.sql`)
+
 ```sql
 renos.users              -- Authentication and user profiles (JWT-based)
   ├─ id (UUID, PK)
@@ -339,6 +363,7 @@ renos.invoices           -- Billing and payment tracking
 ```
 
 **Indexes Created:**
+
 - `idx_users_email`, `idx_users_role`
 - `idx_customers_user_id`
 - `idx_jobs_customer_id`, `idx_jobs_assigned_to`, `idx_jobs_status`
@@ -346,7 +371,9 @@ renos.invoices           -- Billing and payment tracking
 - `idx_invoices_job_id`, `idx_invoices_customer_id`
 
 ### Seed Data (Pre-loaded)
+
 **Test Users (password: `securePassword123` for all):**
+
 ```
 owner@example.com       → Test Owner (role: owner)
 employee@example.com    → Test Employee (role: employee)
@@ -354,12 +381,14 @@ customer@example.com    → Test Customer (role: customer)
 ```
 
 **Test Customers:**
+
 ```
 Lars Hansen             → Private customer, Nørregade 10, 1234 København
 Test Virksomhed ApS     → Business customer, Industrivej 5, 2000 Frederiksberg
 ```
 
 **Test Jobs:**
+
 ```
 Window cleaning (pending)      → Assigned to employee, scheduled in 2 days
 Facade polishing (in_progress) → Business customer, scheduled tomorrow
@@ -367,6 +396,7 @@ Window cleaning (completed)    → Completed 3 days ago, has paid invoice
 ```
 
 **Test Invoices:**
+
 ```
 INV-2025-0001 (paid)    → 450 DKK, due 10 days ago, paid
 ```
@@ -406,6 +436,7 @@ cd c:\Users\Jonas-dev\tekup\apps\rendetalje\services
 ```
 
 ### Test Environment Variables (`.env.test`)
+
 ```bash
 # Database
 DATABASE_URL=postgresql://renos_test:renos_test_password@localhost:5433/renos_test
@@ -441,27 +472,28 @@ CI=false
 
 ```typescript
 // In test/setup.ts (already configured)
-process.env.DATABASE_URL = 'postgresql://renos_test:renos_test_password@localhost:5433/renos_test';
-process.env.REDIS_URL = 'redis://:renos_test_redis_password@localhost:6380';
+process.env.DATABASE_URL =
+  "postgresql://renos_test:renos_test_password@localhost:5433/renos_test";
+process.env.REDIS_URL = "redis://:renos_test_redis_password@localhost:6380";
 
 // In E2E tests (test/*.e2e-spec.ts)
-describe('Jobs E2E', () => {
+describe("Jobs E2E", () => {
   beforeAll(async () => {
     // Database is already seeded with test data
     // Test users, customers, and jobs are ready to use
   });
 
-  it('should create a new job', async () => {
+  it("should create a new job", async () => {
     const response = await request(app.getHttpServer())
-      .post('/jobs')
-      .set('Authorization', `Bearer ${ownerToken}`)
+      .post("/jobs")
+      .set("Authorization", `Bearer ${ownerToken}`)
       .send({
-        customerId: '44444444-4444-4444-4444-444444444444', // Lars Hansen
-        type: 'window',
-        address: 'Test address',
+        customerId: "44444444-4444-4444-4444-444444444444", // Lars Hansen
+        type: "window",
+        address: "Test address",
         // ... other fields
       });
-    
+
     expect(response.status).toBe(201);
   });
 
@@ -498,6 +530,7 @@ docker ps --filter "name=renos-redis-test"
 ## Next Steps
 
 ### Phase 2: Integration Testing
+
 - [ ] Integrate Playwright E2E into GitHub Actions pipeline (see YAML example above)
 - [ ] Add visual regression testing with Playwright screenshots and pixel comparison
 - [ ] Implement API contract testing with Pact or Postman collections
@@ -505,6 +538,7 @@ docker ps --filter "name=renos-redis-test"
 - [ ] Create test data factory for generating realistic datasets
 
 ### Phase 3: Performance Testing
+
 - [ ] Add load testing with Artillery or k6 for API endpoints
 - [ ] Implement performance benchmarks for critical user workflows
 - [ ] Add memory leak detection with Node.js heap profiling
@@ -512,6 +546,7 @@ docker ps --filter "name=renos-redis-test"
 - [ ] Set up Lighthouse CI for frontend performance metrics
 
 ### Phase 4: Mobile App Testing
+
 - [ ] Set up React Native testing infrastructure (Jest + React Native Testing Library)
 - [ ] Add Detox for mobile E2E tests (iOS and Android)
 - [ ] Configure iOS Simulator and Android Emulator in CI
@@ -519,6 +554,7 @@ docker ps --filter "name=renos-redis-test"
 - [ ] Add accessibility testing with @testing-library/react-native-a11y
 
 ### Phase 5: Continuous Improvement
+
 - [ ] Implement mutation testing with Stryker to validate test quality
 - [ ] Add code quality gates (SonarQube or similar)
 - [ ] Create test data versioning for reproducible test scenarios

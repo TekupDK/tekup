@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { z } from 'zod';
+import { NextResponse } from "next/server";
+import { z } from "zod";
 
 // Registration request schema
 const registerRequestSchema = z.object({
@@ -14,12 +14,15 @@ const mockUsers: any[] = [];
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
+
     // Validate request body
     const validation = registerRequestSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        { message: 'Ugyldige registreringsoplysninger', errors: validation.error.errors },
+        {
+          message: "Ugyldige registreringsoplysninger",
+          errors: validation.error.errors,
+        },
         { status: 400 }
       );
     }
@@ -30,7 +33,7 @@ export async function POST(request: Request) {
     const existingUser = mockUsers.find((u) => u.email === email);
     if (existingUser) {
       return NextResponse.json(
-        { message: 'En bruger med denne e-mail eksisterer allerede' },
+        { message: "En bruger med denne e-mail eksisterer allerede" },
         { status: 409 }
       );
     }
@@ -41,7 +44,7 @@ export async function POST(request: Request) {
       name,
       email,
       password, // In production, hash this with bcrypt
-      role: 'customer', // Default role
+      role: "customer", // Default role
       createdAt: new Date().toISOString(),
     };
 
@@ -56,14 +59,14 @@ export async function POST(request: Request) {
     };
 
     return NextResponse.json({
-      message: 'Konto oprettet succesfuldt',
+      message: "Konto oprettet succesfuldt",
       user: userResponse,
-      token: 'mock-jwt-token', // Replace with real JWT
+      token: "mock-jwt-token", // Replace with real JWT
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error("Registration error:", error);
     return NextResponse.json(
-      { message: 'Der opstod en fejl under registrering' },
+      { message: "Der opstod en fejl under registrering" },
       { status: 500 }
     );
   }
