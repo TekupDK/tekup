@@ -78,4 +78,19 @@ export class AuthController {
       changePasswordDto.newPassword,
     );
   }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout user (Mobile)' })
+  @ApiResponse({ status: 200, description: 'Logout successful' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async logout(@Request() req): Promise<{ message: string }> {
+    // In production, this would invalidate the JWT token
+    // For now, just return success message
+    return {
+      message: 'Logout successful',
+    };
+  }
 }
