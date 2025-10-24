@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ Added (Since v1.0.0)
+
+#### CI/CD Enhancement
+- **Playwright E2E Integration in GitHub Actions** (2025-01-24)
+  - Added `frontend-e2e-tests` job to CI/CD pipeline
+  - Installs Chromium, Firefox, and WebKit browsers automatically
+  - Runs after `backend-tests` and `frontend-tests` pass (smart dependency management)
+  - Uploads Playwright HTML report as artifact (30-day retention)
+  - Uploads test results and traces for debugging failures
+  - Full integration with existing quality gates
+
 ### 🔜 Planned
 - Real-time features with Socket.io (job status updates, employee tracking)
 - Mobile app testing infrastructure
@@ -62,14 +73,16 @@ This is the first production-ready release of the RenOS platform with comprehens
 #### CI/CD Pipeline
 - **GitHub Actions Workflow** (`.github/workflows/renos-tests.yml`)
   - Automated testing on push/PR to master/develop branches
-  - Four-job pipeline with dependency management:
+  - Five-job pipeline with dependency management:
     1. `backend-tests`: Lint → Unit → E2E → Coverage upload
     2. `frontend-tests`: Lint → Tests → Build → Coverage upload
     3. `shared-tests`: Lint → Tests → Coverage threshold → Build → Coverage upload
-    4. `quality-check`: Final verification gate
+    4. `frontend-e2e-tests`: Install Playwright → E2E tests → Upload reports (depends on backend + frontend)
+    5. `quality-check`: Final verification gate (depends on all previous jobs)
   - Node.js 20 LTS environment
   - npm dependency caching for faster builds
   - Codecov integration with service-specific flags
+  - Playwright test artifacts retained for 30 days
 
 #### Test Database Infrastructure
 - **Docker Compose Test Environment** (`docker-compose.test.yml`)

@@ -251,46 +251,27 @@ npx playwright test --project=webkit
 - **Reporters**: HTML + JSON in CI, List + HTML locally
 - **Web Server**: Automatically starts `npm run dev` before tests
 
-### CI/CD Integration (Coming Soon)
-Playwright tests are ready but **not yet** integrated into GitHub Actions. To add to `.github/workflows/renos-tests.yml`:
+### CI/CD Integration ✅
+Playwright E2E tests are **fully integrated** into the GitHub Actions pipeline!
 
-```yaml
-frontend-e2e-tests:
-  name: Frontend E2E Tests
-  runs-on: ubuntu-latest
-  needs: [backend-tests] # Ensure backend is working first
-  steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: apps/rendetalje/services/frontend-nextjs/package-lock.json
-    
-    - name: Install dependencies
-      working-directory: apps/rendetalje/services/frontend-nextjs
-      run: npm ci
-    
-    - name: Install Playwright Browsers
-      working-directory: apps/rendetalje/services/frontend-nextjs
-      run: npx playwright install --with-deps
-    
-    - name: Run E2E Tests
-      working-directory: apps/rendetalje/services/frontend-nextjs
-      run: npm run test:e2e
-      env:
-        PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
-    
-    - name: Upload Playwright Report
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: playwright-report
-        path: apps/rendetalje/services/frontend-nextjs/playwright-report/
-        retention-days: 30
-```
+**Pipeline Flow:**
+1. **backend-tests** → Unit + E2E tests
+2. **frontend-tests** → Jest + RTL component tests
+3. **shared-tests** → Utilities + schema tests
+4. **frontend-e2e-tests** → Playwright E2E (runs after backend + frontend tests pass)
+5. **quality-check** → Final verification gate (depends on all previous jobs)
+
+**E2E Job Configuration:**
+- Runs only after basic tests pass (needs: [backend-tests, frontend-tests])
+- Installs Chromium, Firefox, and WebKit browsers
+- Executes all E2E test suites (auth, jobs, customers)
+- Uploads Playwright HTML report (retained for 30 days)
+- Uploads test results and traces (retained for 30 days)
+
+**View Results:**
+- GitHub Actions: [https://github.com/TekupDK/tekup/actions](https://github.com/TekupDK/tekup/actions)
+- Download Playwright Report artifact from completed workflow runs
+- View test traces for failed tests in Playwright UI mode locally
 
 ---
 
