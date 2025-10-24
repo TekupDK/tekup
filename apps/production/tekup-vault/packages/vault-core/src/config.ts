@@ -22,7 +22,7 @@ const ConfigSchema = z.object({
   // Server
   PORT: z.coerce.number().int().positive().default(3000),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+  LOG_LEVEL: z.enum(['silent', 'debug', 'info', 'warn', 'error']).default('info'),
 
   // API Security
   // Optional here so non-API services (e.g., worker) don't fail to boot if not set

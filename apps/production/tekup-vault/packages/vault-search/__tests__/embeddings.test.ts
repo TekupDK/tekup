@@ -6,6 +6,7 @@ const mockSupabase = {
   from: vi.fn(() => ({
     insert: vi.fn().mockResolvedValue({ data: null, error: null }),
     update: vi.fn().mockResolvedValue({ data: null, error: null }),
+    upsert: vi.fn().mockResolvedValue({ data: null, error: null }),
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     is: vi.fn().mockReturnThis(),

@@ -7,10 +7,11 @@ const mockOctokit = {
     repos: {
       getContent: vi.fn(),
     },
-    git: {
-      getTree: vi.fn(),
-      getBlob: vi.fn(),
-    },
+  },
+  git: {
+    getRef: vi.fn(),
+    getTree: vi.fn(),
+    getBlob: vi.fn(),
   },
 };
 
@@ -40,7 +41,32 @@ describe('GitHub Sync', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
+    // Setup default mock responses
+    mockOctokit.git.getRef.mockResolvedValue({
+      data: {
+        object: {
+          sha: 'commit-sha-123',
+        },
+      },
+    });
+
+    mockOctokit.git.getTree.mockResolvedValue({
+      data: {
+        sha: 'tree-sha',
+        tree: [
+          { path: 'README.md', type: 'blob', sha: 'sha1' },
+        ],
+      },
+    });
+
+    mockOctokit.git.getBlob.mockResolvedValue({
+      data: {
+        content: Buffer.from('file content').toString('base64'),
+        encoding: 'base64',
+      },
+    });
+
     githubSync = new GitHubSync(
       MOCK_TOKEN,
       mockSupabase as any,
@@ -53,7 +79,7 @@ describe('GitHub Sync', () => {
 
   describe('SYNC-003: Sync med invalid GitHub token', () => {
     it('should handle authentication errors gracefully', async () => {
-      mockOctokit.rest.git.getTree.mockRejectedValueOnce({
+      mockOctokit.git.getTree.mockRejectedValueOnce({
         status: 401,
         message: 'Bad credentials',
       });
@@ -70,7 +96,7 @@ describe('GitHub Sync', () => {
     });
 
     it('should handle rate limit errors', async () => {
-      mockOctokit.rest.git.getTree.mockRejectedValueOnce({
+      mockOctokit.git.getTree.mockRejectedValueOnce({
         status: 403,
         message: 'API rate limit exceeded',
       });
@@ -87,7 +113,7 @@ describe('GitHub Sync', () => {
     });
 
     it('should handle repository not found', async () => {
-      mockOctokit.rest.git.getTree.mockRejectedValueOnce({
+      mockOctokit.git.getTree.mockRejectedValueOnce({
         status: 404,
         message: 'Not Found',
       });
@@ -118,10 +144,10 @@ describe('GitHub Sync', () => {
         },
       };
 
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce(mockTree);
+      mockOctokit.git.getTree.mockResolvedValueOnce(mockTree);
 
       // Mock blob content for text files
-      mockOctokit.rest.git.getBlob.mockResolvedValue({
+      mockOctokit.git.getBlob.mockResolvedValue({
         data: {
           content: Buffer.from('file content').toString('base64'),
           encoding: 'base64',
@@ -135,7 +161,7 @@ describe('GitHub Sync', () => {
       });
 
       // Should only fetch blobs for text files (not .png, .mp4, .pdf)
-      const blobCalls = mockOctokit.rest.git.getBlob.mock.calls;
+      const blobCalls = mockOctokit.git.getBlob.mock.calls;
       
       // Check that binary files were NOT fetched
       expect(blobCalls.every((call: any) => 
@@ -171,8 +197,8 @@ describe('GitHub Sync', () => {
         },
       };
 
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce(mockTree);
-      mockOctokit.rest.git.getBlob.mockResolvedValue({
+      mockOctokit.git.getTree.mockResolvedValueOnce(mockTree);
+      mockOctokit.git.getBlob.mockResolvedValue({
         data: {
           content: Buffer.from('content').toString('base64'),
           encoding: 'base64',
@@ -186,7 +212,7 @@ describe('GitHub Sync', () => {
       });
 
       // All text files should be processed
-      expect(mockOctokit.rest.git.getBlob).toHaveBeenCalledTimes(textFiles.length);
+      expect(mockOctokit.git.getBlob).toHaveBeenCalledTimes(textFiles.length);
     });
   });
 
@@ -194,7 +220,7 @@ describe('GitHub Sync', () => {
     it('should handle Danish characters (æøå) correctly', async () => {
       const danishContent = 'Dette er en test med æøå ÆØÅ';
 
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce({
+      mockOctokit.git.getTree.mockResolvedValueOnce({
         data: {
           sha: 'tree-sha',
           tree: [
@@ -203,7 +229,7 @@ describe('GitHub Sync', () => {
         },
       });
 
-      mockOctokit.rest.git.getBlob.mockResolvedValueOnce({
+      mockOctokit.git.getBlob.mockResolvedValueOnce({
         data: {
           content: Buffer.from(danishContent, 'utf-8').toString('base64'),
           encoding: 'base64',
@@ -228,7 +254,7 @@ describe('GitHub Sync', () => {
     it('should handle emoji in file content', async () => {
       const emojiContent = 'Test with emojis 🚀 🔐 📝';
 
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce({
+      mockOctokit.git.getTree.mockResolvedValueOnce({
         data: {
           sha: 'tree-sha',
           tree: [
@@ -237,7 +263,7 @@ describe('GitHub Sync', () => {
         },
       });
 
-      mockOctokit.rest.git.getBlob.mockResolvedValueOnce({
+      mockOctokit.git.getBlob.mockResolvedValueOnce({
         data: {
           content: Buffer.from(emojiContent, 'utf-8').toString('base64'),
           encoding: 'base64',
@@ -259,7 +285,7 @@ describe('GitHub Sync', () => {
     it('should handle various unicode characters', async () => {
       const unicodeContent = 'Japanese: 日本語, Arabic: مرحبا, Cyrillic: Привет';
 
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce({
+      mockOctokit.git.getTree.mockResolvedValueOnce({
         data: {
           sha: 'tree-sha',
           tree: [
@@ -268,7 +294,7 @@ describe('GitHub Sync', () => {
         },
       });
 
-      mockOctokit.rest.git.getBlob.mockResolvedValueOnce({
+      mockOctokit.git.getBlob.mockResolvedValueOnce({
         data: {
           content: Buffer.from(unicodeContent, 'utf-8').toString('base64'),
           encoding: 'base64',
@@ -296,7 +322,7 @@ describe('GitHub Sync', () => {
       const filePath = 'updated/file.ts';
 
       // First sync with old SHA
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce({
+      mockOctokit.git.getTree.mockResolvedValueOnce({
         data: {
           sha: 'tree-sha-1',
           tree: [
@@ -305,7 +331,7 @@ describe('GitHub Sync', () => {
         },
       });
 
-      mockOctokit.rest.git.getBlob.mockResolvedValueOnce({
+      mockOctokit.git.getBlob.mockResolvedValueOnce({
         data: {
           content: Buffer.from('Old content').toString('base64'),
           encoding: 'base64',
@@ -327,7 +353,7 @@ describe('GitHub Sync', () => {
       );
 
       // Second sync with new SHA (file updated)
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce({
+      mockOctokit.git.getTree.mockResolvedValueOnce({
         data: {
           sha: 'tree-sha-2',
           tree: [
@@ -336,7 +362,7 @@ describe('GitHub Sync', () => {
         },
       });
 
-      mockOctokit.rest.git.getBlob.mockResolvedValueOnce({
+      mockOctokit.git.getBlob.mockResolvedValueOnce({
         data: {
           content: Buffer.from('New updated content').toString('base64'),
           encoding: 'base64',
@@ -361,7 +387,7 @@ describe('GitHub Sync', () => {
 
   describe('SYNC-009: Network error handling', () => {
     it('should handle network timeout errors', async () => {
-      mockOctokit.rest.git.getTree.mockRejectedValueOnce(
+      mockOctokit.git.getTree.mockRejectedValueOnce(
         new Error('ETIMEDOUT')
       );
 
@@ -382,7 +408,7 @@ describe('GitHub Sync', () => {
     });
 
     it('should handle connection refused errors', async () => {
-      mockOctokit.rest.git.getTree.mockRejectedValueOnce(
+      mockOctokit.git.getTree.mockRejectedValueOnce(
         new Error('ECONNREFUSED')
       );
 
@@ -399,7 +425,7 @@ describe('GitHub Sync', () => {
 
     it('should handle intermittent errors and retry', async () => {
       // First call fails
-      mockOctokit.rest.git.getTree
+      mockOctokit.git.getTree
         .mockRejectedValueOnce(new Error('Network error'))
         // Second call succeeds (if retry is implemented)
         .mockResolvedValueOnce({
@@ -433,14 +459,14 @@ describe('GitHub Sync', () => {
         sha: `sha-${i}`,
       }));
 
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce({
+      mockOctokit.git.getTree.mockResolvedValueOnce({
         data: {
           sha: 'tree-sha',
           tree: files,
         },
       });
 
-      mockOctokit.rest.git.getBlob.mockResolvedValue({
+      mockOctokit.git.getBlob.mockResolvedValue({
         data: {
           content: Buffer.from('content').toString('base64'),
           encoding: 'base64',
@@ -454,7 +480,7 @@ describe('GitHub Sync', () => {
       });
 
       // Should process all files
-      expect(mockOctokit.rest.git.getBlob).toHaveBeenCalledTimes(25);
+      expect(mockOctokit.git.getBlob).toHaveBeenCalledTimes(25);
     });
 
     it('should handle large repositories efficiently', async () => {
@@ -465,14 +491,14 @@ describe('GitHub Sync', () => {
         sha: `sha-${i}`,
       }));
 
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce({
+      mockOctokit.git.getTree.mockResolvedValueOnce({
         data: {
           sha: 'tree-sha',
           tree: manyFiles,
         },
       });
 
-      mockOctokit.rest.git.getBlob.mockResolvedValue({
+      mockOctokit.git.getBlob.mockResolvedValue({
         data: {
           content: Buffer.from('content').toString('base64'),
           encoding: 'base64',
@@ -497,7 +523,7 @@ describe('GitHub Sync', () => {
 
   describe('Error recovery', () => {
     it('should continue processing after individual file error', async () => {
-      mockOctokit.rest.git.getTree.mockResolvedValueOnce({
+      mockOctokit.git.getTree.mockResolvedValueOnce({
         data: {
           sha: 'tree-sha',
           tree: [
@@ -509,7 +535,7 @@ describe('GitHub Sync', () => {
       });
 
       // First and third calls succeed, second fails
-      mockOctokit.rest.git.getBlob
+      mockOctokit.git.getBlob
         .mockResolvedValueOnce({
           data: {
             content: Buffer.from('Good content 1').toString('base64'),
