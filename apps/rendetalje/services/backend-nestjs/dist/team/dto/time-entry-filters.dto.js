@@ -17,27 +17,33 @@ class TimeEntryFiltersDto extends pagination_dto_1.PaginationDto {
 }
 exports.TimeEntryFiltersDto = TimeEntryFiltersDto;
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ example: '00000000-0000-0000-0000-000000000001', description: 'Filter by job ID' }),
+    (0, swagger_1.ApiPropertyOptional)({ example: 'clxxx...', description: 'Filter by lead ID' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], TimeEntryFiltersDto.prototype, "job_id", void 0);
+], TimeEntryFiltersDto.prototype, "leadId", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ example: '00000000-0000-0000-0000-000000000002', description: 'Filter by team member ID' }),
+    (0, swagger_1.ApiPropertyOptional)({ example: 'clyyy...', description: 'Filter by booking ID' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], TimeEntryFiltersDto.prototype, "team_member_id", void 0);
+], TimeEntryFiltersDto.prototype, "bookingId", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'clzzz...', description: 'Filter by team member ID' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], TimeEntryFiltersDto.prototype, "teamMemberId", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: '2024-01-01', description: 'Filter by date from (YYYY-MM-DD)' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], TimeEntryFiltersDto.prototype, "date_from", void 0);
+], TimeEntryFiltersDto.prototype, "dateFrom", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: '2024-01-31', description: 'Filter by date to (YYYY-MM-DD)' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], TimeEntryFiltersDto.prototype, "date_to", void 0);
+], TimeEntryFiltersDto.prototype, "dateTo", void 0);
 //# sourceMappingURL=time-entry-filters.dto.js.map

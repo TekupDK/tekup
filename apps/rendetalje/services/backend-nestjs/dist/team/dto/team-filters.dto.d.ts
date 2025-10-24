@@ -1,7 +1,7 @@
 import { PaginationDto } from '../../common/dto/pagination.dto';
 export declare class TeamFiltersDto extends PaginationDto {
-    is_active?: boolean;
+    isActive?: boolean;
     skills?: string[];
-    hired_after?: string;
-    hired_before?: string;
+    hiredAfter?: string;
+    hiredBefore?: string;
 }

@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { OrganizationEntity } from '../../common/entities/base.entity';
 
 export interface WeeklyAvailability {
   monday?: { start: string; end: string; available: boolean };
@@ -12,22 +11,25 @@ export interface WeeklyAvailability {
 }
 
 export interface PerformanceMetrics {
-  jobs_completed: number;
-  average_job_duration: number;
-  average_quality_score: number;
-  customer_satisfaction: number;
-  punctuality_score: number;
-  efficiency_rating: number;
-  total_hours_worked: number;
-  overtime_hours: number;
+  jobsCompleted: number;
+  averageJobDuration: number;
+  averageQualityScore: number;
+  customerSatisfaction: number;
+  punctualityScore: number;
+  efficiencyRating: number;
+  totalHoursWorked: number;
+  overtimeHours: number;
 }
 
-export class TeamMember extends OrganizationEntity {
-  @ApiProperty({ example: '00000000-0000-0000-0000-000000000001', description: 'Associated user ID' })
-  user_id: string;
+export class TeamMember {
+  @ApiProperty({ example: 'clxxx...', description: 'Team member ID' })
+  id: string;
+
+  @ApiProperty({ example: 'clyyy...', description: 'Associated user ID' })
+  userId: string;
 
   @ApiProperty({ example: 'EMP-2024-0001', description: 'Employee ID' })
-  employee_id: string;
+  employeeId: string;
 
   @ApiProperty({ 
     description: 'Employee skills',
@@ -36,7 +38,7 @@ export class TeamMember extends OrganizationEntity {
   skills: string[];
 
   @ApiPropertyOptional({ example: 250.00, description: 'Hourly rate in DKK' })
-  hourly_rate?: number;
+  hourlyRate?: number;
 
   @ApiProperty({ 
     description: 'Weekly availability schedule',
@@ -55,21 +57,27 @@ export class TeamMember extends OrganizationEntity {
   @ApiProperty({ 
     description: 'Performance metrics',
     example: {
-      jobs_completed: 45,
-      average_job_duration: 125,
-      average_quality_score: 4.2,
-      customer_satisfaction: 4.5,
-      punctuality_score: 4.8,
-      efficiency_rating: 4.3,
-      total_hours_worked: 160,
-      overtime_hours: 8
+      jobsCompleted: 45,
+      averageJobDuration: 125,
+      averageQualityScore: 4.2,
+      customerSatisfaction: 4.5,
+      punctualityScore: 4.8,
+      efficiencyRating: 4.3,
+      totalHoursWorked: 160,
+      overtimeHours: 8
     }
   })
-  performance_metrics: PerformanceMetrics;
+  performanceMetrics: PerformanceMetrics;
 
   @ApiProperty({ example: true, description: 'Whether team member is active' })
-  is_active: boolean;
+  isActive: boolean;
 
   @ApiPropertyOptional({ example: '2024-01-15', description: 'Hire date' })
-  hire_date?: string;
+  hireDate?: Date;
+
+  @ApiProperty({ description: 'Creation timestamp' })
+  createdAt: Date;
+
+  @ApiProperty({ description: 'Last update timestamp' })
+  updatedAt: Date;
 }

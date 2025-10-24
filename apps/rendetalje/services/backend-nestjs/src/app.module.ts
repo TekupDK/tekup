@@ -4,7 +4,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { CustomersModule } from './customers/customers.module';
 import { LeadsModule } from './leads/leads.module';
 import { AuthModule } from './auth/auth.module';
-// import { TeamModule } from './team/team.module';  // Disabled - needs Prisma conversion
+import { TeamModule } from './team/team.module';
 // import { AiFridayModule } from './ai-friday/ai-friday.module';  // Disabled - needs Prisma conversion
 // import { IntegrationsModule } from './integrations/integrations.module'; // Disabled - check dependencies
 import { LoggerModule } from './common/logger/logger.module';
@@ -38,9 +38,9 @@ import configuration from './config/configuration';
     CustomersModule, // ✅ ENABLED: Converted to Prisma
     LeadsModule, // ✅ ENABLED: Converted to Prisma (renamed from JobsModule)
     AuthModule, // ✅ ENABLED: JWT + Prisma + bcrypt
+    TeamModule, // ✅ ENABLED: Converted to Prisma (team members + time entries)
     
     // TODO: Convert remaining modules from Supabase to Prisma
-    // TeamModule, // 50+ Supabase queries
     // AiFridayModule, // Uses Supabase
     // IntegrationsModule, // Check dependencies
   ],

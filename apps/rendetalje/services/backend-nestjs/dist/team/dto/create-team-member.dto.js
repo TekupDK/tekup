@@ -16,16 +16,16 @@ class CreateTeamMemberDto {
 }
 exports.CreateTeamMemberDto = CreateTeamMemberDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '00000000-0000-0000-0000-000000000001', description: 'Associated user ID' }),
+    (0, swagger_1.ApiProperty)({ example: 'clxxx...', description: 'Associated user ID' }),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], CreateTeamMemberDto.prototype, "user_id", void 0);
+], CreateTeamMemberDto.prototype, "userId", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 'EMP-2024-0001', description: 'Employee ID (auto-generated if not provided)' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateTeamMemberDto.prototype, "employee_id", void 0);
+], CreateTeamMemberDto.prototype, "employeeId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Employee skills',
@@ -41,7 +41,7 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(0),
     __metadata("design:type", Number)
-], CreateTeamMemberDto.prototype, "hourly_rate", void 0);
+], CreateTeamMemberDto.prototype, "hourlyRate", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Weekly availability schedule',
@@ -63,5 +63,5 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], CreateTeamMemberDto.prototype, "hire_date", void 0);
+], CreateTeamMemberDto.prototype, "hireDate", void 0);
 //# sourceMappingURL=create-team-member.dto.js.map

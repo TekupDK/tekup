@@ -11,18 +11,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TeamMember = void 0;
 const swagger_1 = require("@nestjs/swagger");
-const base_entity_1 = require("../../common/entities/base.entity");
-class TeamMember extends base_entity_1.OrganizationEntity {
+class TeamMember {
 }
 exports.TeamMember = TeamMember;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '00000000-0000-0000-0000-000000000001', description: 'Associated user ID' }),
+    (0, swagger_1.ApiProperty)({ example: 'clxxx...', description: 'Team member ID' }),
     __metadata("design:type", String)
-], TeamMember.prototype, "user_id", void 0);
+], TeamMember.prototype, "id", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'clyyy...', description: 'Associated user ID' }),
+    __metadata("design:type", String)
+], TeamMember.prototype, "userId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'EMP-2024-0001', description: 'Employee ID' }),
     __metadata("design:type", String)
-], TeamMember.prototype, "employee_id", void 0);
+], TeamMember.prototype, "employeeId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Employee skills',
@@ -33,7 +36,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 250.00, description: 'Hourly rate in DKK' }),
     __metadata("design:type", Number)
-], TeamMember.prototype, "hourly_rate", void 0);
+], TeamMember.prototype, "hourlyRate", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Weekly availability schedule',
@@ -53,24 +56,32 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Performance metrics',
         example: {
-            jobs_completed: 45,
-            average_job_duration: 125,
-            average_quality_score: 4.2,
-            customer_satisfaction: 4.5,
-            punctuality_score: 4.8,
-            efficiency_rating: 4.3,
-            total_hours_worked: 160,
-            overtime_hours: 8
+            jobsCompleted: 45,
+            averageJobDuration: 125,
+            averageQualityScore: 4.2,
+            customerSatisfaction: 4.5,
+            punctualityScore: 4.8,
+            efficiencyRating: 4.3,
+            totalHoursWorked: 160,
+            overtimeHours: 8
         }
     }),
     __metadata("design:type", Object)
-], TeamMember.prototype, "performance_metrics", void 0);
+], TeamMember.prototype, "performanceMetrics", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: true, description: 'Whether team member is active' }),
     __metadata("design:type", Boolean)
-], TeamMember.prototype, "is_active", void 0);
+], TeamMember.prototype, "isActive", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: '2024-01-15', description: 'Hire date' }),
-    __metadata("design:type", String)
-], TeamMember.prototype, "hire_date", void 0);
+    __metadata("design:type", Date)
+], TeamMember.prototype, "hireDate", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ description: 'Creation timestamp' }),
+    __metadata("design:type", Date)
+], TeamMember.prototype, "createdAt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ description: 'Last update timestamp' }),
+    __metadata("design:type", Date)
+], TeamMember.prototype, "updatedAt", void 0);
 //# sourceMappingURL=team-member.entity.js.map
