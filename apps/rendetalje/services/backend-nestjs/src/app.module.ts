@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { AuthModule } from './modules/auth/auth.module';
-import { JobsModule } from './modules/jobs/jobs.module';
-import { CustomersModule } from './modules/customers/customers.module';
-import { TeamModule } from './modules/team/team.module';
-import { BillingModule } from './modules/billing/billing.module';
-import { AiFridayModule } from './modules/ai-friday/ai-friday.module';
-import { IntegrationsModule } from './modules/integrations/integrations.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
-import { AnalyticsModule } from './modules/analytics/analytics.module';
-import { SupabaseModule } from './modules/supabase/supabase.module';
+import { AuthModule } from './auth/auth.module';
+import { JobsModule } from './jobs/jobs.module';
+import { CustomersModule } from './customers/customers.module';
+import { TeamModule } from './team/team.module';
+import { BillingModule } from './billing/billing.module';
+import { AiFridayModule } from './ai-friday/ai-friday.module';
+import { IntegrationsModule } from './integrations/integrations.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { SupabaseModule } from './supabase/supabase.module';
 import { LoggerModule } from './common/logger/logger.module';
 import configuration from './config/configuration';
 
