@@ -1,0 +1,13 @@
+{
+  "name": "post-commit-summary",
+  "description": "Display commit summary after successful commit",
+  "trigger": "post-commit",
+  "commands": [
+    {
+      "name": "show-commit",
+      "command": "git log -1 --stat && echo '\n✅ Commit successful!'",
+      "blocking": false
+    }
+  ],
+  "enabled": true
+}

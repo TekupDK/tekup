@@ -1,0 +1,57 @@
+{
+  "mcpServers": {
+    "tekup-billy": {
+      "command": "node",
+      "args": [
+        "C:/Users/Jonas-dev/tekup/apps/production/tekup-billy/dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "tekup-vault": {
+      "command": "node",
+      "args": [
+        "C:/Users/Jonas-dev/tekup/apps/production/tekup-vault/apps/mcp/dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "calendar-mcp": {
+      "command": "node",
+      "args": [
+        "C:/Users/Jonas-dev/tekup/apps/rendetalje/services/calendar-mcp/dist/index.js"
+      ],
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:/Users/Jonas-dev/tekup"
+      ],
+      "disabled": false,
+      "alwaysAllow": ["read_file", "list_directory"]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+      },
+      "disabled": true,
+      "note": "Enable when GITHUB_PERSONAL_ACCESS_TOKEN is set"
+    }
+  },
+  "globalShortcuts": {}
+}
