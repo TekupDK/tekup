@@ -6,7 +6,7 @@ import { Lead, LeadPriority } from './entities/lead.entity';
 import { PaginatedResponseDto } from '../common/dto/pagination.dto';
 
 @ApiTags('Leads')
-@Controller('api/v1/leads')
+@Controller('leads')
 export class LeadsController {
   constructor(private readonly leadsService: LeadsService) {}
 

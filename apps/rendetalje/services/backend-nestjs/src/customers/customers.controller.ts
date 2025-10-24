@@ -22,7 +22,7 @@ import { ApiPaginatedResponse } from '../common/decorators/api-paginated-respons
 import { PaginatedResponseDto } from '../common/dto/pagination.dto';
 
 @ApiTags('Customers')
-@Controller('api/v1/customers')
+@Controller('customers')
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
