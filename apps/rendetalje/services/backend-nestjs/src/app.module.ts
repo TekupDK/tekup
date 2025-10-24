@@ -10,7 +10,7 @@ import { GdprModule } from './gdpr/gdpr.module';
 import { QualityModule } from './quality/quality.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { SecurityModule } from './security/security.module';
-// import { AiFridayModule } from './ai-friday/ai-friday.module';  // Disabled - needs Prisma conversion
+import { AiFridayModule } from './ai-friday/ai-friday.module';
 // import { IntegrationsModule } from './integrations/integrations.module'; // Disabled - check dependencies
 import { LoggerModule } from './common/logger/logger.module';
 import { DatabaseModule } from './database/database.module';
@@ -49,9 +49,9 @@ import configuration from './config/configuration';
     QualityModule, // ✅ ENABLED: Quality control (checklists + assessments + photo documentation)
     RealtimeModule, // ✅ ENABLED: Real-time notifications & WebSocket (Socket.IO)
     SecurityModule, // ✅ ENABLED: Security audit logging + event tracking (Owner/Admin only)
+    AiFridayModule, // ✅ ENABLED: AI Friday assistant (chat, voice, analytics)
     
     // TODO: Convert remaining modules from Supabase to Prisma
-    // AiFridayModule, // Uses Supabase
     // IntegrationsModule, // Check dependencies
   ],
 })
