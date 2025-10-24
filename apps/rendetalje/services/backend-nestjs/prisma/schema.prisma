@@ -285,10 +285,90 @@ model RenosUser {
   submittedCorrections      RenosTimeCorrection[] @relation("CorrectionSubmitter")
   approvedCorrections       RenosTimeCorrection[] @relation("CorrectionApprover")
   rejectedCorrections       RenosTimeCorrection[] @relation("CorrectionRejecter")
+  dataExportRequests        RenosDataExportRequest[]
+  dataDeletionRequests      RenosDataDeletionRequest[]
+  consentRecords            RenosConsentRecord[]
 
   @@index([email])
   @@index([role])
   @@map("users")
+  @@schema("renos")
+}
+
+// GDPR & Privacy
+model RenosDataExportRequest {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  email       String
+  requestDate DateTime  @default(now()) @map("request_date") @db.Timestamptz
+  status      String    @default("pending")
+  downloadUrl String?   @map("download_url") @db.Text
+  expiresAt   DateTime? @map("expires_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user RenosUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("data_export_requests")
+  @@schema("renos")
+}
+
+model RenosDataDeletionRequest {
+  id                    String    @id @default(cuid())
+  userId                String    @map("user_id")
+  email                 String
+  requestDate           DateTime  @default(now()) @map("request_date") @db.Timestamptz
+  scheduledDeletionDate DateTime  @map("scheduled_deletion_date") @db.Timestamptz
+  status                String    @default("pending")
+  reason                String?   @db.Text
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user RenosUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([scheduledDeletionDate])
+  @@map("data_deletion_requests")
+  @@schema("renos")
+}
+
+model RenosConsentRecord {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  consentType String    @map("consent_type")
+  granted     Boolean
+  grantedAt   DateTime  @default(now()) @map("granted_at") @db.Timestamptz
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz
+  ipAddress   String    @map("ip_address")
+  userAgent   String    @map("user_agent") @db.Text
+  version     String    @default("1.0")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user RenosUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([consentType])
+  @@index([granted])
+  @@map("consent_records")
+  @@schema("renos")
+}
+
+model RenosPrivacyPolicy {
+  id        String   @id @default(cuid())
+  version   String   @unique
+  content   String   @db.Text
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([version])
+  @@index([active])
+  @@map("privacy_policies")
   @@schema("renos")
 }
 
