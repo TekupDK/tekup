@@ -198,7 +198,7 @@ export const renos = {
     );
 
     // Subtract break time
-    const breakMinutes = booking.breaks.reduce((sum, b) => {
+    const breakMinutes = booking.breaks.reduce((sum: number, b: any) => {
       if (b.duration) return sum + b.duration;
       return sum;
     }, 0);

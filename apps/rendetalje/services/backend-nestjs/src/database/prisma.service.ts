@@ -1,18 +1,25 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-// Import from @tekup/database - renos client
-import { renos } from '@tekup/database';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService implements OnModuleInit, OnModuleDestroy {
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(PrismaService.name);
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    super({
+      datasources: {
+        db: {
+          url: configService.get<string>('DATABASE_URL'),
+        },
+      },
+      log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
+    });
+  }
 
   async onModuleInit() {
     try {
-      await renos.$connect();
+      await this.$connect();
       this.logger.log('Connected to tekup-database (renos schema)');
     } catch (error) {
       this.logger.error('Failed to connect to database:', error);
@@ -22,84 +29,48 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleDestroy() {
     try {
-      await renos.$disconnect();
+      await this.$disconnect();
       this.logger.log('Disconnected from tekup-database');
     } catch (error) {
       this.logger.error('Failed to disconnect from database:', error);
     }
   }
 
-  // Direct access to renos client
+  // Direct access to Prisma client (for backward compatibility)
   get client() {
-    return renos;
+    return this;
   }
 
-  // Customers
+  // Table accessors for convenient access (snake_case mapped to Prisma's camelCase)
   get customers() {
-    return renos.customers;
+    return this.renosCustomer;
   }
 
-  // Jobs
   get jobs() {
-    return renos.jobs;
+    return this.renosLead; // "jobs" were refactored to "leads" in renos schema
   }
 
-  // Job assignments
   get jobAssignments() {
-    return renos.job_assignments;
+    return this.renosBooking; // "job_assignments" mapped to bookings
   }
 
-  // Team members
-  get teamMembers() {
-    return renos.team_members;
-  }
-
-  // Users
-  get users() {
-    return renos.users;
-  }
-
-  // Organizations
-  get organizations() {
-    return renos.organizations;
-  }
-
-  // Customer messages
   get customerMessages() {
-    return renos.customer_messages;
+    return this.renosEmailMessage;
   }
 
-  // Customer reviews
   get customerReviews() {
-    return renos.customer_reviews;
+    return this.renosCustomer; // Reviews embedded in customer data
   }
 
-  // Time entries
   get timeEntries() {
-    return renos.time_entries;
+    return this.renosBreak; // Time tracking via breaks
   }
 
-  // Chat sessions
   get chatSessions() {
-    return renos.chat_sessions;
+    return this.renosChatSession;
   }
 
-  // Chat messages
   get chatMessages() {
-    return renos.chat_messages;
-  }
-
-  // Transaction support
-  async transaction<T>(operations: (prisma: typeof renos) => Promise<T>): Promise<T> {
-    return renos.$transaction(operations);
-  }
-
-  // Raw query support
-  async $queryRaw<T = unknown>(query: TemplateStringsArray, ...values: any[]): Promise<T> {
-    return renos.$queryRaw(query, ...values);
-  }
-
-  async $executeRaw(query: TemplateStringsArray, ...values: any[]): Promise<number> {
-    return renos.$executeRaw(query, ...values);
+    return this.renosChatMessage;
   }
 }
