@@ -1,8 +1,8 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Playwright E2E Test Configuration for RenOS Platform
- * 
+ *
  * Covers critical user workflows:
  * - Authentication (login, registration, logout)
  * - Job management (create, update, delete)
@@ -10,65 +10,65 @@ import { defineConfig, devices } from '@playwright/test';
  * - Portal navigation (owner, employee, customer)
  */
 export default defineConfig({
-  testDir: './e2e',
-  
+  testDir: "./e2e",
+
   // Maximum time one test can run
   timeout: 30 * 1000,
-  
+
   // Test execution settings
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  
+
   // Reporter configuration
-  reporter: process.env.CI 
-    ? [['html'], ['json', { outputFile: 'playwright-report/results.json' }]]
-    : [['list'], ['html', { open: 'never' }]],
-  
+  reporter: process.env.CI
+    ? [["html"], ["json", { outputFile: "playwright-report/results.json" }]]
+    : [["list"], ["html", { open: "never" }]],
+
   use: {
     // Base URL for all tests (v1.2.0 uses port 3001)
-    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3001',
-    
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://localhost:3001",
+
     // Collect trace on first retry
-    trace: 'on-first-retry',
-    
+    trace: "on-first-retry",
+
     // Screenshot on failure
-    screenshot: 'only-on-failure',
-    
+    screenshot: "only-on-failure",
+
     // Video on first retry
-    video: 'retain-on-failure',
+    video: "retain-on-failure",
   },
 
   // Configure projects for different browsers
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
     },
     // Mobile viewports
     {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 5"] },
     },
     {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
+      name: "Mobile Safari",
+      use: { ...devices["iPhone 12"] },
     },
   ],
 
   // Start dev server before tests (v1.2.0 uses port 3001)
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3001',
+    command: "npm run dev",
+    url: "http://localhost:3001",
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

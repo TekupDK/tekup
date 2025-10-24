@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { SupabaseService } from '../supabase/supabase.service';
-import { RealtimeGateway } from './realtime.gateway';
+import { Injectable, Logger } from "@nestjs/common";
+import { SupabaseService } from "../supabase/supabase.service";
+import { RealtimeGateway } from "./realtime.gateway";
 
 export interface Notification {
   id?: string;
@@ -28,13 +28,13 @@ export class NotificationService {
 
   constructor(
     private readonly supabaseService: SupabaseService,
-    private readonly realtimeGateway: RealtimeGateway,
+    private readonly realtimeGateway: RealtimeGateway
   ) {}
 
   async createNotification(notification: Notification): Promise<Notification> {
     try {
       const { data, error } = await this.supabaseService.client
-        .from('notifications')
+        .from("notifications")
         .insert({
           ...notification,
           is_read: false,
@@ -49,36 +49,43 @@ export class NotificationService {
       // Send real-time notification
       this.realtimeGateway.broadcastNotification(notification.user_id, data);
 
-      this.logger.log(`Notification created for user ${notification.user_id}: ${notification.type}`);
+      this.logger.log(
+        `Notification created for user ${notification.user_id}: ${notification.type}`
+      );
       return data;
-
     } catch (error) {
-      this.logger.error('Failed to create notification', error);
+      this.logger.error("Failed to create notification", error);
       throw error;
     }
   }
 
-  async createBulkNotifications(notifications: Notification[]): Promise<Notification[]> {
+  async createBulkNotifications(
+    notifications: Notification[]
+  ): Promise<Notification[]> {
     try {
       const { data, error } = await this.supabaseService.client
-        .from('notifications')
-        .insert(notifications.map(n => ({ ...n, is_read: false })))
+        .from("notifications")
+        .insert(notifications.map((n) => ({ ...n, is_read: false })))
         .select();
 
       if (error) {
-        throw new Error(`Failed to create bulk notifications: ${error.message}`);
+        throw new Error(
+          `Failed to create bulk notifications: ${error.message}`
+        );
       }
 
       // Send real-time notifications
-      data.forEach(notification => {
-        this.realtimeGateway.broadcastNotification(notification.user_id, notification);
+      data.forEach((notification) => {
+        this.realtimeGateway.broadcastNotification(
+          notification.user_id,
+          notification
+        );
       });
 
       this.logger.log(`Created ${data.length} bulk notifications`);
       return data;
-
     } catch (error) {
-      this.logger.error('Failed to create bulk notifications', error);
+      this.logger.error("Failed to create bulk notifications", error);
       throw error;
     }
   }
@@ -87,19 +94,19 @@ export class NotificationService {
     userId: string,
     organizationId: string,
     limit: number = 50,
-    unreadOnly: boolean = false,
+    unreadOnly: boolean = false
   ): Promise<Notification[]> {
     try {
       let query = this.supabaseService.client
-        .from('notifications')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('organization_id', organizationId)
-        .order('created_at', { ascending: false })
+        .from("notifications")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("organization_id", organizationId)
+        .order("created_at", { ascending: false })
         .limit(limit);
 
       if (unreadOnly) {
-        query = query.eq('is_read', false);
+        query = query.eq("is_read", false);
       }
 
       const { data, error } = await query;
@@ -109,9 +116,8 @@ export class NotificationService {
       }
 
       return data || [];
-
     } catch (error) {
-      this.logger.error('Failed to get user notifications', error);
+      this.logger.error("Failed to get user notifications", error);
       throw error;
     }
   }
@@ -119,17 +125,18 @@ export class NotificationService {
   async markAsRead(notificationId: string, userId: string): Promise<void> {
     try {
       const { error } = await this.supabaseService.client
-        .from('notifications')
+        .from("notifications")
         .update({ is_read: true })
-        .eq('id', notificationId)
-        .eq('user_id', userId);
+        .eq("id", notificationId)
+        .eq("user_id", userId);
 
       if (error) {
-        throw new Error(`Failed to mark notification as read: ${error.message}`);
+        throw new Error(
+          `Failed to mark notification as read: ${error.message}`
+        );
       }
-
     } catch (error) {
-      this.logger.error('Failed to mark notification as read', error);
+      this.logger.error("Failed to mark notification as read", error);
       throw error;
     }
   }
@@ -137,51 +144,58 @@ export class NotificationService {
   async markAllAsRead(userId: string, organizationId: string): Promise<void> {
     try {
       const { error } = await this.supabaseService.client
-        .from('notifications')
+        .from("notifications")
         .update({ is_read: true })
-        .eq('user_id', userId)
-        .eq('organization_id', organizationId)
-        .eq('is_read', false);
+        .eq("user_id", userId)
+        .eq("organization_id", organizationId)
+        .eq("is_read", false);
 
       if (error) {
-        throw new Error(`Failed to mark all notifications as read: ${error.message}`);
+        throw new Error(
+          `Failed to mark all notifications as read: ${error.message}`
+        );
       }
-
     } catch (error) {
-      this.logger.error('Failed to mark all notifications as read', error);
+      this.logger.error("Failed to mark all notifications as read", error);
       throw error;
     }
   }
 
-  async getUnreadCount(userId: string, organizationId: string): Promise<number> {
+  async getUnreadCount(
+    userId: string,
+    organizationId: string
+  ): Promise<number> {
     try {
       const { count, error } = await this.supabaseService.client
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
-        .eq('organization_id', organizationId)
-        .eq('is_read', false);
+        .from("notifications")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("organization_id", organizationId)
+        .eq("is_read", false);
 
       if (error) {
         throw new Error(`Failed to get unread count: ${error.message}`);
       }
 
       return count || 0;
-
     } catch (error) {
-      this.logger.error('Failed to get unread count', error);
+      this.logger.error("Failed to get unread count", error);
       throw error;
     }
   }
 
   // Specific notification types
-  async notifyJobAssigned(jobId: string, teamMemberIds: string[], organizationId: string): Promise<void> {
-    const notifications = teamMemberIds.map(userId => ({
+  async notifyJobAssigned(
+    jobId: string,
+    teamMemberIds: string[],
+    organizationId: string
+  ): Promise<void> {
+    const notifications = teamMemberIds.map((userId) => ({
       organization_id: organizationId,
       user_id: userId,
-      type: 'job_assigned',
-      title: 'Nyt job tildelt',
-      message: 'Du har fået tildelt et nyt rengøringsjob',
+      type: "job_assigned",
+      title: "Nyt job tildelt",
+      message: "Du har fået tildelt et nyt rengøringsjob",
       data: { jobId },
     }));
 
@@ -192,7 +206,7 @@ export class NotificationService {
     jobId: string,
     status: string,
     organizationId: string,
-    customerId?: string,
+    customerId?: string
   ): Promise<void> {
     const notifications: Notification[] = [];
 
@@ -201,8 +215,8 @@ export class NotificationService {
       notifications.push({
         organization_id: organizationId,
         user_id: customerId,
-        type: 'job_status_update',
-        title: 'Job status opdateret',
+        type: "job_status_update",
+        title: "Job status opdateret",
         message: `Dit rengøringsjob er nu: ${this.getStatusText(status)}`,
         data: { jobId, status },
       });
@@ -210,18 +224,18 @@ export class NotificationService {
 
     // Notify organization owners and admins
     const { data: users } = await this.supabaseService.client
-      .from('users')
-      .select('id')
-      .eq('organization_id', organizationId)
-      .in('role', ['owner', 'admin']);
+      .from("users")
+      .select("id")
+      .eq("organization_id", organizationId)
+      .in("role", ["owner", "admin"]);
 
     if (users) {
-      users.forEach(user => {
+      users.forEach((user) => {
         notifications.push({
           organization_id: organizationId,
           user_id: user.id,
-          type: 'job_status_update',
-          title: 'Job status ændret',
+          type: "job_status_update",
+          title: "Job status ændret",
           message: `Job status ændret til: ${this.getStatusText(status)}`,
           data: { jobId, status },
         });
@@ -236,21 +250,21 @@ export class NotificationService {
   async notifyPaymentReceived(
     invoiceId: string,
     amount: number,
-    organizationId: string,
+    organizationId: string
   ): Promise<void> {
     // Notify owners and admins about payment
     const { data: users } = await this.supabaseService.client
-      .from('users')
-      .select('id')
-      .eq('organization_id', organizationId)
-      .in('role', ['owner', 'admin']);
+      .from("users")
+      .select("id")
+      .eq("organization_id", organizationId)
+      .in("role", ["owner", "admin"]);
 
     if (users) {
-      const notifications = users.map(user => ({
+      const notifications = users.map((user) => ({
         organization_id: organizationId,
         user_id: user.id,
-        type: 'payment_received',
-        title: 'Betaling modtaget',
+        type: "payment_received",
+        title: "Betaling modtaget",
         message: `Betaling på ${amount} DKK er modtaget`,
         data: { invoiceId, amount },
       }));
@@ -262,27 +276,29 @@ export class NotificationService {
   async notifyCustomerMessage(
     customerId: string,
     jobId: string,
-    organizationId: string,
+    organizationId: string
   ): Promise<void> {
     // Notify assigned team members and admins
     const { data: assignments } = await this.supabaseService.client
-      .from('job_assignments')
-      .select(`
+      .from("job_assignments")
+      .select(
+        `
         team_members!inner(user_id)
-      `)
-      .eq('job_id', jobId);
+      `
+      )
+      .eq("job_id", jobId);
 
     const notifications: Notification[] = [];
 
     // Add team members
     if (assignments) {
-      assignments.forEach(assignment => {
+      assignments.forEach((assignment) => {
         notifications.push({
           organization_id: organizationId,
           user_id: assignment.team_members.user_id,
-          type: 'customer_message',
-          title: 'Ny besked fra kunde',
-          message: 'Du har modtaget en ny besked fra en kunde',
+          type: "customer_message",
+          title: "Ny besked fra kunde",
+          message: "Du har modtaget en ny besked fra en kunde",
           data: { customerId, jobId },
         });
       });
@@ -290,19 +306,19 @@ export class NotificationService {
 
     // Add admins and owners
     const { data: users } = await this.supabaseService.client
-      .from('users')
-      .select('id')
-      .eq('organization_id', organizationId)
-      .in('role', ['owner', 'admin']);
+      .from("users")
+      .select("id")
+      .eq("organization_id", organizationId)
+      .in("role", ["owner", "admin"]);
 
     if (users) {
-      users.forEach(user => {
+      users.forEach((user) => {
         notifications.push({
           organization_id: organizationId,
           user_id: user.id,
-          type: 'customer_message',
-          title: 'Ny kundebesked',
-          message: 'En kunde har sendt en ny besked',
+          type: "customer_message",
+          title: "Ny kundebesked",
+          message: "En kunde har sendt en ny besked",
           data: { customerId, jobId },
         });
       });
@@ -316,21 +332,21 @@ export class NotificationService {
   async notifyQualityIssue(
     jobId: string,
     issueDescription: string,
-    organizationId: string,
+    organizationId: string
   ): Promise<void> {
     // Notify owners and admins about quality issues
     const { data: users } = await this.supabaseService.client
-      .from('users')
-      .select('id')
-      .eq('organization_id', organizationId)
-      .in('role', ['owner', 'admin']);
+      .from("users")
+      .select("id")
+      .eq("organization_id", organizationId)
+      .in("role", ["owner", "admin"]);
 
     if (users) {
-      const notifications = users.map(user => ({
+      const notifications = users.map((user) => ({
         organization_id: organizationId,
         user_id: user.id,
-        type: 'quality_issue',
-        title: 'Kvalitetsproblem opdaget',
+        type: "quality_issue",
+        title: "Kvalitetsproblem opdaget",
         message: `Kvalitetsproblem: ${issueDescription}`,
         data: { jobId, issueDescription },
       }));
@@ -344,7 +360,7 @@ export class NotificationService {
     oldDate: string,
     newDate: string,
     organizationId: string,
-    customerId?: string,
+    customerId?: string
   ): Promise<void> {
     const notifications: Notification[] = [];
 
@@ -353,29 +369,31 @@ export class NotificationService {
       notifications.push({
         organization_id: organizationId,
         user_id: customerId,
-        type: 'schedule_change',
-        title: 'Tidsplan ændret',
-        message: `Dit rengøringsjob er flyttet til ${new Date(newDate).toLocaleDateString('da-DK')}`,
+        type: "schedule_change",
+        title: "Tidsplan ændret",
+        message: `Dit rengøringsjob er flyttet til ${new Date(newDate).toLocaleDateString("da-DK")}`,
         data: { jobId, oldDate, newDate },
       });
     }
 
     // Notify assigned team members
     const { data: assignments } = await this.supabaseService.client
-      .from('job_assignments')
-      .select(`
+      .from("job_assignments")
+      .select(
+        `
         team_members!inner(user_id)
-      `)
-      .eq('job_id', jobId);
+      `
+      )
+      .eq("job_id", jobId);
 
     if (assignments) {
-      assignments.forEach(assignment => {
+      assignments.forEach((assignment) => {
         notifications.push({
           organization_id: organizationId,
           user_id: assignment.team_members.user_id,
-          type: 'schedule_change',
-          title: 'Tidsplan ændret',
-          message: `Job flyttet til ${new Date(newDate).toLocaleDateString('da-DK')}`,
+          type: "schedule_change",
+          title: "Tidsplan ændret",
+          message: `Job flyttet til ${new Date(newDate).toLocaleDateString("da-DK")}`,
           data: { jobId, oldDate, newDate },
         });
       });
@@ -391,11 +409,11 @@ export class NotificationService {
     userId: string,
     title: string,
     message: string,
-    data?: Record<string, any>,
+    data?: Record<string, any>
   ): Promise<void> {
     // This would integrate with Firebase Cloud Messaging or similar service
     this.logger.debug(`Push notification would be sent to ${userId}: ${title}`);
-    
+
     // Implementation would include:
     // - Get user's device tokens from database
     // - Send push notification via FCM/APNS
@@ -406,11 +424,13 @@ export class NotificationService {
   async sendEmailNotification(
     userId: string,
     subject: string,
-    htmlContent: string,
+    htmlContent: string
   ): Promise<void> {
     // This would integrate with email service (SendGrid, AWS SES, etc.)
-    this.logger.debug(`Email notification would be sent to ${userId}: ${subject}`);
-    
+    this.logger.debug(
+      `Email notification would be sent to ${userId}: ${subject}`
+    );
+
     // Implementation would include:
     // - Get user's email from database
     // - Send email via service
@@ -418,13 +438,12 @@ export class NotificationService {
   }
 
   // SMS notification integration
-  async sendSMSNotification(
-    userId: string,
-    message: string,
-  ): Promise<void> {
+  async sendSMSNotification(userId: string, message: string): Promise<void> {
     // This would integrate with SMS service (Twilio, etc.)
-    this.logger.debug(`SMS notification would be sent to ${userId}: ${message}`);
-    
+    this.logger.debug(
+      `SMS notification would be sent to ${userId}: ${message}`
+    );
+
     // Implementation would include:
     // - Get user's phone number from database
     // - Send SMS via service
@@ -433,12 +452,12 @@ export class NotificationService {
 
   private getStatusText(status: string): string {
     const statusTexts = {
-      scheduled: 'planlagt',
-      confirmed: 'bekræftet',
-      in_progress: 'i gang',
-      completed: 'færdig',
-      cancelled: 'aflyst',
-      rescheduled: 'omplanlagt',
+      scheduled: "planlagt",
+      confirmed: "bekræftet",
+      in_progress: "i gang",
+      completed: "færdig",
+      cancelled: "aflyst",
+      rescheduled: "omplanlagt",
     };
     return statusTexts[status] || status;
   }

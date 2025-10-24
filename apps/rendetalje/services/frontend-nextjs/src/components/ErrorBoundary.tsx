@@ -1,13 +1,13 @@
 /**
  * Error Boundary Component
- * 
+ *
  * Catches JavaScript errors in child components and displays fallback UI
  */
 
-'use client';
+"use client";
 
-import React, { Component, ReactNode } from 'react';
-import { Button } from '@/components/ui/Button';
+import React, { Component, ReactNode } from "react";
+import { Button } from "@/components/ui/Button";
 
 interface Props {
   children: ReactNode;
@@ -37,8 +37,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log error to console or error reporting service
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
+
     // You can also log to an external service like Sentry here
     // if (typeof window !== 'undefined' && window.Sentry) {
     //   window.Sentry.captureException(error, { contexts: { react: errorInfo } });
@@ -71,22 +71,20 @@ export class ErrorBoundary extends Component<Props, State> {
               <p className="text-gray-600 mb-6">
                 Der opstod en uventet fejl. Prøv venligst igen.
               </p>
-              
-              {this.state.error && process.env.NODE_ENV === 'development' && (
+
+              {this.state.error && process.env.NODE_ENV === "development" && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-left">
                   <p className="text-sm font-mono text-red-800 break-all">
                     {this.state.error.message}
                   </p>
                 </div>
               )}
-              
+
               <div className="flex space-x-3 justify-center">
-                <Button onClick={this.handleReset}>
-                  Prøv igen
-                </Button>
+                <Button onClick={this.handleReset}>Prøv igen</Button>
                 <Button
                   variant="secondary"
-                  onClick={() => window.location.href = '/dashboard'}
+                  onClick={() => (window.location.href = "/dashboard")}
                 >
                   Gå til dashboard
                 </Button>

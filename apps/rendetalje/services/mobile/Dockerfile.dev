@@ -1,55 +1,14 @@
-# 🚀 RendetaljeOS Mobile - Full Development Environment
+# 🚀 RendetaljeOS Mobile - Expo Development Server
 #
-# Complete development environment with Android SDK, Node.js, and all tools
+# Lightweight Expo dev server using Alpine Linux (consistent with backend)
+# Native builds (APK/IPA) handled via EAS (Expo Application Services), not Docker
 
-FROM ubuntu:22.04
+FROM node:18-alpine
 
-# Prevent interactive prompts
-ENV DEBIAN_FRONTEND=noninteractive
+# Install basic dependencies for Expo
+RUN apk add --no-cache git
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    wget \
-    git \
-    unzip \
-    openjdk-11-jdk \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Node.js 18
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g npm@latest
-
-# Install Android SDK (for Android builds)
-ENV ANDROID_SDK_ROOT=/opt/android-sdk
-RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools \
-    && cd ${ANDROID_SDK_ROOT}/cmdline-tools \
-    && wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip \
-    && unzip commandlinetools-linux-9477386_latest.zip \
-    && rm commandlinetools-linux-9477386_latest.zip \
-    && mv cmdline-tools latest
-
-ENV PATH=${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools
-
-# Accept Android licenses
-RUN yes | sdkmanager --licenses || true
-
-# Install Android SDK packages
-RUN sdkmanager \
-    "platform-tools" \
-    "platforms;android-33" \
-    "build-tools;33.0.0" \
-    "emulator"
-
-# Install global npm packages
-RUN npm install -g \
-    expo-cli \
-    @expo/ngrok \
-    eas-cli
-
-# Create working directory
+# Set working directory
 WORKDIR /app
 
 # Copy package files
@@ -64,9 +23,9 @@ COPY . .
 # Expo ports
 EXPOSE 19000 19001 19002 8081
 
-# Environment
+# Environment variables for Expo
 ENV EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
 ENV REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
 
-# Start script
+# Start Expo development server
 CMD ["npm", "start"]

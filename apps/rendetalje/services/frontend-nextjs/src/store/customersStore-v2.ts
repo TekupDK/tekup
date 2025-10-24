@@ -1,13 +1,13 @@
 /**
  * Customers Store - Integrated with Backend API
- * 
+ *
  * Manages customer state and operations with real backend
  */
 
-import { create } from 'zustand';
-import { apiClient, ApiError } from '@/lib/api-client';
-import { toastService } from '@/lib/toast';
-import type { Customer as ApiCustomer } from '@/lib/api-client';
+import { create } from "zustand";
+import { apiClient, ApiError } from "@/lib/api-client";
+import { toastService } from "@/lib/toast";
+import type { Customer as ApiCustomer } from "@/lib/api-client";
 
 export interface Customer {
   id: string;
@@ -36,7 +36,7 @@ interface CustomersState {
   isLoading: boolean;
   error: string | null;
   searchQuery: string;
-  
+
   // Actions
   fetchCustomers: (params?: { search?: string }) => Promise<void>;
   fetchCustomerById: (id: string) => Promise<void>;
@@ -66,7 +66,9 @@ const apiCustomerToCustomer = (apiCustomer: ApiCustomer): Customer => ({
 });
 
 // Convert store customer to API customer format
-const customerToApiCustomer = (customer: Partial<Customer>): Partial<ApiCustomer> => ({
+const customerToApiCustomer = (
+  customer: Partial<Customer>
+): Partial<ApiCustomer> => ({
   name: customer.name,
   email: customer.email,
   phone: customer.phone,
@@ -83,149 +85,166 @@ export const useCustomersStore = create<CustomersState>((set, get) => ({
   selectedCustomer: null,
   isLoading: false,
   error: null,
-  searchQuery: '',
-  
+  searchQuery: "",
+
   fetchCustomers: async (params) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const apiCustomers = await apiClient.getCustomers(params);
       const customers = apiCustomers.map(apiCustomerToCustomer);
-      
+
       set({ customers, isLoading: false });
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke hente kunder'
-        : 'Kunne ikke hente kunder';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke hente kunder"
+          : "Kunne ikke hente kunder";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
-      
+
       toastService.error(errorMessage);
     }
   },
-  
+
   fetchCustomerById: async (id: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const apiCustomer = await apiClient.getCustomer(id);
       const customer = apiCustomerToCustomer(apiCustomer);
-      
+
       set({ selectedCustomer: customer, isLoading: false });
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke hente kunde'
-        : 'Kunne ikke hente kunde';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke hente kunde"
+          : "Kunne ikke hente kunde";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
     }
   },
-  
+
   createCustomer: async (customerData: Partial<Customer>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
-      const apiCustomer = await apiClient.createCustomer(customerToApiCustomer(customerData));
+      const apiCustomer = await apiClient.createCustomer(
+        customerToApiCustomer(customerData)
+      );
       const newCustomer = apiCustomerToCustomer(apiCustomer);
-      
-      set(state => ({
+
+      set((state) => ({
         customers: [newCustomer, ...state.customers],
         isLoading: false,
       }));
-      
-      toastService.success('Kunde oprettet succesfuldt');
+
+      toastService.success("Kunde oprettet succesfuldt");
       return newCustomer;
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke oprette kunde'
-        : 'Kunne ikke oprette kunde';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke oprette kunde"
+          : "Kunne ikke oprette kunde";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
-      
+
       toastService.error(errorMessage);
       throw error;
     }
   },
-  
+
   updateCustomer: async (id: string, updates: Partial<Customer>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
-      const apiCustomer = await apiClient.updateCustomer(id, customerToApiCustomer(updates));
+      const apiCustomer = await apiClient.updateCustomer(
+        id,
+        customerToApiCustomer(updates)
+      );
       const updatedCustomer = apiCustomerToCustomer(apiCustomer);
-      
-      set(state => ({
-        customers: state.customers.map(customer => 
+
+      set((state) => ({
+        customers: state.customers.map((customer) =>
           customer.id === id ? updatedCustomer : customer
         ),
-        selectedCustomer: state.selectedCustomer?.id === id 
-          ? updatedCustomer 
-          : state.selectedCustomer,
+        selectedCustomer:
+          state.selectedCustomer?.id === id
+            ? updatedCustomer
+            : state.selectedCustomer,
         isLoading: false,
       }));
-      
-      toastService.success('Kunde opdateret succesfuldt');
+
+      toastService.success("Kunde opdateret succesfuldt");
       return updatedCustomer;
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke opdatere kunde'
-        : 'Kunne ikke opdatere kunde';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke opdatere kunde"
+          : "Kunne ikke opdatere kunde";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
-      
+
       toastService.error(errorMessage);
       throw error;
     }
   },
-  
+
   deleteCustomer: async (id: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       await apiClient.deleteCustomer(id);
-      
-      set(state => ({
-        customers: state.customers.filter(customer => customer.id !== id),
-        selectedCustomer: state.selectedCustomer?.id === id ? null : state.selectedCustomer,
+
+      set((state) => ({
+        customers: state.customers.filter((customer) => customer.id !== id),
+        selectedCustomer:
+          state.selectedCustomer?.id === id ? null : state.selectedCustomer,
         isLoading: false,
       }));
-      
-      toastService.success('Kunde slettet succesfuldt');
+
+      toastService.success("Kunde slettet succesfuldt");
     } catch (error) {
-      const errorMessage = error instanceof ApiError
-        ? (error.data as { message?: string })?.message || 'Kunne ikke slette kunde'
-        : 'Kunne ikke slette kunde';
-      
+      const errorMessage =
+        error instanceof ApiError
+          ? (error.data as { message?: string })?.message ||
+            "Kunne ikke slette kunde"
+          : "Kunne ikke slette kunde";
+
       set({
         isLoading: false,
         error: errorMessage,
       });
-      
+
       toastService.error(errorMessage);
       throw error;
     }
   },
-  
+
   setSelectedCustomer: (customer: Customer | null) => {
     set({ selectedCustomer: customer });
   },
-  
+
   setSearchQuery: (query: string) => {
     set({ searchQuery: query });
   },
-  
+
   clearError: () => {
     set({ error: null });
   },

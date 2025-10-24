@@ -1,30 +1,34 @@
 /**
  * Loading Spinner Component
- * 
+ *
  * Simple animated spinner for loading states
  */
 
-import React from 'react';
+import React from "react";
 
 interface SpinnerProps {
-  size?: 'sm' | 'md' | 'lg';
-  color?: 'primary' | 'white' | 'gray';
+  size?: "sm" | "md" | "lg";
+  color?: "primary" | "white" | "gray";
   className?: string;
 }
 
 const sizeClasses = {
-  sm: 'h-4 w-4 border-2',
-  md: 'h-8 w-8 border-3',
-  lg: 'h-12 w-12 border-4',
+  sm: "h-4 w-4 border-2",
+  md: "h-8 w-8 border-3",
+  lg: "h-12 w-12 border-4",
 };
 
 const colorClasses = {
-  primary: 'border-blue-600 border-t-transparent',
-  white: 'border-white border-t-transparent',
-  gray: 'border-gray-400 border-t-transparent',
+  primary: "border-blue-600 border-t-transparent",
+  white: "border-white border-t-transparent",
+  gray: "border-gray-400 border-t-transparent",
 };
 
-export function Spinner({ size = 'md', color = 'primary', className = '' }: SpinnerProps) {
+export function Spinner({
+  size = "md",
+  color = "primary",
+  className = "",
+}: SpinnerProps) {
   return (
     <div
       className={`inline-block animate-spin rounded-full ${sizeClasses[size]} ${colorClasses[color]} ${className}`}
@@ -40,7 +44,9 @@ interface LoadingOverlayProps {
   message?: string;
 }
 
-export function LoadingOverlay({ message = 'Indlæser...' }: LoadingOverlayProps) {
+export function LoadingOverlay({
+  message = "Indlæser...",
+}: LoadingOverlayProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
       <div className="bg-white rounded-lg p-6 shadow-xl flex flex-col items-center space-y-4">
@@ -64,8 +70,8 @@ export function LoadingState({
   isLoading,
   error,
   children,
-  loadingMessage = 'Indlæser...',
-  emptyMessage = 'Ingen data fundet',
+  loadingMessage = "Indlæser...",
+  emptyMessage = "Ingen data fundet",
   isEmpty = false,
 }: LoadingStateProps) {
   if (isLoading) {

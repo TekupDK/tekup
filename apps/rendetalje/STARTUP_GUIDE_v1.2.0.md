@@ -11,6 +11,7 @@
 ## 🔧 Quick Fix Required
 
 ### Backend Issues Summary:
+
 1. **Missing modules** - Several auth/prisma imports not found
 2. **SupabaseService** - Property conflicts with PrismaService
 3. **Type mismatches** - DTO and entity type incompatibilities
@@ -20,6 +21,7 @@
 ### Immediate Actions:
 
 **Option 1: Skip Backend for Now - Test Frontend Only**
+
 ```powershell
 # Start frontend directly
 cd c:\Users\Jonas-dev\tekup\apps\rendetalje\services\frontend-nextjs
@@ -28,6 +30,7 @@ npm run dev
 ```
 
 **Option 2: Fix Backend Compilation**
+
 1. Review import paths in `src/app.module.ts`
 2. Check SupabaseService vs PrismaService conflicts
 3. Update Redis config in `src/cache/cache.service.ts`
@@ -38,6 +41,7 @@ npm run dev
 ## 📋 Full Startup Procedure (When Backend is Fixed)
 
 ### Terminal 1 - Database
+
 ```powershell
 cd C:\Users\Jonas-dev\tekup\apps\production\tekup-database
 docker-compose up -d
@@ -47,6 +51,7 @@ docker ps --filter "name=tekup-database-postgres"
 ```
 
 ### Terminal 2 - Backend API
+
 ```powershell
 cd C:\Users\Jonas-dev\tekup\apps\rendetalje\services\backend-nestjs
 
@@ -60,6 +65,7 @@ npm run start:dev
 ```
 
 ### Terminal 3 - Frontend
+
 ```powershell
 cd C:\Users\Jonas-dev\tekup\apps\rendetalje\services\frontend-nextjs
 
@@ -70,6 +76,7 @@ npm run dev
 ```
 
 ### Test Backend Health
+
 ```powershell
 # In Terminal 4
 curl http://localhost:3000/health
@@ -81,6 +88,7 @@ curl http://localhost:3000/health
 ## 🧪 Testing Options
 
 ### Option A: Playwright Automated Tests (Requires Backend)
+
 ```powershell
 cd c:\Users\Jonas-dev\tekup\apps\rendetalje\services\frontend-nextjs
 
@@ -98,6 +106,7 @@ npm run test:e2e:debug
 ```
 
 ### Option B: Manual Testing with Quick Script
+
 ```powershell
 cd c:\Users\Jonas-dev\tekup\apps\rendetalje
 
@@ -106,9 +115,11 @@ cd c:\Users\Jonas-dev\tekup\apps\rendetalje
 ```
 
 ### Option C: Full Manual Testing
+
 Follow guide in: `AI_TESTING_PROMPT.md`
 
 1. Login: http://localhost:3001/login
+
    - Email: admin@rendetalje.dk
    - Password: admin123
 
@@ -123,10 +134,13 @@ Follow guide in: `AI_TESTING_PROMPT.md`
 ## 🐛 Troubleshooting
 
 ### Issue: Backend won't start (71 TypeScript errors)
+
 **Cause:** Compilation errors prevent server startup
 
 **Solutions:**
+
 1. **Quick fix:** Comment out problematic modules in `src/app.module.ts`:
+
    ```typescript
    // Temporarily disable:
    // GdprModule,
@@ -141,16 +155,20 @@ Follow guide in: `AI_TESTING_PROMPT.md`
    - Correct type definitions
 
 ### Issue: Frontend on wrong port (3000 instead of 3001)
+
 **Fix:** Already updated `package.json` to use `-p 3001` flag
 
 **Verify:**
+
 ```powershell
 # Check package.json scripts
 Get-Content package.json | Select-String "dev"
 ```
 
 ### Issue: Port already in use
+
 **Fix:**
+
 ```powershell
 # Kill processes on port 3000
 $proc = netstat -ano | findstr ":3000"
@@ -164,7 +182,9 @@ Stop-Process -Id $pid -Force
 ```
 
 ### Issue: Database connection error
+
 **Fix:**
+
 ```powershell
 # Restart Docker containers
 cd C:\Users\Jonas-dev\tekup\apps\production\tekup-database
@@ -179,9 +199,11 @@ docker ps --filter "name=tekup-database-postgres" --format "{{.Status}}"
 ```
 
 ### Issue: "Cannot find module '@tekup/database'"
+
 **Cause:** Prisma client not generated or monorepo link broken
 
 **Fix:**
+
 ```powershell
 cd C:\Users\Jonas-dev\tekup\apps\production\tekup-database
 npm run prisma:generate
@@ -195,18 +217,21 @@ pnpm build
 ## 🎯 Recommended Next Steps
 
 **Immediate (Now):**
+
 1. ✅ Frontend config fixed (next.config.js, package.json)
 2. ✅ Playwright tests created (35+ E2E tests)
 3. ✅ Documentation complete (testing guides)
 4. ⚠️ Backend needs compilation fixes
 
 **Short-term (Today):**
+
 1. Fix backend TypeScript errors
 2. Start all services successfully
 3. Run Playwright test suite
 4. Verify all CRUD operations work
 
 **Medium-term (This Week):**
+
 1. Replace old page.tsx with page-v2.tsx versions
 2. Add more E2E tests for edge cases
 3. Set up CI/CD pipeline with automated tests
@@ -217,6 +242,7 @@ pnpm build
 ## 📊 Project Status Summary
 
 **✅ Completed:**
+
 - Dashboard with real-time backend integration
 - Jobs page v2 with filters, search, CRUD
 - Customers page v2 with grid layout
@@ -226,10 +252,12 @@ pnpm build
 - Comprehensive testing documentation
 
 **⚠️ In Progress:**
+
 - Backend compilation issues (71 errors)
 - Service startup automation
 
 **🔜 Next:**
+
 - Fix backend to enable full E2E testing
 - Replace old UI pages with v2 versions
 - Production deployment
@@ -239,12 +267,14 @@ pnpm build
 ## 📞 Need Help?
 
 **Check These Files:**
+
 - `RELEASE_NOTES_v1.2.0.md` - Complete v1.2.0 changelog
 - `PLAYWRIGHT_TESTING_GUIDE.md` - Playwright testing instructions
 - `AI_TESTING_PROMPT.md` - Manual testing checklist
 - Backend errors: See terminal output above (71 errors listed)
 
 **Debugging Commands:**
+
 ```powershell
 # Check running services
 docker ps

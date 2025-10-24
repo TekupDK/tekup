@@ -23,6 +23,8 @@ export interface Job {
     name: string;
     avatar?: string;
     address: string;
+    phone?: string;
+    email?: string;
   };
   status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
   scheduledStart: Date;

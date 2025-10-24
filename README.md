@@ -129,7 +129,7 @@ Tekup/ (MONOREPO - everything in one repo!)
    # Or manual setup:
    git submodule init
    git submodule update --recursive
-   
+
    # Verify secrets are readable:
    Get-Content tekup-secrets\config\mcp.env -First 5
    ```
