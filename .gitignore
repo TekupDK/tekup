@@ -33,8 +33,9 @@ build/
 coverage/
 .turbo/
 
-# Claude Code
-.claude/
+# Claude Code (only ignore local settings)
+.claude/settings.local.json
+.claude/*.local.json
 
 # Mobile/Expo
 .expo/

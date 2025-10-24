@@ -1,0 +1,20 @@
+{
+  "name": "pre-commit-checks",
+  "description": "Run TypeScript and test checks before committing",
+  "trigger": "pre-commit",
+  "commands": [
+    {
+      "name": "typescript-check",
+      "command": "cd apps/rendetalje/services/backend-nestjs && npx tsc --noEmit || echo 'Warning: TypeScript errors detected'",
+      "blocking": false,
+      "timeout": 60000
+    },
+    {
+      "name": "quick-test",
+      "command": "cd apps/rendetalje/services/shared && npm test || echo 'Warning: Tests failed'",
+      "blocking": false,
+      "timeout": 30000
+    }
+  ],
+  "enabled": true
+}
