@@ -24,17 +24,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Recently Completed
 
-- **Rendetalje Test Infrastructure v1.0.0** (Oct 25, 2025)
-  - ✅ NestJS backend tests (Jest + Supertest + E2E)
-  - ✅ Next.js frontend tests (Jest + RTL)
-  - ✅ Playwright E2E testing (25+ scenarios: auth, jobs, customers)
+- **Rendetalje Full-Stack Integration v1.1.0** (Oct 25, 2025)
+  - ✅ Test Infrastructure (Jest, RTL, Playwright E2E, 17/17 integration tests)
   - ✅ GitHub Actions CI/CD (5-job pipeline with Codecov)
-  - ✅ Docker test database (PostgreSQL + Redis with seed data)
-  - ✅ UI Component Library (Button, Input, Card, Badge, Modal)
+  - ✅ UI Component Library (Button, Input, Card, Badge, Modal, Spinner)
   - ✅ State Management (Zustand: auth, jobs, customers stores)
-  - ✅ Comprehensive documentation (README, CHANGELOG, TESTING.md)
+  - ✅ Backend API Integration (centralized ApiClient with token refresh)
+  - ✅ Toast Notifications (react-hot-toast with success/error feedback)
+  - ✅ Loading States (Spinner, LoadingOverlay, LoadingState components)
+  - ✅ Error Handling (user-friendly messages in all CRUD operations)
   - Location: `apps/rendetalje/services/`
-  - 11 tasks completed, 5 commits pushed to master
+  - 8 backend integration tasks completed, 9 commits pushed to master
 
 ### Planned
 
