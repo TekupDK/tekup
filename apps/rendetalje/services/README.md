@@ -164,10 +164,11 @@ npm run playwright:report
 GitHub Actions runs on every push/PR to `master` or `develop`:
 
 **Jobs:**
-1. **Backend Tests** → Lint → Unit → E2E → Upload coverage
+1. **Backend Tests** → Lint → Unit tests → E2E tests → Upload coverage
 2. **Frontend Tests** → Lint → Tests → Build → Upload coverage  
 3. **Shared Tests** → Lint → Tests → Coverage threshold → Build → Upload coverage
-4. **Quality Check** → Final verification (depends on all previous jobs)
+4. **Frontend E2E Tests** → Install Playwright → E2E tests → Upload reports (runs after backend + frontend pass)
+5. **Quality Check** → Final verification (depends on all previous jobs)
 
 **View Results:**
 - GitHub Actions tab: [https://github.com/TekupDK/tekup/actions](https://github.com/TekupDK/tekup/actions)
