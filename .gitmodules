@@ -1,0 +1,3 @@
+[submodule "tekup-secrets"]
+	path = tekup-secrets
+	url = https://github.com/TekupDK/tekup-secrets.git
