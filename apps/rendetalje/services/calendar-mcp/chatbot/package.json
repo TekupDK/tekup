@@ -1,5 +1,5 @@
 {
-  "name": "renos-calendar-chatbot",
+  "name": "@renos/calendar-chatbot",
   "version": "1.0.0",
   "description": "Professional RenOS Calendar MCP Chatbot Interface",
   "type": "module",

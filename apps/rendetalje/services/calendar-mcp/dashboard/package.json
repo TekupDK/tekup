@@ -1,5 +1,5 @@
 {
-  "name": "renos-calendar-dashboard",
+  "name": "@renos/calendar-dashboard",
   "version": "1.0.0",
   "description": "RenOS Calendar MCP Dashboard - Mobile-first kalender management",
   "type": "module",
