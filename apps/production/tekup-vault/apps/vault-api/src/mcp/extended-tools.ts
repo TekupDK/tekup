@@ -3,7 +3,7 @@
  * Additional tools beyond the basic search/fetch capabilities
  */
 
-import { SupabaseClient } from '@supabase/supabase-js';
+import { vault } from '@tekup/database';
 import { Logger } from 'pino';
 
 export interface McpToolResult {
@@ -19,7 +19,7 @@ export interface McpToolResult {
  */
 export async function summarizeRepository(
   args: { repository: string; limit?: number },
-  supabase: SupabaseClient,
+  vault: typeof vault,
   logger: Logger
 ): Promise<McpToolResult> {
   const { repository, limit = 20 } = args;
@@ -72,7 +72,7 @@ export async function summarizeRepository(
  */
 export async function getDocumentByPath(
   args: { repository: string; path: string },
-  supabase: SupabaseClient,
+  vault: typeof vault,
   logger: Logger
 ): Promise<McpToolResult> {
   const { repository, path } = args;
@@ -120,7 +120,7 @@ export async function getDocumentByPath(
  */
 export async function listRepositoryFiles(
   args: { repository: string; pattern?: string; limit?: number },
-  supabase: SupabaseClient,
+  vault: typeof vault,
   logger: Logger
 ): Promise<McpToolResult> {
   const { repository, pattern = '', limit = 50 } = args;
@@ -177,7 +177,7 @@ export async function listRepositoryFiles(
  */
 export async function searchByFileType(
   args: { repository: string; fileType: string; limit?: number },
-  supabase: SupabaseClient,
+  vault: typeof vault,
   logger: Logger
 ): Promise<McpToolResult> {
   const { repository, fileType, limit = 50 } = args;
@@ -227,7 +227,7 @@ export async function searchByFileType(
  */
 export async function getRepositoryStats(
   args: { repository?: string },
-  supabase: SupabaseClient,
+  vault: typeof vault,
   logger: Logger
 ): Promise<McpToolResult> {
   const { repository } = args;
