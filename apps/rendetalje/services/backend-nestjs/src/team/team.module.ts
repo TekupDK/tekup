@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
+﻿import { Module } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { TeamController } from './team.controller';
-import { SupabaseModule } from '../supabase/supabase.module';
+import { DatabaseModule } from '../database/database.module';
 
 @Module({
-  imports: [SupabaseModule],
+  imports: [DatabaseModule],
   controllers: [TeamController],
   providers: [TeamService],
   exports: [TeamService],

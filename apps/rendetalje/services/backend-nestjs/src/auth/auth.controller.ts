@@ -1,177 +1,96 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Patch,
-  Param,
-  UseGuards,
-  Request,
-  HttpCode,
-  HttpStatus,
-  Query,
-  Req,
-} from "@nestjs/common";
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from "@nestjs/swagger";
-import { AuthService } from "./auth.service";
-import {
-  CreateUserDto,
-  LoginDto,
-  ResetPasswordDto,
-  ChangePasswordDto,
-  UpdateProfileDto,
-} from "./dto";
-import { JwtAuthGuard } from "./guards/jwt-auth.guard";
-import { RolesGuard } from "./guards/roles.guard";
-import { Roles } from "./decorators/roles.decorator";
-import { UserRole } from "../common/enums/user-role.enum";
-import { User } from "../common/interfaces/user.interface";
+﻿import { Controller, Post, Body, Get, Patch, UseGuards, Request, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { AuthService, AuthResponse } from './auth.service';
+import { CreateUserDto, LoginDto, UpdateProfileDto, ChangePasswordDto } from './dto';
+import { User } from './entities/user.entity';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
-@ApiTags("Authentication")
-@Controller("auth")
+@ApiTags('Authentication')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post("register")
-  @ApiOperation({ summary: "Register a new user" })
-  @ApiResponse({ status: 201, description: "User registered successfully" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiResponse({ status: 409, description: "User already exists" })
-  async register(@Body() createUserDto: CreateUserDto) {
+  @Post('register')
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiResponse({ status: 201, description: 'User registered successfully', type: User })
+  @ApiResponse({ status: 409, description: 'User already exists' })
+  async register(@Body() createUserDto: CreateUserDto): Promise<AuthResponse> {
     return this.authService.register(createUserDto);
   }
 
-  @Post("login")
+  @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Login user" })
-  @ApiResponse({ status: 200, description: "Login successful" })
-  @ApiResponse({ status: 401, description: "Invalid credentials" })
-  async login(@Body() loginDto: LoginDto) {
+  @ApiOperation({ summary: 'Login with email and password' })
+  @ApiResponse({ status: 200, description: 'Login successful', type: User })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  async login(@Body() loginDto: LoginDto): Promise<AuthResponse> {
     return this.authService.login(loginDto);
   }
 
-  @Post("refresh")
+  @Post('refresh')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Refresh access token" })
-  @ApiResponse({ status: 200, description: "Token refreshed successfully" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  async refreshToken(@Request() req) {
-    return this.authService.refreshToken(req.user.id);
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiResponse({ status: 200, description: 'Token refreshed successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async refreshToken(@Request() req): Promise<{ accessToken: string }> {
+    return this.authService.refreshToken(req.user.userId);
   }
 
-  @Post("forgot-password")
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Request password reset" })
-  @ApiResponse({ status: 200, description: "Reset email sent successfully" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  async forgotPassword(@Body("email") email: string) {
-    return this.authService.requestPasswordReset(email);
-  }
-
-  @Post("reset-password")
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Reset password with token" })
-  @ApiResponse({ status: 200, description: "Password reset successfully" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authService.resetPassword(resetPasswordDto);
-  }
-
-  @Post("change-password")
+  @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Change password" })
-  @ApiResponse({ status: 200, description: "Password changed successfully" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  async changePassword(
-    @Request() req,
-    @Body() changePasswordDto: ChangePasswordDto
-  ) {
-    return this.authService.changePassword(req.user.id, changePasswordDto);
-  }
-
-  @Get("profile")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: "Get current user profile" })
-  @ApiResponse({ status: 200, description: "Profile retrieved successfully" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, description: 'User profile retrieved', type: User })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getProfile(@Request() req): Promise<User> {
-    return this.authService.validateUser(req.user.id);
+    return this.authService.getUserById(req.user.userId);
   }
 
-  @Patch("profile")
+  @Patch('profile')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Update user profile" })
-  @ApiResponse({ status: 200, description: "Profile updated successfully" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiOperation({ summary: 'Update user profile' })
+  @ApiResponse({ status: 200, description: 'Profile updated successfully', type: User })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async updateProfile(
     @Request() req,
-    @Body() updateProfileDto: UpdateProfileDto
+    @Body() updateProfileDto: UpdateProfileDto,
   ): Promise<User> {
-    return this.authService.updateProfile(req.user.id, updateProfileDto);
+    return this.authService.updateProfile(req.user.userId, updateProfileDto);
   }
 
-  @Get("users")
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.OWNER, UserRole.ADMIN)
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Get users in organization" })
-  @ApiResponse({ status: 200, description: "Users retrieved successfully" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  @ApiResponse({ status: 403, description: "Forbidden" })
-  async getUsers(
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Change user password' })
+  @ApiResponse({ status: 204, description: 'Password changed successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized or invalid password' })
+  async changePassword(
     @Request() req,
-    @Query("role") role?: UserRole
-  ): Promise<User[]> {
-    return this.authService.getUsersByOrganization(
-      req.user.organizationId,
-      role
+    @Body() changePasswordDto: ChangePasswordDto,
+  ): Promise<void> {
+    return this.authService.changePassword(
+      req.user.userId,
+      changePasswordDto.currentPassword,
+      changePasswordDto.newPassword,
     );
   }
 
-  @Patch("users/:userId/deactivate")
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.OWNER, UserRole.ADMIN)
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Deactivate user" })
-  @ApiResponse({ status: 200, description: "User deactivated successfully" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  @ApiResponse({ status: 403, description: "Forbidden" })
-  async deactivateUser(@Param("userId") userId: string) {
-    return this.authService.deactivateUser(userId);
-  }
-
-  @Patch("users/:userId/activate")
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.OWNER, UserRole.ADMIN)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: "Activate user" })
-  @ApiResponse({ status: 200, description: "User activated successfully" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  @ApiResponse({ status: 403, description: "Forbidden" })
-  async activateUser(@Param("userId") userId: string) {
-    return this.authService.activateUser(userId);
-  }
-
-  @Post("logout")
-  @HttpCode(204)
-  async logout(@Req() _req: any) {
-    // For stateless JWT we simply return 204; clients should delete tokens.
-    // If refresh tokens/whitelist are used, revoke here.
-    return;
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout user (Mobile)' })
+  @ApiResponse({ status: 200, description: 'Logout successful' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async logout(@Request() req): Promise<{ message: string }> {
+    // In production, this would invalidate the JWT token
+    // For now, just return success message
+    return {
+      message: 'Logout successful',
+    };
   }
 }

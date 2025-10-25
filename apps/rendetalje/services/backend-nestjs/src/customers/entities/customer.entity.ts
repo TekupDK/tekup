@@ -1,23 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { OrganizationEntity } from '../../common/entities/base.entity';
 
-export interface CustomerAddress {
-  street: string;
-  city: string;
-  postal_code: string;
-  country: string;
-}
-
-export interface CustomerPreferences {
-  preferred_time?: string;
-  special_instructions?: string;
-  key_location?: string;
-  contact_method?: 'email' | 'phone' | 'sms';
-}
-
-export class Customer extends OrganizationEntity {
-  @ApiPropertyOptional({ example: '00000000-0000-0000-0000-000000000001', description: 'Associated user ID (if customer has login)' })
-  user_id?: string;
+export class Customer {
+  @ApiProperty({ example: 'ckl1234567890', description: 'Customer ID' })
+  id: string;
 
   @ApiProperty({ example: 'John Doe', description: 'Customer full name' })
   name: string;
@@ -28,40 +13,36 @@ export class Customer extends OrganizationEntity {
   @ApiPropertyOptional({ example: '+45 12 34 56 78', description: 'Customer phone number' })
   phone?: string;
 
-  @ApiProperty({ 
-    description: 'Customer address',
-    example: {
-      street: 'Hovedgade 123',
-      city: 'København',
-      postal_code: '1000',
-      country: 'Denmark'
-    }
-  })
-  address: CustomerAddress;
+  @ApiPropertyOptional({ example: 'Hovedgade 123, 1000 København', description: 'Customer address' })
+  address?: string;
 
-  @ApiProperty({ 
-    description: 'Customer preferences',
-    example: {
-      preferred_time: 'morning',
-      special_instructions: 'Ring på før ankomst',
-      key_location: 'Under dørmåtten',
-      contact_method: 'phone'
-    }
-  })
-  preferences: CustomerPreferences;
-
-  @ApiProperty({ example: 15, description: 'Total number of completed jobs' })
-  total_jobs: number;
-
-  @ApiProperty({ example: 18500.50, description: 'Total revenue from customer' })
-  total_revenue: number;
-
-  @ApiPropertyOptional({ example: 4.5, description: 'Average satisfaction score (1-5)' })
-  satisfaction_score?: number;
+  @ApiPropertyOptional({ example: 'Acme Corporation', description: 'Company name if B2B' })
+  companyName?: string;
 
   @ApiPropertyOptional({ example: 'VIP customer, always pays on time', description: 'Internal notes about customer' })
   notes?: string;
 
-  @ApiProperty({ example: true, description: 'Whether customer is active' })
-  is_active: boolean;
+  @ApiProperty({ example: 'active', description: 'Customer status' })
+  status: string;
+
+  @ApiProperty({ example: ['vip', 'recurring'], description: 'Customer tags' })
+  tags: string[];
+
+  @ApiProperty({ example: 15, description: 'Total number of leads' })
+  totalLeads: number;
+
+  @ApiProperty({ example: 10, description: 'Total number of bookings' })
+  totalBookings: number;
+
+  @ApiProperty({ example: 18500.50, description: 'Total revenue from customer' })
+  totalRevenue: number;
+
+  @ApiPropertyOptional({ description: 'Last contact timestamp' })
+  lastContactAt?: Date;
+
+  @ApiProperty({ description: 'Created timestamp' })
+  createdAt: Date;
+
+  @ApiProperty({ description: 'Updated timestamp' })
+  updatedAt: Date;
 }

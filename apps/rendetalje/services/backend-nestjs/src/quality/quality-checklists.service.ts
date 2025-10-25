@@ -1,520 +1,224 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from "@nestjs/common";
-import { BaseService } from "../common/services/base.service";
-import { SupabaseService } from "../supabase/supabase.service";
-import {
-  QualityChecklist,
-  ChecklistItem,
-} from "./entities/quality-checklist.entity";
-import { CreateQualityChecklistDto } from "./dto";
-import { ServiceType } from "../jobs/entities/job.entity";
+import { Injectable, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
+import { PrismaService } from '../database/prisma.service';
+import { QualityChecklist, ChecklistItem } from './entities/quality-checklist.entity';
+import { CreateQualityChecklistDto } from './dto';
 
 @Injectable()
-export class QualityChecklistsService extends BaseService<QualityChecklist> {
-  protected tableName = "quality_checklists";
-  protected searchFields = ["name", "description"];
+export class QualityChecklistsService {
+  private readonly logger = new Logger(QualityChecklistsService.name);
 
-  
-  protected readonly modelName = 'quality_checklists';
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(protected readonly supabaseService: SupabaseService) {
-    super(supabaseService);
-  }
+  async create(createDto: CreateQualityChecklistDto): Promise<QualityChecklist> {
+    this.logger.log(`Creating quality checklist for service type: ${createDto.service_type}`);
 
-  async create(
-    createDto: CreateQualityChecklistDto,
-    organizationId: string
-  ): Promise<QualityChecklist> {
-    // Check if checklist already exists for this service type
-    const { data: existing } = await this.supabaseService.client
-      .from("quality_checklists")
-      .select("id")
-      .eq("organization_id", organizationId)
-      .eq("service_type", createDto.service_type)
-      .eq("is_active", true)
-      .single();
-
-    if (existing) {
-      throw new BadRequestException(
-        `Active checklist already exists for service type: ${createDto.service_type}`
-      );
-    }
-
-    const checklistData = {
-      ...createDto,
-      organization_id: organizationId,
-      is_active: true,
-      version: 1,
-    };
-
-    const { data, error } = await this.supabaseService.client
-      .from("quality_checklists")
-      .insert(checklistData)
-      .select()
-      .single();
-
-    if (error) {
-      throw new BadRequestException(
-        `Failed to create quality checklist: ${error.message}`
-      );
-    }
-
-    return data;
-  }
-
-  async getByServiceType(
-    serviceType: ServiceType,
-    organizationId: string
-  ): Promise<QualityChecklist | null> {
-    const { data, error } = await this.supabaseService.client
-      .from("quality_checklists")
-      .select("*")
-      .eq("organization_id", organizationId)
-      .eq("service_type", serviceType)
-      .eq("is_active", true)
-      .single();
-
-    if (error && error.code !== "PGRST116") {
-      throw new BadRequestException(
-        `Failed to get checklist: ${error.message}`
-      );
-    }
-
-    return data;
-  }
-
-  async createNewVersion(
-    checklistId: string,
-    organizationId: string,
-    updates: Partial<QualityChecklist>
-  ): Promise<QualityChecklist> {
-    // Get current checklist
-    const currentChecklist = await this.findById(checklistId, organizationId);
-
-    // Deactivate current version
-    await this.supabaseService.client
-      .from("quality_checklists")
-      .update({ is_active: false })
-      .eq("id", checklistId)
-      .eq("organization_id", organizationId);
-
-    // Create new version
-    const newVersionData = {
-      ...currentChecklist,
-      ...updates,
-      id: undefined, // Let database generate new ID
-      version: currentChecklist.version + 1,
-      is_active: true,
-      created_at: undefined,
-      updated_at: undefined,
-    };
-
-    const { data, error } = await this.supabaseService.client
-      .from("quality_checklists")
-      .insert(newVersionData)
-      .select()
-      .single();
-
-    if (error) {
-      throw new BadRequestException(
-        `Failed to create new checklist version: ${error.message}`
-      );
-    }
-
-    return data;
-  }
-
-  async getChecklistVersions(
-    serviceType: ServiceType,
-    organizationId: string
-  ): Promise<QualityChecklist[]> {
-    const { data, error } = await this.supabaseService.client
-      .from("quality_checklists")
-      .select("*")
-      .eq("organization_id", organizationId)
-      .eq("service_type", serviceType)
-      .order("version", { ascending: false });
-
-    if (error) {
-      throw new BadRequestException(
-        `Failed to get checklist versions: ${error.message}`
-      );
-    }
-
-    return data || [];
-  }
-
-  async duplicateChecklist(
-    checklistId: string,
-    organizationId: string,
-    newServiceType: ServiceType,
-    newName: string
-  ): Promise<QualityChecklist> {
-    const sourceChecklist = await this.findById(checklistId, organizationId);
-
-    const duplicateData = {
-      ...sourceChecklist,
-      id: undefined,
-      service_type: newServiceType,
-      name: newName,
-      version: 1,
-      created_at: undefined,
-      updated_at: undefined,
-    };
-
-    const { data, error } = await this.supabaseService.client
-      .from("quality_checklists")
-      .insert(duplicateData)
-      .select()
-      .single();
-
-    if (error) {
-      throw new BadRequestException(
-        `Failed to duplicate checklist: ${error.message}`
-      );
-    }
-
-    return data;
-  }
-
-  async validateChecklistItems(
-    items: ChecklistItem[]
-  ): Promise<{ isValid: boolean; errors: string[] }> {
-    const errors: string[] = [];
-
-    // Check for duplicate IDs
-    const ids = items.map((item) => item.id);
-    const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
-    if (duplicateIds.length > 0) {
-      errors.push(`Duplicate item IDs found: ${duplicateIds.join(", ")}`);
-    }
-
-    // Check for missing required fields
-    items.forEach((item, index) => {
-      if (!item.id) {
-        errors.push(`Item at index ${index} is missing ID`);
-      }
-      if (!item.title) {
-        errors.push(`Item at index ${index} is missing title`);
-      }
-      if (item.order < 1) {
-        errors.push(`Item at index ${index} has invalid order (must be >= 1)`);
-      }
+    // Check if active checklist already exists for this service type
+    const existing = await this.prisma.renosQualityChecklist.findFirst({
+      where: {
+        serviceType: createDto.service_type,
+        isActive: true,
+      },
     });
 
-    // Check for duplicate orders
-    const orders = items.map((item) => item.order);
-    const duplicateOrders = orders.filter(
-      (order, index) => orders.indexOf(order) !== index
-    );
-    if (duplicateOrders.length > 0) {
-      errors.push(
-        `Duplicate order numbers found: ${duplicateOrders.join(", ")}`
-      );
+    if (existing) {
+      throw new BadRequestException(`Active checklist already exists for service type: ${createDto.service_type}`);
     }
 
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
+    const checklist = await this.prisma.renosQualityChecklist.create({
+      data: {
+        serviceType: createDto.service_type,
+        name: createDto.name,
+        description: createDto.description,
+        items: createDto.items as any,
+        isActive: true,
+        version: 1,
+      },
+    });
+
+    return checklist as any;
   }
 
-  async getChecklistAnalytics(organizationId: string): Promise<any> {
-    // Get checklist usage statistics
-    const { data: assessments, error } = await this.supabaseService.client
-      .from("job_quality_assessments")
-      .select(
-        `
-        id,
-        overall_score,
-        percentage_score,
-        quality_checklists!inner(service_type, name),
-        jobs!inner(organization_id, service_type, status)
-      `
-      )
-      .eq("jobs.organization_id", organizationId);
+  async findAll(filters?: { serviceType?: string; isActive?: boolean }): Promise<QualityChecklist[]> {
+    const checklists = await this.prisma.renosQualityChecklist.findMany({
+      where: {
+        serviceType: filters?.serviceType,
+        isActive: filters?.isActive,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
-    if (error) {
-      throw new BadRequestException(
-        `Failed to get checklist analytics: ${error.message}`
-      );
-    }
-
-    // Calculate analytics
-    const analytics = {
-      total_assessments: assessments?.length || 0,
-      average_score: 0,
-      score_distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-      by_service_type: {} as Record<string, any>,
-      completion_trends: {} as Record<string, number>,
-    };
-
-    if (assessments && assessments.length > 0) {
-      // Calculate average score
-      analytics.average_score =
-        assessments.reduce((sum, a) => sum + a.overall_score, 0) /
-        assessments.length;
-
-      // Score distribution
-      assessments.forEach((assessment) => {
-        analytics.score_distribution[
-          assessment.overall_score as keyof typeof analytics.score_distribution
-        ]++;
-      });
-
-      // By service type
-      assessments.forEach((assessment) => {
-        const serviceType = assessment.quality_checklists.service_type;
-        if (!analytics.by_service_type[serviceType]) {
-          analytics.by_service_type[serviceType] = {
-            count: 0,
-            average_score: 0,
-            total_score: 0,
-          };
-        }
-        analytics.by_service_type[serviceType].count++;
-        analytics.by_service_type[serviceType].total_score +=
-          assessment.overall_score;
-      });
-
-      // Calculate averages for service types
-      Object.keys(analytics.by_service_type).forEach((serviceType) => {
-        const data = analytics.by_service_type[serviceType];
-        data.average_score = data.total_score / data.count;
-      });
-    }
-
-    return analytics;
+    return checklists as any[];
   }
 
-  // Initialize default checklists for all service types
-  async initializeDefaultChecklists(
-    organizationId: string
-  ): Promise<QualityChecklist[]> {
+  async findById(id: string): Promise<QualityChecklist> {
+    const checklist = await this.prisma.renosQualityChecklist.findUnique({
+      where: { id },
+    });
+
+    if (!checklist) {
+      throw new NotFoundException(`Checklist with ID ${id} not found`);
+    }
+
+    return checklist as any;
+  }
+
+  async getByServiceType(serviceType: string): Promise<QualityChecklist | null> {
+    const checklist = await this.prisma.renosQualityChecklist.findFirst({
+      where: {
+        serviceType,
+        isActive: true,
+      },
+      orderBy: {
+        version: 'desc',
+      },
+    });
+
+    return checklist as any;
+  }
+
+  async createNewVersion(checklistId: string, updates: Partial<CreateQualityChecklistDto>): Promise<QualityChecklist> {
+    this.logger.log(`Creating new version for checklist: ${checklistId}`);
+
+    // Get current checklist
+    const currentChecklist = await this.findById(checklistId);
+
+    // Deactivate current version and create new version in transaction
+    const newChecklist = await this.prisma.$transaction(async (prisma) => {
+      // Deactivate current
+      await prisma.renosQualityChecklist.update({
+        where: { id: checklistId },
+        data: { isActive: false },
+      });
+
+      // Create new version
+      return prisma.renosQualityChecklist.create({
+        data: {
+          serviceType: currentChecklist.service_type,
+          name: updates.name || currentChecklist.name,
+          description: updates.description !== undefined ? updates.description : currentChecklist.description,
+          items: (updates.items || currentChecklist.items) as any,
+          isActive: true,
+          version: currentChecklist.version + 1,
+        },
+      });
+    });
+
+    this.logger.log(`Created new version ${newChecklist.version} for service type: ${newChecklist.serviceType}`);
+    return newChecklist as any;
+  }
+
+  async duplicateChecklist(checklistId: string, newServiceType: string, newName: string): Promise<QualityChecklist> {
+    this.logger.log(`Duplicating checklist ${checklistId} for service type: ${newServiceType}`);
+
+    const sourceChecklist = await this.findById(checklistId);
+
+    const duplicate = await this.prisma.renosQualityChecklist.create({
+      data: {
+        serviceType: newServiceType,
+        name: newName,
+        description: sourceChecklist.description,
+        items: sourceChecklist.items as any,
+        isActive: true,
+        version: 1,
+      },
+    });
+
+    return duplicate as any;
+  }
+
+  async getChecklistVersions(serviceType: string): Promise<QualityChecklist[]> {
+    const versions = await this.prisma.renosQualityChecklist.findMany({
+      where: { serviceType },
+      orderBy: {
+        version: 'desc',
+      },
+    });
+
+    return versions as any[];
+  }
+
+  async initializeDefaultChecklists(): Promise<QualityChecklist[]> {
+    this.logger.log('Initializing default checklists for all service types');
+
     const defaultChecklists = [
       {
-        service_type: ServiceType.STANDARD,
-        name: "Standard Rengøring Tjekliste",
-        description: "Grundig tjekliste for standard rengøringsopgaver",
+        service_type: 'standard',
+        name: 'Standard Cleaning Checklist',
+        description: 'Comprehensive checklist for standard cleaning services',
         items: [
-          {
-            id: "vacuum_floors",
-            title: "Støvsug alle gulve",
-            required: true,
-            photo_required: false,
-            order: 1,
-            category: "floors",
-            points: 5,
-          },
-          {
-            id: "mop_floors",
-            title: "Vask alle gulve",
-            required: true,
-            photo_required: false,
-            order: 2,
-            category: "floors",
-            points: 5,
-          },
-          {
-            id: "clean_bathroom",
-            title: "Rengør badeværelse",
-            required: true,
-            photo_required: true,
-            order: 3,
-            category: "bathroom",
-            points: 8,
-          },
-          {
-            id: "clean_kitchen",
-            title: "Rengør køkken",
-            required: true,
-            photo_required: true,
-            order: 4,
-            category: "kitchen",
-            points: 8,
-          },
-          {
-            id: "dust_surfaces",
-            title: "Aftør alle overflader",
-            required: true,
-            photo_required: false,
-            order: 5,
-            category: "surfaces",
-            points: 6,
-          },
-          {
-            id: "empty_trash",
-            title: "Tøm skraldespande",
-            required: true,
-            photo_required: false,
-            order: 6,
-            category: "general",
-            points: 3,
-          },
-          {
-            id: "check_supplies",
-            title: "Tjek forsyninger",
-            required: false,
-            photo_required: false,
-            order: 7,
-            category: "general",
-            points: 2,
-          },
+          { id: 'vacuum_floors', title: 'Støvsug alle gulve', description: 'Støvsug alle gulvtyper grundigt', required: true, photo_required: false, order: 1, category: 'floors', points: 5 },
+          { id: 'mop_floors', title: 'Vask gulve', description: 'Vask alle hårde gulve', required: true, photo_required: false, order: 2, category: 'floors', points: 5 },
+          { id: 'dust_surfaces', title: 'Støvaftør overflader', description: 'Støvaftør alle overflader', required: true, photo_required: false, order: 3, category: 'surfaces', points: 5 },
+          { id: 'clean_kitchen', title: 'Rengør køkken', description: 'Rengør køkkenbord, komfur, og vask', required: true, photo_required: true, order: 4, category: 'kitchen', points: 10 },
+          { id: 'clean_bathroom', title: 'Rengør badeværelse', description: 'Rengør toilet, vask, og brusekabine', required: true, photo_required: true, order: 5, category: 'bathroom', points: 10 },
         ],
       },
       {
-        service_type: ServiceType.DEEP,
-        name: "Hovedrengøring Tjekliste",
-        description: "Omfattende tjekliste for hovedrengøring",
+        service_type: 'deep',
+        name: 'Deep Cleaning Checklist',
+        description: 'Detailed checklist for deep cleaning services',
         items: [
-          {
-            id: "vacuum_floors_deep",
-            title: "Støvsug alle gulve grundigt",
-            required: true,
-            photo_required: false,
-            order: 1,
-            category: "floors",
-            points: 6,
-          },
-          {
-            id: "mop_floors_deep",
-            title: "Vask alle gulve grundigt",
-            required: true,
-            photo_required: true,
-            order: 2,
-            category: "floors",
-            points: 6,
-          },
-          {
-            id: "clean_bathroom_deep",
-            title: "Dybderengør badeværelse",
-            required: true,
-            photo_required: true,
-            order: 3,
-            category: "bathroom",
-            points: 10,
-          },
-          {
-            id: "clean_kitchen_deep",
-            title: "Dybderengør køkken",
-            required: true,
-            photo_required: true,
-            order: 4,
-            category: "kitchen",
-            points: 10,
-          },
-          {
-            id: "clean_windows",
-            title: "Rengør vinduer",
-            required: true,
-            photo_required: true,
-            order: 5,
-            category: "windows",
-            points: 8,
-          },
-          {
-            id: "clean_baseboards",
-            title: "Rengør fodpaneler",
-            required: true,
-            photo_required: false,
-            order: 6,
-            category: "details",
-            points: 5,
-          },
-          {
-            id: "clean_light_fixtures",
-            title: "Rengør lamper",
-            required: true,
-            photo_required: false,
-            order: 7,
-            category: "details",
-            points: 4,
-          },
-          {
-            id: "organize_spaces",
-            title: "Organiser rum",
-            required: false,
-            photo_required: false,
-            order: 8,
-            category: "general",
-            points: 3,
-          },
+          { id: 'clean_windows', title: 'Pudse vinduer', description: 'Pudse alle vinduer indvendigt', required: true, photo_required: true, order: 1, category: 'windows', points: 10 },
+          { id: 'clean_oven', title: 'Rengør ovn', description: 'Grundig rengøring af ovn og bageplader', required: true, photo_required: true, order: 2, category: 'kitchen', points: 10 },
+          { id: 'clean_cabinets', title: 'Rengør skabe', description: 'Rengør skabe indvendigt og udvendigt', required: true, photo_required: false, order: 3, category: 'storage', points: 8 },
         ],
       },
       {
-        service_type: ServiceType.WINDOW,
-        name: "Vinduespolering Tjekliste",
-        description: "Specialiseret tjekliste for vinduesrengøring",
+        service_type: 'move_in_out',
+        name: 'Move In/Out Cleaning Checklist',
+        description: 'Complete checklist for move in/out cleaning',
         items: [
-          {
-            id: "clean_exterior_windows",
-            title: "Rengør vinduer udefra",
-            required: true,
-            photo_required: true,
-            order: 1,
-            category: "exterior",
-            points: 10,
-          },
-          {
-            id: "clean_interior_windows",
-            title: "Rengør vinduer indefra",
-            required: true,
-            photo_required: true,
-            order: 2,
-            category: "interior",
-            points: 10,
-          },
-          {
-            id: "clean_window_frames",
-            title: "Rengør vinduesrammer",
-            required: true,
-            photo_required: false,
-            order: 3,
-            category: "frames",
-            points: 6,
-          },
-          {
-            id: "clean_window_sills",
-            title: "Rengør vindueskarme",
-            required: true,
-            photo_required: false,
-            order: 4,
-            category: "frames",
-            points: 4,
-          },
-          {
-            id: "check_window_condition",
-            title: "Tjek vinduestilstand",
-            required: false,
-            photo_required: true,
-            order: 5,
-            category: "inspection",
-            points: 2,
-          },
+          { id: 'check_walls', title: 'Tjek vægge', description: 'Inspicer og rengør vægge', required: true, photo_required: true, order: 1, category: 'walls', points: 8 },
+          { id: 'clean_appliances', title: 'Rengør hårde hvidevarer', description: 'Grundig rengøring af alle hårde hvidevarer', required: true, photo_required: true, order: 2, category: 'appliances', points: 10 },
         ],
       },
     ];
 
-    const createdChecklists: QualityChecklist[] = [];
+    const created: QualityChecklist[] = [];
 
     for (const checklistData of defaultChecklists) {
       try {
-        const checklist = await this.create(
-          checklistData as CreateQualityChecklistDto,
-          organizationId
-        );
-        createdChecklists.push(checklist);
-      } catch (error) {
-        // Skip if already exists
-        if (!error.message.includes("already exists")) {
-          throw error;
+        const existing = await this.getByServiceType(checklistData.service_type);
+        if (!existing) {
+          const checklist = await this.create(checklistData as CreateQualityChecklistDto);
+          created.push(checklist);
         }
+      } catch (error) {
+        this.logger.warn(`Failed to create default checklist for ${checklistData.service_type}: ${error.message}`);
       }
     }
 
-    return createdChecklists;
+    this.logger.log(`Initialized ${created.length} default checklists`);
+    return created;
+  }
+
+  async getChecklistAnalytics(): Promise<any> {
+    this.logger.log('Generating checklist analytics');
+
+    const checklists = await this.prisma.renosQualityChecklist.findMany({
+      include: {
+        assessments: true,
+      },
+    });
+
+    const analytics = checklists.map((checklist) => ({
+      id: checklist.id,
+      name: checklist.name,
+      serviceType: checklist.serviceType,
+      version: checklist.version,
+      isActive: checklist.isActive,
+      usageCount: checklist.assessments.length,
+      averageScore: checklist.assessments.length > 0
+        ? checklist.assessments.reduce((sum, a) => sum + a.overallScore, 0) / checklist.assessments.length
+        : 0,
+    }));
+
+    return {
+      totalChecklists: checklists.length,
+      activeChecklists: checklists.filter((c) => c.isActive).length,
+      checklists: analytics,
+    };
   }
 }

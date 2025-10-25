@@ -2,7 +2,7 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom, timeout, retry, catchError } from 'rxjs';
-import { JobsService } from '../jobs/jobs.service';
+import { LeadsService } from '../leads/leads.service';
 import { CustomersService } from '../customers/customers.service';
 import { TeamService } from '../team/team.service';
 
@@ -43,7 +43,7 @@ export class AiFridayService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-    private readonly jobsService: JobsService,
+    private readonly leadsService: LeadsService,
     private readonly customersService: CustomersService,
     private readonly teamService: TeamService,
   ) {
@@ -234,12 +234,10 @@ Svar altid på dansk og vær hjælpsom og professionel.`;
     // Add current context data
     if (context.selectedJobId) {
       try {
-        const job = await this.jobsService.findById(context.selectedJobId, context.organizationId);
-        prompt += `\n\nAktuelt valgte job:
-- Job nummer: ${job.job_number}
-- Service type: ${job.service_type}
-- Status: ${job.status}
-- Planlagt dato: ${job.scheduled_date}`;
+        // TODO: Add lead/job context lookup using LeadsService
+        this.logger.debug('Job context not yet implemented with LeadsService');
+        // const lead = await this.leadsService.findOne(context.selectedJobId, context.organizationId);
+        // prompt += `\n\nAktuelt valgte lead: ...`;
       } catch (error) {
         this.logger.warn('Could not fetch job context', error);
       }
@@ -247,12 +245,10 @@ Svar altid på dansk og vær hjælpsom og professionel.`;
 
     if (context.selectedCustomerId) {
       try {
-        const customer = await this.customersService.findById(context.selectedCustomerId, context.organizationId);
-        prompt += `\n\nAktuelt valgte kunde:
-- Navn: ${customer.name}
-- Email: ${customer.email}
-- Telefon: ${customer.phone}
-- Total jobs: ${customer.total_jobs}`;
+        // TODO: Update to match CustomersService method signature
+        this.logger.debug('Customer context lookup not yet implemented');
+        // const customer = await this.customersService.findOne(context.selectedCustomerId);
+        // prompt += `\n\nAktuelt valgte kunde: ...`;
       } catch (error) {
         this.logger.warn('Could not fetch customer context', error);
       }
@@ -271,11 +267,13 @@ Svar altid på dansk og vær hjælpsom og professionel.`;
       try {
         switch (action.type) {
           case 'search_jobs':
-            await this.searchJobs(action.payload, context.organizationId);
+            // TODO: Implement with LeadsService
+            this.logger.debug('search_jobs action not yet implemented');
             break;
           
           case 'search_customers':
-            await this.searchCustomers(action.payload, context.organizationId);
+            // TODO: Implement with CustomersService
+            this.logger.debug('search_customers action not yet implemented');
             break;
           
           case 'get_team_schedule':
@@ -283,8 +281,9 @@ Svar altid på dansk og vær hjælpsom og professionel.`;
             break;
           
           case 'create_job':
+            // TODO: Implement with LeadsService
             if (context.userRole === 'owner' || context.userRole === 'admin') {
-              await this.createJob(action.payload, context.organizationId);
+              this.logger.debug('create_job action not yet implemented');
             }
             break;
           
@@ -298,35 +297,27 @@ Svar altid på dansk og vær hjælpsom og professionel.`;
   }
 
   private async searchJobs(payload: any, organizationId: string): Promise<any> {
-    return this.jobsService.findAllWithFilters(organizationId, {
-      search: payload.query,
-      status: payload.status,
-      service_type: payload.service_type,
-      page: 1,
-      limit: 10,
-    });
+    // TODO: Implement with LeadsService
+    this.logger.debug('searchJobs not yet implemented');
+    return [];
   }
 
   private async searchCustomers(payload: any, organizationId: string): Promise<any> {
-    return this.customersService.findAllWithFilters(organizationId, {
-      search: payload.query,
-      city: payload.city,
-      page: 1,
-      limit: 10,
-    });
+    // TODO: Implement with CustomersService
+    this.logger.debug('searchCustomers not yet implemented');
+    return [];
   }
 
   private async getTeamSchedule(payload: any, organizationId: string): Promise<any> {
-    return this.teamService.getTeamMemberSchedule(
-      payload.teamMemberId,
-      organizationId,
-      payload.dateFrom,
-      payload.dateTo,
-    );
+    // TODO: Update to match TeamService method signature
+    this.logger.debug('getTeamSchedule not yet implemented');
+    return null;
   }
 
   private async createJob(payload: any, organizationId: string): Promise<any> {
-    return this.jobsService.create(payload, organizationId);
+    // TODO: Implement with LeadsService
+    this.logger.debug('createJob not yet implemented');
+    return null;
   }
 
   private async *parseStreamResponse(stream: any): AsyncIterable<string> {
@@ -361,7 +352,12 @@ Svar altid på dansk og vær hjælpsom og professionel.`;
   async transcribeAudio(audioBuffer: Buffer, language: string = 'da'): Promise<string> {
     try {
       const formData = new FormData();
-      formData.append('audio', new Blob([audioBuffer as any]), 'audio.wav');
+      // Convert Buffer to ArrayBuffer for Blob compatibility
+      const arrayBuffer = audioBuffer.buffer.slice(
+        audioBuffer.byteOffset,
+        audioBuffer.byteOffset + audioBuffer.byteLength
+      ) as ArrayBuffer;
+      formData.append('audio', new Blob([arrayBuffer]), 'audio.wav');
       formData.append('language', language);
 
       const response = await firstValueFrom(

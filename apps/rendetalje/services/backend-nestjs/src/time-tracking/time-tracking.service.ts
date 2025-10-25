@@ -1,526 +1,292 @@
-import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { BaseService } from '../common/services/base.service';
-import { SupabaseService } from '../supabase/supabase.service';
-import { TimeEntry } from './entities/time-entry.entity';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../database/prisma.service';
+import { CreateTimeCorrectionDto } from './dto/create-time-correction.dto';
 import { TimeCorrection } from './entities/time-correction.entity';
-import { 
-  CreateTimeEntryDto, 
-  UpdateTimeEntryDto, 
-  CreateTimeCorrectionDto,
-  TimeEntryFiltersDto 
-} from './dto';
-import { PaginatedResponseDto } from '../common/dto/pagination.dto';
-import { QueryBuilderUtil } from '../common/utils/query-builder.util';
-import { PaginationUtil } from '../common/utils/pagination.util';
 
 @Injectable()
-export class TimeTrackingService extends BaseService<TimeEntry> {
-  protected tableName = 'time_entries';
-  protected searchFields = ['notes'];
+export class TimeTrackingService {
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(protected readonly supabaseService: SupabaseService) {
-    super(supabaseService);
-  }
+  async getCorrections(
+    employeeId?: string,
+    status?: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<TimeCorrection[]> {
+    const whereClause: any = {};
 
-  async findAllWithFilters(
-    organizationId: string,
-    filters: TimeEntryFiltersDto,
-  ): Promise<PaginatedResponseDto<TimeEntry>> {
-    const { 
-      employee_id, 
-      job_id, 
-      date,
-      start_date,
-      end_date,
-      search 
-    } = filters;
-
-    // Build base query
-    let query = this.supabaseService.client
-      .from('time_entries')
-      .select(`
-        *,
-        team_members!inner(id, user_id, users(name, email)),
-        jobs(id, job_number, service_type, customer_id)
-      `)
-      .eq('team_members.organization_id', organizationId);
-
-    // Apply filters
-    const queryFilters: Record<string, any> = {};
-    
-    if (employee_id) queryFilters.team_member_id = employee_id;
-    if (job_id) queryFilters.job_id = job_id;
-
-    if (Object.keys(queryFilters).length > 0) {
-      query = QueryBuilderUtil.applyFilters(query, queryFilters);
+    if (status) {
+      whereClause.status = status;
     }
 
-    // Date filters
-    if (date) {
-      const startOfDay = `${date}T00:00:00`;
-      const endOfDay = `${date}T23:59:59`;
-      query = query.gte('start_time', startOfDay).lte('start_time', endOfDay);
-    } else if (start_date && end_date) {
-      query = query.gte('start_time', start_date).lte('start_time', end_date);
+    if (startDate || endDate) {
+      whereClause.createdAt = {};
+      if (startDate) whereClause.createdAt.gte = new Date(startDate);
+      if (endDate) whereClause.createdAt.lte = new Date(endDate);
     }
 
-    // Search filter
-    if (search) {
-      query = QueryBuilderUtil.applySearch(query, this.searchFields, search);
-    }
-
-    // Get total count
-    const total = await this.getFilteredCount(organizationId, filters);
-
-    // Apply pagination and execute
-    query = QueryBuilderUtil.applyPagination(query, filters);
-    query = query.order('start_time', { ascending: false });
-    
-    const { data, error } = await query;
-
-    if (error) {
-      throw new BadRequestException(`Failed to fetch time entries: ${error.message}`);
-    }
-
-    return PaginationUtil.createPaginatedResponse(data || [], total, filters);
-  }
-
-  async create(createTimeEntryDto: CreateTimeEntryDto, organizationId: string): Promise<TimeEntry> {
-    // Verify team member exists and belongs to organization
-    await this.validateTeamMember(createTimeEntryDto.team_member_id, organizationId);
-
-    // Verify job exists if provided
-    if (createTimeEntryDto.job_id) {
-      await this.validateJob(createTimeEntryDto.job_id, organizationId);
-    }
-
-    // Check for overlapping active time entries
-    await this.checkForActiveTimeEntry(createTimeEntryDto.team_member_id);
-
-    const timeEntryData = {
-      ...createTimeEntryDto,
-      break_duration: 0,
-    };
-
-    const { data, error } = await this.supabaseService.client
-      .from('time_entries')
-      .insert(timeEntryData)
-      .select()
-      .single();
-
-    if (error) {
-      throw new BadRequestException(`Failed to create time entry: ${error.message}`);
-    }
-
-    return data;
-  }
-
-  async update(id: string, updateTimeEntryDto: UpdateTimeEntryDto, organizationId: string): Promise<TimeEntry> {
-    // Verify time entry exists and belongs to organization
-    const existingEntry = await this.findById(id, organizationId);
-
-    // Validate end time is after start time
-    if (updateTimeEntryDto.end_time) {
-      const startTime = new Date(existingEntry.start_time);
-      const endTime = new Date(updateTimeEntryDto.end_time);
-      
-      if (endTime <= startTime) {
-        throw new BadRequestException('End time must be after start time');
-      }
-    }
-
-    const { data, error } = await this.supabaseService.client
-      .from('time_entries')
-      .update(updateTimeEntryDto)
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) {
-      throw new BadRequestException(`Failed to update time entry: ${error.message}`);
-    }
-
-    return data;
-  }
-
-  async getDailySummary(employeeId: string, date: string, organizationId: string): Promise<any> {
-    // Verify team member exists and belongs to organization
-    await this.validateTeamMember(employeeId, organizationId);
-
-    const startOfDay = `${date}T00:00:00`;
-    const endOfDay = `${date}T23:59:59`;
-
-    const { data: entries, error } = await this.supabaseService.client
-      .from('time_entries')
-      .select(`
-        *,
-        jobs(id, job_number, service_type)
-      `)
-      .eq('team_member_id', employeeId)
-      .gte('start_time', startOfDay)
-      .lte('start_time', endOfDay)
-      .order('start_time', { ascending: true });
-
-    if (error) {
-      throw new BadRequestException(`Failed to fetch daily summary: ${error.message}`);
-    }
-
-    // Calculate totals
-    let totalWorkedMinutes = 0;
-    let totalBreakMinutes = 0;
-    let activeEntry = null;
-
-    entries?.forEach(entry => {
-      if (entry.end_time) {
-        const start = new Date(entry.start_time);
-        const end = new Date(entry.end_time);
-        const duration = (end.getTime() - start.getTime()) / 1000 / 60; // minutes
-        totalWorkedMinutes += duration - (entry.break_duration || 0);
-        totalBreakMinutes += entry.break_duration || 0;
-      } else {
-        activeEntry = entry;
-      }
-    });
-
-    const isOvertime = totalWorkedMinutes > 8 * 60; // 8 hours
-
-    return {
-      date,
-      entries: entries || [],
-      activeEntry,
-      summary: {
-        totalWorkedMinutes,
-        totalBreakMinutes,
-        totalEntries: entries?.length || 0,
-        isOvertime,
-        overtimeMinutes: isOvertime ? totalWorkedMinutes - 8 * 60 : 0,
-      },
-    };
-  }
-
-  async getOvertimeReport(startDate: string, endDate: string, organizationId: string): Promise<any> {
-    const { data: entries, error } = await this.supabaseService.client
-      .from('time_entries')
-      .select(`
-        *,
-        team_members!inner(id, user_id, users(name, email))
-      `)
-      .eq('team_members.organization_id', organizationId)
-      .gte('start_time', startDate)
-      .lte('start_time', endDate)
-      .not('end_time', 'is', null);
-
-    if (error) {
-      throw new BadRequestException(`Failed to fetch overtime report: ${error.message}`);
-    }
-
-    // Group by employee and date
-    const employeeData: Record<string, any> = {};
-
-    entries?.forEach(entry => {
-      const employeeId = entry.team_member_id;
-      const date = entry.start_time.split('T')[0];
-      const start = new Date(entry.start_time);
-      const end = new Date(entry.end_time);
-      const workedMinutes = (end.getTime() - start.getTime()) / 1000 / 60 - (entry.break_duration || 0);
-
-      if (!employeeData[employeeId]) {
-        employeeData[employeeId] = {
-          employee: entry.team_members.users,
-          dailyHours: {},
-          totalOvertime: 0,
-        };
-      }
-
-      if (!employeeData[employeeId].dailyHours[date]) {
-        employeeData[employeeId].dailyHours[date] = 0;
-      }
-
-      employeeData[employeeId].dailyHours[date] += workedMinutes;
-    });
-
-    // Calculate overtime
-    Object.values(employeeData).forEach((employee: any) => {
-      Object.entries(employee.dailyHours).forEach(([date, minutes]: [string, number]) => {
-        if (minutes > 8 * 60) {
-          employee.totalOvertime += minutes - 8 * 60;
-        }
+    if (employeeId) {
+      const teamMember = await this.prisma.renosTeamMember.findUnique({
+        where: { id: employeeId },
+        select: { userId: true },
       });
+
+      if (!teamMember) {
+        throw new NotFoundException('Team member not found');
+      }
+
+      whereClause.submittedBy = teamMember.userId;
+    }
+
+    const corrections = await this.prisma.renosTimeCorrection.findMany({
+      where: whereClause,
+      include: {
+        originalEntry: {
+          include: {
+            teamMember: {
+              include: {
+                user: { select: { id: true, email: true, name: true } },
+              },
+            },
+          },
+        },
+        submitter: { select: { id: true, email: true, name: true } },
+        approver: { select: { id: true, email: true, name: true } },
+        rejecter: { select: { id: true, email: true, name: true } },
+      },
+      orderBy: { createdAt: 'desc' },
     });
 
-    return {
-      period: { startDate, endDate },
-      employees: Object.values(employeeData).filter((emp: any) => emp.totalOvertime > 0),
-    };
+    return corrections;
+  }
+
+  async getCorrectionById(id: string): Promise<TimeCorrection> {
+    const correction = await this.prisma.renosTimeCorrection.findUnique({
+      where: { id },
+      include: {
+        originalEntry: {
+          include: {
+            teamMember: {
+              include: {
+                user: { select: { id: true, email: true, name: true } },
+              },
+            },
+          },
+        },
+        submitter: { select: { id: true, email: true, name: true } },
+      },
+    });
+
+    if (!correction) {
+      throw new NotFoundException(`Time correction with ID ${id} not found`);
+    }
+
+    return correction;
   }
 
   async createCorrection(
-    createTimeCorrectionDto: CreateTimeCorrectionDto, 
-    organizationId: string,
-    submittedBy: string
+    dto: CreateTimeCorrectionDto,
+    submittedByUserId: string,
   ): Promise<TimeCorrection> {
-    // Verify original time entry exists and belongs to organization
-    const originalEntry = await this.findById(createTimeCorrectionDto.original_entry_id, organizationId);
+    const originalEntry = await this.prisma.renosTimeEntry.findUnique({
+      where: { id: dto.originalEntryId },
+      include: {
+        teamMember: { select: { userId: true } },
+      },
+    });
 
-    // Verify the employee can only correct their own entries
-    const { data: teamMember } = await this.supabaseService.client
-      .from('team_members')
-      .select('id')
-      .eq('user_id', submittedBy)
-      .eq('organization_id', organizationId)
-      .single();
-
-    if (!teamMember || teamMember.id !== originalEntry.team_member_id) {
-      throw new ForbiddenException('You can only correct your own time entries');
+    if (!originalEntry) {
+      throw new NotFoundException('Original time entry not found');
     }
 
-    // Check if there's already a pending correction for this entry
-    const { data: existingCorrection } = await this.supabaseService.client
-      .from('time_corrections')
-      .select('id')
-      .eq('original_entry_id', createTimeCorrectionDto.original_entry_id)
-      .eq('status', 'pending')
-      .single();
-
-    if (existingCorrection) {
-      throw new BadRequestException('There is already a pending correction for this time entry');
+    if (originalEntry.teamMember.userId !== submittedByUserId) {
+      throw new BadRequestException('You can only correct your own time entries');
     }
 
-    const correctionData = {
-      ...createTimeCorrectionDto,
-      original_start_time: originalEntry.start_time,
-      original_end_time: originalEntry.end_time,
-      original_break_duration: originalEntry.break_duration || 0,
-      status: 'pending',
-      submitted_by: submittedBy,
-    };
+    const existingPending = await this.prisma.renosTimeCorrection.findFirst({
+      where: {
+        originalEntryId: dto.originalEntryId,
+        status: 'pending',
+      },
+    });
 
-    const { data, error } = await this.supabaseService.client
-      .from('time_corrections')
-      .insert(correctionData)
-      .select()
-      .single();
-
-    if (error) {
-      throw new BadRequestException(`Failed to create time correction: ${error.message}`);
+    if (existingPending) {
+      throw new BadRequestException('A pending correction already exists for this time entry');
     }
 
-    return data;
+    const correction = await this.prisma.renosTimeCorrection.create({
+      data: {
+        originalEntryId: dto.originalEntryId,
+        originalStartTime: originalEntry.startTime,
+        originalEndTime: originalEntry.endTime,
+        originalBreakDuration: originalEntry.breakDuration,
+        correctedStartTime: new Date(dto.correctedStartTime),
+        correctedEndTime: dto.correctedEndTime ? new Date(dto.correctedEndTime) : null,
+        correctedBreakDuration: dto.correctedBreakDuration,
+        reason: dto.reason,
+        status: 'pending',
+        submittedBy: submittedByUserId,
+      },
+      include: {
+        originalEntry: {
+          include: {
+            teamMember: {
+              include: {
+                user: { select: { id: true, email: true, name: true } },
+              },
+            },
+          },
+        },
+        submitter: { select: { id: true, email: true, name: true } },
+      },
+    });
+
+    return correction;
   }
 
-  async getCorrections(
-    organizationId: string, 
-    employeeId?: string, 
-    status?: string,
-    date?: string
-  ): Promise<TimeCorrection[]> {
-    let query = this.supabaseService.client
-      .from('time_corrections')
-      .select(`
-        *,
-        time_entries!original_entry_id(
-          team_member_id,
-          team_members(
-            user_id,
-            users(name, email)
-          )
-        )
-      `);
-
-    // Filter by organization through team member
-    if (employeeId) {
-      query = query.eq('time_entries.team_member_id', employeeId);
-    }
-
-    if (status) {
-      query = query.eq('status', status);
-    }
-
-    if (date) {
-      const startOfDay = `${date}T00:00:00`;
-      const endOfDay = `${date}T23:59:59`;
-      query = query.gte('original_start_time', startOfDay).lte('original_start_time', endOfDay);
-    }
-
-    query = query.order('created_at', { ascending: false });
-
-    const { data, error } = await query;
-
-    if (error) {
-      throw new BadRequestException(`Failed to fetch time corrections: ${error.message}`);
-    }
-
-    // Filter by organization
-    const filteredData = data?.filter(correction => 
-      correction.time_entries?.team_members?.organization_id === organizationId
-    ) || [];
-
-    return filteredData;
-  }
-
-  async approveCorrection(id: string, organizationId: string, approvedBy: string): Promise<TimeCorrection> {
-    const correction = await this.getCorrectionById(id, organizationId);
+  async approveCorrection(id: string, approvedByUserId: string): Promise<TimeCorrection> {
+    const correction = await this.getCorrectionById(id);
 
     if (correction.status !== 'pending') {
       throw new BadRequestException('Only pending corrections can be approved');
     }
 
-    // Update the original time entry
-    await this.supabaseService.client
-      .from('time_entries')
-      .update({
-        start_time: correction.corrected_start_time,
-        end_time: correction.corrected_end_time,
-        break_duration: correction.corrected_break_duration,
-      })
-      .eq('id', correction.original_entry_id);
+    const [updatedCorrection] = await this.prisma.$transaction([
+      this.prisma.renosTimeCorrection.update({
+        where: { id },
+        data: {
+          status: 'approved',
+          approvedBy: approvedByUserId,
+          approvedAt: new Date(),
+        },
+        include: {
+          originalEntry: {
+            include: {
+              teamMember: {
+                include: {
+                  user: { select: { id: true, email: true, name: true } },
+                },
+              },
+            },
+          },
+          submitter: { select: { id: true, email: true, name: true } },
+          approver: { select: { id: true, email: true, name: true } },
+        },
+      }),
+      this.prisma.renosTimeEntry.update({
+        where: { id: correction.originalEntryId },
+        data: {
+          startTime: correction.correctedStartTime,
+          endTime: correction.correctedEndTime,
+          breakDuration: correction.correctedBreakDuration,
+        },
+      }),
+    ]);
 
-    // Update correction status
-    const { data, error } = await this.supabaseService.client
-      .from('time_corrections')
-      .update({
-        status: 'approved',
-        approved_by: approvedBy,
-        approved_at: new Date().toISOString(),
-      })
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) {
-      throw new BadRequestException(`Failed to approve correction: ${error.message}`);
-    }
-
-    return data;
+    return updatedCorrection;
   }
 
   async rejectCorrection(
-    id: string, 
-    reason: string, 
-    organizationId: string, 
-    rejectedBy: string
+    id: string,
+    rejectionReason: string,
+    rejectedByUserId: string,
   ): Promise<TimeCorrection> {
-    const correction = await this.getCorrectionById(id, organizationId);
+    const correction = await this.getCorrectionById(id);
 
     if (correction.status !== 'pending') {
       throw new BadRequestException('Only pending corrections can be rejected');
     }
 
-    const { data, error } = await this.supabaseService.client
-      .from('time_corrections')
-      .update({
+    const updatedCorrection = await this.prisma.renosTimeCorrection.update({
+      where: { id },
+      data: {
         status: 'rejected',
-        rejection_reason: reason,
-        rejected_by: rejectedBy,
-        rejected_at: new Date().toISOString(),
-      })
-      .eq('id', id)
-      .select()
-      .single();
+        rejectedBy: rejectedByUserId,
+        rejectedAt: new Date(),
+        rejectionReason,
+      },
+      include: {
+        originalEntry: {
+          include: {
+            teamMember: {
+              include: {
+                user: { select: { id: true, email: true, name: true } },
+              },
+            },
+          },
+        },
+        submitter: { select: { id: true, email: true, name: true } },
+        rejecter: { select: { id: true, email: true, name: true } },
+      },
+    });
 
-    if (error) {
-      throw new BadRequestException(`Failed to reject correction: ${error.message}`);
-    }
-
-    return data;
+    return updatedCorrection;
   }
 
-  private async validateTeamMember(teamMemberId: string, organizationId: string): Promise<void> {
-    const { data, error } = await this.supabaseService.client
-      .from('team_members')
-      .select('id')
-      .eq('id', teamMemberId)
-      .eq('organization_id', organizationId)
-      .single();
+  async getOvertimeReport(startDate: string, endDate: string): Promise<any> {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-    if (error || !data) {
-      throw new NotFoundException('Team member not found');
-    }
-  }
+    const timeEntries = await this.prisma.renosTimeEntry.findMany({
+      where: {
+        startTime: { gte: start, lte: end },
+        endTime: { not: null },
+      },
+      include: {
+        teamMember: {
+          include: {
+            user: { select: { id: true, email: true, name: true } },
+          },
+        },
+      },
+      orderBy: { startTime: 'asc' },
+    });
 
-  private async validateJob(jobId: string, organizationId: string): Promise<void> {
-    const { data, error } = await this.supabaseService.client
-      .from('jobs')
-      .select('id')
-      .eq('id', jobId)
-      .eq('organization_id', organizationId)
-      .single();
+    const employeeData = new Map<string, any>();
 
-    if (error || !data) {
-      throw new NotFoundException('Job not found');
-    }
-  }
+    for (const entry of timeEntries) {
+      const employeeId = entry.teamMember.id;
+      const date = entry.startTime.toISOString().split('T')[0];
 
-  private async checkForActiveTimeEntry(teamMemberId: string): Promise<void> {
-    const { data, error } = await this.supabaseService.client
-      .from('time_entries')
-      .select('id')
-      .eq('team_member_id', teamMemberId)
-      .is('end_time', null)
-      .single();
+      if (!employeeData.has(employeeId)) {
+        employeeData.set(employeeId, {
+          employeeId,
+          employeeName: entry.teamMember.user.name,
+          employeeEmail: entry.teamMember.user.email,
+          totalOvertime: 0,
+          overtimeDays: [],
+        });
+      }
 
-    if (data) {
-      throw new BadRequestException('Employee already has an active time entry');
-    }
-  }
+      const startTime = entry.startTime.getTime();
+      const endTime = entry.endTime!.getTime();
+      const workedMinutes = Math.floor((endTime - startTime) / 60000) - entry.breakDuration;
+      const overtime = Math.max(0, workedMinutes - 480);
 
-  private async getCorrectionById(id: string, organizationId: string): Promise<TimeCorrection> {
-    const { data, error } = await this.supabaseService.client
-      .from('time_corrections')
-      .select(`
-        *,
-        time_entries!original_entry_id(
-          team_member_id,
-          team_members!inner(organization_id)
-        )
-      `)
-      .eq('id', id)
-      .single();
-
-    if (error || !data) {
-      throw new NotFoundException('Time correction not found');
-    }
-
-    if (data.time_entries?.team_members?.organization_id !== organizationId) {
-      throw new ForbiddenException('Access denied');
+      if (overtime > 0) {
+        const employee = employeeData.get(employeeId)!;
+        employee.totalOvertime += overtime;
+        
+        const existingDay = employee.overtimeDays.find((d: any) => d.date === date);
+        if (existingDay) {
+          existingDay.overtimeMinutes += overtime;
+        } else {
+          employee.overtimeDays.push({
+            date,
+            overtimeMinutes: overtime,
+            overtimeHours: Math.floor(overtime / 60) + (overtime % 60) / 60,
+          });
+        }
+      }
     }
 
-    return data;
-  }
+    const report = Array.from(employeeData.values())
+      .filter(emp => emp.totalOvertime > 0)
+      .map(emp => ({
+        ...emp,
+        totalOvertimeHours: Math.floor(emp.totalOvertime / 60) + (emp.totalOvertime % 60) / 60,
+      }));
 
-  private async getFilteredCount(organizationId: string, filters: TimeEntryFiltersDto): Promise<number> {
-    const { employee_id, job_id, date, start_date, end_date, search } = filters;
-
-    let query = this.supabaseService.client
-      .from('time_entries')
-      .select('*', { count: 'exact', head: true })
-      .eq('team_members.organization_id', organizationId);
-
-    // Apply same filters as main query
-    const queryFilters: Record<string, any> = {};
-    if (employee_id) queryFilters.team_member_id = employee_id;
-    if (job_id) queryFilters.job_id = job_id;
-
-    if (Object.keys(queryFilters).length > 0) {
-      query = QueryBuilderUtil.applyFilters(query, queryFilters);
-    }
-
-    if (date) {
-      const startOfDay = `${date}T00:00:00`;
-      const endOfDay = `${date}T23:59:59`;
-      query = query.gte('start_time', startOfDay).lte('start_time', endOfDay);
-    } else if (start_date && end_date) {
-      query = query.gte('start_time', start_date).lte('start_time', end_date);
-    }
-
-    if (search) query = QueryBuilderUtil.applySearch(query, this.searchFields, search);
-
-    const { count, error } = await query;
-
-    if (error) {
-      throw new BadRequestException(`Failed to count time entries: ${error.message}`);
-    }
-
-    return count || 0;
+    return report;
   }
 }

@@ -1,302 +1,209 @@
-import { Injectable, UnauthorizedException, BadRequestException, ConflictException } from '@nestjs/common';
+﻿import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { SupabaseService } from '../supabase/supabase.service';
-import { CreateUserDto, LoginDto, ResetPasswordDto, ChangePasswordDto } from './dto';
-import { UserRole } from '../common/enums/user-role.enum';
-import { User } from '../common/interfaces/user.interface';
+import { PrismaService } from '../database/prisma.service';
+import { CreateUserDto, LoginDto, UpdateProfileDto } from './dto';
+import { User, UserRole } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
+
+export interface JwtPayload {
+  sub: string;
+  email: string;
+  role: string;
+}
+
+export interface AuthResponse {
+  user: Omit<User, 'passwordHash'>;
+  accessToken: string;
+}
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly supabaseService: SupabaseService,
   ) {}
 
-  async register(createUserDto: CreateUserDto): Promise<{ user: User; accessToken: string }> {
-    const { email, password, name, role, organizationId, phone } = createUserDto;
+  async register(createUserDto: CreateUserDto): Promise<AuthResponse> {
+    const { email, password, name, role, phone } = createUserDto;
 
-    // Check if user already exists by querying database
-    const { data: existingUser } = await this.supabaseService.client
-      .from('users')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle();
+    // Check if user already exists
+    const existingUser = await this.prisma.renosUser.findUnique({
+      where: { email },
+    });
 
     if (existingUser) {
       throw new ConflictException('User with this email already exists');
     }
 
-    // Create user in Supabase Auth
-    const { data: authData, error: authError } = await this.supabaseService.client.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: {
+    // Hash password
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    // Create user
+    const user = await this.prisma.renosUser.create({
+      data: {
+        email,
         name,
-        role,
-        organization_id: organizationId,
         phone,
+        passwordHash,
+        role: role || UserRole.EMPLOYEE,
+        isActive: true,
       },
     });
 
-    if (authError) {
-      throw new BadRequestException(`Failed to create user: ${authError.message}`);
-    }
-
-    // Create user record in database
-    const { data: userData, error: dbError } = await this.supabaseService.client
-      .from('users')
-      .insert({
-        id: authData.user.id,
-        organization_id: organizationId,
-        email,
-        name,
-        role,
-        phone,
-      })
-      .select()
-      .single();
-
-    if (dbError) {
-      // Cleanup auth user if database insert fails
-      await this.supabaseService.client.auth.admin.deleteUser(authData.user.id);
-      throw new BadRequestException(`Failed to create user profile: ${dbError.message}`);
-    }
-
     // Generate JWT token
-    const payload = { 
-      sub: authData.user.id, 
-      email, 
-      role, 
-      organizationId 
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
     };
     const accessToken = this.jwtService.sign(payload);
 
+    // Return user without password
+    const { passwordHash: _, ...userWithoutPassword } = user;
+
     return {
-      user: userData,
+      user: userWithoutPassword as User,
       accessToken,
     };
   }
 
-  async login(loginDto: LoginDto): Promise<{ user: User; accessToken: string }> {
+  async login(loginDto: LoginDto): Promise<AuthResponse> {
     const { email, password } = loginDto;
 
-    // Authenticate with Supabase
-    const { data: authData, error: authError } = await this.supabaseService.client.auth.signInWithPassword({
-      email,
-      password,
+    // Find user by email
+    const user = await this.prisma.renosUser.findUnique({
+      where: { email },
     });
 
-    if (authError) {
+    if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Get user profile from database
-    const { data: userData, error: dbError } = await this.supabaseService.client
-      .from('users')
-      .select('*')
-      .eq('id', authData.user.id)
-      .single();
-
-    if (dbError || !userData) {
-      throw new UnauthorizedException('User profile not found');
+    // Check if account is active
+    if (!user.isActive) {
+      throw new UnauthorizedException('Account is deactivated');
     }
 
-    if (!userData.is_active) {
-      throw new UnauthorizedException('User account is deactivated');
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     // Update last login
-    await this.supabaseService.client
-      .from('users')
-      .update({ last_login_at: new Date().toISOString() })
-      .eq('id', authData.user.id);
+    await this.prisma.renosUser.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
 
     // Generate JWT token
-    const payload = { 
-      sub: authData.user.id, 
-      email: userData.email, 
-      role: userData.role, 
-      organizationId: userData.organization_id 
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
     };
     const accessToken = this.jwtService.sign(payload);
 
+    // Return user without password
+    const { passwordHash: _, ...userWithoutPassword } = user;
+
     return {
-      user: userData,
+      user: userWithoutPassword as User,
       accessToken,
     };
   }
 
   async refreshToken(userId: string): Promise<{ accessToken: string }> {
-    // Get current user data
-    const { data: userData, error } = await this.supabaseService.client
-      .from('users')
-      .select('*')
-      .eq('id', userId)
-      .single();
+    // Get current user
+    const user = await this.prisma.renosUser.findUnique({
+      where: { id: userId },
+    });
 
-    if (error || !userData) {
+    if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    if (!userData.is_active) {
-      throw new UnauthorizedException('User account is deactivated');
+    if (!user.isActive) {
+      throw new UnauthorizedException('Account is deactivated');
     }
 
     // Generate new JWT token
-    const payload = { 
-      sub: userData.id, 
-      email: userData.email, 
-      role: userData.role, 
-      organizationId: userData.organization_id 
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
     };
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken };
   }
 
-  async requestPasswordReset(email: string): Promise<{ message: string }> {
-    const { error } = await this.supabaseService.client.auth.resetPasswordForEmail(email, {
-      redirectTo: `${this.configService.get('FRONTEND_URL')}/auth/reset-password`,
+  async validateUser(userId: string): Promise<User> {
+    const user = await this.prisma.renosUser.findUnique({
+      where: { id: userId },
     });
 
-    if (error) {
-      throw new BadRequestException(`Failed to send reset email: ${error.message}`);
-    }
-
-    return { message: 'Password reset email sent successfully' };
-  }
-
-  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<{ message: string }> {
-    const { token, password } = resetPasswordDto;
-
-    const { error } = await this.supabaseService.client.auth.updateUser({
-      password,
-    });
-
-    if (error) {
-      throw new BadRequestException(`Failed to reset password: ${error.message}`);
-    }
-
-    return { message: 'Password reset successfully' };
-  }
-
-  async changePassword(userId: string, changePasswordDto: ChangePasswordDto): Promise<{ message: string }> {
-    const { currentPassword, newPassword } = changePasswordDto;
-
-    // Get user email for verification
-    const { data: userData } = await this.supabaseService.client
-      .from('users')
-      .select('email')
-      .eq('id', userId)
-      .single();
-
-    if (!userData) {
+    if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    // Verify current password
-    const { error: verifyError } = await this.supabaseService.client.auth.signInWithPassword({
-      email: userData.email,
-      password: currentPassword,
+    if (!user.isActive) {
+      throw new UnauthorizedException('Account is deactivated');
+    }
+
+    const { passwordHash: _, ...userWithoutPassword } = user;
+    return userWithoutPassword as User;
+  }
+
+  async getUserById(id: string): Promise<User> {
+    const user = await this.prisma.renosUser.findUnique({
+      where: { id },
     });
 
-    if (verifyError) {
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    const { passwordHash: _, ...userWithoutPassword } = user;
+    return userWithoutPassword as User;
+  }
+
+  async updateProfile(userId: string, updateProfileDto: UpdateProfileDto): Promise<User> {
+    const user = await this.prisma.renosUser.update({
+      where: { id: userId },
+      data: updateProfileDto,
+    });
+
+    const { passwordHash: _, ...userWithoutPassword } = user;
+    return userWithoutPassword as User;
+  }
+
+  async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void> {
+    const user = await this.prisma.renosUser.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Verify old password
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.passwordHash);
+    if (!isPasswordValid) {
       throw new UnauthorizedException('Current password is incorrect');
     }
 
+    // Hash new password
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+
     // Update password
-    const { error: updateError } = await this.supabaseService.client.auth.updateUser({
-      password: newPassword,
+    await this.prisma.renosUser.update({
+      where: { id: userId },
+      data: { passwordHash },
     });
-
-    if (updateError) {
-      throw new BadRequestException(`Failed to change password: ${updateError.message}`);
-    }
-
-    return { message: 'Password changed successfully' };
-  }
-
-  async validateUser(userId: string): Promise<User> {
-    const { data: userData, error } = await this.supabaseService.client
-      .from('users')
-      .select('*')
-      .eq('id', userId)
-      .single();
-
-    if (error || !userData) {
-      throw new UnauthorizedException('User not found');
-    }
-
-    if (!userData.is_active) {
-      throw new UnauthorizedException('User account is deactivated');
-    }
-
-    return userData;
-  }
-
-  async updateProfile(userId: string, updateData: Partial<User>): Promise<User> {
-    // Remove fields that shouldn't be updated via this method
-    const { id, organization_id, role, created_at, updated_at, ...allowedUpdates } = updateData;
-
-    const { data: userData, error } = await this.supabaseService.client
-      .from('users')
-      .update(allowedUpdates)
-      .eq('id', userId)
-      .select()
-      .single();
-
-    if (error) {
-      throw new BadRequestException(`Failed to update profile: ${error.message}`);
-    }
-
-    return userData;
-  }
-
-  async deactivateUser(userId: string): Promise<{ message: string }> {
-    const { error } = await this.supabaseService.client
-      .from('users')
-      .update({ is_active: false })
-      .eq('id', userId);
-
-    if (error) {
-      throw new BadRequestException(`Failed to deactivate user: ${error.message}`);
-    }
-
-    return { message: 'User deactivated successfully' };
-  }
-
-  async activateUser(userId: string): Promise<{ message: string }> {
-    const { error } = await this.supabaseService.client
-      .from('users')
-      .update({ is_active: true })
-      .eq('id', userId);
-
-    if (error) {
-      throw new BadRequestException(`Failed to activate user: ${error.message}`);
-    }
-
-    return { message: 'User activated successfully' };
-  }
-
-  async getUsersByOrganization(organizationId: string, role?: UserRole): Promise<User[]> {
-    let query = this.supabaseService.client
-      .from('users')
-      .select('*')
-      .eq('organization_id', organizationId);
-
-    if (role) {
-      query = query.eq('role', role);
-    }
-
-    const { data: users, error } = await query;
-
-    if (error) {
-      throw new BadRequestException(`Failed to fetch users: ${error.message}`);
-    }
-
-    return users || [];
   }
 }

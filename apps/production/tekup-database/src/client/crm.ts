@@ -347,20 +347,20 @@ export const crm = {
       byStatus: {} as Record<string, { count: number; value: number }>,
     };
 
-    deals.forEach((deal) => {
+    deals.forEach((deal: any) => {
       metrics.totalValue += deal.value;
 
       if (!metrics.byStage[deal.stage]) {
         metrics.byStage[deal.stage] = { count: 0, value: 0 };
       }
-      metrics.byStage[deal.stage].count++;
-      metrics.byStage[deal.stage].value += deal.value;
+      metrics.byStage[deal.stage]!.count++;
+      metrics.byStage[deal.stage]!.value += deal.value;
 
       if (!metrics.byStatus[deal.status]) {
         metrics.byStatus[deal.status] = { count: 0, value: 0 };
       }
-      metrics.byStatus[deal.status].count++;
-      metrics.byStatus[deal.status].value += deal.value;
+      metrics.byStatus[deal.status]!.count++;
+      metrics.byStatus[deal.status]!.value += deal.value;
     });
 
     return metrics;

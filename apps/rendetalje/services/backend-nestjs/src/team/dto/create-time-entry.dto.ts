@@ -3,27 +3,33 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationCoordinates } from '../entities/time-entry.entity';
 
 export class CreateTimeEntryDto {
-  @ApiProperty({ example: '00000000-0000-0000-0000-000000000001', description: 'Job ID' })
+  @ApiProperty({ example: 'clxxx...', description: 'Team member ID' })
   @IsUUID()
-  job_id: string;
+  teamMemberId: string;
 
-  @ApiProperty({ example: '00000000-0000-0000-0000-000000000002', description: 'Team member ID' })
+  @ApiPropertyOptional({ example: 'clyyy...', description: 'Lead ID' })
+  @IsOptional()
   @IsUUID()
-  team_member_id: string;
+  leadId?: string;
+
+  @ApiPropertyOptional({ example: 'clzzz...', description: 'Booking ID' })
+  @IsOptional()
+  @IsUUID()
+  bookingId?: string;
 
   @ApiProperty({ example: '2024-01-15T08:00:00.000Z', description: 'Start time' })
   @IsDateString()
-  start_time: string;
+  startTime: string;
 
   @ApiPropertyOptional({ example: '2024-01-15T10:30:00.000Z', description: 'End time' })
   @IsOptional()
   @IsDateString()
-  end_time?: string;
+  endTime?: string;
 
   @ApiProperty({ example: 15, description: 'Break duration in minutes' })
   @IsInt()
   @Min(0)
-  break_duration: number = 0;
+  breakDuration: number = 0;
 
   @ApiPropertyOptional({ example: 'Completed all tasks on schedule', description: 'Notes about the time entry' })
   @IsOptional()

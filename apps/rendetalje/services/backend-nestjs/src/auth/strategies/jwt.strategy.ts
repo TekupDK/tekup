@@ -1,17 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+﻿import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { AuthService } from '../auth.service';
-
-export interface JwtPayload {
-  sub: string;
-  email: string;
-  role: string;
-  organizationId: string;
-  iat?: number;
-  exp?: number;
-}
+import { AuthService, JwtPayload } from '../auth.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -22,26 +13,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      secretOrKey: configService.get<string>('JWT_SECRET') || 'your-secret-key',
     });
   }
 
   async validate(payload: JwtPayload) {
+    // Validate user still exists and is active
     try {
       const user = await this.authService.validateUser(payload.sub);
-      
-      return {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        organizationId: user.organization_id,
-        phone: user.phone,
-        avatarUrl: user.avatar_url,
-        settings: user.settings,
-        isActive: user.is_active,
-        lastLoginAt: user.last_login_at,
-      };
+      return { userId: payload.sub, email: payload.email, role: payload.role };
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }

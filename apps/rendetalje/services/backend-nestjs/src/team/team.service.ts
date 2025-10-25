@@ -1,6 +1,5 @@
 import { Injectable, BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
-import { BaseService } from '../common/services/base.service';
-import { SupabaseService } from '../supabase/supabase.service';
+import { PrismaService } from '../database/prisma.service';
 import { TeamMember, PerformanceMetrics } from './entities/team-member.entity';
 import { TimeEntry } from './entities/time-entry.entity';
 import { 
@@ -12,622 +11,513 @@ import {
   TimeEntryFiltersDto
 } from './dto';
 import { PaginatedResponseDto } from '../common/dto/pagination.dto';
-import { QueryBuilderUtil } from '../common/utils/query-builder.util';
-import { PaginationUtil } from '../common/utils/pagination.util';
 
 @Injectable()
-export class TeamService extends BaseService<TeamMember> {
-  protected tableName = 'team_members';
-  protected searchFields = ['employee_id'];
+export class TeamService {
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(protected readonly supabaseService: SupabaseService) {
-    super(supabaseService);
-  }
+  // ==================== Team Member Management ====================
 
   async findAllWithFilters(
-    organizationId: string,
     filters: TeamFiltersDto,
   ): Promise<PaginatedResponseDto<TeamMember>> {
-    const { is_active, skills, hired_after, hired_before, search } = filters;
+    const { isActive, skills, hiredAfter, hiredBefore, search, page = 1, limit = 10 } = filters;
 
-    // Build base query with user information
-    let query = this.supabaseService.client
-      .from('team_members')
-      .select(`
-        *,
-        users!inner(id, name, email, phone, avatar_url)
-      `)
-      .eq('organization_id', organizationId);
-
-    // Apply filters
-    const queryFilters: Record<string, any> = {};
+    // Build where clause
+    const where: any = {};
     
-    if (is_active !== undefined) queryFilters.is_active = is_active;
-
-    if (Object.keys(queryFilters).length > 0) {
-      query = QueryBuilderUtil.applyFilters(query, queryFilters);
+    if (isActive !== undefined) {
+      where.isActive = isActive;
     }
 
-    // Skills filter (array contains)
     if (skills && skills.length > 0) {
-      query = query.contains('skills', skills);
+      where.skills = {
+        hasEvery: skills, // All skills must be present
+      };
     }
 
-    // Date range filters
-    if (hired_after) {
-      query = query.gte('hire_date', hired_after);
-    }
-    if (hired_before) {
-      query = query.lte('hire_date', hired_before);
+    if (hiredAfter || hiredBefore) {
+      where.hireDate = {};
+      if (hiredAfter) where.hireDate.gte = new Date(hiredAfter);
+      if (hiredBefore) where.hireDate.lte = new Date(hiredBefore);
     }
 
-    // Search filter
     if (search) {
-      // Search in employee_id and user name/email
-      query = query.or(`employee_id.ilike.%${search}%,users.name.ilike.%${search}%,users.email.ilike.%${search}%`);
+      where.OR = [
+        { employeeId: { contains: search, mode: 'insensitive' } },
+        { user: { name: { contains: search, mode: 'insensitive' } } },
+        { user: { email: { contains: search, mode: 'insensitive' } } },
+      ];
     }
 
     // Get total count
-    const total = await this.getFilteredCount(organizationId, filters);
+    const total = await this.prisma.renosTeamMember.count({ where });
 
-    // Apply pagination and execute
-    query = QueryBuilderUtil.applyPagination(query, filters);
-    const { data, error } = await query;
+    // Get paginated data with user info
+    const skip = (page - 1) * limit;
+    const members = await this.prisma.renosTeamMember.findMany({
+      where,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+    });
 
-    if (error) {
-      throw new BadRequestException(`Failed to fetch team members: ${error.message}`);
-    }
+    // Transform to entity format
+    const data = members.map(member => this.toTeamMemberEntity(member));
 
-    return PaginationUtil.createPaginatedResponse(data || [], total, filters);
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      hasNext: page < Math.ceil(total / limit),
+      hasPrev: page > 1,
+    };
   }
 
-  async create(createTeamMemberDto: CreateTeamMemberDto, organizationId: string): Promise<TeamMember> {
-    // Validate user exists and belongs to organization
-    await this.validateUser(createTeamMemberDto.user_id, organizationId);
+  async findById(id: string): Promise<TeamMember> {
+    const member = await this.prisma.renosTeamMember.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException(`Team member with ID ${id} not found`);
+    }
+
+    return this.toTeamMemberEntity(member);
+  }
+
+  async create(createTeamMemberDto: CreateTeamMemberDto): Promise<TeamMember> {
+    // Validate user exists
+    const user = await this.prisma.renosUser.findUnique({
+      where: { id: createTeamMemberDto.userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${createTeamMemberDto.userId} not found`);
+    }
 
     // Check if team member already exists for this user
-    const { data: existingMember } = await this.supabaseService.client
-      .from('team_members')
-      .select('id')
-      .eq('user_id', createTeamMemberDto.user_id)
-      .eq('organization_id', organizationId)
-      .single();
+    const existingMember = await this.prisma.renosTeamMember.findUnique({
+      where: { userId: createTeamMemberDto.userId },
+    });
 
     if (existingMember) {
       throw new ConflictException('Team member already exists for this user');
     }
 
     // Generate employee ID if not provided
-    const employeeId = createTeamMemberDto.employee_id || await this.generateEmployeeId(organizationId);
+    const employeeId = createTeamMemberDto.employeeId || await this.generateEmployeeId();
 
-    const teamMemberData = {
-      ...createTeamMemberDto,
-      organization_id: organizationId,
-      employee_id: employeeId,
-      performance_metrics: this.getDefaultPerformanceMetrics(),
-      is_active: true,
-    };
+    // Create team member
+    const member = await this.prisma.renosTeamMember.create({
+      data: {
+        userId: createTeamMemberDto.userId,
+        employeeId,
+        skills: createTeamMemberDto.skills,
+        hourlyRate: createTeamMemberDto.hourlyRate,
+        availability: createTeamMemberDto.availability as any,
+        performanceMetrics: this.getDefaultPerformanceMetrics() as any,
+        isActive: true,
+        hireDate: createTeamMemberDto.hireDate ? new Date(createTeamMemberDto.hireDate) : null,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+    });
 
-    const { data, error } = await this.supabaseService.client
-      .from('team_members')
-      .insert(teamMemberData)
-      .select(`
-        *,
-        users!inner(id, name, email, phone, avatar_url)
-      `)
-      .single();
-
-    if (error) {
-      throw new BadRequestException(`Failed to create team member: ${error.message}`);
-    }
-
-    return data;
+    return this.toTeamMemberEntity(member);
   }
 
-  async getTeamMemberSchedule(
-    teamMemberId: string, 
-    organizationId: string,
-    dateFrom?: string,
-    dateTo?: string
-  ): Promise<any> {
-    // Verify team member exists and belongs to organization
-    await this.findById(teamMemberId, organizationId);
+  async update(id: string, updateTeamMemberDto: UpdateTeamMemberDto): Promise<TeamMember> {
+    // Check if team member exists
+    await this.findById(id);
 
-    // Get assigned jobs for the date range
-    let query = this.supabaseService.client
-      .from('job_assignments')
-      .select(`
-        *,
-        jobs!inner(
-          id,
-          job_number,
-          service_type,
-          status,
-          scheduled_date,
-          estimated_duration,
-          location,
-          customers!inner(id, name, phone)
-        )
-      `)
-      .eq('team_member_id', teamMemberId)
-      .eq('jobs.organization_id', organizationId);
+    // If updating userId, check it doesn't already have a team member
+    if (updateTeamMemberDto.userId) {
+      const existingMember = await this.prisma.renosTeamMember.findFirst({
+        where: {
+          userId: updateTeamMemberDto.userId,
+          id: { not: id },
+        },
+      });
 
-    if (dateFrom) {
-      query = query.gte('jobs.scheduled_date', dateFrom);
-    }
-    if (dateTo) {
-      query = query.lte('jobs.scheduled_date', dateTo);
-    }
-
-    query = query.order('jobs.scheduled_date', { ascending: true });
-
-    const { data, error } = await query;
-
-    if (error) {
-      throw new BadRequestException(`Failed to fetch team member schedule: ${error.message}`);
-    }
-
-    return data || [];
-  }
-
-  async getTeamMemberPerformance(teamMemberId: string, organizationId: string): Promise<any> {
-    // Verify team member exists and belongs to organization
-    const teamMember = await this.findById(teamMemberId, organizationId);
-
-    // Get detailed performance data
-    const { data: jobData, error: jobError } = await this.supabaseService.client
-      .from('job_assignments')
-      .select(`
-        jobs!inner(
-          id,
-          status,
-          scheduled_date,
-          actual_duration,
-          quality_score,
-          customer_reviews(rating)
-        )
-      `)
-      .eq('team_member_id', teamMemberId)
-      .eq('jobs.organization_id', organizationId);
-
-    if (jobError) {
-      throw new BadRequestException(`Failed to fetch performance data: ${jobError.message}`);
-    }
-
-    // Get time entries for hours calculation
-    const { data: timeData, error: timeError } = await this.supabaseService.client
-      .from('time_entries')
-      .select('start_time, end_time, break_duration')
-      .eq('team_member_id', teamMemberId)
-      .not('end_time', 'is', null);
-
-    if (timeError) {
-      throw new BadRequestException(`Failed to fetch time data: ${timeError.message}`);
-    }
-
-    // Calculate performance metrics
-    const completedJobs = jobData?.filter(ja => ja.jobs.status === 'completed') || [];
-    const totalHours = this.calculateTotalHours(timeData || []);
-    const averageRating = this.calculateAverageRating(completedJobs);
-
-    const performance = {
-      jobs_completed: completedJobs.length,
-      total_jobs_assigned: jobData?.length || 0,
-      completion_rate: jobData?.length ? (completedJobs.length / jobData.length) * 100 : 0,
-      average_job_duration: this.calculateAverageJobDuration(completedJobs),
-      average_quality_score: this.calculateAverageQualityScore(completedJobs),
-      customer_satisfaction: averageRating,
-      total_hours_worked: totalHours.regular,
-      overtime_hours: totalHours.overtime,
-      current_metrics: teamMember.performance_metrics,
-    };
-
-    return performance;
-  }
-
-  // Time Entry Management
-  async createTimeEntry(createTimeEntryDto: CreateTimeEntryDto, organizationId: string): Promise<TimeEntry> {
-    // Validate job and team member
-    await this.validateJobAssignment(createTimeEntryDto.job_id, createTimeEntryDto.team_member_id, organizationId);
-
-    // Check for overlapping time entries
-    await this.checkTimeEntryOverlap(createTimeEntryDto, organizationId);
-
-    const { data, error } = await this.supabaseService.client
-      .from('time_entries')
-      .insert(createTimeEntryDto)
-      .select(`
-        *,
-        jobs!inner(id, job_number, service_type),
-        team_members!inner(
-          id,
-          employee_id,
-          users!inner(id, name)
-        )
-      `)
-      .single();
-
-    if (error) {
-      throw new BadRequestException(`Failed to create time entry: ${error.message}`);
-    }
-
-    return data;
-  }
-
-  async findTimeEntries(
-    organizationId: string,
-    filters: TimeEntryFiltersDto,
-  ): Promise<PaginatedResponseDto<TimeEntry>> {
-    const { job_id, team_member_id, date_from, date_to } = filters;
-
-    // Build base query
-    let query = this.supabaseService.client
-      .from('time_entries')
-      .select(`
-        *,
-        jobs!inner(id, job_number, service_type, organization_id),
-        team_members!inner(
-          id,
-          employee_id,
-          organization_id,
-          users!inner(id, name)
-        )
-      `)
-      .eq('jobs.organization_id', organizationId);
-
-    // Apply filters
-    if (job_id) {
-      query = query.eq('job_id', job_id);
-    }
-    if (team_member_id) {
-      query = query.eq('team_member_id', team_member_id);
-    }
-    if (date_from) {
-      query = query.gte('start_time', date_from);
-    }
-    if (date_to) {
-      query = query.lte('start_time', date_to);
-    }
-
-    // Get total count
-    const total = await this.getTimeEntriesCount(organizationId, filters);
-
-    // Apply pagination and execute
-    query = QueryBuilderUtil.applyPagination(query, filters);
-    const { data, error } = await query;
-
-    if (error) {
-      throw new BadRequestException(`Failed to fetch time entries: ${error.message}`);
-    }
-
-    return PaginationUtil.createPaginatedResponse(data || [], total, filters);
-  }
-
-  async updateTimeEntry(
-    id: string, 
-    updateTimeEntryDto: UpdateTimeEntryDto, 
-    organizationId: string
-  ): Promise<TimeEntry> {
-    // Verify time entry exists and belongs to organization
-    await this.validateTimeEntryAccess(id, organizationId);
-
-    const { data, error } = await this.supabaseService.client
-      .from('time_entries')
-      .update(updateTimeEntryDto)
-      .eq('id', id)
-      .select(`
-        *,
-        jobs!inner(id, job_number, service_type),
-        team_members!inner(
-          id,
-          employee_id,
-          users!inner(id, name)
-        )
-      `)
-      .single();
-
-    if (error) {
-      throw new BadRequestException(`Failed to update time entry: ${error.message}`);
-    }
-
-    return data;
-  }
-
-  async deleteTimeEntry(id: string, organizationId: string): Promise<void> {
-    // Verify time entry exists and belongs to organization
-    await this.validateTimeEntryAccess(id, organizationId);
-
-    const { error } = await this.supabaseService.client
-      .from('time_entries')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      throw new BadRequestException(`Failed to delete time entry: ${error.message}`);
-    }
-  }
-
-  async getTeamPerformanceReport(organizationId: string): Promise<any> {
-    const { data: teamMembers, error } = await this.supabaseService.client
-      .from('team_members')
-      .select(`
-        *,
-        users!inner(id, name, email)
-      `)
-      .eq('organization_id', organizationId)
-      .eq('is_active', true);
-
-    if (error) {
-      throw new BadRequestException(`Failed to fetch team members: ${error.message}`);
-    }
-
-    const performanceData = await Promise.all(
-      (teamMembers || []).map(async (member) => {
-        const performance = await this.getTeamMemberPerformance(member.id, organizationId);
-        return {
-          team_member: member,
-          performance,
-        };
-      })
-    );
-
-    // Calculate team averages
-    const teamAverages = this.calculateTeamAverages(performanceData);
-
-    return {
-      team_performance: performanceData,
-      team_averages: teamAverages,
-      total_team_members: teamMembers?.length || 0,
-    };
-  }
-
-  private async validateUser(userId: string, organizationId: string): Promise<void> {
-    const { data, error } = await this.supabaseService.client
-      .from('users')
-      .select('id')
-      .eq('id', userId)
-      .eq('organization_id', organizationId)
-      .single();
-
-    if (error || !data) {
-      throw new NotFoundException('User not found');
-    }
-  }
-
-  private async validateJobAssignment(
-    jobId: string, 
-    teamMemberId: string, 
-    organizationId: string
-  ): Promise<void> {
-    const { data, error } = await this.supabaseService.client
-      .from('job_assignments')
-      .select('id')
-      .eq('job_id', jobId)
-      .eq('team_member_id', teamMemberId);
-
-    if (error || !data || data.length === 0) {
-      throw new BadRequestException('Team member is not assigned to this job');
-    }
-
-    // Also verify job belongs to organization
-    const { data: jobData, error: jobError } = await this.supabaseService.client
-      .from('jobs')
-      .select('id')
-      .eq('id', jobId)
-      .eq('organization_id', organizationId)
-      .single();
-
-    if (jobError || !jobData) {
-      throw new NotFoundException('Job not found');
-    }
-  }
-
-  private async validateTimeEntryAccess(timeEntryId: string, organizationId: string): Promise<void> {
-    const { data, error } = await this.supabaseService.client
-      .from('time_entries')
-      .select(`
-        id,
-        jobs!inner(organization_id)
-      `)
-      .eq('id', timeEntryId)
-      .eq('jobs.organization_id', organizationId)
-      .single();
-
-    if (error || !data) {
-      throw new NotFoundException('Time entry not found');
-    }
-  }
-
-  private async checkTimeEntryOverlap(
-    createTimeEntryDto: CreateTimeEntryDto, 
-    organizationId: string
-  ): Promise<void> {
-    if (!createTimeEntryDto.end_time) {
-      return; // Can't check overlap without end time
-    }
-
-    const { data, error } = await this.supabaseService.client
-      .from('time_entries')
-      .select(`
-        id,
-        start_time,
-        end_time,
-        jobs!inner(organization_id)
-      `)
-      .eq('team_member_id', createTimeEntryDto.team_member_id)
-      .eq('jobs.organization_id', organizationId)
-      .not('end_time', 'is', null)
-      .or(`start_time.lte.${createTimeEntryDto.end_time},end_time.gte.${createTimeEntryDto.start_time}`);
-
-    if (error) {
-      throw new BadRequestException(`Failed to check time entry overlap: ${error.message}`);
-    }
-
-    if (data && data.length > 0) {
-      throw new ConflictException('Time entry overlaps with existing entry');
-    }
-  }
-
-  private async generateEmployeeId(organizationId: string): Promise<string> {
-    const year = new Date().getFullYear();
-    
-    // Get the next sequence number for this year
-    const { data, error } = await this.supabaseService.client
-      .from('team_members')
-      .select('employee_id')
-      .eq('organization_id', organizationId)
-      .like('employee_id', `EMP-${year}-%`)
-      .order('created_at', { ascending: false })
-      .limit(1);
-
-    let nextNumber = 1;
-    if (data && data.length > 0) {
-      const lastId = data[0].employee_id;
-      const match = lastId.match(/EMP-\d{4}-(\d{4})/);
-      if (match) {
-        nextNumber = parseInt(match[1]) + 1;
+      if (existingMember) {
+        throw new ConflictException('Another team member already exists for this user');
       }
     }
 
-    return `EMP-${year}-${nextNumber.toString().padStart(4, '0')}`;
+    const member = await this.prisma.renosTeamMember.update({
+      where: { id },
+      data: {
+        ...(updateTeamMemberDto.userId && { userId: updateTeamMemberDto.userId }),
+        ...(updateTeamMemberDto.employeeId && { employeeId: updateTeamMemberDto.employeeId }),
+        ...(updateTeamMemberDto.skills && { skills: updateTeamMemberDto.skills }),
+        ...(updateTeamMemberDto.hourlyRate !== undefined && { hourlyRate: updateTeamMemberDto.hourlyRate }),
+        ...(updateTeamMemberDto.availability && { availability: updateTeamMemberDto.availability as any }),
+        ...(updateTeamMemberDto.hireDate && { hireDate: new Date(updateTeamMemberDto.hireDate) }),
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+    });
+
+    return this.toTeamMemberEntity(member);
+  }
+
+  async deactivate(id: string): Promise<TeamMember> {
+    // Check if team member exists
+    await this.findById(id);
+
+    const member = await this.prisma.renosTeamMember.update({
+      where: { id },
+      data: { isActive: false },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+    });
+
+    return this.toTeamMemberEntity(member);
+  }
+
+  async activate(id: string): Promise<TeamMember> {
+    // Check if team member exists
+    await this.findById(id);
+
+    const member = await this.prisma.renosTeamMember.update({
+      where: { id },
+      data: { isActive: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+    });
+
+    return this.toTeamMemberEntity(member);
+  }
+
+  async remove(id: string): Promise<void> {
+    // Check if team member exists
+    await this.findById(id);
+
+    await this.prisma.renosTeamMember.delete({
+      where: { id },
+    });
+  }
+
+  // ==================== Schedule Management ====================
+
+  async getTeamMemberSchedule(
+    teamMemberId: string,
+    dateFrom?: string,
+    dateTo?: string
+  ): Promise<any[]> {
+    // Verify team member exists
+    await this.findById(teamMemberId);
+
+    // Get time entries for the date range
+    const where: any = { teamMemberId };
+
+    if (dateFrom || dateTo) {
+      where.startTime = {};
+      if (dateFrom) where.startTime.gte = new Date(dateFrom);
+      if (dateTo) where.startTime.lte = new Date(dateTo);
+    }
+
+    const timeEntries = await this.prisma.renosTimeEntry.findMany({
+      where,
+      orderBy: { startTime: 'asc' },
+    });
+
+    return timeEntries;
+  }
+
+  // ==================== Performance Management ====================
+
+  async getTeamMemberPerformance(teamMemberId: string): Promise<any> {
+    // Verify team member exists
+    const teamMember = await this.findById(teamMemberId);
+
+    // Get time entries
+    const timeEntries = await this.prisma.renosTimeEntry.findMany({
+      where: { 
+        teamMemberId,
+        endTime: { not: null },
+      },
+    });
+
+    // Calculate performance metrics
+    const totalHours = this.calculateTotalHours(timeEntries);
+
+    return {
+      currentMetrics: teamMember.performanceMetrics,
+      totalHoursWorked: totalHours.regular,
+      overtimeHours: totalHours.overtime,
+      totalTimeEntries: timeEntries.length,
+    };
+  }
+
+  // ==================== Time Entry Management ====================
+
+  async createTimeEntry(createTimeEntryDto: CreateTimeEntryDto): Promise<TimeEntry> {
+    // Validate team member exists
+    const teamMember = await this.prisma.renosTeamMember.findUnique({
+      where: { id: createTimeEntryDto.teamMemberId },
+    });
+
+    if (!teamMember) {
+      throw new NotFoundException(`Team member with ID ${createTimeEntryDto.teamMemberId} not found`);
+    }
+
+    // Check for overlapping time entries
+    await this.checkTimeEntryOverlap(createTimeEntryDto);
+
+    const timeEntry = await this.prisma.renosTimeEntry.create({
+      data: {
+        teamMemberId: createTimeEntryDto.teamMemberId,
+        leadId: createTimeEntryDto.leadId,
+        bookingId: createTimeEntryDto.bookingId,
+        startTime: new Date(createTimeEntryDto.startTime),
+        endTime: createTimeEntryDto.endTime ? new Date(createTimeEntryDto.endTime) : null,
+        breakDuration: createTimeEntryDto.breakDuration,
+        notes: createTimeEntryDto.notes,
+        location: createTimeEntryDto.location as any,
+      },
+    });
+
+    return this.toTimeEntryEntity(timeEntry);
+  }
+
+  async findTimeEntries(
+    filters: TimeEntryFiltersDto,
+  ): Promise<PaginatedResponseDto<TimeEntry>> {
+    const { teamMemberId, leadId, bookingId, dateFrom, dateTo, page = 1, limit = 10 } = filters;
+
+    // Build where clause
+    const where: any = {};
+    
+    if (teamMemberId) where.teamMemberId = teamMemberId;
+    if (leadId) where.leadId = leadId;
+    if (bookingId) where.bookingId = bookingId;
+
+    if (dateFrom || dateTo) {
+      where.startTime = {};
+      if (dateFrom) where.startTime.gte = new Date(dateFrom);
+      if (dateTo) where.startTime.lte = new Date(dateTo);
+    }
+
+    // Get total count
+    const total = await this.prisma.renosTimeEntry.count({ where });
+
+    // Get paginated data
+    const skip = (page - 1) * limit;
+    const entries = await this.prisma.renosTimeEntry.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { startTime: 'desc' },
+    });
+
+    const data = entries.map(entry => this.toTimeEntryEntity(entry));
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      hasNext: page < Math.ceil(total / limit),
+      hasPrev: page > 1,
+    };
+  }
+
+  async findTimeEntryById(id: string): Promise<TimeEntry> {
+    const entry = await this.prisma.renosTimeEntry.findUnique({
+      where: { id },
+    });
+
+    if (!entry) {
+      throw new NotFoundException(`Time entry with ID ${id} not found`);
+    }
+
+    return this.toTimeEntryEntity(entry);
+  }
+
+  async updateTimeEntry(id: string, updateTimeEntryDto: UpdateTimeEntryDto): Promise<TimeEntry> {
+    // Check if time entry exists
+    await this.findTimeEntryById(id);
+
+    const entry = await this.prisma.renosTimeEntry.update({
+      where: { id },
+      data: {
+        ...(updateTimeEntryDto.startTime && { startTime: new Date(updateTimeEntryDto.startTime) }),
+        ...(updateTimeEntryDto.endTime && { endTime: new Date(updateTimeEntryDto.endTime) }),
+        ...(updateTimeEntryDto.breakDuration !== undefined && { breakDuration: updateTimeEntryDto.breakDuration }),
+        ...(updateTimeEntryDto.notes && { notes: updateTimeEntryDto.notes }),
+        ...(updateTimeEntryDto.location && { location: updateTimeEntryDto.location as any }),
+      },
+    });
+
+    return this.toTimeEntryEntity(entry);
+  }
+
+  async deleteTimeEntry(id: string): Promise<void> {
+    // Check if time entry exists
+    await this.findTimeEntryById(id);
+
+    await this.prisma.renosTimeEntry.delete({
+      where: { id },
+    });
+  }
+
+  // ==================== Helper Methods ====================
+
+  private async generateEmployeeId(): Promise<string> {
+    const year = new Date().getFullYear();
+    const count = await this.prisma.renosTeamMember.count();
+    return `EMP-${year}-${String(count + 1).padStart(4, '0')}`;
   }
 
   private getDefaultPerformanceMetrics(): PerformanceMetrics {
     return {
-      jobs_completed: 0,
-      average_job_duration: 0,
-      average_quality_score: 0,
-      customer_satisfaction: 0,
-      punctuality_score: 0,
-      efficiency_rating: 0,
-      total_hours_worked: 0,
-      overtime_hours: 0,
+      jobsCompleted: 0,
+      averageJobDuration: 0,
+      averageQualityScore: 0,
+      customerSatisfaction: 0,
+      punctualityScore: 0,
+      efficiencyRating: 0,
+      totalHoursWorked: 0,
+      overtimeHours: 0,
     };
+  }
+
+  private async checkTimeEntryOverlap(createTimeEntryDto: CreateTimeEntryDto): Promise<void> {
+    const startTime = new Date(createTimeEntryDto.startTime);
+    const endTime = createTimeEntryDto.endTime ? new Date(createTimeEntryDto.endTime) : null;
+
+    if (!endTime) return; // Can't check overlap if no end time
+
+    const overlapping = await this.prisma.renosTimeEntry.findFirst({
+      where: {
+        teamMemberId: createTimeEntryDto.teamMemberId,
+        OR: [
+          {
+            AND: [
+              { startTime: { lte: startTime } },
+              { endTime: { gte: startTime } },
+            ],
+          },
+          {
+            AND: [
+              { startTime: { lte: endTime } },
+              { endTime: { gte: endTime } },
+            ],
+          },
+        ],
+      },
+    });
+
+    if (overlapping) {
+      throw new ConflictException('Time entry overlaps with an existing entry');
+    }
   }
 
   private calculateTotalHours(timeEntries: any[]): { regular: number; overtime: number } {
     let totalMinutes = 0;
-    
+
     timeEntries.forEach(entry => {
-      if (entry.start_time && entry.end_time) {
-        const start = new Date(entry.start_time);
-        const end = new Date(entry.end_time);
-        const duration = (end.getTime() - start.getTime()) / (1000 * 60); // minutes
-        totalMinutes += duration - (entry.break_duration || 0);
+      if (entry.startTime && entry.endTime) {
+        const start = new Date(entry.startTime);
+        const end = new Date(entry.endTime);
+        const minutes = (end.getTime() - start.getTime()) / 60000;
+        totalMinutes += minutes - (entry.breakDuration || 0);
       }
     });
 
     const totalHours = totalMinutes / 60;
-    const regularHours = Math.min(totalHours, 160); // 40 hours/week * 4 weeks
+    const regularHours = Math.min(totalHours, 160); // 160 hours = standard month
     const overtimeHours = Math.max(0, totalHours - 160);
 
     return { regular: regularHours, overtime: overtimeHours };
   }
 
-  private calculateAverageRating(completedJobs: any[]): number {
-    const ratings = completedJobs
-      .flatMap(ja => ja.jobs.customer_reviews || [])
-      .map(review => review.rating);
-
-    return ratings.length > 0 
-      ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length 
-      : 0;
-  }
-
-  private calculateAverageJobDuration(completedJobs: any[]): number {
-    const durations = completedJobs
-      .map(ja => ja.jobs.actual_duration)
-      .filter(duration => duration != null);
-
-    return durations.length > 0 
-      ? durations.reduce((sum, duration) => sum + duration, 0) / durations.length 
-      : 0;
-  }
-
-  private calculateAverageQualityScore(completedJobs: any[]): number {
-    const scores = completedJobs
-      .map(ja => ja.jobs.quality_score)
-      .filter(score => score != null);
-
-    return scores.length > 0 
-      ? scores.reduce((sum, score) => sum + score, 0) / scores.length 
-      : 0;
-  }
-
-  private calculateTeamAverages(performanceData: any[]): any {
-    if (performanceData.length === 0) {
-      return {
-        average_completion_rate: 0,
-        average_customer_satisfaction: 0,
-        average_quality_score: 0,
-        total_hours_worked: 0,
-      };
-    }
-
-    const totals = performanceData.reduce((acc, member) => {
-      acc.completion_rate += member.performance.completion_rate;
-      acc.customer_satisfaction += member.performance.customer_satisfaction;
-      acc.quality_score += member.performance.average_quality_score;
-      acc.hours_worked += member.performance.total_hours_worked;
-      return acc;
-    }, { completion_rate: 0, customer_satisfaction: 0, quality_score: 0, hours_worked: 0 });
-
+  private toTeamMemberEntity(member: any): TeamMember {
     return {
-      average_completion_rate: totals.completion_rate / performanceData.length,
-      average_customer_satisfaction: totals.customer_satisfaction / performanceData.length,
-      average_quality_score: totals.quality_score / performanceData.length,
-      total_hours_worked: totals.hours_worked,
+      id: member.id,
+      userId: member.userId,
+      employeeId: member.employeeId,
+      skills: member.skills,
+      hourlyRate: member.hourlyRate,
+      availability: member.availability,
+      performanceMetrics: member.performanceMetrics,
+      isActive: member.isActive,
+      hireDate: member.hireDate,
+      createdAt: member.createdAt,
+      updatedAt: member.updatedAt,
     };
   }
 
-  private async getFilteredCount(organizationId: string, filters: TeamFiltersDto): Promise<number> {
-    const { is_active, skills, hired_after, hired_before, search } = filters;
-
-    let query = this.supabaseService.client
-      .from('team_members')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', organizationId);
-
-    // Apply same filters as main query
-    if (is_active !== undefined) query = query.eq('is_active', is_active);
-    if (skills && skills.length > 0) query = query.contains('skills', skills);
-    if (hired_after) query = query.gte('hire_date', hired_after);
-    if (hired_before) query = query.lte('hire_date', hired_before);
-    if (search) {
-      query = query.or(`employee_id.ilike.%${search}%`);
-    }
-
-    const { count, error } = await query;
-
-    if (error) {
-      throw new BadRequestException(`Failed to count team members: ${error.message}`);
-    }
-
-    return count || 0;
-  }
-
-  private async getTimeEntriesCount(organizationId: string, filters: TimeEntryFiltersDto): Promise<number> {
-    const { job_id, team_member_id, date_from, date_to } = filters;
-
-    let query = this.supabaseService.client
-      .from('time_entries')
-      .select(`
-        *,
-        jobs!inner(organization_id)
-      `, { count: 'exact', head: true })
-      .eq('jobs.organization_id', organizationId);
-
-    if (job_id) query = query.eq('job_id', job_id);
-    if (team_member_id) query = query.eq('team_member_id', team_member_id);
-    if (date_from) query = query.gte('start_time', date_from);
-    if (date_to) query = query.lte('start_time', date_to);
-
-    const { count, error } = await query;
-
-    if (error) {
-      throw new BadRequestException(`Failed to count time entries: ${error.message}`);
-    }
-
-    return count || 0;
+  private toTimeEntryEntity(entry: any): TimeEntry {
+    return {
+      id: entry.id,
+      teamMemberId: entry.teamMemberId,
+      leadId: entry.leadId,
+      bookingId: entry.bookingId,
+      startTime: entry.startTime,
+      endTime: entry.endTime,
+      breakDuration: entry.breakDuration,
+      notes: entry.notes,
+      location: entry.location,
+      createdAt: entry.createdAt,
+      updatedAt: entry.updatedAt,
+    };
   }
 }

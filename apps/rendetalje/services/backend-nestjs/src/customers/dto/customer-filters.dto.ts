@@ -1,39 +1,37 @@
-import { IsOptional, IsString, IsBoolean, IsNumber, Min, Max } from 'class-validator';
+import { IsOptional, IsString, IsNumber, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 
 export class CustomerFiltersDto extends PaginationDto {
-  @ApiPropertyOptional({ example: 'København', description: 'Filter by city' })
+  @ApiPropertyOptional({ example: 'active', description: 'Filter by status' })
   @IsOptional()
   @IsString()
-  city?: string;
+  status?: string;
 
-  @ApiPropertyOptional({ example: true, description: 'Filter by active status' })
+  @ApiPropertyOptional({ example: 'vip', description: 'Filter by tag' })
   @IsOptional()
-  @IsBoolean()
-  @Type(() => Boolean)
-  is_active?: boolean;
+  @IsString()
+  tag?: string;
 
-  @ApiPropertyOptional({ example: 4.0, description: 'Minimum satisfaction score' })
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Max(5)
-  @Type(() => Number)
-  min_satisfaction?: number;
-
-  @ApiPropertyOptional({ example: 10, description: 'Minimum number of jobs' })
+  @ApiPropertyOptional({ example: 10, description: 'Minimum number of leads' })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Type(() => Number)
-  min_jobs?: number;
+  minLeads?: number;
+
+  @ApiPropertyOptional({ example: 5, description: 'Minimum number of bookings' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  minBookings?: number;
 
   @ApiPropertyOptional({ example: 5000, description: 'Minimum total revenue' })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Type(() => Number)
-  min_revenue?: number;
+  minRevenue?: number;
 }

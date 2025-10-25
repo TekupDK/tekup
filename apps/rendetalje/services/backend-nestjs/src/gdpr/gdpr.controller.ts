@@ -4,21 +4,24 @@ import {
   Get,
   Delete,
   Body,
-  Param,
   Query,
   UseGuards,
   Request,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { GdprService, DataExportRequest, DataDeletionRequest, ConsentRecord } from './gdpr.service';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
+import { GdprService } from './gdpr.service';
+import { DataExportRequest } from './entities/data-export-request.entity';
+import { DataDeletionRequest } from './entities/data-deletion-request.entity';
+import { ConsentRecord } from './entities/consent-record.entity';
+import { RequestDataDeletionDto, RecordConsentDto, UpdatePrivacyPolicyDto } from './dto';
 
-@ApiTags('GDPR')
+@ApiTags('gdpr')
 @Controller('gdpr')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -27,109 +30,84 @@ export class GdprController {
 
   @Post('data-export')
   @ApiOperation({ summary: 'Request data export (Right to Data Portability)' })
-  @ApiResponse({ status: 201, description: 'Data export request created successfully' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async requestDataExport(@Request() req): Promise<DataExportRequest> {
-    const userId = req.user.sub;
-    const email = req.user.email;
-    return this.gdprService.requestDataExport(userId, email);
+  @ApiResponse({ status: 201, description: 'Data export request created', type: DataExportRequest })
+  async requestDataExport(@Request() req: any): Promise<DataExportRequest> {
+    return this.gdprService.requestDataExport(req.user.id, req.user.email);
   }
 
   @Get('data-export/status')
   @ApiOperation({ summary: 'Get data export request status' })
-  @ApiResponse({ status: 200, description: 'Export status retrieved successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getDataExportStatus(@Request() req): Promise<DataExportRequest | null> {
-    const userId = req.user.sub;
-    const email = req.user.email;
-    
-    // This would need to be implemented to check existing requests
-    return this.gdprService.requestDataExport(userId, email);
+  @ApiResponse({ status: 200, description: 'Export status', type: DataExportRequest })
+  async getDataExportStatus(@Request() req: any): Promise<DataExportRequest | null> {
+    return this.gdprService.getDataExportStatus(req.user.id);
   }
 
   @Post('data-deletion')
   @ApiOperation({ summary: 'Request data deletion (Right to be Forgotten)' })
-  @ApiResponse({ status: 201, description: 'Data deletion request created successfully' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 201, description: 'Data deletion request created', type: DataDeletionRequest })
   async requestDataDeletion(
-    @Request() req,
-    @Body('reason') reason?: string
+    @Request() req: any,
+    @Body() dto: RequestDataDeletionDto,
   ): Promise<DataDeletionRequest> {
-    const userId = req.user.sub;
-    const email = req.user.email;
-    return this.gdprService.requestDataDeletion(userId, email, reason);
+    return this.gdprService.requestDataDeletion(req.user.id, req.user.email, dto.reason);
   }
 
   @Delete('data-deletion')
   @ApiOperation({ summary: 'Cancel data deletion request' })
-  @ApiResponse({ status: 200, description: 'Data deletion request cancelled successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 200, description: 'Deletion request cancelled' })
   @HttpCode(HttpStatus.OK)
-  async cancelDataDeletion(@Request() req): Promise<{ success: boolean }> {
-    const userId = req.user.sub;
-    const success = await this.gdprService.cancelDataDeletion(userId);
+  async cancelDataDeletion(@Request() req: any): Promise<{ success: boolean }> {
+    const success = await this.gdprService.cancelDataDeletion(req.user.id);
     return { success };
   }
 
   @Post('consent')
   @ApiOperation({ summary: 'Record user consent' })
-  @ApiResponse({ status: 201, description: 'Consent recorded successfully' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 201, description: 'Consent recorded', type: ConsentRecord })
   async recordConsent(
-    @Request() req,
-    @Body('consentType') consentType: string,
-    @Body('granted') granted: boolean,
-    @Body('version') version?: string
+    @Request() req: any,
+    @Body() dto: RecordConsentDto,
   ): Promise<ConsentRecord> {
-    const userId = req.user.sub;
-    const ipAddress = req.ip || req.connection.remoteAddress;
+    const ipAddress = req.ip || req.connection?.remoteAddress || 'unknown';
     const userAgent = req.headers['user-agent'] || '';
     
     return this.gdprService.recordConsent(
-      userId,
-      consentType,
-      granted,
+      req.user.id,
+      dto.consentType,
+      dto.granted,
       ipAddress,
       userAgent,
-      version || '1.0'
+      dto.version || '1.0',
     );
   }
 
   @Get('consent')
   @ApiOperation({ summary: 'Get user consent status' })
-  @ApiResponse({ status: 200, description: 'Consent status retrieved successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 200, description: 'Consent records', type: [ConsentRecord] })
+  @ApiQuery({ name: 'type', required: false, description: 'Consent type filter' })
   async getConsentStatus(
-    @Request() req,
-    @Query('type') consentType?: string
+    @Request() req: any,
+    @Query('type') consentType?: string,
   ): Promise<ConsentRecord[]> {
-    const userId = req.user.sub;
-    return this.gdprService.getConsentStatus(userId, consentType);
+    return this.gdprService.getConsentStatus(req.user.id, consentType);
   }
 
   @Get('privacy-policy')
-  @ApiOperation({ summary: 'Get current privacy policy' })
-  @ApiResponse({ status: 200, description: 'Privacy policy retrieved successfully' })
+  @ApiOperation({ summary: 'Get privacy policy' })
+  @ApiResponse({ status: 200, description: 'Privacy policy' })
+  @ApiQuery({ name: 'version', required: false, description: 'Policy version' })
   async getPrivacyPolicy(@Query('version') version?: string): Promise<any> {
     return this.gdprService.getPrivacyPolicy(version);
   }
 
-  // Admin endpoints
   @Post('privacy-policy')
   @UseGuards(RolesGuard)
   @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Update privacy policy (Admin only)' })
-  @ApiResponse({ status: 201, description: 'Privacy policy updated successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 201, description: 'Privacy policy updated' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin access required' })
-  async updatePrivacyPolicy(
-    @Body('content') content: string,
-    @Body('version') version: string
-  ): Promise<{ success: boolean }> {
-    await this.gdprService.updatePrivacyPolicy(content, version);
+  async updatePrivacyPolicy(@Body() dto: UpdatePrivacyPolicyDto): Promise<{ success: boolean }> {
+    await this.gdprService.updatePrivacyPolicy(dto.content, dto.version);
     return { success: true };
   }
 
@@ -137,8 +115,7 @@ export class GdprController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Cleanup expired data (Admin only)' })
-  @ApiResponse({ status: 200, description: 'Expired data cleanup completed' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 200, description: 'Expired data cleaned up' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin access required' })
   @HttpCode(HttpStatus.OK)
   async cleanupExpiredData(): Promise<{ success: boolean }> {
@@ -151,27 +128,10 @@ export class GdprController {
   @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Process scheduled deletions (Admin only)' })
   @ApiResponse({ status: 200, description: 'Scheduled deletions processed' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin access required' })
   @HttpCode(HttpStatus.OK)
   async processScheduledDeletions(): Promise<{ success: boolean }> {
     await this.gdprService.processScheduledDeletions();
     return { success: true };
   }
-}
-
-// DTO classes for request validation
-export class RecordConsentDto {
-  consentType: string;
-  granted: boolean;
-  version?: string;
-}
-
-export class RequestDataDeletionDto {
-  reason?: string;
-}
-
-export class UpdatePrivacyPolicyDto {
-  content: string;
-  version: string;
 }

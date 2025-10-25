@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+﻿import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from '../database/database.module';
 import { AiFridayService } from './ai-friday.service';
 import { AiFridayController } from './ai-friday.controller';
 import { ChatSessionsService } from './chat-sessions.service';
-import { SupabaseModule } from '../supabase/supabase.module';
-import { JobsModule } from '../jobs/jobs.module';
+import { LeadsModule } from '../leads/leads.module';
 import { CustomersModule } from '../customers/customers.module';
 import { TeamModule } from '../team/team.module';
 
@@ -16,8 +16,8 @@ import { TeamModule } from '../team/team.module';
       maxRedirects: 5,
     }),
     ConfigModule,
-    SupabaseModule,
-    JobsModule,
+    DatabaseModule,
+    LeadsModule,
     CustomersModule,
     TeamModule,
   ],
