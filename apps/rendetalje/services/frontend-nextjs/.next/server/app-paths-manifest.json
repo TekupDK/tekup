@@ -1,9 +1,0 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/customers/page": "app/customers/page.js",
-  "/page": "app/page.js",
-  "/employee/page": "app/employee/page.js",
-  "/customer/bookings/page": "app/customer/bookings/page.js",
-  "/customer/page": "app/customer/page.js"
-}
