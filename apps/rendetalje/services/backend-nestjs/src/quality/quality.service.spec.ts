@@ -30,18 +30,21 @@ describe("QualityService", () => {
       completed: true,
       points_earned: 5,
       notes: "Completed well",
+      photo_urls: [],
     },
     {
       id: "item-2",
       completed: true,
       points_earned: 4,
       notes: "",
+      photo_urls: [],
     },
     {
       id: "item-3",
       completed: false,
       points_earned: 0,
       notes: "Issue with cleaning",
+      photo_urls: [],
     },
   ];
 

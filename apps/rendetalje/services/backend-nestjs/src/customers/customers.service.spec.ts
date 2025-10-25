@@ -31,7 +31,6 @@ describe("CustomersService", () => {
     total_revenue: 15000,
     satisfaction_score: 4.5,
     is_active: true,
-    tags: ["premium", "recurring"],
     notes: "Good customer",
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
