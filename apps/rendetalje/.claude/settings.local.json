@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Jonas-dev/tekup/**)",
+      "Bash(git config:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git checkout:*)",
+      "Bash(tree:*)",
+      "Bash(git submodule:*)",
+      "Bash(npm test:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nrefactor: Modernize test suite and refactor backend/frontend services\n\n- Replace legacy e2e tests with modern Playwright tests\n- Add comprehensive unit tests for auth, customers, gdpr, jobs, quality services\n- Refactor backend services (quality, realtime, security, notification, gdpr)\n- Update frontend UI components and stores for consistency\n- Update Jest and Playwright configurations\n- Add mobile Docker development setup and documentation\n- Update CI/CD workflow for new test structure\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git log:*)",
+      "Bash(git push:*)",
+      "Bash(git push)",
+      "Bash(git rev-parse:*)",
+      "Bash(npm run test:*)",
+      "Bash(npx tsc:*)",
+      "Bash(md5sum:*)",
+      "Bash(shasum:*)",
+      "Bash(cat:*)",
+      "Bash(awk:*)",
+      "Bash(git commit:*)",
+      "Bash(git reset:*)",
+      "Bash(gh pr list:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

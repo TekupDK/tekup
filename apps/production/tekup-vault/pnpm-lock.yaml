@@ -44,9 +44,9 @@ importers:
       '@sentry/node':
         specifier: ^7.119.0
         version: 7.120.4
-      '@supabase/supabase-js':
-        specifier: ^2.39.0
-        version: 2.75.0
+      '@tekup/database':
+        specifier: link:..\..\tekup-database
+        version: link:../../tekup-database
       '@tekupvault/vault-core':
         specifier: workspace:*
         version: link:../../packages/vault-core
