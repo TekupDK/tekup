@@ -7,7 +7,7 @@
 import { z } from 'zod';
 import { logger } from '../utils/logger.js';
 import { GetCustomerMemorySchema, CustomerIntelligence } from '../types.js';
-import { getCustomerIntelligence, searchCustomersByName } from '../integrations/supabase.js';
+import { getCustomerIntelligence, searchCustomersByName } from '../integrations/database.js';
 
 /**
  * Tool 5: Get Customer Memory
