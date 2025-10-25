@@ -7,7 +7,7 @@
 import { z } from 'zod';
 import { logger } from '../utils/logger.js';
 import { TrackOvertimeRiskSchema, OvertimeLog, CommunicationEntry } from '../types.js';
-import { createOvertimeLog, updateOvertimeLog, getOvertimeLog } from '../integrations/supabase.js';
+import { createOvertimeLog, updateOvertimeLog, getOvertimeLog } from '../integrations/database.js';
 import { sendOvertimeAlert } from '../integrations/twilio-voice.js';
 import config from '../config.js';
 

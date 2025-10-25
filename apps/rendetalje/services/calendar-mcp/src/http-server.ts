@@ -15,7 +15,7 @@ import { logger } from './utils/logger.js';
 import config, { validateConfiguration } from './config.js';
 
 // Import integrations
-import { initSupabase } from './integrations/supabase.js';
+import { initPrisma } from './integrations/database.js';
 import { initCalendar } from './integrations/google-calendar.js';
 import { initTwilio } from './integrations/twilio-voice.js';
 
@@ -310,7 +310,7 @@ async function startServer() {
     // Initialize integrations
     logger.info('Initializing integrations...');
     
-    initSupabase();
+    initPrisma();
     initCalendar();
     initTwilio();
 

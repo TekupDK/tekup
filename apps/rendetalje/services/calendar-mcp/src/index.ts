@@ -22,7 +22,7 @@ import config, { validateConfiguration } from './config.js';
 dotenv.config();
 
 // Import integrations
-import { initSupabase } from './integrations/supabase.js';
+import { initPrisma } from './integrations/database.js';
 import { initCalendar } from './integrations/google-calendar.js';
 import { initTwilio } from './integrations/twilio-voice.js';
 
@@ -56,11 +56,11 @@ async function initializeIntegrations() {
   }
 
   // Initialize integrations
-  const supabase = initSupabase();
-  if (supabase) {
-    logger.info('✓ Supabase initialized');
+  const prisma = initPrisma();
+  if (prisma) {
+    logger.info('✓ Prisma database initialized');
   } else {
-    logger.warn('⚠ Supabase not configured - running without database');
+    logger.warn('⚠ Database not configured - running without persistence');
   }
 
   const calendar = initCalendar();

@@ -1146,64 +1146,117 @@ model RenosLabel {
 model RenosCustomerIntelligence {
   id           String   @id @default(cuid())
   customerId   String   @unique @map("customer_id")
-  customerName String?  @map("customer_name")
-  preferences  Json?
-  patterns     Json?
-  notes        String?  @db.Text
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  customerName String   @map("customer_name")
+
+  // Access & logistics
+  accessNotes          String? @map("access_notes") @db.Text
+  parkingInstructions  String? @map("parking_instructions") @db.Text
+  specialInstructions  String? @map("special_instructions") @db.Text
+
+  // Preferences (JSON object)
+  preferences Json @default("{}")
+
+  // Fixed schedule (JSON object or null)
+  fixedSchedule Json? @map("fixed_schedule")
+
+  // History & patterns
+  totalBookings     Int @default(0) @map("total_bookings")
+  completedBookings Int @default(0) @map("completed_bookings")
+  canceledBookings  Int @default(0) @map("canceled_bookings")
+  averageJobDuration Float @default(0) @map("average_job_duration")
+  lastBookingDate   DateTime? @map("last_booking_date") @db.Timestamptz
+
+  // Risk assessment
+  riskScore   Int @default(0) @map("risk_score")
+  riskFactors String[] @default([]) @map("risk_factors")
+
+  // Financial
+  totalRevenue        Float @default(0) @map("total_revenue")
+  averageBookingValue Float @default(0) @map("average_booking_value")
+  outstandingInvoices Int   @default(0) @map("outstanding_invoices")
+  paymentHistory      String @default("good") @map("payment_history")
+
+  // Quality
+  satisfactionScore Float? @map("satisfaction_score")
+  complaints        Int    @default(0)
+  praises           Int    @default(0)
+
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  lastUpdated DateTime @updatedAt @map("last_updated") @db.Timestamptz
 
   @@index([customerId])
+  @@index([riskScore])
   @@map("customer_intelligence")
   @@schema("renos")
 }
 
 model RenosBookingValidation {
   id             String   @id @default(cuid())
-  bookingId      String   @map("booking_id")
-  validationType String   @map("validation_type")
-  result         String
-  details        Json?
-  warnings       String[]
+  bookingId      String?  @map("booking_id")
+
+  validationType String   @map("validation_type") // 'date', 'conflict', 'pattern', 'team', 'full'
+  passed         Boolean
+  confidence     Float
+
+  input          Json     // Partial<BookingInput>
+  warnings       Json     @default("[]") // ValidationWarning[]
+  errors         Json     @default("[]") // ValidationError[]
+
+  action         String   // 'approved', 'rejected', 'manual_review'
+  reviewedBy     String?  @map("reviewed_by")
+
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([bookingId])
   @@index([validationType])
+  @@index([passed])
   @@index([createdAt])
   @@map("booking_validations")
   @@schema("renos")
 }
 
 model RenosOvertimeLog {
-  id               String    @id @default(cuid())
-  bookingId        String    @map("booking_id")
-  customerId       String?   @map("customer_id")
-  estimatedHours   Float     @map("estimated_hours")
-  actualHours      Float     @map("actual_hours")
-  overtimeHours    Float     @map("overtime_hours")
-  notificationSent Boolean   @default(false) @map("notification_sent")
-  jonasNotified    Boolean   @default(false) @map("jonas_notified")
-  voiceCallMade    Boolean   @default(false) @map("voice_call_made")
-  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  id           String   @id @default(cuid())
+  bookingId    String   @map("booking_id")
+  customerId   String   @map("customer_id")
+  customerName String   @map("customer_name")
+
+  estimatedHours Float  @map("estimated_hours")
+  actualHours    Float? @map("actual_hours")
+  overtimeHours  Float? @map("overtime_hours")
+
+  startTime String  @map("start_time")
+  endTime   String? @map("end_time")
+
+  alertSentAt      DateTime? @map("alert_sent_at") @db.Timestamptz
+  alertMethod      String?   @map("alert_method") // 'voice', 'sms', 'email'
+  communicationLog Json      @default("[]") @map("communication_log") // CommunicationEntry[]
+
+  customerNotified Boolean @default(false) @map("customer_notified")
+  customerResponse String? @map("customer_response") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([bookingId])
   @@index([customerId])
-  @@index([jonasNotified])
+  @@index([customerNotified])
   @@map("overtime_logs")
   @@schema("renos")
 }
 
 model RenosLearnedPattern {
-  id            String   @id @default(cuid())
-  patternType   String   @map("pattern_type")   // 'booking_duration', 'customer_preference', etc
-  entityId      String   @map("entity_id")      // customer_id or service_type
-  pattern       Json                            // Pattern details
-  confidence    Float
-  observations  Int      @default(1)
-  lastObserved  DateTime @map("last_observed") @db.Timestamptz
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id           String   @id @default(cuid())
+  patternType  String   @map("pattern_type")  // 'customer_schedule', 'job_duration', 'team_preference', 'communication_style'
+  entityId     String   @map("entity_id")     // customer ID, job type, etc
+
+  patternData  Json     @map("pattern_data")  // Record<string, unknown>
+  confidence   Float                          // 0-100
+
+  occurrences     Int       @default(1)
+  lastObserved    DateTime  @map("last_observed") @db.Timestamptz
+  lastValidated   DateTime? @map("last_validated") @db.Timestamptz
+
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([patternType])
   @@index([entityId])
@@ -1213,20 +1266,25 @@ model RenosLearnedPattern {
 }
 
 model RenosUndoAction {
-  id         String   @id @default(cuid())
-  actionType String   @map("action_type")
-  entityType String   @map("entity_type")
-  entityId   String   @map("entity_id")
+  id         String @id @default(cuid())
+  type       String // 'booking_created', 'invoice_created', 'customer_updated', 'validation_override'
+
+  entityId   String @map("entity_id")
+  entityType String @map("entity_type") // 'booking', 'invoice', 'customer', 'validation'
+
   before     Json
   after      Json
-  reason     String?  @db.Text
-  createdBy  String?  @map("created_by")
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
-  expiresAt  DateTime @map("expires_at") @db.Timestamptz
+
+  performedBy String   @map("performed_by")
+  performedAt DateTime @map("performed_at") @db.Timestamptz
+  expiresAt   DateTime @map("expires_at") @db.Timestamptz
+
+  undoneAt DateTime? @map("undone_at") @db.Timestamptz
+  undoneBy String?   @map("undone_by")
 
   @@index([entityType, entityId])
   @@index([expiresAt])
-  @@index([createdAt])
+  @@index([performedAt])
   @@map("undo_actions")
   @@schema("renos")
 }

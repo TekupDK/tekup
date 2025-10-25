@@ -34,7 +34,10 @@ const envSchema = z.object({
   GOOGLE_IMPERSONATED_USER: z.string().optional(), // Service account impersonation
   GOOGLE_CALENDAR_ID: z.string().default('primary'),
 
-  // Supabase
+  // Database (Prisma + Supabase PostgreSQL)
+  DATABASE_URL: z.string().optional(),
+
+  // Supabase (deprecated - use DATABASE_URL instead)
   SUPABASE_URL: z.string().optional(),
   SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_KEY: z.string().optional(),
@@ -124,6 +127,11 @@ export const config = {
     ),
   },
 
+  database: {
+    url: env.DATABASE_URL,
+    isConfigured: !!env.DATABASE_URL,
+  },
+
   supabase: {
     url: env.SUPABASE_URL,
     anonKey: env.SUPABASE_ANON_KEY,
@@ -200,9 +208,14 @@ export function validateConfiguration(): { valid: boolean; errors: string[] } {
     errors.push('Google Calendar not configured - set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN');
   }
 
-  // Check Supabase (required for customer memory)
-  if (!config.supabase.isConfigured) {
-    errors.push('Supabase not configured - set SUPABASE_URL and SUPABASE_SERVICE_KEY');
+  // Check Database (required for customer memory and intelligence)
+  if (!config.database.isConfigured) {
+    // Fallback to legacy Supabase config
+    if (!config.supabase.isConfigured) {
+      errors.push('Database not configured - set DATABASE_URL (Prisma) or SUPABASE_URL + SUPABASE_SERVICE_KEY (legacy)');
+    } else {
+      errors.push('DEPRECATED: Using Supabase client. Please migrate to DATABASE_URL with Prisma');
+    }
   }
 
   // Twilio disabled for this version (no check)
