@@ -17,6 +17,8 @@ desktop.ini
 # Temp files
 *.tmp
 *.bak
+*.backup
+*_backup_*
 *~
 
 # Dependencies
@@ -32,6 +34,8 @@ dist/
 build/
 coverage/
 .turbo/
+test-results/
+**/test-results/
 
 # Claude Code (only ignore local settings)
 .claude/settings.local.json
@@ -43,3 +47,8 @@ coverage/
 .next/
 next-env.d.ts
 playwright-report/
+
+# Environment files (local overrides)
+.env.local
+.env.*.local
+*.env.local
