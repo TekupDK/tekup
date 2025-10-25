@@ -29,10 +29,6 @@
       "path": "apps/rendetalje"
     },
     {
-      "name": "  │  ├─ Monorepo (Primary Dev)",
-      "path": "apps/rendetalje/monorepo"
-    },
-    {
       "name": "  │  ├─ Calendar MCP Service",
       "path": "apps/rendetalje/services/calendar-mcp"
     },
@@ -96,7 +92,7 @@
   "settings": {
     "files.exclude": {
       "**/node_modules": true,
-      "**/.git": true,
+      "**/.git": false,
       "**/dist": true,
       "**/.next": true,
       "**/.turbo": true
