@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
+import { DatabaseModule } from '../database/database.module';
+import { TimeTrackingController } from './time-tracking.controller';
 import { TimeTrackingService } from './time-tracking.service';
-import { TimeTrackingController, TimeCorrectionsController } from './time-tracking.controller';
-import { SupabaseModule } from '../supabase/supabase.module';
 
 @Module({
-  imports: [SupabaseModule],
-  controllers: [TimeTrackingController, TimeCorrectionsController],
+  imports: [DatabaseModule],
+  controllers: [TimeTrackingController],
   providers: [TimeTrackingService],
   exports: [TimeTrackingService],
 })

@@ -3,14 +3,14 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { WeeklyAvailability } from '../entities/team-member.entity';
 
 export class CreateTeamMemberDto {
-  @ApiProperty({ example: '00000000-0000-0000-0000-000000000001', description: 'Associated user ID' })
+  @ApiProperty({ example: 'clxxx...', description: 'Associated user ID' })
   @IsUUID()
-  user_id: string;
+  userId: string;
 
   @ApiPropertyOptional({ example: 'EMP-2024-0001', description: 'Employee ID (auto-generated if not provided)' })
   @IsOptional()
   @IsString()
-  employee_id?: string;
+  employeeId?: string;
 
   @ApiProperty({ 
     description: 'Employee skills',
@@ -24,7 +24,7 @@ export class CreateTeamMemberDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
-  hourly_rate?: number;
+  hourlyRate?: number;
 
   @ApiProperty({ 
     description: 'Weekly availability schedule',
@@ -44,5 +44,5 @@ export class CreateTeamMemberDto {
   @ApiPropertyOptional({ example: '2024-01-15', description: 'Hire date' })
   @IsOptional()
   @IsDateString()
-  hire_date?: string;
+  hireDate?: string;
 }
