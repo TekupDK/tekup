@@ -96,7 +96,7 @@
   "settings": {
     "files.exclude": {
       "**/node_modules": true,
-      "**/.git": false,
+      "**/.git": true,
       "**/dist": true,
       "**/.next": true,
       "**/.turbo": true
@@ -114,7 +114,12 @@
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
-    "powershell.cwd": "."
+    "powershell.cwd": ".",
+    "files.autoSave": "onFocusChange",
+    "explorer.compactFolders": false,
+    "breadcrumbs.enabled": true,
+    "editor.minimap.enabled": true,
+    "workbench.editor.enablePreview": false
   },
   "extensions": {
     "recommendations": [

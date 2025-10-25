@@ -1,0 +1,194 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Docker: Start All Services",
+      "type": "shell",
+      "command": "docker-compose -f docker-compose.mobile.yml up",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": "build"
+    },
+    {
+      "label": "Docker: Start All Services (Build)",
+      "type": "shell",
+      "command": "docker-compose -f docker-compose.mobile.yml up --build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": "build"
+    },
+    {
+      "label": "Docker: Stop All Services",
+      "type": "shell",
+      "command": "docker-compose -f docker-compose.mobile.yml down",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Mobile Isolated Start",
+      "type": "shell",
+      "command": ".\\start-mobile-docker-isolated.ps1",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Backend: Install Dependencies",
+      "type": "shell",
+      "command": "npm install",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/backend-nestjs"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: Start Dev Server",
+      "type": "shell",
+      "command": "npm run start:dev",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/backend-nestjs"
+      },
+      "problemMatcher": ["$tsc-watch"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Backend: Run Tests",
+      "type": "shell",
+      "command": "npm test",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/backend-nestjs"
+      },
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Frontend: Install Dependencies",
+      "type": "shell",
+      "command": "npm install",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/frontend-nextjs"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: Start Dev Server",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/frontend-nextjs"
+      },
+      "problemMatcher": ["$tsc-watch"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": "build"
+    },
+    {
+      "label": "Frontend: Build Production",
+      "type": "shell",
+      "command": "npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/frontend-nextjs"
+      },
+      "problemMatcher": ["$tsc"],
+      "group": "build"
+    },
+    {
+      "label": "Frontend: Run Playwright Tests",
+      "type": "shell",
+      "command": "npm run test:e2e",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/frontend-nextjs"
+      },
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Mobile: Install Dependencies",
+      "type": "shell",
+      "command": "npm install",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/mobile"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Mobile: Start Expo",
+      "type": "shell",
+      "command": "npm run start",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/mobile"
+      },
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": "build"
+    },
+    {
+      "label": "Mobile: Start Expo (Clear Cache)",
+      "type": "shell",
+      "command": "npm run start:clear",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/mobile"
+      },
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Mobile: Reset & Reinstall",
+      "type": "shell",
+      "command": "npm run reset",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/rendetalje/services/mobile"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "TypeScript: Check All",
+      "type": "shell",
+      "command": "npx tsc --noEmit",
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "Git: Pull All Repos",
+      "type": "shell",
+      "command": "git pull && git submodule update --init --recursive",
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup: Install All Dependencies",
+      "dependsOn": [
+        "Backend: Install Dependencies",
+        "Frontend: Install Dependencies",
+        "Mobile: Install Dependencies"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}
