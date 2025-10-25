@@ -45,6 +45,26 @@
       "path": "apps/rendetalje/services/frontend-nextjs"
     },
     {
+      "name": "  │  ├─ Mobile (Expo)",
+      "path": "apps/rendetalje/services/mobile"
+    },
+    {
+      "name": "  │  ├─ Shared",
+      "path": "apps/rendetalje/services/shared"
+    },
+    {
+      "name": "  │  ├─ Database",
+      "path": "apps/rendetalje/services/database"
+    },
+    {
+      "name": "  │  ├─ Deployment",
+      "path": "apps/rendetalje/services/deployment"
+    },
+    {
+      "name": "  │  ├─ Scripts",
+      "path": "apps/rendetalje/services/scripts"
+    },
+    {
       "name": "  │  └─ Documentation",
       "path": "apps/rendetalje/docs"
     },
@@ -94,7 +114,7 @@
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
-    "powershell.cwd": "📊 Tekup Portfolio (Root)"
+    "powershell.cwd": "."
   },
   "extensions": {
     "recommendations": [
