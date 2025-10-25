@@ -89,13 +89,14 @@ services:
       start_period: 40s
 
   # Expo Development Server (Mobile) - Optimized with Alpine
+  # Supports parallel branches with isolated ports: set EXPO_GO_PORT, EXPO_METRO_PORT, EXPO_DEVTOOLS_PORT, RCT_METRO_PORT
   mobile:
     build:
       context: ./apps/rendetalje/services/mobile
       dockerfile: Dockerfile
     working_dir: /app
-    command: sh -c "npm install && npx expo-doctor || true && EXPO_DEV_CLIENT=false EXPO_NO_TELEMETRY=1 RCT_METRO_PORT=8081 expo start --tunnel --clear"
-    container_name: rendetalje-mobile-expo
+    command: sh -c "npm install && npx expo-doctor || true && EXPO_DEV_CLIENT=false EXPO_NO_TELEMETRY=1 RCT_METRO_PORT=${RCT_METRO_PORT:-8081} expo start --tunnel --clear"
+    container_name: rendetalje-mobile-expo-${GIT_BRANCH:-main}
     depends_on:
       - backend
     environment:
@@ -103,13 +104,16 @@ services:
       - REACT_NATIVE_PACKAGER_HOSTNAME=${HOST_IP}
       - EXPO_USE_FAST_RESOLVER=1
       - EXPO_NO_TELEMETRY=1
-      - RCT_METRO_PORT=8081
+      - RCT_METRO_PORT=${RCT_METRO_PORT:-8081}
+      - EXPO_GO_PORT=${EXPO_GO_PORT:-19000}
+      - EXPO_METRO_PORT=${EXPO_METRO_PORT:-19001}
+      - EXPO_DEVTOOLS_PORT=${EXPO_DEVTOOLS_PORT:-19002}
       - NODE_ENV=development
     ports:
-      - "19000:19000" # Expo DevTools
-      - "19001:19001" # Expo Metro Bundler
-      - "19002:19002" # Expo Web Interface
-      - "8081:8081" # React Native Packager
+      - "${EXPO_GO_PORT:-19000}:19000" # Expo DevTools
+      - "${EXPO_METRO_PORT:-19001}:19001" # Expo Metro Bundler
+      - "${EXPO_DEVTOOLS_PORT:-19002}:19002" # Expo Web Interface
+      - "${RCT_METRO_PORT:-8081}:8081" # React Native Packager
     volumes:
       - ./apps/rendetalje/services/mobile:/app
       - /app/node_modules # Anonymous volume for node_modules
