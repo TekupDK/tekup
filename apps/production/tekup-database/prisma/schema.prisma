@@ -1139,6 +1139,98 @@ model RenosLabel {
   @@schema("renos")
 }
 
+// =====================================================
+// CALENDAR INTELLIGENCE (RenOS Calendar MCP)
+// =====================================================
+
+model RenosCustomerIntelligence {
+  id           String   @id @default(cuid())
+  customerId   String   @unique @map("customer_id")
+  customerName String?  @map("customer_name")
+  preferences  Json?
+  patterns     Json?
+  notes        String?  @db.Text
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([customerId])
+  @@map("customer_intelligence")
+  @@schema("renos")
+}
+
+model RenosBookingValidation {
+  id             String   @id @default(cuid())
+  bookingId      String   @map("booking_id")
+  validationType String   @map("validation_type")
+  result         String
+  details        Json?
+  warnings       String[]
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([bookingId])
+  @@index([validationType])
+  @@index([createdAt])
+  @@map("booking_validations")
+  @@schema("renos")
+}
+
+model RenosOvertimeLog {
+  id               String    @id @default(cuid())
+  bookingId        String    @map("booking_id")
+  customerId       String?   @map("customer_id")
+  estimatedHours   Float     @map("estimated_hours")
+  actualHours      Float     @map("actual_hours")
+  overtimeHours    Float     @map("overtime_hours")
+  notificationSent Boolean   @default(false) @map("notification_sent")
+  jonasNotified    Boolean   @default(false) @map("jonas_notified")
+  voiceCallMade    Boolean   @default(false) @map("voice_call_made")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([bookingId])
+  @@index([customerId])
+  @@index([jonasNotified])
+  @@map("overtime_logs")
+  @@schema("renos")
+}
+
+model RenosLearnedPattern {
+  id            String   @id @default(cuid())
+  patternType   String   @map("pattern_type")   // 'booking_duration', 'customer_preference', etc
+  entityId      String   @map("entity_id")      // customer_id or service_type
+  pattern       Json                            // Pattern details
+  confidence    Float
+  observations  Int      @default(1)
+  lastObserved  DateTime @map("last_observed") @db.Timestamptz
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([patternType])
+  @@index([entityId])
+  @@index([confidence])
+  @@map("learned_patterns")
+  @@schema("renos")
+}
+
+model RenosUndoAction {
+  id         String   @id @default(cuid())
+  actionType String   @map("action_type")
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  before     Json
+  after      Json
+  reason     String?  @db.Text
+  createdBy  String?  @map("created_by")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz
+
+  @@index([entityType, entityId])
+  @@index([expiresAt])
+  @@index([createdAt])
+  @@map("undo_actions")
+  @@schema("renos")
+}
+
 
 // ====================================================
 
