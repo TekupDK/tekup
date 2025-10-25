@@ -9,22 +9,26 @@
 ## 📋 Services to Monitor
 
 ### 1. Tekup Billy MCP Server
+
 - **URL:** `https://tekup-billy.onrender.com/health`
 - **Expected Response:** 200 OK with JSON health status
 - **Critical:** Yes - MCP integration for Billy.dk
 
 ### 2. TekupVault API
+
 - **URL:** `https://tekupvault-api.onrender.com/health`
 - **Expected Response:** 200 OK
 - **Critical:** Yes - Knowledge base for all projects
 
 ### 3. Rendetalje Backend (if deployed)
+
 - **URL:** `https://renos-backend.onrender.com/health` or `https://rendetalje-backend.onrender.com/health`
 - **Expected Response:** 200 OK with services status
 - **Critical:** Yes - Main RenOS API
 
 ### 4. Rendetalje Calendar MCP (if public)
-- **URL:** `https://renos-calendar-mcp.onrender.com/health` 
+
+- **URL:** `https://renos-calendar-mcp.onrender.com/health`
 - **Expected Response:** 200 OK
 - **Critical:** Medium - Calendar integration
 
@@ -46,6 +50,7 @@ For each service above:
 1. **Click "Add New Monitor"**
 
 2. **Configure:**
+
    - Monitor Type: `HTTP(s)`
    - Friendly Name: `Tekup Billy MCP` (or service name)
    - URL: `https://tekup-billy.onrender.com/health`
@@ -53,11 +58,13 @@ For each service above:
    - Monitor Timeout: `30 seconds`
 
 3. **Alert Contacts:**
+
    - Add your email
    - Alert When: `Down`
    - Alert After: `1 minute` (1 failed check)
 
 4. **Advanced Settings:**
+
    - HTTP Method: `GET`
    - Expected Status Code: `200`
    - Keyword (optional): `"status":"ok"` or `"healthy":`
@@ -107,6 +114,7 @@ After setup, you should see:
 3. **Uptime:** 100% (if services are healthy)
 
 **Test Alert:**
+
 - Pause one monitor
 - Wait 6 minutes
 - You should receive email alert
@@ -120,6 +128,7 @@ After setup, you should see:
 **Account:** jonas@tekup.dk (or your email)
 
 **Mobile App:** Available for iOS/Android
+
 - Get push notifications
 - Quick status checks
 - Pause/resume monitors
@@ -139,16 +148,19 @@ After setup, you should see:
 ## 🛠️ Troubleshooting
 
 ### Monitor shows "Down" but service is up:
+
 - Check URL is correct (include `/health`)
 - Verify timeout isn't too short (increase to 60 seconds)
 - Check expected status code (should be 200)
 
 ### Not receiving alerts:
+
 - Verify email in Alert Contacts
 - Check spam folder
 - Test alert by pausing a monitor
 
 ### False positives:
+
 - Increase "Alert After" to 2-3 failed checks
 - Increase monitoring interval to 10 minutes
 
@@ -157,14 +169,17 @@ After setup, you should see:
 ## 📝 Maintenance
 
 **Weekly:**
+
 - Check all monitors are green
 - Review response time trends
 
 **Monthly:**
+
 - Review downtime incidents
 - Adjust alert thresholds if needed
 
 **Quarterly:**
+
 - Add new services as deployed
 - Remove retired services
 

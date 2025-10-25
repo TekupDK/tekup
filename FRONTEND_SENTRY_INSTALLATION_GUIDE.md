@@ -42,14 +42,17 @@ npx @sentry/wizard@latest -i nextjs
 **Wizard Steps:**
 
 1. **Login to Sentry:**
+
    - Use existing project: `rendetalje-frontend`
    - Organization: `tekupdk` (or your organization)
 
 2. **Configure Project:**
+
    - Project name: `rendetalje-frontend`
    - DSN: Will be automatically added
 
 3. **Create Config Files:**
+
    - `sentry.client.config.ts` (already exists - will update)
    - `sentry.server.config.ts` (new)
    - `sentry.edge.config.ts` (new)
@@ -95,9 +98,9 @@ Test-Path .env.sentry-build-plugin
 **Update:** `app/sentry-test/page.tsx` (create if doesn't exist)
 
 ```typescript
-'use client';
+"use client";
 
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
 export default function SentryTestPage() {
   return (
@@ -106,8 +109,8 @@ export default function SentryTestPage() {
       <button
         className="bg-red-500 text-white px-4 py-2 rounded"
         onClick={() => {
-          Sentry.captureException(new Error('Frontend Sentry test error'));
-          throw new Error('Test error - Frontend Sentry is working!');
+          Sentry.captureException(new Error("Frontend Sentry test error"));
+          throw new Error("Test error - Frontend Sentry is working!");
         }}
       >
         Trigger Test Error
@@ -201,11 +204,11 @@ NEXT_PUBLIC_SENTRY_DSN=https://6c765ed5f2a857ea81da0a88d3bb6817@...
 ### sentry.client.config.ts
 
 ```typescript
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
+  environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || "development",
   tracesSampleRate: 1.0, // 100% of transactions
   replaysSessionSampleRate: 0.1, // 10% of sessions
   replaysOnErrorSampleRate: 1.0, // 100% of errors
@@ -225,7 +228,7 @@ Sentry.init({
 Wizard adds automatically:
 
 ```javascript
-const { withSentryConfig } = require('@sentry/nextjs');
+const { withSentryConfig } = require("@sentry/nextjs");
 
 const nextConfig = {
   // Your existing config
@@ -235,13 +238,13 @@ module.exports = withSentryConfig(
   nextConfig,
   {
     silent: true,
-    org: 'tekupdk',
-    project: 'rendetalje-frontend',
+    org: "tekupdk",
+    project: "rendetalje-frontend",
   },
   {
     widenClientFileUpload: true,
     transpileClientSDK: true,
-    tunnelRoute: '/monitoring',
+    tunnelRoute: "/monitoring",
     hideSourceMaps: true,
     disableLogger: true,
   }
@@ -296,7 +299,7 @@ Check Sentry dashboard
 **Test:**
 
 ```typescript
-Sentry.captureMessage('Manual test message');
+Sentry.captureMessage("Manual test message");
 ```
 
 ### Source maps not uploaded
