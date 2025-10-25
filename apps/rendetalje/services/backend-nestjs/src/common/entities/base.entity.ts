@@ -1,4 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+// Re-export for use in other entities
+export { ApiProperty, ApiPropertyOptional };
 
 export abstract class BaseEntity {
   @ApiProperty({ example: '00000000-0000-0000-0000-000000000001', description: 'Unique identifier' })
