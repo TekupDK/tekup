@@ -21,52 +21,48 @@
       "path": "apps/production/tekup-billy"
     },
     {
-      "name": "🌐 Web Applications",
-      "path": "apps/web"
+      "name": "🌐 Web - 📊 Tekup Cloud Dashboard",
+      "path": "apps/web/tekup-cloud-dashboard"
     },
     {
-      "name": "  ├─ 🧹 Rendetalje - Complete",
+      "name": "🧹 Rendetalje (Complete App)",
       "path": "apps/rendetalje"
     },
     {
-      "name": "  │  ├─ Calendar MCP Service",
+      "name": "  ├─ Calendar MCP Service",
       "path": "apps/rendetalje/services/calendar-mcp"
     },
     {
-      "name": "  │  ├─ Backend NestJS",
+      "name": "  ├─ Backend NestJS",
       "path": "apps/rendetalje/services/backend-nestjs"
     },
     {
-      "name": "  │  ├─ Frontend Next.js",
+      "name": "  ├─ Frontend Next.js",
       "path": "apps/rendetalje/services/frontend-nextjs"
     },
     {
-      "name": "  │  ├─ Mobile (Expo)",
+      "name": "  ├─ Mobile (Expo)",
       "path": "apps/rendetalje/services/mobile"
     },
     {
-      "name": "  │  ├─ Shared",
+      "name": "  ├─ Shared",
       "path": "apps/rendetalje/services/shared"
     },
     {
-      "name": "  │  ├─ Database",
+      "name": "  ├─ Database",
       "path": "apps/rendetalje/services/database"
     },
     {
-      "name": "  │  ├─ Deployment",
+      "name": "  ├─ Deployment",
       "path": "apps/rendetalje/services/deployment"
     },
     {
-      "name": "  │  ├─ Scripts",
+      "name": "  ├─ Scripts",
       "path": "apps/rendetalje/services/scripts"
     },
     {
-      "name": "  │  └─ Documentation",
+      "name": "  └─ Documentation",
       "path": "apps/rendetalje/docs"
-    },
-    {
-      "name": "  └─ 📊 Tekup Cloud Dashboard",
-      "path": "apps/web/tekup-cloud-dashboard"
     },
     {
       "name": "⚙️ Backend Services",
@@ -115,25 +111,7 @@
     "explorer.compactFolders": false,
     "breadcrumbs.enabled": true,
     "editor.minimap.enabled": true,
-    "workbench.editor.enablePreview": false,
-    "MicroPython.executeButton": [
-      {
-        "text": "▶",
-        "tooltip": "Run",
-        "alignment": "left",
-        "command": "extension.executeFile",
-        "priority": 3.5
-      }
-    ],
-    "MicroPython.syncButton": [
-      {
-        "text": "$(sync)",
-        "tooltip": "sync",
-        "alignment": "left",
-        "command": "extension.execute",
-        "priority": 4
-      }
-    ]
+    "workbench.editor.enablePreview": false
   },
   "extensions": {
     "recommendations": [
