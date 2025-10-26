@@ -5,14 +5,14 @@
  */
 
 import React from 'react';
-import { View, StyleSheet, ViewStyle, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ViewStyle, TouchableOpacity, StyleProp } from 'react-native';
 import { colors, spacing, borderRadius, shadows } from '../theme';
 import * as Haptics from 'expo-haptics';
 
 interface CardProps {
   children: React.ReactNode;
   onPress?: () => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   padding?: keyof typeof spacing;
   variant?: 'elevated' | 'outlined' | 'filled';
   haptic?: boolean;
