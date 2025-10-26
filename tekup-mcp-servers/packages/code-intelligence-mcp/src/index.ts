@@ -8,12 +8,17 @@
  * - get_file_dependencies: Analyze imports and dependencies
  */
 
+import dotenv from "dotenv";
+import * as path from "path";
+
+// Load .env from parent directory (tekup-mcp-servers root)
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import fg from "fast-glob";
-import * as path from "path";
 import { promises as fs } from "fs";
 
 // Environment configuration

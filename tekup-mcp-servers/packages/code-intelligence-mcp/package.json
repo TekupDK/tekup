@@ -9,13 +9,19 @@
     "dev": "tsx src/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
-  "keywords": ["mcp", "code-intelligence", "tekup", "semantic-search"],
+  "keywords": [
+    "mcp",
+    "code-intelligence",
+    "tekup",
+    "semantic-search"
+  ],
   "author": "TekupDK",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",
-    "zod": "^3.23.8",
-    "fast-glob": "^3.3.2"
+    "dotenv": "^17.2.3",
+    "fast-glob": "^3.3.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

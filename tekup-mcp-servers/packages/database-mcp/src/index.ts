@@ -9,6 +9,12 @@
  * - analyze_query_performance: Analyze query execution plans
  */
 
+import dotenv from "dotenv";
+import * as path from "path";
+
+// Load .env from parent directory (tekup-mcp-servers root)
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
