@@ -35,21 +35,25 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
   };
 
   return (
-    <Card>
+    <Card shadow="md">
       <CardHeader>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Activity</h3>
       </CardHeader>
       <CardBody className="p-0">
-        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700" role="list" aria-label="Recent activities">
           {activities.length === 0 ? (
             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              No recent activity
+              <p>No recent activity</p>
             </div>
           ) : (
             activities.map((activity) => {
               const badge = getActivityBadge(activity.type);
               return (
-                <div key={activity.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                <div
+                  key={activity.id}
+                  className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  role="listitem"
+                >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
@@ -65,8 +69,10 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
                       </p>
                     </div>
                     <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 ml-4">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {formatTime(activity.created_at)}
+                      <Clock className="w-3 h-3 mr-1" aria-hidden="true" />
+                      <time dateTime={activity.created_at} title={new Date(activity.created_at).toLocaleString()}>
+                        {formatTime(activity.created_at)}
+                      </time>
                     </div>
                   </div>
                 </div>

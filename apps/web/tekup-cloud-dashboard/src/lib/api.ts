@@ -1,11 +1,17 @@
-import { supabase } from './supabase';
+import { createClient } from '@supabase/supabase-js';
 import { Lead, Invoice, Activity, KPIMetric, AIAgent } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 const BILLY_API_URL = import.meta.env.VITE_BILLY_API_URL || 'https://api.billy.dk';
 
+// Supabase client
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+
 // API Service Class
-export class ApiService {
+class ApiService {
   private static instance: ApiService;
   
   static getInstance(): ApiService {
@@ -280,3 +286,47 @@ export class ApiService {
 }
 
 export const apiService = ApiService.getInstance();
+
+// API client for React Query integration
+export const apiClient = {
+  getKPIs: async () => {
+    const service = ApiService.getInstance();
+    return service.getKPIMetrics('1'); // Default tenant ID
+  },
+
+  getActivities: async () => {
+    const service = ApiService.getInstance();
+    return service.getActivities('1', 10); // Default tenant ID, limit 10
+  },
+
+  getAgents: async () => {
+    const service = ApiService.getInstance();
+    return service.getAgents('1'); // Default tenant ID
+  },
+
+  getSystemHealth: async () => {
+    const service = ApiService.getInstance();
+    return service.getSystemHealth();
+  },
+
+  getLeads: async () => {
+    const service = ApiService.getInstance();
+    return service.getLeads('1'); // Default tenant ID
+  },
+
+  getAnalytics: async () => {
+    // TODO: Implement analytics endpoint
+    return [];
+  },
+};
+
+// React Query keys
+export const queryKeys = {
+  kpis: ['kpis'] as const,
+  activities: ['activities'] as const,
+  agents: ['agents'] as const,
+  systemHealth: ['system-health'] as const,
+  leads: ['leads'] as const,
+  analytics: ['analytics'] as const,
+  profile: ['profile'] as const,
+} as const;

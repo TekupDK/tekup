@@ -11,11 +11,11 @@ import {
   Building2,
 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { useApp } from '../../contexts/AppContext';
+import { useAppStore } from '../../stores';
 
 export function TopNav() {
   const { theme, toggleTheme } = useTheme();
-  const { currentTenant, currentUser, notifications } = useApp();
+  const { currentTenant, currentUser, notifications } = useAppStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showTenantMenu, setShowTenantMenu] = useState(false);
