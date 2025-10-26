@@ -1,0 +1,1 @@
+console.log("Base MCP Server is running!");
