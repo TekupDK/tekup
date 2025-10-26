@@ -253,13 +253,13 @@ module.exports = withSentryConfig(
 
 ---
 
-## 🚀 Deploy to Vercel
+## 🚀 Deploy to Render.com
 
 ### Step 1: Add Environment Variables
 
-**Vercel Dashboard → Settings → Environment Variables:**
+**Render Dashboard → renos-frontend → Environment:**
 
-```
+```bash
 NEXT_PUBLIC_SENTRY_DSN=https://6c765ed5f2a857ea81da0a88d3bb6817@o4510143146033152.ingest.de.sentry.io/4510143153700944
 NEXT_PUBLIC_SENTRY_ENVIRONMENT=production
 SENTRY_AUTH_TOKEN=sntrys_YOUR_TOKEN_HERE
@@ -267,7 +267,9 @@ SENTRY_ORG=tekupdk
 SENTRY_PROJECT=rendetalje-frontend
 ```
 
-### Step 2: Redeploy
+**Note:** SENTRY_AUTH_TOKEN was already added on October 25, 2025.
+
+### Step 2: Redeploy (if needed)
 
 ```powershell
 git add .
@@ -275,13 +277,13 @@ git commit -m "feat: add Sentry error tracking to frontend"
 git push origin master
 ```
 
-Vercel auto-deploys on push.
+Render auto-deploys on push to main branch.
 
 ### Step 3: Verify Production
 
-Visit: `https://your-app.vercel.app/sentry-test`  
-Click error button  
-Check Sentry dashboard
+Visit: `https://renos-frontend.onrender.com/sentry-example-page`  
+Click "Trigger Test Error" button  
+Check Sentry dashboard at: https://sentry.io
 
 ---
 

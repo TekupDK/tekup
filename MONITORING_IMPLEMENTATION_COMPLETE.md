@@ -622,7 +622,7 @@ COMMENT ON TABLE application_logs IS 'Centralized application logs from all serv
 
 **Monitor 3: Calendar MCP**
 - Type: HTTP(s)
-- URL: `https://renos-calendar-mcp.onrender.com/health`
+- URL: `https://[SERVICE NOT DEPLOYED]/health`
 - Name: `RenOS Calendar MCP`
 - Interval: 5 minutes
 
