@@ -23,7 +23,6 @@ desktop.ini
 
 # Dependencies
 node_modules/
-package-lock.json
 
 # Temporary backup folders and keys
 tekup-secrets-backup-*/
