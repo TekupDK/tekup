@@ -1,0 +1,81 @@
+{
+  "database": {
+    "provider": "sqlite",
+    "url": "file:./dev.db",
+    "connection": {
+      "type": "file",
+      "location": "apps/tekup-unified-platform/dev.db",
+      "relative_to_workspace": true
+    },
+    "prisma": {
+      "schema_path": "apps/tekup-unified-platform/prisma/schema.prisma",
+      "client_output": "@prisma/client",
+      "migrations_path": "apps/tekup-unified-platform/prisma/migrations"
+    },
+    "features": {
+      "multi_tenant": true,
+      "audit_logging": true,
+      "soft_deletes": false,
+      "timestamps": true
+    }
+  },
+  "models": {
+    "existing": [
+      "Tenant",
+      "User", 
+      "AuditLog",
+      "Flow",
+      "FlowRun",
+      "Customer",
+      "Deal",
+      "Activity",
+      "Lead",
+      "LeadQualification",
+      "Call",
+      "Recording",
+      "Attachment",
+      "Notification"
+    ],
+    "patterns": {
+      "naming_convention": "PascalCase",
+      "table_mapping": "snake_case",
+      "id_field": "id",
+      "id_type": "String",
+      "id_default": "@default(cuid())",
+      "timestamps": {
+        "created_at": "createdAt DateTime @default(now())",
+        "updated_at": "updatedAt DateTime @updatedAt"
+      },
+      "tenant_isolation": {
+        "field": "tenantId",
+        "type": "String",
+        "relation": "Tenant @relation(fields: [tenantId], references: [id])"
+      }
+    }
+  },
+  "agent_guidelines": {
+    "schema_changes": {
+      "always_backup": true,
+      "generate_migration": true,
+      "test_after_migration": true
+    },
+    "model_creation": {
+      "include_tenant_id": true,
+      "include_timestamps": true,
+      "follow_naming_convention": true,
+      "add_indexes_for_queries": true
+    },
+    "relationships": {
+      "use_foreign_keys": true,
+      "cascade_deletes": "consider_carefully",
+      "index_foreign_keys": true
+    }
+  },
+  "development_commands": {
+    "generate_client": "pnpm prisma generate",
+    "push_schema": "pnpm prisma db push",
+    "create_migration": "pnpm prisma migrate dev",
+    "studio": "pnpm prisma studio",
+    "seed": "pnpm prisma db seed"
+  }
+}

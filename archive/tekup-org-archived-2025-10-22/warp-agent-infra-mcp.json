@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "agent-infra-browser": {
+      "command": "npx",
+      "args": ["@agent-infra/mcp-server-browser"],
+      "cwd": "C:\\Users\\empir\\Tekup-org",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}

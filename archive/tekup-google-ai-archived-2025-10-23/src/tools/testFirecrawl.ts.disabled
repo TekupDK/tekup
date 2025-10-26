@@ -1,0 +1,112 @@
+/**
+ * Firecrawl Quick Test
+ * 
+ * Simple script to verify Firecrawl API connection and basic functionality.
+ * Run with: npx ts-node src/tools/testFirecrawl.ts
+ */
+
+import { firecrawlService } from '../services/firecrawlService';
+import { logger } from '../logger';
+
+async function testFirecrawl() {
+  console.log('\n═══════════════════════════════════════');
+  console.log('   FIRECRAWL QUICK TEST');
+  console.log('═══════════════════════════════════════\n');
+
+  // 1. Check if configured
+  if (!firecrawlService.isConfigured()) {
+    console.error('❌ FIRECRAWL_API_KEY not set in environment');
+    console.log('\nAdd to .env:');
+    console.log('FIRECRAWL_API_KEY=fc-your-api-key-here\n');
+    process.exit(1);
+  }
+
+  console.log('✅ Firecrawl API key configured\n');
+
+  // 2. Test scrape (simple)
+  console.log('📄 Test 1: Simple Scrape');
+  console.log('   URL: https://rendetalje.dk');
+  console.log('   Format: markdown\n');
+
+  try {
+    const scrapeResult = await firecrawlService.scrape('https://rendetalje.dk', {
+      formats: ['markdown'],
+      onlyMainContent: true
+    });
+
+    if (scrapeResult.success) {
+      console.log('   ✅ Scrape successful!');
+      console.log(`   Content length: ${scrapeResult.markdown?.length || 0} chars`);
+      console.log(`   Credits used: ${scrapeResult.creditsUsed}`);
+      console.log(`   Preview: ${scrapeResult.markdown?.substring(0, 100)}...`);
+    } else {
+      console.error(`   ❌ Scrape failed: ${scrapeResult.error}`);
+    }
+  } catch (error) {
+    console.error(`   ❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+
+  console.log('\n─────────────────────────────────────\n');
+
+  // 3. Test extract (AI-powered)
+  console.log('🤖 Test 2: AI-Powered Extract');
+  console.log('   URL: https://rendetalje.dk');
+  console.log('   Schema: company name, services, contact\n');
+
+  try {
+    const extractResult = await firecrawlService.extract('https://rendetalje.dk', {
+      schema: {
+        company_name: {
+          type: 'string',
+          description: 'Company name'
+        },
+        services: {
+          type: 'array',
+          description: 'List of cleaning services offered'
+        },
+        contact_email: {
+          type: 'string',
+          description: 'Contact email address'
+        }
+      },
+      prompt: 'Extract company information from this cleaning service website'
+    });
+
+    if (extractResult.success && extractResult.data) {
+      console.log('   ✅ Extract successful!');
+      console.log(`   Credits used: ${extractResult.creditsUsed}`);
+      console.log('   Extracted data:');
+      console.log(JSON.stringify(extractResult.data, null, 2));
+    } else {
+      console.error(`   ❌ Extract failed: ${extractResult.error}`);
+    }
+  } catch (error) {
+    console.error(`   ❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+
+  console.log('\n─────────────────────────────────────\n');
+
+  // 4. Check account status
+  console.log('📊 Test 3: Account Status');
+
+  try {
+    const status = await firecrawlService.getAccountStatus();
+    console.log(`   Plan: ${status.plan}`);
+    console.log(`   Credits remaining: ${status.creditsRemaining}`);
+    console.log(`   Credits used: ${status.creditsUsed}`);
+  } catch (error) {
+    console.log('   ⚠️  Could not fetch account status (may not be available on free tier)');
+  }
+
+  console.log('\n═══════════════════════════════════════');
+  console.log('   TEST COMPLETE');
+  console.log('═══════════════════════════════════════\n');
+}
+
+// Run tests
+testFirecrawl().catch((error) => {
+  logger.error('Test failed', { error });
+  console.error('\n❌ Test script failed:', error);
+  process.exit(1);
+});
+

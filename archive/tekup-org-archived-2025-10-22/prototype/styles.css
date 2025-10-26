@@ -1,0 +1,27 @@
+/* Tekup Prototype Styles */
+body {
+  background: #0f0c29;
+}
+.gradient-bg {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, #7c3aed 0%, transparent 60%),
+              radial-gradient(circle at 80% 30%, #059669 0%, transparent 60%),
+              radial-gradient(circle at 50% 80%, #dc2626 0%, transparent 60%);
+  filter: blur(80px);
+  animation: pulse 10s infinite alternate;
+}
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.2); }
+}
+.animate-fade-in {
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+}
+.animate-fade-in.delay-200 {
+  animation-delay: 0.2s;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}

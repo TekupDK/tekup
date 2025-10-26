@@ -1,0 +1,439 @@
+/**
+ * TekUp Documentation Custom Styles
+ * This file contains custom CSS for TekUp branding and enhanced UX
+ */
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* CSS Custom Properties for TekUp Brand Colors */
+:root {
+  /* TekUp Brand Colors */
+  --tekup-primary: #2563eb;
+  --tekup-primary-dark: #1d4ed8;
+  --tekup-secondary: #7c3aed;
+  --tekup-accent: #06b6d4;
+  --tekup-success: #10b981;
+  --tekup-warning: #f59e0b;
+  --tekup-error: #ef4444;
+  
+  /* Neutral Colors */
+  --tekup-gray-50: #f9fafb;
+  --tekup-gray-100: #f3f4f6;
+  --tekup-gray-200: #e5e7eb;
+  --tekup-gray-300: #d1d5db;
+  --tekup-gray-400: #9ca3af;
+  --tekup-gray-500: #6b7280;
+  --tekup-gray-600: #4b5563;
+  --tekup-gray-700: #374151;
+  --tekup-gray-800: #1f2937;
+  --tekup-gray-900: #111827;
+
+  /* Docusaurus overrides */
+  --ifm-color-primary: var(--tekup-primary);
+  --ifm-color-primary-dark: var(--tekup-primary-dark);
+  --ifm-color-primary-darker: #1e40af;
+  --ifm-color-primary-darkest: #1e3a8a;
+  --ifm-color-primary-light: #3b82f6;
+  --ifm-color-primary-lighter: #60a5fa;
+  --ifm-color-primary-lightest: #93c5fd;
+  
+  /* Typography */
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  
+  /* Layout */
+  --ifm-navbar-height: 4rem;
+  --ifm-sidebar-width: 280px;
+  --ifm-container-width-xl: 1280px;
+  
+  /* Spacing */
+  --ifm-spacing-horizontal: 1.5rem;
+  --ifm-spacing-vertical: 1.5rem;
+  
+  /* Border radius */
+  --ifm-border-radius: 0.5rem;
+  --ifm-button-border-radius: 0.375rem;
+  --ifm-card-border-radius: 0.75rem;
+  
+  /* Shadows */
+  --ifm-box-shadow-lw: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --ifm-box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --ifm-box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark theme overrides */
+[data-theme='dark'] {
+  --ifm-color-primary: #60a5fa;
+  --ifm-color-primary-dark: #3b82f6;
+  --ifm-color-primary-darker: #2563eb;
+  --ifm-color-primary-darkest: #1d4ed8;
+  --ifm-color-primary-light: #93c5fd;
+  --ifm-color-primary-lighter: #bfdbfe;
+  --ifm-color-primary-lightest: #dbeafe;
+  
+  --ifm-background-color: var(--tekup-gray-900);
+  --ifm-background-surface-color: var(--tekup-gray-800);
+}
+
+/* Global styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-feature-settings: 'rlig' 1, 'calt' 1;
+}
+
+/* Navbar customization */
+.navbar {
+  box-shadow: var(--ifm-box-shadow-md);
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme='dark'] .navbar {
+  background-color: rgba(31, 41, 55, 0.95);
+}
+
+.navbar__brand {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.navbar__item {
+  font-weight: 500;
+}
+
+/* GitHub link icon */
+.header-github-link:hover {
+  opacity: 0.6;
+}
+
+.header-github-link:before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  display: flex;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
+    no-repeat;
+}
+
+[data-theme='dark'] .header-github-link:before {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='white' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
+    no-repeat;
+}
+
+/* Sidebar customization */
+.theme-doc-sidebar-container {
+  border-right: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.theme-doc-sidebar-menu {
+  font-size: 0.9rem;
+}
+
+.menu__link {
+  border-radius: var(--ifm-border-radius);
+  margin: 0.125rem 0;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.menu__link:hover {
+  background-color: var(--ifm-color-emphasis-100);
+  transform: translateX(2px);
+}
+
+.menu__link--active {
+  background-color: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+  font-weight: 600;
+}
+
+[data-theme='dark'] .menu__link--active {
+  background-color: rgba(96, 165, 250, 0.1);
+  color: var(--ifm-color-primary-light);
+}
+
+/* Content area */
+.main-wrapper {
+  max-width: none;
+}
+
+.container {
+  max-width: var(--ifm-container-width-xl);
+}
+
+/* Typography enhancements */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--ifm-color-emphasis-200);
+}
+
+/* Code blocks */
+.prism-code {
+  border-radius: var(--ifm-border-radius);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.token.title {
+  color: var(--tekup-primary);
+}
+
+/* Admonitions */
+.admonition {
+  border-radius: var(--ifm-card-border-radius);
+  box-shadow: var(--ifm-box-shadow-lw);
+  margin: 1.5rem 0;
+}
+
+.admonition-heading {
+  font-weight: 600;
+}
+
+/* Cards */
+.card {
+  border-radius: var(--ifm-card-border-radius);
+  box-shadow: var(--ifm-box-shadow-md);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--ifm-box-shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Buttons */
+.button {
+  border-radius: var(--ifm-button-border-radius);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--ifm-box-shadow-md);
+}
+
+/* Footer */
+.footer {
+  background-color: var(--tekup-gray-900);
+  color: var(--tekup-gray-100);
+}
+
+.footer__title {
+  color: white;
+  font-weight: 600;
+}
+
+.footer__link-item {
+  color: var(--tekup-gray-300);
+  transition: color 0.2s ease;
+}
+
+.footer__link-item:hover {
+  color: var(--tekup-primary-light);
+}
+
+/* Table of contents */
+.table-of-contents {
+  font-size: 0.875rem;
+}
+
+.table-of-contents__link {
+  color: var(--ifm-color-content-secondary);
+  transition: all 0.2s ease;
+}
+
+.table-of-contents__link:hover,
+.table-of-contents__link--active {
+  color: var(--ifm-color-primary);
+  font-weight: 500;
+}
+
+/* Search */
+.DocSearch-Button {
+  border-radius: var(--ifm-button-border-radius);
+  background-color: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+/* Responsive design */
+@media (max-width: 996px) {
+  .navbar__item {
+    font-size: 0.9rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+}
+
+/* Custom components */
+.hero-banner {
+  background: linear-gradient(135deg, var(--tekup-primary) 0%, var(--tekup-secondary) 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+/* Feature cards */
+.features-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.feature-card {
+  background: white;
+  border-radius: var(--ifm-card-border-radius);
+  padding: 2rem;
+  box-shadow: var(--ifm-box-shadow-md);
+  transition: all 0.3s ease;
+}
+
+[data-theme='dark'] .feature-card {
+  background: var(--ifm-background-surface-color);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ifm-box-shadow-lg);
+}
+
+.feature-icon {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  color: var(--tekup-primary);
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--ifm-color-content);
+}
+
+.feature-description {
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.6;
+}
+
+/* API documentation specific styles */
+.api-method {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-right: 0.5rem;
+}
+
+.api-method--get {
+  background-color: var(--tekup-success);
+  color: white;
+}
+
+.api-method--post {
+  background-color: var(--tekup-primary);
+  color: white;
+}
+
+.api-method--put {
+  background-color: var(--tekup-warning);
+  color: white;
+}
+
+.api-method--delete {
+  background-color: var(--tekup-error);
+  color: white;
+}
+
+/* Language selector improvements */
+.navbar__link--active {
+  font-weight: 600;
+}
+
+/* Announcement bar */
+.announcement {
+  background: linear-gradient(90deg, var(--tekup-primary), var(--tekup-secondary));
+  color: white;
+  font-weight: 500;
+}
+
+.announcement a {
+  color: white;
+  text-decoration: underline;
+}
+
+/* Scroll to top button */
+.theme-back-to-top-button {
+  background-color: var(--tekup-primary);
+  border-radius: 50%;
+  box-shadow: var(--ifm-box-shadow-lg);
+}
+
+/* Loading states */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Print styles */
+@media print {
+  .navbar,
+  .footer,
+  .theme-doc-sidebar-container,
+  .table-of-contents,
+  .theme-back-to-top-button {
+    display: none !important;
+  }
+  
+  .main-wrapper {
+    margin-left: 0 !important;
+  }
+}

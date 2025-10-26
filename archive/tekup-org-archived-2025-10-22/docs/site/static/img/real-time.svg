@@ -1,0 +1,49 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="realtimeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Signal waves -->
+  <circle cx="100" cy="100" r="30" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.8"/>
+  <circle cx="100" cy="100" r="50" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.6"/>
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Central transmitter -->
+  <circle cx="100" cy="100" r="15" fill="url(#realtimeGradient)" stroke="#dc2626" stroke-width="2"/>
+  
+  <!-- Antenna -->
+  <line x1="100" y1="85" x2="100" y2="70" stroke="#dc2626" stroke-width="3"/>
+  <circle cx="100" cy="70" r="3" fill="#fbbf24"/>
+  
+  <!-- Data packets -->
+  <rect x="60" y="60" width="8" height="8" fill="#34d399" rx="2" opacity="0.9">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 40,40; 0,0" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  
+  <rect x="140" y="60" width="8" height="8" fill="#60a5fa" rx="2" opacity="0.9">
+    <animateTransform attributeName="transform" type="translate" values="0,0; -40,40; 0,0" dur="2.5s" repeatCount="indefinite"/>
+  </rect>
+  
+  <rect x="60" y="140" width="8" height="8" fill="#f472b6" rx="2" opacity="0.9">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 40,-40; 0,0" dur="1.8s" repeatCount="indefinite"/>
+  </rect>
+  
+  <rect x="140" y="140" width="8" height="8" fill="#a78bfa" rx="2" opacity="0.9">
+    <animateTransform attributeName="transform" type="translate" values="0,0; -40,-40; 0,0" dur="2.2s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Connection points -->
+  <circle cx="50" cy="50" r="6" fill="#34d399" stroke="#059669" stroke-width="1.5"/>
+  <circle cx="150" cy="50" r="6" fill="#60a5fa" stroke="#2563eb" stroke-width="1.5"/>
+  <circle cx="50" cy="150" r="6" fill="#f472b6" stroke="#ec4899" stroke-width="1.5"/>
+  <circle cx="150" cy="150" r="6" fill="#a78bfa" stroke="#7c3aed" stroke-width="1.5"/>
+  
+  <!-- Speed indicator -->
+  <text x="100" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#dc2626">LIVE</text>
+  
+  <!-- Lightning bolt for speed -->
+  <path d="M95 45 L105 35 L100 40 L110 30 L95 50 L100 45 Z" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/>
+</svg>

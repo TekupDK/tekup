@@ -1,0 +1,49 @@
+{
+  "name": "ai-proposal-engine",
+  "version": "1.0.0",
+  "description": "AI-powered proposal generation engine using MCP architecture for Tekup",
+  "main": "dist/mcp-host/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/mcp-host/index.js",
+    "start:host": "npm run build && node dist/mcp-host/index.js",
+    "start:transcript": "npm run build && node dist/servers/transcript-intelligence/index.js",
+    "start:signals": "npm run build && node dist/servers/buying-signal-extraction/index.js",
+    "start:research": "npm run build && node dist/servers/live-research/index.js",
+    "start:narrative": "npm run build && node dist/servers/narrative-generation/index.js",
+    "start:assembly": "npm run build && node dist/servers/document-assembly/index.js",
+    "dev": "ts-node src/mcp-host/index.ts",
+    "dev:host": "ts-node src/mcp-host/index.ts",
+    "dev:transcript": "ts-node src/servers/transcript-intelligence/index.ts",
+    "dev:signals": "ts-node src/servers/buying-signal-extraction/index.ts",
+    "dev:research": "ts-node src/servers/live-research/index.ts",
+    "dev:narrative": "ts-node src/servers/narrative-generation/index.ts",
+    "dev:assembly": "ts-node src/servers/document-assembly/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ai",
+    "proposal",
+    "mcp",
+    "sales",
+    "automation",
+    "tekup"
+  ],
+  "author": "Tekup AI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "@types/node": "^24.5.0",
+    "airtable": "^0.12.2",
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.2",
+    "googleapis": "^159.0.0",
+    "openai": "^5.20.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}

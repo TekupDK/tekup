@@ -1,0 +1,135 @@
+# Gmail & Calendar Data Fetching\n\n\n\n## Overview\n\n\n\nRenOS now includes data fetching capabilities for Gmail and Google Calendar, providing better context for AI-powered email and calendar management.
+\n\n## New Features\n\n\n\n### Gmail Message Listing\n\n\n\nFetch recent Gmail messages with metadata:
+\n\n```typescript
+import { listRecentMessages } from "./services/gmailService";
+
+// Fetch last 10 messages
+const messages = await listRecentMessages({ maxResults: 10 });
+
+// Fetch with filters
+const unreadMessages = await listRecentMessages({
+    maxResults: 20,
+    query: "is:unread",
+    labelIds: ["INBOX"]
+});\n\n```
+
+**Returns:** Array of `GmailMessageSummary`:\n\n\n\n```typescript
+interface GmailMessageSummary {
+    id: string;           // Message ID
+    threadId: string;     // Thread ID
+    snippet: string;      // Short preview
+    subject?: string;     // Email subject
+    from?: string;        // Sender email
+    internalDate?: string; // ISO timestamp
+}\n\n```
+\n\n### Calendar Event Listing\n\n\n\nFetch upcoming calendar events:
+\n\n```typescript
+import { listUpcomingEvents } from "./services/calendarService";
+
+// Fetch next 10 events
+const events = await listUpcomingEvents({ maxResults: 10 });
+
+// Fetch events in specific time range
+const now = new Date();
+const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);\n\n
+const events = await listUpcomingEvents({
+    timeMin: now.toISOString(),
+    timeMax: nextWeek.toISOString(),
+    maxResults: 20,
+    calendarId: "primary"
+});\n\n```
+
+**Returns:** Array of `CalendarEventSummary`:\n\n\n\n```typescript
+interface CalendarEventSummary {
+    id: string;           // Event ID
+    summary?: string;     // Event title
+    start: string;        // Start time (ISO)
+    end: string;          // End time (ISO)
+    location?: string;    // Event location
+    attendees?: Array;    // Event attendees
+    htmlLink?: string;    // Google Calendar link
+}\n\n```
+\n\n## CLI Tool: Data Fetcher\n\n\n\nA command-line tool for quickly viewing Gmail and Calendar data.
+\n\n### Usage\n\n\n\n```bash\n\n# Fetch both Gmail and Calendar data\n\nnpm run data:fetch\n\n\n\n# Fetch only Gmail messages\n\nnpm run data:gmail\n\n\n\n# Fetch only Calendar events\n\nnpm run data:calendar\n\n\n\n# Fetch with custom max results\n\nnpm run data:fetch all 20\n\nnpm run data:gmail 5
+npm run data:calendar 15\n\n```
+\n\n### Output Example\n\n\n\n```text\n\n🔍 RenOS Data Fetcher
+
+Mode: DRY-RUN
+Service: all
+Max Results: 10
+
+📧 Fetching Gmail messages...
+Found 10 messages:
+
+────────────────────────────────────────────────────────────────────────────────
+ID: 18d4f5a2b3c1d6e8
+Thread: 18d4f5a2b3c1d6e8
+From: kunde@example.com
+Subject: Tilbud på kontorrengøring
+Date: 2025-09-29T10:30:00Z
+Snippet: Hej, jeg vil gerne have et tilbud på...
+
+────────────────────────────────────────────────────────────────────────────────
+
+📅 Fetching Calendar events...
+Found 3 upcoming events:
+
+────────────────────────────────────────────────────────────────────────────────
+ID: abc123def456
+Summary: Kundemøde - Kontorets Rengøring ApS\n\nStart: 2025-09-30T14:00:00+02:00
+End: 2025-09-30T15:00:00+02:00
+Location: Kongens Nytorv 1, København
+
+────────────────────────────────────────────────────────────────────────────────\n\n```
+\n\n## Configuration\n\n\n\nSet up environment variables in `.env`:
+\n\n```env\n\n# Required for Gmail/Calendar access\n\nGOOGLE_CLIENT_EMAIL=service-account@project.iam.gserviceaccount.com\n\nGOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+GOOGLE_IMPERSONATED_USER=info@rendetalje.dk
+\n\n# Run mode (dry-run = no actual changes)\n\nRUN_MODE=dry-run\n\n\n\n# Optional: For smoke tests\n\nSMOKETEST_EMAIL_TO=test@example.com\n\nSMOKETEST_CALENDAR_ID=primary
+SMOKETEST_TIMEZONE=Europe/Copenhagen\n\n```
+\n\n## Testing\n\n\n\nUnit tests are included for both services:
+\n\n```bash\n\n# Run all tests\n\nnpm test\n\n\n\n# Watch mode\n\nnpm test:watch\n\n```\n\n
+Tests use Vitest with mocked Google APIs to ensure reliability without actual API calls.
+\n\n## Dry-Run Mode\n\n\n\nBy default, RenOS operates in **dry-run mode**, which:
+\n\n- ✅ Allows reading Gmail messages and Calendar events\n\n- ✅ Logs all operations\n\n- ❌ Prevents sending emails or modifying calendar events\n\n
+To enable live mode (actual API changes):
+\n\n```env
+RUN_MODE=live\n\n```
+\n\n## Use Cases\n\n\n\n### 1. Email Context for AI Assistant\n\n\n\nPull recent customer emails to provide context for generating responses:
+\n\n```typescript
+const recentEmails = await listRecentMessages({ 
+    query: "from:kunde@example.com",
+    maxResults: 5 
+});
+
+// Feed to AI for context-aware responses
+const context = recentEmails.map(e => 
+    `${e.from}: ${e.subject} - ${e.snippet}`\n\n).join("\n");\n\n```
+\n\n### 2. Calendar Awareness\n\n\n\nCheck upcoming appointments before scheduling:
+\n\n```typescript
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);\n\n
+const tomorrowEvents = await listUpcomingEvents({
+    timeMin: new Date().toISOString(),
+    timeMax: tomorrow.toISOString()
+});
+
+// Avoid double-booking
+const hasConflict = tomorrowEvents.some(e => 
+    isTimeConflict(e.start, e.end, proposedTime)
+);\n\n```
+\n\n### 3. Customer Communication History\n\n\n\nAnalyze email patterns and response times:
+\n\n```typescript
+const customerEmails = await listRecentMessages({
+    query: `from:${customerEmail}`,
+    maxResults: 50
+});
+
+const responseTime = calculateAverageResponseTime(customerEmails);\n\n```
+\n\n## API Scopes\n\n\n\nThe following Google OAuth2 scopes are required:
+\n\n- **Gmail**: `https://www.googleapis.com/auth/gmail.modify`\n\n- **Calendar**: `https://www.googleapis.com/auth/calendar`\n\n
+These are automatically requested when using the service account with domain-wide delegation.
+\n\n## Troubleshooting\n\n\n\n### "No messages found" or "No events found"\n\n\n\n- Verify `GOOGLE_IMPERSONATED_USER` is set correctly\n\n- Check that the service account has domain-wide delegation\n\n- Ensure the user has emails/events to fetch\n\n\n\n### Authentication errors\n\n\n\n- Confirm `GOOGLE_CLIENT_EMAIL` and `GOOGLE_PRIVATE_KEY` are set\n\n- Verify service account has necessary permissions\n\n- Check that domain-wide delegation includes required scopes\n\n\n\n### Rate limiting\n\n\n\nGoogle APIs have rate limits. If fetching large amounts of data:
+\n\n- Use pagination with `maxResults`\n\n- Implement caching for frequently accessed data\n\n- Add retry logic with exponential backoff\n\n\n\n## Future Enhancements\n\n\n\nPlanned improvements:
+\n\n- [ ] Message thread expansion (fetch full conversation)\n\n- [ ] Email attachment handling\n\n- [ ] Calendar event modification\n\n- [ ] Gmail label management\n\n- [ ] Advanced search queries\n\n- [ ] Batch operations for efficiency\n\n- [ ] Webhook integration for real-time updates\n\n\n\n## Contributing\n\n\n\nWhen adding new data fetching features:
+\n\n1. Add function to appropriate service file\n\n2. Create TypeScript interfaces for return types\n\n3. Write unit tests with mocked APIs\n\n4. Update this documentation\n\n5. Add CLI command if applicable
+\n\n## Related Documentation\n\n\n\n- [Google Gmail API](https://developers.google.com/gmail/api)\n\n- [Google Calendar API](https://developers.google.com/calendar/api)\n\n- [Service Account Setup](./SERVICE_ACCOUNT_SETUP.md)\n\n- [RenOS Architecture](./ARCHITECTURE.md)

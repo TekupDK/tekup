@@ -1,0 +1,53 @@
+```mermaid
+graph LR
+    %% User Request
+    User[👤 User Request<br/>"Create Invoice"] --> Parse[🧠 AI Parsing]
+    
+    %% Step 1: Find Customer
+    Parse --> FindCustomer{Customer<br/>Known?}
+    FindCustomer -->|No| SearchAPI[🔍 Search Billy.dk]
+    SearchAPI --> MatchCustomer{Customer<br/>Found?}
+    MatchCustomer -->|Yes| ExtractID[Extract Customer ID]
+    MatchCustomer -->|No| CreateCustomer[❌ Error:<br/>Customer not found]
+    FindCustomer -->|Yes| ExtractID
+    
+    %% Step 2: Calculate Amount
+    ExtractID --> CalcAmount[💰 Calculate Amount]
+    CalcAmount --> GetRate[Get Hourly Rate<br/>Basic: 299 DKK<br/>Deep: 349 DKK<br/>Moving: 349 DKK]
+    GetRate --> Multiply[Multiply:<br/>Hours × Rate]
+    
+    %% Step 3: Create Invoice
+    Multiply --> BuildRequest[📝 Build Invoice Request]
+    BuildRequest --> APICall[📤 POST /billy/invoices]
+    APICall --> BillyAPI[Billy.dk API]
+    
+    %% API Response
+    BillyAPI --> APIResponse{API<br/>Success?}
+    APIResponse -->|Yes| InvoiceCreated[✅ Invoice Created]
+    APIResponse -->|No| APIError[❌ API Error<br/>Retry?]
+    APIError --> Retry{Retry<br/>Count < 3?}
+    Retry -->|Yes| APICall
+    Retry -->|No| Failed[❌ Failed]
+    
+    %% Success Path
+    InvoiceCreated --> SendEmail[📧 Send to Customer]
+    SendEmail --> FormatResponse[📋 Format Response]
+    FormatResponse --> UserResponse[✅ Display to User:<br/>Invoice ID<br/>Amount<br/>Status]
+    
+    %% Error Paths
+    CreateCustomer --> UserResponse
+    Failed --> UserResponse
+    
+    %% Styling
+    classDef successStyle fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
+    classDef errorStyle fill:#F44336,stroke:#333,stroke-width:2px,color:#fff
+    classDef processStyle fill:#2196F3,stroke:#333,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#FF9800,stroke:#333,stroke-width:2px,color:#000
+    
+    class InvoiceCreated,SendEmail,UserResponse successStyle
+    class CreateCustomer,APIError,Failed errorStyle
+    class Parse,ExtractID,CalcAmount,BuildRequest,APICall,FormatResponse processStyle
+    class FindCustomer,MatchCustomer,APIResponse,Retry decisionStyle
+```
+
+

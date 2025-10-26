@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "debug": {
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": ["debug-mcp-server.cjs"],
+      "cwd": "C:\\Users\\empir\\Tekup-org",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}

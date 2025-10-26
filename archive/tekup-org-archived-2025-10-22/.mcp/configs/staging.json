@@ -1,0 +1,186 @@
+{
+  "$schema": "../schemas/mcp-config.schema.json",
+  "extends": "base.json",
+  "environment": "staging",
+  "description": "Staging environment configuration mimicking production with testing capabilities",
+  "mcpServers": {
+    "browser": {
+      "transport": {
+        "config": {
+          "env": {
+            "BROWSER_MCP_PORT": "3030",
+            "NODE_ENV": "staging",
+            "DEBUG": "mcp:browser:*"
+          },
+          "timeout": 45000,
+          "retryAttempts": 4
+        }
+      },
+      "capabilities": {
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "healthCheckInterval": 30000,
+        "requestTimeout": 90000,
+        "maxConcurrentRequests": 4
+      }
+    },
+    "filesystem": {
+      "transport": {
+        "config": {
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-filesystem",
+            "${MCP_FILESYSTEM_WORKSPACE_ROOT}"
+          ],
+          "env": {
+            "NODE_ENV": "staging"
+          },
+          "timeout": 12000
+        }
+      },
+      "capabilities": {
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "healthCheckInterval": 120000,
+        "requestTimeout": 25000,
+        "maxConcurrentRequests": 8
+      }
+    },
+    "search": {
+      "transport": {
+        "config": {
+          "env": {
+            "BRAVE_API_KEY": "${MCP_BRAVE_API_KEY}",
+            "NODE_ENV": "staging"
+          },
+          "timeout": 12000,
+          "retryAttempts": 3
+        }
+      },
+      "capabilities": {
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "healthCheckInterval": 180000,
+        "requestTimeout": 12000,
+        "maxConcurrentRequests": 3
+      }
+    },
+    "automation": {
+      "transport": {
+        "config": {
+          "url": "${MCP_ZAPIER_ENDPOINT}",
+          "headers": {
+            "Content-Type": "application/json",
+            "User-Agent": "TekUp-MCP/1.0.0-staging",
+            "X-Environment": "staging"
+          },
+          "timeout": 30000
+        }
+      },
+      "capabilities": {
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "healthCheckInterval": 600000,
+        "requestTimeout": 25000,
+        "maxConcurrentRequests": 2
+      }
+    },
+    "billing": {
+      "id": "tekup-billing-staging",
+      "name": "TekUp Billing Integration (Staging)",
+      "description": "Billy billing integration for staging environment",
+      "version": "1.0.0",
+      "enabled": true,
+      "priority": 5,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-fetch"],
+          "env": {
+            "BILLY_API_TOKEN": "${MCP_BILLY_API_TOKEN}",
+            "BILLY_BASE_URL": "https://api.billysbilling.com/v2",
+            "NODE_ENV": "staging"
+          },
+          "timeout": 18000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "billy_create_invoice",
+            "description": "Create invoices in Billy"
+          },
+          {
+            "name": "billy_get_customer",
+            "description": "Get customer information"
+          }
+        ],
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "autoStart": true,
+        "retryAttempts": 3,
+        "retryDelay": 2000,
+        "healthCheckInterval": 240000,
+        "requestTimeout": 15000,
+        "maxConcurrentRequests": 2
+      }
+    }
+  },
+  "global": {
+    "logging": {
+      "level": "info",
+      "file": ".mcp/logs/mcp-staging.log",
+      "maxSize": "25MB",
+      "maxFiles": 15,
+      "timestamp": true,
+      "json": true,
+      "console": true,
+      "structured": true
+    },
+    "security": {
+      "allowUnsignedPlugins": false,
+      "sandboxMode": true,
+      "requireHttps": true,
+      "auditLogging": true,
+      "rateLimiting": {
+        "enabled": true,
+        "maxRequestsPerMinute": 200,
+        "maxRequestsPerHour": 2000
+      }
+    },
+    "performance": {
+      "maxConcurrentServers": 8,
+      "defaultTimeout": 30000,
+      "connectionPoolSize": 4,
+      "requestQueueLimit": 100,
+      "memoryLimit": "1GB"
+    },
+    "monitoring": {
+      "healthChecks": true,
+      "metricsCollection": true,
+      "errorReporting": true,
+      "performanceTracking": true,
+      "debugMode": false,
+      "testMode": true,
+      "alerting": {
+        "enabled": true,
+        "errorThreshold": 25,
+        "responseTimeThreshold": 10000,
+        "notificationChannels": ["slack"]
+      }
+    },
+    "staging": {
+      "testDataGeneration": true,
+      "mockServices": false,
+      "loadTesting": true,
+      "integrationTesting": true,
+      "performanceTesting": true
+    }
+  }
+}

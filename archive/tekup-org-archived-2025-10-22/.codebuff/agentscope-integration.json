@@ -1,0 +1,73 @@
+{
+  "agentscope": {
+    "backend": {
+      "name": "AgentScope Enhanced Backend",
+      "url": "http://localhost:8001",
+      "version": "1.0",
+      "type": "jarvis_foundation"
+    },
+    "endpoints": {
+      "base_url": "http://localhost:8001",
+      "api_prefix": "/api/v1",
+      "websocket_url": "ws://localhost:8001/ws",
+      "health_check": "/health",
+      "status": "/status"
+    },
+    "authentication": {
+      "method": "bearer_token",
+      "header": "Authorization",
+      "prefix": "Bearer",
+      "token_source": "environment",
+      "token_var": "AGENTSCOPE_TOKEN"
+    },
+    "features": {
+      "jarvis_foundation_model": {
+        "enabled": true,
+        "model_name": "jarvis-foundation-1.0",
+        "max_tokens": 32768,
+        "temperature": 0.7,
+        "danish_support": true,
+        "multi_agent_optimization": true,
+        "real_time_steering": true
+      },
+      "websocket_support": true,
+      "streaming": true,
+      "concurrent_tasks": 10,
+      "steering_sessions": 50
+    },
+    "integration_patterns": {
+      "api_calls": {
+        "timeout": 30000,
+        "retry_attempts": 3,
+        "retry_delay": 1000,
+        "error_handling": "graceful_fallback"
+      },
+      "data_flow": {
+        "input_validation": true,
+        "output_sanitization": true,
+        "error_propagation": "structured"
+      }
+    }
+  },
+  "agent_capabilities": {
+    "can_invoke_agentscope": true,
+    "can_stream_responses": true,
+    "can_handle_websockets": true,
+    "can_manage_steering": true,
+    "supports_danish": true
+  },
+  "development": {
+    "auto_start": false,
+    "health_check_interval": 30000,
+    "log_requests": true,
+    "debug_mode": true
+  },
+  "production": {
+    "auto_start": true,
+    "health_check_interval": 60000,
+    "log_requests": false,
+    "debug_mode": false,
+    "ssl": true,
+    "rate_limiting": true
+  }
+}

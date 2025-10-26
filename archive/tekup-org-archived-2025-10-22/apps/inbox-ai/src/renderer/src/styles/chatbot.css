@@ -1,0 +1,282 @@
+/* Chatbot Interface Styles */
+.chatbot-container {
+  @apply flex flex-col h-full bg-white border border-gray-200 rounded-lg shadow-lg;
+}
+
+.chatbot-header {
+  @apply flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50;
+}
+
+.chatbot-title {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.chatbot-controls {
+  @apply flex items-center space-x-2;
+}
+
+.chatbot-minimize-btn {
+  @apply p-1 rounded hover:bg-gray-200 transition-colors;
+}
+
+.chatbot-close-btn {
+  @apply p-1 rounded hover:bg-red-100 text-red-600 transition-colors;
+}
+
+/* Mode Selector Styles */
+.mode-selector {
+  @apply flex bg-gray-100 rounded-lg p-1 mb-4;
+}
+
+.mode-button {
+  @apply flex-1 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200;
+}
+
+.mode-button.active {
+  @apply bg-white shadow-sm;
+}
+
+.mode-button.standard {
+  @apply text-blue-600;
+}
+
+.mode-button.standard.active {
+  @apply bg-blue-50 text-blue-700;
+}
+
+.mode-button.smarter {
+  @apply text-purple-600;
+}
+
+.mode-button.smarter.active {
+  @apply bg-purple-50 text-purple-700;
+}
+
+.mode-description {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+/* Chat Messages Styles */
+.chat-messages {
+  @apply flex-1 overflow-y-auto p-4 space-y-4;
+}
+
+.message-bubble {
+  @apply max-w-xs lg:max-w-md px-4 py-2 rounded-lg;
+}
+
+.message-bubble.user {
+  @apply bg-blue-600 text-white ml-auto;
+}
+
+.message-bubble.bot {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.message-bubble.system {
+  @apply bg-yellow-50 text-yellow-800 border border-yellow-200;
+}
+
+.message-content {
+  @apply text-sm leading-relaxed;
+}
+
+.message-metadata {
+  @apply text-xs opacity-75 mt-2 flex items-center justify-between;
+}
+
+.message-timestamp {
+  @apply text-xs opacity-60;
+}
+
+.message-model {
+  @apply text-xs bg-black bg-opacity-10 px-2 py-1 rounded;
+}
+
+.message-tokens {
+  @apply text-xs opacity-60;
+}
+
+/* Message Actions */
+.message-actions {
+  @apply flex flex-wrap gap-2 mt-3;
+}
+
+.action-button {
+  @apply inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors;
+}
+
+.action-button.compose {
+  @apply bg-green-100 text-green-700 hover:bg-green-200;
+}
+
+.action-button.reply {
+  @apply bg-blue-100 text-blue-700 hover:bg-blue-200;
+}
+
+.action-button.forward {
+  @apply bg-indigo-100 text-indigo-700 hover:bg-indigo-200;
+}
+
+.action-button.archive {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+.action-button.delete {
+  @apply bg-red-100 text-red-700 hover:bg-red-200;
+}
+
+.action-button.search {
+  @apply bg-yellow-100 text-yellow-700 hover:bg-yellow-200;
+}
+
+.action-button.schedule {
+  @apply bg-purple-100 text-purple-700 hover:bg-purple-200;
+}
+
+/* Chat Input Styles */
+.chat-input-container {
+  @apply border-t border-gray-200 p-4;
+}
+
+.chat-input-wrapper {
+  @apply flex items-end space-x-2;
+}
+
+.chat-input {
+  @apply flex-1 resize-none border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.chat-send-button {
+  @apply px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Conversation List Styles */
+.conversation-list {
+  @apply space-y-2;
+}
+
+.conversation-item {
+  @apply p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors;
+}
+
+.conversation-item.active {
+  @apply bg-blue-50 border-blue-200;
+}
+
+.conversation-header {
+  @apply flex items-center justify-between mb-1;
+}
+
+.conversation-title {
+  @apply font-medium text-gray-800 truncate;
+}
+
+.conversation-date {
+  @apply text-xs text-gray-500;
+}
+
+.conversation-preview {
+  @apply text-sm text-gray-600 truncate;
+}
+
+.conversation-meta {
+  @apply flex items-center justify-between mt-2 text-xs text-gray-500;
+}
+
+.conversation-actions {
+  @apply flex items-center space-x-1;
+}
+
+.conversation-action-btn {
+  @apply p-1 rounded hover:bg-gray-200 transition-colors;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  @apply flex items-center space-x-1 text-gray-500 text-sm;
+}
+
+.typing-dot {
+  @apply w-2 h-2 bg-gray-400 rounded-full animate-pulse;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Loading States */
+.chatbot-loading {
+  @apply flex items-center justify-center p-8;
+}
+
+.loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
+}
+
+/* Error States */
+.chatbot-error {
+  @apply p-4 bg-red-50 border border-red-200 rounded-lg;
+}
+
+.error-message {
+  @apply text-red-700;
+}
+
+.error-retry-btn {
+  @apply mt-2 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .chatbot-container {
+    @apply h-screen rounded-none;
+  }
+  
+  .message-bubble {
+    @apply max-w-xs;
+  }
+  
+  .mode-selector {
+    @apply text-xs;
+  }
+  
+  .chat-input {
+    @apply text-base; /* Prevent zoom on iOS */
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .chatbot-container {
+    @apply bg-gray-900 border-gray-700;
+  }
+  
+  .chatbot-header {
+    @apply bg-gray-800 border-gray-700;
+  }
+  
+  .chatbot-title {
+    @apply text-gray-100;
+  }
+  
+  .message-bubble.bot {
+    @apply bg-gray-800 text-gray-100;
+  }
+  
+  .chat-input {
+    @apply bg-gray-800 border-gray-600 text-gray-100;
+  }
+  
+  .conversation-item {
+    @apply border-gray-700 hover:bg-gray-800;
+  }
+  
+  .conversation-title {
+    @apply text-gray-100;
+  }
+}

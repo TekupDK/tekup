@@ -1,0 +1,153 @@
+{
+  "$schema": "../schemas/mcp-config.schema.json",
+  "extends": "base.json",
+  "environment": "development",
+  "description": "Development environment overrides for MCP configuration",
+  "mcpServers": {
+    "browser": {
+      "transport": {
+        "config": {
+          "env": {
+            "BROWSER_MCP_PORT": "3030",
+            "NODE_ENV": "development",
+            "DEBUG": "mcp:*"
+          },
+          "timeout": 60000
+        }
+      },
+      "capabilities": {
+        "logging": ["debug", "info", "warning", "error"]
+      },
+      "config": {
+        "healthCheckInterval": 15000,
+        "requestTimeout": 120000
+      }
+    },
+    "filesystem": {
+      "transport": {
+        "config": {
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-filesystem",
+            "C:\\Users\\empir\\Tekup-org",
+            "C:\\Users\\empir\\Lead-håndtering"
+          ],
+          "env": {
+            "NODE_ENV": "development",
+            "DEBUG": "mcp:filesystem:*"
+          }
+        }
+      },
+      "capabilities": {
+        "logging": ["debug", "info", "warning", "error"]
+      }
+    },
+    "search": {
+      "transport": {
+        "config": {
+          "env": {
+            "BRAVE_API_KEY": "${MCP_BRAVE_API_KEY}",
+            "NODE_ENV": "development",
+            "DEBUG": "mcp:search:*"
+          }
+        }
+      },
+      "capabilities": {
+        "logging": ["debug", "info", "warning", "error"]
+      }
+    },
+    "automation": {
+      "transport": {
+        "config": {
+          "url": "${MCP_ZAPIER_ENDPOINT}",
+          "headers": {
+            "Content-Type": "application/json",
+            "User-Agent": "TekUp-MCP/1.0.0-dev",
+            "X-Environment": "development"
+          }
+        }
+      },
+      "capabilities": {
+        "logging": ["debug", "info", "warning", "error"]
+      }
+    },
+    "billing": {
+      "id": "tekup-billing-dev",
+      "name": "TekUp Billing Integration (Development)",
+      "description": "Billy billing integration for development testing",
+      "version": "1.0.0",
+      "enabled": true,
+      "priority": 5,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-fetch"],
+          "env": {
+            "BILLY_API_TOKEN": "${MCP_BILLY_API_TOKEN}",
+            "BILLY_BASE_URL": "https://api.billysbilling.com/v2",
+            "NODE_ENV": "development",
+            "DEBUG": "mcp:billing:*"
+          },
+          "timeout": 20000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "billy_create_invoice",
+            "description": "Create invoices in Billy"
+          },
+          {
+            "name": "billy_get_customer",
+            "description": "Get customer information"
+          }
+        ],
+        "logging": ["debug", "info", "warning", "error"]
+      },
+      "config": {
+        "autoStart": true,
+        "retryAttempts": 2,
+        "retryDelay": 2000,
+        "healthCheckInterval": 120000,
+        "requestTimeout": 15000,
+        "maxConcurrentRequests": 2
+      }
+    }
+  },
+  "global": {
+    "logging": {
+      "level": "debug",
+      "file": ".mcp/logs/mcp-dev.log",
+      "maxSize": "50MB",
+      "maxFiles": 10,
+      "timestamp": true,
+      "json": true,
+      "console": true
+    },
+    "security": {
+      "allowUnsignedPlugins": true,
+      "sandboxMode": false,
+      "requireHttps": false
+    },
+    "performance": {
+      "maxConcurrentServers": 15,
+      "defaultTimeout": 60000,
+      "requestQueueLimit": 200
+    },
+    "monitoring": {
+      "healthChecks": true,
+      "metricsCollection": true,
+      "errorReporting": true,
+      "performanceTracking": true,
+      "debugMode": true
+    },
+    "development": {
+      "hotReload": true,
+      "verboseLogging": true,
+      "enableDebugging": true,
+      "mockMode": false,
+      "testDataGeneration": true
+    }
+  }
+}

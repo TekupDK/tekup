@@ -1,0 +1,11 @@
+{
+  "versionGroups": [
+    { "dependencies": ["react", "react-dom"], "policy": "sameRange" },
+    { "dependencies": ["next"], "policy": "sameRange" },
+    { "dependencies": ["@nestjs/*"], "policy": "sameRange" }
+  ],
+  "semverGroups": [
+    { "range": "^", "packages": ["apps/*", "packages/*"] }
+  ],
+  "filter": ["apps/*/package.json", "packages/*/package.json"]
+}

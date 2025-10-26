@@ -1,0 +1,48 @@
+# Development Dockerfile for Tekup Node.js Applications
+# Optimized for hot-reload and development workflow
+
+ARG NODE_VERSION=20
+FROM node:${NODE_VERSION}-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    python3 \
+    python3-pip \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Install pnpm globally
+RUN npm install -g pnpm@10.15.1
+
+# Copy source code first (includes scripts needed for postinstall)
+COPY . .
+
+# Install dependencies
+RUN pnpm install --no-frozen-lockfile
+
+# Build shared packages first
+RUN pnpm -r --filter "./packages/*" build
+
+ARG APP_NAME
+WORKDIR /app/apps/${APP_NAME}
+
+# Generate Prisma client if schema exists
+RUN if [ -f "prisma/schema.prisma" ]; then pnpm prisma generate; fi
+
+# Create a non-root user for security
+RUN groupadd -r tekup && useradd -r -g tekup -s /bin/bash tekup
+RUN chown -R tekup:tekup /app
+USER tekup
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:${PORT:-3000}/health || exit 1
+
+# Default command (can be overridden in docker-compose)
+CMD ["pnpm", "dev"]

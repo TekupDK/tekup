@@ -1,0 +1,81 @@
+{
+  "timestamp": "2025-10-22T03:08:00.857Z",
+  "system": "tekup-chat",
+  "version": "1.1.0",
+  "results": {
+    "total": 11,
+    "passed": 1,
+    "failed": 10,
+    "errors": [
+      {
+        "category": "Knowledge Base",
+        "test": "TekupVault Integration - Repository Query",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Knowledge Base",
+        "test": "Strategic Context Awareness",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Knowledge Base",
+        "test": "Code Standards Query",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Danish Language",
+        "test": "Natural Danish Response",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Danish Language",
+        "test": "Complex Danish Question",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Context & Memory",
+        "test": "Multi-turn Conversation",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Technical Queries",
+        "test": "Architecture Question",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Technical Queries",
+        "test": "Deployment Query",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Error Handling",
+        "test": "Very Long Input",
+        "error": "fetch failed"
+      },
+      {
+        "category": "Error Handling",
+        "test": "Special Characters",
+        "error": "fetch failed"
+      }
+    ],
+    "timings": [
+      38,
+      1,
+      2,
+      2,
+      1,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "startTime": 1761102480793
+  },
+  "metrics": {
+    "avgResponseTime": 5,
+    "maxResponseTime": 38,
+    "minResponseTime": 1,
+    "totalDuration": 62
+  }
+}

@@ -1,0 +1,265 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("PX_DATABASE_URL")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  LOST
+}
+
+enum ComplianceType {
+  NIS2_FINDING
+  COPILOT_RISK
+  BACKUP_FAILURE
+}
+
+enum SeverityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model Tenant {
+  id        String    @id @default(uuid())
+  slug      String    @unique
+  name      String
+  leads     Lead[]
+  apiKeys   ApiKey[]
+  settings  TenantSetting[]
+  settingsEvents SettingsEvent[]
+  duplicateGroups DuplicateGroup[]
+  smsTracking SMSTracking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Lead {
+  id         String      @id @default(uuid())
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  tenantId   String
+  source     String
+  status     LeadStatus  @default(NEW)
+  payload    Json?
+  events     LeadEvent[]
+  duplicateGroupMembers DuplicateGroupMember[]
+  smsTracking SMSTracking[]
+  
+  // Compliance integration fields
+  complianceType     ComplianceType?
+  severity           SeverityLevel?
+  scanId             String?
+  findingCategory    String?
+  recommendation     String?
+  autoActionable     Boolean?        @default(false)
+  slaDeadline        DateTime?
+  affectedSystems    String[]        @default([])
+  evidence           Json?
+  duplicateOf        String?         // Reference to original lead if this is a duplicate
+  
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  
+  @@index([tenantId, status])
+  @@index([tenantId, complianceType])
+  @@index([slaDeadline])
+  // Named below: Lead_duplicateOf_idx
+  @@index([tenantId, source])
+  @@index([tenantId, createdAt])
+  // Named below: Lead_tenantId_updatedAt_idx
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
+  // Named below: Lead_tenantId_status_createdAt_idx
+  // Named below: Lead_tenantId_source_createdAt_idx
+  // New indexes for optimization
+  @@index([tenantId, status, createdAt], name: "Lead_tenantId_status_createdAt_idx")
+  @@index([tenantId, source, createdAt], name: "Lead_tenantId_source_createdAt_idx")
+  @@index([tenantId, updatedAt], name: "Lead_tenantId_updatedAt_idx")
+  @@index([complianceType], name: "Lead_complianceType_idx")
+  @@index([duplicateOf], name: "Lead_duplicateOf_idx")
+}
+
+model LeadEvent {
+  id         String    @id @default(uuid())
+  lead       Lead      @relation(fields: [leadId], references: [id])
+  leadId     String
+  actor      String?
+  fromStatus LeadStatus?
+  toStatus   LeadStatus
+  notes      String?   // Additional context for status changes
+  metadata   Json?     // Store additional event data
+  createdAt  DateTime  @default(now())
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+// SMS tracking for phone leads
+model SMSTracking {
+  id          String    @id @default(uuid())
+  trackingId  String    @unique
+  lead        Lead      @relation(fields: [leadId], references: [id])
+  leadId      String
+  tenant      Tenant    @relation(fields: [tenantId], references: [id])
+  tenantId    String
+  phoneNumber String
+  messageId   String
+  trackingUrl String
+  sentAt      DateTime
+  clickedAt   DateTime?
+  convertedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([leadId])
+  @@index([tenantId])
+  @@index([trackingId])
+  @@index([sentAt])
+}
+
+// Key/value tenant scoped settings (non-secret). Each key validated in service layer.
+model TenantSetting {
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  tenantId   String
+  key        String
+  value      Json
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  @@id([tenantId, key])
+  @@index([tenantId])
+  // New indexes for optimization
+  @@index([tenantId, key], name: "TenantSetting_tenantId_key_idx")
+}
+
+// Audit log for settings changes
+model SettingsEvent {
+  id        String   @id @default(uuid())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  tenantId  String
+  key       String
+  actor     String?
+  oldValue  Json?
+  newValue  Json?
+  createdAt DateTime @default(now())
+  @@index([tenantId, key])
+  // New indexes for optimization
+  // Renamed duplicate index defined above
+  // @@index([tenantId, key], name: "SettingsEvent_tenantId_key_idx")
+}
+
+model DuplicateGroup {
+  id              String              @id @default(uuid())
+  tenant          Tenant              @relation(fields: [tenantId], references: [id])
+  tenantId        String
+  primaryLeadId   String
+  resolved        Boolean             @default(false)
+  resolutionMethod String?            // 'merged', 'separate', 'manual'
+  duplicateMembers DuplicateGroupMember[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  
+  @@index([tenantId])
+  @@index([resolved])
+  @@index([createdAt])
+  // New indexes for optimization
+  @@index([tenantId, resolved], name: "DuplicateGroup_tenantId_resolved_idx")
+}
+
+model DuplicateGroupMember {
+  id           String       @id @default(uuid())
+  duplicateGroup DuplicateGroup   @relation(fields: [duplicateGroupId], references: [id], onDelete: Cascade)
+  duplicateGroupId String
+  lead         Lead         @relation(fields: [leadId], references: [id])
+  leadId       String
+  createdAt    DateTime     @default(now())
+  
+  @@index([duplicateGroupId])
+  // Named below: DuplicateGroupMember_leadId_idx
+  @@index([createdAt])
+  // New indexes for optimization
+  @@index([leadId], name: "DuplicateGroupMember_leadId_idx")
+}
+
+model ApiKey {
+  id              String                    @id @default(uuid())
+  tenant          Tenant                    @relation(fields: [tenantId], references: [id])
+  tenantId        String
+  key             String?                   @unique // Legacy field, will be phased out
+  hashedKey       String?                   @unique // Bcrypt hashed key
+  keyPrefix       String?                   // First 8 chars for identification
+  active          Boolean                   @default(true)
+  expiresAt       DateTime?                 // Key expiration
+  lastUsedAt      DateTime?                 // Track usage
+  rotatedFrom     String?                   // Previous key reference
+  rotationCount   Int                      @default(0)
+  revokedAt       DateTime?                 // Revocation timestamp
+  revokedBy       String?                   // Who revoked it
+  revokedReason   String?                   // Why it was revoked
+  scopes          String[]                  @default([]) // e.g. ["manage:settings"]
+  permissions     String[]                  @default([]) // Fine-grained permissions
+  ipWhitelist     String[]                  @default([]) // Allowed IP addresses
+  userAgent       String?                   // Expected user agent
+  description     String?                   // Human-readable description
+  environment     String                    @default("production") // dev/staging/production
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+  
+  // Relations
+  rotations       ApiKeyRotationHistory[]
+  usageLogs       ApiKeyUsageLog[]
+  
+  @@index([hashedKey])
+  @@index([keyPrefix])
+  @@index([tenantId, active])
+  @@index([expiresAt])
+  @@index([lastUsedAt])
+  // New indexes for optimization
+  @@index([tenantId], name: "ApiKey_tenantId_idx")
+}
+
+model ApiKeyRotationHistory {
+  id           String   @id @default(uuid())
+  apiKey       ApiKey   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+  apiKeyId     String
+  oldKeyPrefix String?
+  newKeyPrefix String?
+  rotatedBy    String?
+  rotatedAt    DateTime @default(now())
+  reason       String?
+  metadata     Json?
+  
+  @@index([apiKeyId])
+  @@index([rotatedAt])
+}
+
+model ApiKeyUsageLog {
+  id             String   @id @default(uuid())
+  apiKey         ApiKey   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+  apiKeyId       String
+  endpoint       String
+  method         String
+  responseStatus Int
+  responseTime   Int?
+  userAgent      String?
+  ipAddress      String?
+  requestSize    Int?
+  responseSize   Int?
+  timestamp      DateTime @default(now())
+  metadata       Json?
+  
+  @@index([apiKeyId])
+  // Named below: ApiKeyUsageLog_timestamp_idx
+  // Named below: ApiKeyUsageLog_endpoint_method_idx
+  // New indexes for optimization
+  @@index([timestamp], name: "ApiKeyUsageLog_timestamp_idx")
+  @@index([endpoint, method], name: "ApiKeyUsageLog_endpoint_method_idx")
+}
+
+// TODO(migration): Ensure migration adding ApiKey.scopes (String[] with default []) is applied via `prisma migrate dev`.

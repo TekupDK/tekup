@@ -1,0 +1,99 @@
+# CODEOWNERS file for Tekup monorepo
+# This file defines code ownership and review requirements for different parts of the codebase
+# When a PR touches files in these paths, the specified teams/users will be automatically requested for review
+
+# Global fallback - requires at least one review from any team lead
+* @tekup-org/leads
+
+# === FRONTEND APPLICATIONS ===
+# React/Next.js frontend applications
+apps/flow-web/ @tekup-org/frontend-team @tekup-org/leads
+apps/tekup-crm-web/ @tekup-org/frontend-team @tekup-org/leads
+apps/tekup-lead-platform-web/ @tekup-org/frontend-team @tekup-org/leads
+apps/voice-agent/ @tekup-org/frontend-team @tekup-org/leads
+apps/site/ @tekup-org/frontend-team @tekup-org/leads
+
+# === BACKEND APPLICATIONS ===
+# NestJS backend APIs and services
+apps/flow-api/ @tekup-org/backend-team @tekup-org/leads
+apps/tekup-crm-api/ @tekup-org/backend-team @tekup-org/leads
+apps/tekup-lead-platform/ @tekup-org/backend-team @tekup-org/leads
+apps/secure-platform/ @tekup-org/backend-team @tekup-org/security-team @tekup-org/leads
+
+# === MOBILE APPLICATIONS ===
+# React Native mobile apps
+apps/tekup-mobile/ @tekup-org/mobile-team @tekup-org/leads
+apps/inbox-ai/ @tekup-org/mobile-team @tekup-org/ai-team @tekup-org/leads
+
+# === AI AGENT SYSTEM ===
+# Agentrooms multi-agent workspace - requires careful review
+apps/agentrooms-backend/ @tekup-org/ai-team @tekup-org/security-team @tekup-org/leads
+apps/agentrooms-frontend/ @tekup-org/ai-team @tekup-org/frontend-team @tekup-org/leads
+
+# Agent configuration - critical security boundary
+apps/agentrooms-backend/config/agents.json @tekup-org/ai-team @tekup-org/security-team @tekup-org/leads
+agentrooms-config.md @tekup-org/ai-team @tekup-org/security-team @tekup-org/leads
+
+# === SHARED PACKAGES ===
+# Shared libraries and utilities
+packages/ui/ @tekup-org/frontend-team @tekup-org/leads
+packages/api-client/ @tekup-org/backend-team @tekup-org/frontend-team @tekup-org/leads
+packages/auth/ @tekup-org/backend-team @tekup-org/security-team @tekup-org/leads
+packages/config/ @tekup-org/devops-team @tekup-org/leads
+packages/shared/ @tekup-org/backend-team @tekup-org/frontend-team @tekup-org/leads
+
+# === INFRASTRUCTURE & DEVOPS ===
+# CI/CD, Docker, deployment configurations
+.github/ @tekup-org/devops-team @tekup-org/leads
+scripts/ @tekup-org/devops-team @tekup-org/leads
+Dockerfile* @tekup-org/devops-team @tekup-org/leads
+docker-compose*.yml @tekup-org/devops-team @tekup-org/leads
+nx.json @tekup-org/devops-team @tekup-org/leads
+package.json @tekup-org/devops-team @tekup-org/leads
+pnpm-workspace.yaml @tekup-org/devops-team @tekup-org/leads
+renovate.json @tekup-org/devops-team @tekup-org/leads
+
+# === SECURITY CRITICAL FILES ===
+# Environment and security configurations - require security team review
+.env* @tekup-org/security-team @tekup-org/leads
+**/.env* @tekup-org/security-team @tekup-org/leads
+ci-env-guard.cjs @tekup-org/security-team @tekup-org/devops-team @tekup-org/leads
+
+# Authentication and authorization
+**/auth/ @tekup-org/security-team @tekup-org/backend-team @tekup-org/leads
+**/*auth* @tekup-org/security-team @tekup-org/backend-team @tekup-org/leads
+**/*security* @tekup-org/security-team @tekup-org/leads
+
+# Database schemas and migrations
+**/schema.prisma @tekup-org/backend-team @tekup-org/security-team @tekup-org/leads
+**/migrations/ @tekup-org/backend-team @tekup-org/security-team @tekup-org/leads
+
+# === DOCUMENTATION ===
+# Technical documentation and guides
+docs/ @tekup-org/docs-team @tekup-org/leads
+*.md @tekup-org/docs-team
+README.md @tekup-org/docs-team @tekup-org/leads
+CHANGELOG.md @tekup-org/docs-team @tekup-org/leads
+CONTRIBUTING.md @tekup-org/docs-team @tekup-org/leads
+
+# API documentation
+**/openapi.json @tekup-org/docs-team @tekup-org/backend-team @tekup-org/leads
+typedoc.json @tekup-org/docs-team @tekup-org/leads
+
+# === CONFIGURATION FILES ===
+# Linting, formatting, and build configurations
+eslint.config.js @tekup-org/devops-team @tekup-org/leads
+.prettierrc* @tekup-org/devops-team @tekup-org/leads
+tsconfig*.json @tekup-org/devops-team @tekup-org/leads
+**/jest.config.* @tekup-org/devops-team @tekup-org/leads
+**/playwright.config.* @tekup-org/devops-team @tekup-org/frontend-team @tekup-org/leads
+
+# === SPECIAL CASES ===
+# Files that require multiple team reviews due to cross-cutting concerns
+CODEOWNERS @tekup-org/leads
+.gitignore @tekup-org/devops-team @tekup-org/leads
+
+# Integration and architecture documents
+ARCHITECTURE.md @tekup-org/leads
+INTEGRATION_*.md @tekup-org/leads
+VALIDATION_GUIDE.md @tekup-org/leads

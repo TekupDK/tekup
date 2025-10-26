@@ -1,0 +1,402 @@
+# Calendar Booking System\n\n\n\nKomplet kalenderintegration med automatisk tilgængelighed-tjek, booking-oprette, bekræftelses-emails og database-persistens.
+\n\n## 📋 Indholdsfortegnelse\n\n\n\n- [Oversigt](#oversigt)\n\n- [Funktioner](#funktioner)\n\n- [Arkitektur](#arkitektur)\n\n- [Installation](#installation)\n\n- [API Reference](#api-reference)\n\n- [CLI Kommandoer](#cli-kommandoer)\n\n- [Workflows](#workflows)\n\n- [Database Schema](#database-schema)\n\n- [Konfiguration](#konfiguration)\n\n- [Integration](#integration)\n\n- [Best Practices](#best-practices)\n\n- [Troubleshooting](#troubleshooting)\n\n\n\n## 🎯 Oversigt\n\n\n\nCalendar Booking systemet giver komplet funktionalitet til at:
+\n\n- ✅ Tjekke tilgængelighed i Google Calendar\n\n- 📅 Finde næste ledige tidspunkt automatisk\n\n- ✉️ Inkludere ledige tider i auto-response emails\n\n- 📝 Oprette bookinger i både Google Calendar og database\n\n- 📧 Sende bekræftelses- og ombokning-emails\n\n- 🛠️ Administrere bookinger via CLI tools\n\n\n\n## ✨ Funktioner\n\n\n\n### Tilgængelighed Tjek\n\n\n\n**isTimeSlotAvailable**
+\n\n- Tjekker om et specifikt tidspunkt er ledigt\n\n- Returnerer konflikter hvis tidspunktet er optaget\n\n- Respekterer eksisterende bookinger og busy-perioder\n\n
+**findNextAvailableSlot**
+\n\n- Finder næste ledige tidspunkt fremadrettet\n\n- Søger inden for specificeret tidsramme (default: 14 dage)\n\n- Tilpasser søgning baseret på booking-varighed\n\n\n\n### Email Integration\n\n\n\n**Automatisk Tidspunkt-Forslag**
+\n\n- Inkluderer 3 ledige tidspunkter i tilbuds-emails\n\n- Template-specifik varighed (flytterengøring: 4t, fast rengøring: 2,5t)\n\n- Professionel dansk formatering med fuld dato\n\n
+**Bekræftelses-Emails**
+\n\n- `sendBookingConfirmation`: Send bekræftelse til kunde efter booking\n\n- `sendReschedulingNotice`: Notificer kunde om ændret tidspunkt\n\n- `sendCancellationNotice`: Send aflysnings-besked\n\n\n\n### Database Persistens\n\n\n\n**CRUD Operationer**
+\n\n- `createBookingRecord`: Opret booking i database\n\n- `createBookingWithCalendar`: Opret både calendar event og database record\n\n- `updateBookingStatus`: Opdater booking status\n\n- `queryBookings`: Søg bookinger med filtre\n\n- `getBookingById`: Hent specifik booking\n\n- `deleteBooking`: Slet booking\n\n
+**Status Workflow**
+\n\n```
+scheduled → confirmed → in_progress → completed
+                     ↘ cancelled\n\n```
+\n\n### CLI Administration\n\n\n\n**bookingManagementTool.ts**
+\n\n- `booking:create` - Opret ny booking interaktivt\n\n- `booking:list` - Vis alle bookinger med filtre\n\n- `booking:update` - Opdater booking status\n\n- `booking:delete` - Slet booking\n\n- `booking:availability` - Tjek tilgængelighed\n\n\n\n## 🏗️ Arkitektur\n\n\n\n```\n\nsrc/
+├── services/
+│   ├── calendarService.ts            # Core calendar & booking functions\n\n│   ├── emailResponseGenerator.ts     # Email med booking slots\n\n│   └── bookingConfirmation.ts        # Confirmation emails\n\n├── tools/\n\n│   ├── bookingManagementTool.ts      # CLI administration\n\n│   ├── testDatabaseBooking.ts        # Test database functions\n\n│   └── calendarBookHandler.ts        # Book appointment from email\n\n└── prisma/\n\n    └── schema.prisma                 # Database schema (Booking model)\n\n```\n\n\n\n### Data Flow\n\n\n\n**Lead → Email med Slots → Booking → Confirmation**
+\n\n```\n\n1. Lead modtages via Gmail\n\n2. EmailResponseGenerator finder 3 ledige slots\n\n3. AI genererer email med tidspunkt-forslag\n\n4. Kunde svarer med valgt tidspunkt\n\n5. calendarBookHandler opretter booking\n\n6. Booking gemmes i database + Google Calendar\n\n7. Bekræftelses-email sendes til kunde\n\n```
+\n\n## 📦 Installation\n\n\n\n### 1. Google Calendar API Access\n\n\n\nSørg for at service account har Calendar API adgang:
+\n\n```bash\n\n# Krævet scopes i Google Workspace\n\nhttps://www.googleapis.com/auth/calendar\n\n```\n\n\n\n### 2. Database Setup (Valgfrit)\n\n\n\nFor at bruge database-persistens:
+\n\n```bash\n\n# Installer PostgreSQL (https://www.postgresql.org/)\n\n# Eller brug cloud database (Supabase, Railway, etc.)\n\n\n\n# Tilføj DATABASE_URL til .env\n\nDATABASE_URL="postgresql://user:password@localhost:5432/rendetalje"\n\n\n\n# Kør Prisma migrations\n\nnpx prisma migrate dev\n\nnpx prisma generate\n\n```
+\n\n### 3. Test Installation\n\n\n\n```bash\n\n# Test calendar availability\n\nnpm run calendar:test\n\n\n\n# Test database booking (kræver DATABASE_URL)\n\nnpx ts-node src/tools/testDatabaseBooking.ts\n\n```\n\n\n\n## 📡 API Reference\n\n\n\n### Availability Functions\n\n\n\n#### `isTimeSlotAvailable(calendarId, requestedStart, requestedEnd)`\n\n\n\nTjekker om et tidspunkt er ledigt.
+
+**Parameters:**
+\n\n- `calendarId: string` - Calendar ID (typisk "primary")\n\n- `requestedStart: string` - ISO 8601 start tid\n\n- `requestedEnd: string` - ISO 8601 slut tid\n\n
+**Returns:**
+\n\n```typescript
+{
+  available: boolean;
+  conflicts: Array<{ start: string; end: string }>;
+}\n\n```
+
+**Example:**
+\n\n```typescript
+const result = await isTimeSlotAvailable(
+    "primary",
+    "2025-10-01T10:00:00+02:00",
+    "2025-10-01T12:30:00+02:00"
+);
+
+if (result.available) {
+    console.log("Slot is available!");
+} else {
+    console.log("Conflicts:", result.conflicts);
+}\n\n```
+\n\n#### `findNextAvailableSlot(calendarId, durationMinutes, searchStartDate?, maxDaysToSearch?)`\n\n\n\nFinder næste ledige tidspunkt.
+
+**Parameters:**
+\n\n- `calendarId: string` - Calendar ID\n\n- `durationMinutes: number` - Booking varighed i minutter\n\n- `searchStartDate?: Date` - Hvor søgning starter (default: nu)\n\n- `maxDaysToSearch?: number` - Antal dage at søge (default: 14)\n\n
+**Returns:**
+\n\n```typescript
+{ start: string; end: string } | null\n\n```
+
+**Example:**
+\n\n```typescript
+const slot = await findNextAvailableSlot(
+    "primary",
+    150, // 2.5 hours
+    new Date(),
+    14 // Search next 14 days
+);
+
+if (slot) {
+    console.log(`Available: ${slot.start} - ${slot.end}`);\n\n}\n\n```
+\n\n### Database Functions\n\n\n\n#### `createBookingWithCalendar(input: CreateBookingWithCalendarInput)`\n\n\n\nOpretter både Google Calendar event OG database record. **Anbefalet high-level function.**
+
+**Parameters:**
+\n\n```typescript
+{
+    leadId: string;
+    quoteId?: string;
+    summary: string;
+    description: string;
+    startTime: Date;
+    endTime: Date;
+    attendees?: Array<{
+        email: string;
+        displayName?: string;
+    }>;
+    location?: string;
+    calendarId?: string;
+    notes?: string;
+}\n\n```
+
+**Returns:**
+\n\n```typescript
+{
+    booking: BookingRecord;
+    calendarEvent: CalendarActionResult;
+}\n\n```
+
+**Example:**
+\n\n```typescript
+const { booking, calendarEvent } = await createBookingWithCalendar({
+    leadId: "lead_abc123",
+    summary: "Fast rengøring - Andreas Tanderup",\n\n    description: "Lejlighed 85 m², 3 værelser",
+    startTime: new Date("2025-10-05T10:00:00+02:00"),
+    endTime: new Date("2025-10-05T12:30:00+02:00"),
+    attendees: [
+        {
+            email: "andreas@example.com",
+            displayName: "Andreas Tanderup",
+        },
+    ],
+    location: "Testvej 123, 8260 Viby J",
+    notes: "Kunde ønsker grøn rengøring",
+});
+
+console.log(`Booking ID: ${booking.id}`);
+console.log(`Calendar Event ID: ${calendarEvent.id}`);\n\n```
+\n\n#### `createBookingRecord(input: CreateBookingInput)`\n\n\n\nOpretter kun database record (ingen calendar event).
+
+**Use case:** Når du allerede har oprettet calendar event manuelt eller vil oprette booking uden calendar integration.\n\n\n\n#### `updateBookingStatus(bookingId: string, input: UpdateBookingInput)`\n\n\n\nOpdater booking status eller detaljer.
+
+**Example:**
+\n\n```typescript
+await updateBookingStatus("booking_abc123", {
+    status: "confirmed",
+    notes: "Kunde bekræftet via telefon kl. 14:30",
+});\n\n```
+\n\n#### `queryBookings(filters)`\n\n\n\nSøg bookinger med filtre.
+
+**Filters:**
+\n\n```typescript
+{
+    leadId?: string;
+    status?: string;
+    startAfter?: Date;
+    startBefore?: Date;
+}\n\n```
+
+**Example:**
+\n\n```typescript
+// Find all upcoming confirmed bookings
+const upcoming = await queryBookings({
+    status: "confirmed",
+    startAfter: new Date(),
+});
+
+// Find all bookings for specific lead
+const leadBookings = await queryBookings({
+    leadId: "lead_abc123",
+});\n\n```
+\n\n#### `getBookingById(bookingId: string)`\n\n\n\nHent specifik booking.
+\n\n#### `deleteBooking(bookingId: string)`\n\n\n\nSlet booking fra database.
+
+**Note:** Sletter IKKE automatisk calendar event. Du skal manuelt slette event via Google Calendar API hvis nødvendigt.\n\n\n\n### Email Functions\n\n\n\nSe [bookingConfirmation.ts API Reference](./EMAIL_AUTO_RESPONSE.md#booking-confirmation-emails)
+\n\n- `sendBookingConfirmation`\n\n- `sendReschedulingNotice`\n\n- `sendCancellationNotice`\n\n\n\n## 🛠️ CLI Kommandoer\n\n\n\n### booking:create\n\n\n\nInteraktiv booking-opretter.
+\n\n```bash
+npm run booking:create\n\n```
+
+**Prompt for:**
+\n\n- Lead ID\n\n- Summary (kunde navn + service)\n\n- Start tidspunkt\n\n- Varighed\n\n- Kunde email\n\n- Lokation\n\n- Noter\n\n\n\n### booking:list\n\n\n\nVis alle bookinger.
+\n\n```bash
+npm run booking:list
+\n\n# Med filtre\n\nnpm run booking:list -- --status=confirmed\n\nnpm run booking:list -- --lead-id=lead_abc123\n\nnpm run booking:list -- --upcoming\n\n```\n\n
+**Output:**
+\n\n```
+📅 Bookings (Upcoming Confirmed)
+
+ID: booking_xyz789
+Lead: lead_abc123
+Start: Fredag den 5. oktober 2025 kl. 10:00
+End: Fredag den 5. oktober 2025 kl. 12:30
+Status: confirmed
+Location: Testvej 123, 8260 Viby J
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total: 1 booking(s)\n\n```
+\n\n### booking:update\n\n\n\nOpdater booking status.
+\n\n```bash
+npm run booking:update <bookingId> --status=confirmed
+npm run booking:update <bookingId> --status=completed --notes="Kunde meget tilfreds"\n\n```
+\n\n### booking:delete\n\n\n\nSlet booking.
+\n\n```bash
+npm run booking:delete <bookingId>\n\n```
+\n\n### booking:availability\n\n\n\nTjek tilgængelighed for et tidspunkt.
+\n\n```bash
+npm run booking:availability -- --start="2025-10-01T10:00:00+02:00" --duration=150\n\n```
+\n\n## 🔄 Workflows\n\n\n\n### Workflow 1: Lead til Booking\n\n\n\n```mermaid\n\ngraph TD
+    A[Lead modtages] --> B[EmailResponseGenerator]
+    B --> C[Find 3 ledige slots]
+    C --> D[Generer email med slots]
+    D --> E[Send tilbud til kunde]
+    E --> F[Kunde svarer med tidspunkt]
+    F --> G[calendarBookHandler]
+    G --> H[createBookingWithCalendar]
+    H --> I[Booking i DB + Calendar]\n\n    I --> J[sendBookingConfirmation]
+    J --> K[Kunde modtager bekræftelse]\n\n```
+\n\n### Workflow 2: Ombooking\n\n\n\n```mermaid\n\ngraph TD
+    A[Kunde anmoder ombooking] --> B[findNextAvailableSlot]
+    B --> C[Foreslå nyt tidspunkt]
+    C --> D[Kunde accepterer]
+    D --> E[updateBookingStatus]
+    E --> F[Opdater calendar event]
+    F --> G[sendReschedulingNotice]
+    G --> H[Kunde bekræfter ny tid]\n\n```
+\n\n### Workflow 3: Status Opdatering\n\n\n\n```\n\nscheduled (oprettet) 
+    ↓
+confirmed (kunde bekræftet)
+    ↓
+in_progress (arbejde startet)
+    ↓
+completed (arbejde færdigt)\n\n```
+
+eller
+\n\n```
+scheduled → cancelled (aflyst)\n\n```
+\n\n## 💾 Database Schema\n\n\n\n### Booking Model\n\n\n\n```prisma\n\nmodel Booking {
+  id          String   @id @default(cuid())
+  leadId      String
+  quoteId     String?
+  startTime   DateTime
+  endTime     DateTime
+  status      String   @default("scheduled")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("bookings")
+}\n\n```
+\n\n### Status Values\n\n\n\n- `scheduled` - Booking oprettet, afventer bekræftelse\n\n- `confirmed` - Kunde har bekræftet tidspunktet\n\n- `in_progress` - Arbejde er i gang\n\n- `completed` - Arbejde er færdigt\n\n- `cancelled` - Booking aflyst\n\n\n\n### Lead Relation\n\n\n\nHver booking er knyttet til et Lead via `leadId`. Hvis leadet slettes, slettes bookingen også (Cascade).
+\n\n## ⚙️ Konfiguration\n\n\n\n### Environment Variables\n\n\n\n```env\n\n# Google Calendar (required)\n\nGOOGLE_CLIENT_EMAIL=your-service-account@project.iam.gserviceaccount.com\n\nGOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+GOOGLE_IMPERSONATED_USER=info@rendetalje.dk
+\n\n# Database (optional, for persistence)\n\nDATABASE_URL="postgresql://user:password@localhost:5432/rendetalje"\n\n\n\n# Calendar settings\n\nDEFAULT_CALENDAR_ID=primary\n\nDEFAULT_SEARCH_DAYS=14
+DEFAULT_WORK_START=09:00
+DEFAULT_WORK_END=17:00\n\n```
+\n\n### Booking Durations\n\n\n\nTemplate-specifik varighed i email auto-response:
+\n\n```typescript
+const DURATIONS = {
+    moving: 240,       // 4 hours
+    regular: 150,      // 2.5 hours
+    quote: 120,        // 2 hours (default)
+};\n\n```
+\n\n## 🔗 Integration\n\n\n\n### Integration med Email Auto-Response\n\n\n\nBooking slots er automatisk aktiveret i `generateQuickResponse`:
+\n\n```typescript
+// Genererer email med 3 ledige tidspunkter
+const response = await emailGenerator.generateQuickResponse(
+    lead,
+    "regular" // Template: moving, regular, eller quote-request
+);
+
+// Disable booking slots
+const response = await emailGenerator.generateQuickResponse(
+    lead,
+    "regular",
+    false // includeBookingSlots = false
+);\n\n```
+\n\n### Integration med Lead Monitoring\n\n\n\n```typescript\n\nimport { onNewLead } from "./services/leadMonitor";
+import { getAutoResponseService } from "./services/emailAutoResponseService";
+
+const service = getAutoResponseService();
+
+// Auto-respond med booking slots
+onNewLead(async (lead) => {
+    await service.processLead(lead); // Includes booking slots by default
+});\n\n```
+\n\n### Custom Integration\n\n\n\n```typescript\n\nimport {
+    findNextAvailableSlot,
+    createBookingWithCalendar,
+    sendBookingConfirmation,
+} from "./services/calendarService";
+
+// 1. Find available slot
+const slot = await findNextAvailableSlot("primary", 150);
+
+if (slot) {
+    // 2. Create booking
+    const { booking, calendarEvent } = await createBookingWithCalendar({
+        leadId: lead.id,
+        summary: `${lead.taskType} - ${lead.name}`,\n\n        description: `Adresse: ${lead.address}\nM²: ${lead.squareMeters}`,
+        startTime: new Date(slot.start),
+        endTime: new Date(slot.end),
+        attendees: [{ email: lead.email!, displayName: lead.name }],
+        location: lead.address,
+    });
+
+    // 3. Send confirmation
+    await sendBookingConfirmation({
+        customerName: lead.name!,
+        customerEmail: lead.email!,
+        startTime: booking.startTime,
+        endTime: booking.endTime,
+        location: lead.address!,
+        serviceType: lead.taskType!,
+        googleMeetLink: calendarEvent.htmlLink,
+    });
+}\n\n```
+\n\n## ✅ Best Practices\n\n\n\n### 1. Brug High-Level Functions\n\n\n\nBrug `createBookingWithCalendar` i stedet for separate `createCalendarEvent` og `createBookingRecord` calls.
+\n\n```typescript
+// ✅ GOOD
+const { booking, calendarEvent } = await createBookingWithCalendar({...});
+
+// ❌ AVOID (unless you have specific reason)
+const event = await createCalendarEvent({...});
+const booking = await createBookingRecord({...});\n\n```
+\n\n### 2. Håndter Null Results\n\n\n\n`findNextAvailableSlot` kan returnere `null` hvis ingen slots findes.
+\n\n```typescript
+const slot = await findNextAvailableSlot("primary", 150);
+
+if (!slot) {
+    // Håndter: Send email med "Vi har desværre ingen ledige tider..."
+    // Eller: Udvid søgevindue til 30 dage
+    const extendedSlot = await findNextAvailableSlot("primary", 150, new Date(), 30);
+}\n\n```
+\n\n### 3. Validér Input\n\n\n\nTjek altid at kunde data er komplet før booking:
+\n\n```typescript
+if (!lead.email || !lead.name || !lead.address) {
+    throw new Error("Missing required customer information for booking");
+}\n\n```
+\n\n### 4. Status Workflow\n\n\n\nFølg status workflow:
+\n\n```typescript
+// Oprettet
+const { booking } = await createBookingWithCalendar({...});
+// Status: "scheduled"
+
+// Kunde bekræfter
+await updateBookingStatus(booking.id, { status: "confirmed" });
+
+// Arbejde starter
+await updateBookingStatus(booking.id, { status: "in_progress" });
+
+// Arbejde færdigt
+await updateBookingStatus(booking.id, { 
+    status: "completed",
+    notes: "Kunde meget tilfreds. Alt rengjort perfekt."
+});\n\n```
+\n\n### 5. Database vs Dry-Run\n\n\n\nSystemet kan køre i dry-run mode (uden faktisk calendar/database writes):
+\n\n```env
+RUN_MODE=dry-run  # For testing\n\nRUN_MODE=live     # For production\n\n```\n\n
+Booking functions respekterer denne setting automatisk.
+\n\n## 🐛 Troubleshooting\n\n\n\n### Problem: "No available slots found"\n\n\n\n**Årsag:** Kalenderen er booket for de næste 14 dage.\n\n
+**Løsning:**
+\n\n```typescript
+// Udvid søgevindue
+const slot = await findNextAvailableSlot(
+    "primary",
+    150,
+    new Date(),
+    30 // Search 30 days instead of 14
+);
+
+// Eller reducer booking varighed
+const slot = await findNextAvailableSlot(
+    "primary",
+    120, // 2 hours instead of 2.5
+    new Date(),
+    14
+);\n\n```
+\n\n### Problem: "Database connection failed"\n\n\n\n**Årsag:** DATABASE_URL ikke konfigureret eller database ikke tilgængelig.\n\n
+**Løsning:**
+\n\n```bash\n\n# Check .env\n\nDATABASE_URL="postgresql://user:password@localhost:5432/rendetalje"\n\n\n\n# Test connection\n\nnpx prisma db pull\n\n\n\n# Start PostgreSQL hvis local\n\n# Windows: services.msc → Start PostgreSQL\n\n# Mac: brew services start postgresql\n\n```\n\n\n\n### Problem: "Booking created but no confirmation email sent"\n\n\n\n**Årsag:** Email service fejl eller manglende kunde email.\n\n
+**Debug:**
+\n\n```typescript
+// Check kunde email eksisterer
+if (!lead.email) {
+    logger.error("Cannot send confirmation: missing customer email");
+}
+
+// Manual send
+await sendBookingConfirmation({
+    customerEmail: lead.email!,
+    customerName: lead.name!,
+    // ...
+});\n\n```
+\n\n### Problem: "Calendar event created but database record failed"\n\n\n\n**Årsag:** Database constraint violation eller connection issue.\n\n
+**Løsning:**
+\n\n- Check leadId eksisterer i database\n\n- Retry database operation\n\n- Manual cleanup hvis nødvendig:\n\n\n\n```typescript
+// Hvis createBookingWithCalendar fejler midtvejs
+// Kan du manuelt oprette database record
+await createBookingRecord({
+    leadId: "lead_abc123",
+    startTime: new Date(calendarEvent.start),
+    endTime: new Date(calendarEvent.end),
+    notes: `Calendar Event ID: ${calendarEvent.id}`,
+});\n\n```
+\n\n### Problem: "Time zone confusion"\n\n\n\n**Symptom:** Booking vises på forkert tidspunkt i calendar.\n\n
+**Løsning:**
+\n\n```typescript
+// Brug altid Europe/Copenhagen timezone
+const startTime = new Date("2025-10-01T10:00:00+02:00");
+
+// Eller explicit timezone
+const startTime = new Date();
+startTime.toLocaleString("da-DK", { timeZone: "Europe/Copenhagen" });\n\n```
+\n\n### Debug Logging\n\n\n\nEnable debug logging for troubleshooting:
+\n\n```env
+LOG_LEVEL=debug
+DB_LOG_LEVEL=debug\n\n```
+
+Check logs:
+\n\n```bash\n\n# Vis seneste log entries\n\ntail -f logs/combined.log\n\n\n\n# Grep for booking-related logs\n\ngrep "booking" logs/combined.log\n\n\n\n# Vis database queries\n\ngrep "prisma:query" logs/combined.log\n\n```\n\n\n\n## 📚 Se Også\n\n\n\n- [Email Auto-Response Documentation](./EMAIL_AUTO_RESPONSE.md)\n\n- [Lead Monitoring Documentation](./LEAD_MONITORING.md)\n\n- [Gmail API Documentation](./GMAIL_API.md)\n\n- [Prisma Documentation](https://www.prisma.io/docs/)\n\n- [Google Calendar API](https://developers.google.com/calendar/api)\n\n\n\n## 🤝 Support\n\n\n\nFor spørgsmål eller problemer:
+\n\n1. Check troubleshooting section ovenfor\n\n2. Review logs med `LOG_LEVEL=debug`\n\n3. Test med dry-run mode: `RUN_MODE=dry-run`\n\n4. Kontakt udvikler team
+
+---
+
+**Version:** 1.0.0  
+**Last Updated:** September 29, 2025  
+**Status:** ✅ Production Ready

@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc:*)",
+      "Bash(npm ls:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(winget upgrade:*)",
+      "Bash(claude --version)",
+      "Bash(npm update:*)",
+      "Bash(npm run lint:*)",
+      "Bash(compgen:*)",
+      "WebFetch(domain:localhost)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

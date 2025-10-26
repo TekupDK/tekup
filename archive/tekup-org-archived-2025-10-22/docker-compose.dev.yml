@@ -1,0 +1,515 @@
+# Tekup-org Development Environment
+# Complete Docker setup for local development with hot-reload, databases, monitoring and tools
+
+services:
+  # ============================================================================
+  # DATABASE SERVICES
+  # ============================================================================
+  
+  # PostgreSQL - Primary database for production-like testing
+  postgres:
+    image: postgres:15-alpine
+    container_name: tekup-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tekup_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tekup_dev_2024
+      POSTGRES_MULTIPLE_DATABASES: "tekup_unified,tekup_crm,tekup_flow,tekup_leads,rendetalje_os"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+      - ./docker/postgres/config/postgresql.conf:/etc/postgresql/postgresql.conf
+    ports:
+      - "5432:5432"
+    command: postgres -c 'max_connections=200' -c 'shared_buffers=256MB'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-dev
+
+  # Redis - Caching and session storage
+  redis:
+    image: redis:7-alpine
+    container_name: tekup-redis-dev
+    restart: unless-stopped
+    command: redis-server --requirepass tekup_redis_2024 --appendonly yes
+    volumes:
+      - redis_dev_data:/data
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-dev
+
+  # ============================================================================
+  # CORE APPLICATION SERVICES
+  # ============================================================================
+
+  # Tekup Unified Platform - Main NestJS API
+  tekup-unified-platform:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile.dev
+      args:
+        APP_NAME: tekup-unified-platform
+        NODE_VERSION: "20"
+    container_name: tekup-unified-platform-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/tekup-unified-platform:/app/apps/tekup-unified-platform
+      - ./packages:/app/packages
+      - ./node_modules:/app/node_modules
+      - tekup_node_modules:/app/apps/tekup-unified-platform/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:tekup_dev_2024@postgres:5432/tekup_unified?schema=public
+      - REDIS_URL=redis://:tekup_redis_2024@redis:6379
+      - JWT_SECRET=tekup-unified-dev-secret-2024
+      - CORS_ORIGIN=http://localhost:3000,http://localhost:3005,http://tekup-crm-web:3005
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: pnpm dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-dev
+
+  # Tekup CRM Web - Frontend application
+  tekup-crm-web:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile.dev
+      args:
+        APP_NAME: tekup-crm-web
+        NODE_VERSION: "20"
+    container_name: tekup-crm-web-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/tekup-crm-web:/app/apps/tekup-crm-web
+      - ./packages:/app/packages
+      - ./node_modules:/app/node_modules
+      - tekup_crm_web_node_modules:/app/apps/tekup-crm-web/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - NEXT_PUBLIC_AGENTSCOPE_URL=http://localhost:8001
+      - PORT=3005
+    ports:
+      - "3005:3005"
+    depends_on:
+      - tekup-unified-platform
+    command: pnpm dev
+    networks:
+      - tekup-dev
+
+  # AgentScope Enhanced Backend - Jarvis Foundation Model
+  agentscope-enhanced:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile.python
+      args:
+        APP_NAME: backend/agentscope-enhanced
+    container_name: agentscope-enhanced-dev
+    restart: unless-stopped
+    volumes:
+      - ./backend/agentscope-enhanced:/app/backend/agentscope-enhanced
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8001
+      - JARVIS_MODEL_NAME=jarvis-foundation-1.0
+      - CORS_ORIGINS=["http://localhost:3000", "http://localhost:3005"]
+      - DEBUG=true
+    ports:
+      - "8001:8001"
+    command: python -m uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-dev
+
+  # Flow API - Legacy flow management
+  flow-api:
+    build:
+      context: .
+      dockerfile: apps/flow-api/Dockerfile.dev
+    container_name: tekup-flow-api-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/flow-api:/app/apps/flow-api
+      - ./packages:/app/packages
+      - flow_api_node_modules:/app/apps/flow-api/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:tekup_dev_2024@postgres:5432/tekup_flow?schema=public
+      - REDIS_URL=redis://:tekup_redis_2024@redis:6379
+      - PORT=4000
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: pnpm dev
+    networks:
+      - tekup-dev
+
+  # Flow Web - Legacy flow frontend
+  flow-web:
+    build:
+      context: .
+      dockerfile: apps/flow-web/Dockerfile.dev
+    container_name: tekup-flow-web-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/flow-web:/app/apps/flow-web
+      - flow_web_node_modules:/app/apps/flow-web/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - PORT=3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - flow-api
+    command: pnpm dev
+    networks:
+      - tekup-dev
+
+  # Voice Agent - Voice communication service
+  voice-agent:
+    build:
+      context: ./apps/voice-agent
+      dockerfile: Dockerfile
+    container_name: tekup-voice-agent-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/voice-agent:/app
+      - voice_agent_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://tekup-unified-platform:3000
+      - PORT=3002
+    ports:
+      - "3002:3002"
+    depends_on:
+      - tekup-unified-platform
+    networks:
+      - tekup-dev
+
+  # Website - Landing page and marketing site with Tailwind CSS 4.1
+  website:
+    build:
+      context: ./apps/website
+      dockerfile: Dockerfile.dev
+    container_name: tekup-website-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/website:/app
+      - ./packages:/app/packages
+      - website_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+      - PORT=8081
+    ports:
+      - "8081:8081"
+    command: pnpm dev
+    networks:
+      - tekup-dev
+
+  # Lead Platform Backend - Lead management system
+  lead-platform:
+    build:
+      context: ./apps/lead-platform
+      dockerfile: Dockerfile.dev
+    container_name: tekup-lead-platform-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/lead-platform:/app
+      - ./packages:/app/packages
+      - lead_platform_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=file:./dev.db
+      - PORT=3003
+      - CORS_ORIGIN=http://localhost:3002,http://localhost:8080
+    ports:
+      - "3003:3003"
+    command: pnpm dev
+    networks:
+      - tekup-dev
+
+  # Rendetalje OS API - Professional cleaning service management backend
+  rendetalje-os-api:
+    build:
+      context: ./apps/rendetalje-os-backend
+      dockerfile: Dockerfile.dev
+    container_name: rendetalje-os-api-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/rendetalje-os-backend:/app
+      - ./packages:/app/packages
+      - rendetalje_os_api_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:tekup_dev_2024@postgres:5432/rendetalje_os?schema=public
+      - REDIS_URL=redis://:tekup_redis_2024@redis:6379
+      - JWT_SECRET=rendetalje-os-dev-secret-2024
+      - PORT=3006
+      - CORS_ORIGIN=http://localhost:3051,http://localhost:80
+    ports:
+      - "3006:3006"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: sh -c "npx prisma generate && npx tsc src/server.ts --outDir dist --target ES2020 --module commonjs --esModuleInterop --allowSyntheticDefaultImports --skipLibCheck && node dist/server.js"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-dev
+
+  # Rendetalje OS Web - Professional cleaning service management frontend
+  rendetalje-os-web:
+    build:
+      context: ./apps/rendetalje-os-frontend
+      dockerfile: Dockerfile.dev
+    container_name: rendetalje-os-web-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/rendetalje-os-frontend:/app
+      - ./packages:/app/packages
+      - rendetalje_os_web_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3006
+      - PORT=3051
+    ports:
+      - "3051:3051"
+    depends_on:
+      - rendetalje-os-api
+    command: node src/enhanced-app.js
+    networks:
+      - tekup-dev
+
+  # ============================================================================
+  # DEVELOPMENT TOOLS & MONITORING
+  # ============================================================================
+
+  # pgAdmin - PostgreSQL management interface
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: tekup-pgadmin-dev
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@tekup.dk
+      PGADMIN_DEFAULT_PASSWORD: tekup_pgadmin_2024
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    volumes:
+      - pgadmin_dev_data:/var/lib/pgadmin
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - tekup-dev
+
+  # Redis Commander - Redis management interface
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: tekup-redis-commander-dev
+    restart: unless-stopped
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:tekup_redis_2024
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=tekup_redis_ui_2024
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - tekup-dev
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: tekup-prometheus-dev
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=24h'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_dev_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - tekup-dev
+
+  # Grafana - Visualization dashboard
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: tekup-grafana-dev
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=tekup_grafana_2024
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-clock-panel
+    volumes:
+      - grafana_dev_data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3333:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - tekup-dev
+
+  # Mailhog - Email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: tekup-mailhog-dev
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - tekup-dev
+
+  # nginx - Reverse proxy and load balancer
+  nginx:
+    image: nginx:alpine
+    container_name: tekup-nginx-dev
+    restart: unless-stopped
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - tekup-unified-platform
+      - tekup-crm-web
+      - agentscope-enhanced
+    networks:
+      - tekup-dev
+
+  # Elasticsearch - Search and logging
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: tekup-elasticsearch-dev
+    restart: unless-stopped
+    environment:
+      - node.name=tekup-elasticsearch-dev
+      - cluster.name=tekup-dev-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch_dev_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - tekup-dev
+
+  # Kibana - Log visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: tekup-kibana-dev
+    restart: unless-stopped
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_NAME=tekup-kibana-dev
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - tekup-dev
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+  pgadmin_dev_data:
+    driver: local
+  prometheus_dev_data:
+    driver: local
+  grafana_dev_data:
+    driver: local
+  elasticsearch_dev_data:
+    driver: local
+  
+  # Node modules caching
+  tekup_node_modules:
+    driver: local
+  tekup_crm_web_node_modules:
+    driver: local
+  flow_api_node_modules:
+    driver: local
+  flow_web_node_modules:
+    driver: local
+  voice_agent_node_modules:
+    driver: local
+  website_node_modules:
+    driver: local
+  lead_platform_node_modules:
+    driver: local
+  rendetalje_os_api_node_modules:
+    driver: local
+  rendetalje_os_web_node_modules:
+    driver: local
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+networks:
+  tekup-dev:
+    driver: bridge
+    name: tekup-development-network

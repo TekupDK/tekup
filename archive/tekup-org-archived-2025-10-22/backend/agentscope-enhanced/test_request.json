@@ -1,0 +1,6 @@
+{
+    "prompt": "Hej, hvad kan du hjælpe med?",
+    "task_type": "chat",
+    "danish_context": true,
+    "max_tokens": 200
+}

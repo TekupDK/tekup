@@ -1,0 +1,21 @@
+{
+  "preset": "ts-jest/presets/js-with-ts",
+  "testEnvironment": "node",
+  "rootDir": "..",
+  "testMatch": ["<rootDir>/test/**/*.e2e-spec.ts"],
+  "transform": {
+    "^.+\\.(ts|tsx)$": ["ts-jest", { 
+      "tsconfig": "<rootDir>/test/tsconfig.jest.json", 
+      "useESM": false 
+    }]
+  },
+  "moduleNameMapper": {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^(\\.{1,2}/.*)\\.ts\\.js$": "$1.ts"
+  },
+  "modulePathIgnorePatterns": ["<rootDir>/dist", "<rootDir>/node_modules"],
+  "setupFilesAfterEnv": ["<rootDir>/test/setup.ts"],
+  "collectCoverageFrom": ["src/**/*.(t|j)s"],
+  "coverageDirectory": "<rootDir>/coverage",
+  "testTimeout": 30000
+}

@@ -1,0 +1,441 @@
+name: 🧪 Comprehensive Testing Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run performance tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of tests to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - unit
+          - integration
+          - e2e
+          - voice-agent
+          - business-suite
+          - performance
+
+concurrency:
+  group: testing-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9.9.0'
+  TEST_TIMEOUT: '300000' # 5 minutes
+  COVERAGE_THRESHOLD: '80'
+
+jobs:
+  # Unit Testing - Fast feedback loop
+  unit-tests:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        package: ['testing', 'shared', 'auth', 'api-client']
+        node-version: [18, 20]
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm -r build
+
+      - name: 🧪 Run unit tests
+        run: |
+          cd packages/${{ matrix.package }}
+          pnpm test:unit --coverage --maxWorkers=2
+
+      - name: 📊 Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          file: packages/${{ matrix.package }}/coverage/lcov.info
+          flags: unit-tests
+          name: ${{ matrix.package }}-unit-coverage
+
+  # Integration Testing - API and database testing
+  integration-tests:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: unit-tests
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tekup_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm -r build
+
+      - name: 🗄️ Setup test database
+        run: |
+          cd packages/testing
+          pnpm test:integration:setup
+
+      - name: 🔗 Run integration tests
+        run: |
+          cd packages/testing
+          pnpm test:integration --coverage --maxWorkers=1
+
+      - name: 📊 Upload integration coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: packages/testing/coverage/lcov.info
+          flags: integration-tests
+          name: integration-coverage
+
+  # End-to-End Testing - Complete workflow testing
+  e2e-tests:
+    name: 🌐 End-to-End Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: integration-tests
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tekup_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm -r build
+
+      - name: 🚀 Start test services
+        run: |
+          cd packages/testing
+          pnpm test:e2e:setup
+
+      - name: 🌐 Run E2E tests
+        run: |
+          cd packages/testing
+          pnpm test:e2e --coverage --maxWorkers=1
+
+      - name: 📊 Upload E2E coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: packages/testing/coverage/lcov.info
+          flags: e2e-tests
+          name: e2e-coverage
+
+  # Voice Agent Testing - AI agent functionality
+  voice-agent-tests:
+    name: 🎤 Voice Agent Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: integration-tests
+    strategy:
+      matrix:
+        language: ['da', 'en']
+        business: ['foodtruck', 'perfume', 'construction', 'cross-business']
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm -r build
+
+      - name: 🎤 Test voice agent - ${{ matrix.language }} - ${{ matrix.business }}
+        run: |
+          cd packages/testing
+          pnpm test:voice-agent --testNamePattern="${{ matrix.language }}.*${{ matrix.business }}"
+
+      - name: 📊 Upload voice agent coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: packages/testing/coverage/lcov.info
+          flags: voice-agent-tests
+          name: voice-agent-coverage
+
+  # Business Suite Testing - Business-specific workflows
+  business-suite-tests:
+    name: 🏢 Business Suite Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    needs: integration-tests
+    strategy:
+      matrix:
+        business: ['foodtruck-fiesta', 'essenza-perfume', 'rendetalje', 'cross-business']
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm -r build
+
+      - name: 🏢 Test business suite - ${{ matrix.business }}
+        run: |
+          cd packages/testing
+          pnpm test:business-suite --testNamePattern="${{ matrix.business }}"
+
+      - name: 📊 Upload business suite coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: packages/testing/coverage/lcov.info
+          flags: business-suite-tests
+          name: business-suite-coverage
+
+  # Performance Testing - Load and stress testing
+  performance-tests:
+    name: ⚡ Performance Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: e2e-tests
+    if: github.event_name == 'schedule' || github.event.inputs.test_type == 'performance' || github.event.inputs.test_type == 'all'
+    strategy:
+      matrix:
+        scenario: ['voice', 'workflow', 'mixed']
+        load: ['low', 'medium', 'high']
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm -r build
+
+      - name: ⚡ Run performance tests - ${{ matrix.scenario }} - ${{ matrix.load }}
+        run: |
+          cd packages/testing
+          pnpm test:performance --testNamePattern="${{ matrix.scenario }}.*${{ matrix.load }}"
+
+      - name: 📊 Generate performance report
+        run: |
+          cd packages/testing
+          pnpm test:performance:report
+
+      - name: 📤 Upload performance artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results-${{ matrix.scenario }}-${{ matrix.load }}
+          path: packages/testing/performance-results/
+
+  # Multi-Tenant Security Testing - RLS and isolation
+  multi-tenant-tests:
+    name: 🔒 Multi-Tenant Security Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: integration-tests
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tekup_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm -r build
+
+      - name: 🔒 Run multi-tenant security tests
+        run: |
+          cd packages/testing
+          pnpm test:multi-tenant --coverage --maxWorkers=1
+
+      - name: 📊 Upload security coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: packages/testing/coverage/lcov.info
+          flags: multi-tenant-tests
+          name: security-coverage
+
+  # Test Results Summary
+  test-summary:
+    name: 📊 Test Results Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, e2e-tests, voice-agent-tests, business-suite-tests, multi-tenant-tests]
+    if: always()
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📊 Generate test summary
+        run: |
+          echo "## 🧪 Testing Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Execution Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Unit Tests: ${{ needs.unit-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Integration Tests: ${{ needs.integration-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- E2E Tests: ${{ needs.e2e-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Voice Agent Tests: ${{ needs.voice-agent-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Business Suite Tests: ${{ needs.business-suite-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Multi-Tenant Tests: ${{ needs.multi-tenant-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "- Performance Tests: ${{ needs.performance-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Coverage Targets" >> $GITHUB_STEP_SUMMARY
+          echo "- Unit Tests: 90%+" >> $GITHUB_STEP_SUMMARY
+          echo "- Integration Tests: 85%+" >> $GITHUB_STEP_SUMMARY
+          echo "- E2E Tests: 80%+" >> $GITHUB_STEP_SUMMARY
+          echo "- Overall Target: ${{ env.COVERAGE_THRESHOLD }}%+" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🔍 Check test failures
+        if: contains(needs.*.result, 'failure')
+        run: |
+          echo "❌ Some tests failed. Please check the logs above for details."
+          exit 1
+
+      - name: ✅ All tests passed
+        if: !contains(needs.*.result, 'failure')
+        run: |
+          echo "✅ All tests passed successfully!"
+          echo "🎯 Coverage targets met"
+          echo "🚀 Ready for deployment"

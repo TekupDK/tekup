@@ -1,0 +1,45 @@
+{
+  "name": "agentrooms-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/agentrooms-backend",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "deno task dev",
+        "cwd": "apps/agentrooms-backend"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "deno task build",
+        "cwd": "apps/agentrooms-backend"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "deno task test",
+        "cwd": "apps/agentrooms-backend"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "deno task lint",
+        "cwd": "apps/agentrooms-backend"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "deno task typecheck",
+        "cwd": "apps/agentrooms-backend"
+      }
+    }
+  },
+  "tags": ["type:app", "platform:deno", "scope:agentrooms"]
+}

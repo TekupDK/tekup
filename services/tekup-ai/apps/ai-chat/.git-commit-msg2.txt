@@ -1,0 +1,25 @@
+fix: Add current date to system prompt + Perplexity test integration
+
+Fixed Issues:
+- System query bug: "Hvad er dagens dato?" now works
+- Added getCurrentDateDanish() to inject current date in prompt
+
+Perplexity Test Integration:
+- Combined autonomous + manual testing results
+- Found 2 additional issues via Perplexity testing
+- Created comprehensive combined test report
+
+New Files:
+- TEST_REPORT_PERPLEXITY_COMBINED.md (full comparison)
+
+Test Results Updated:
+- Autonomous: 22/23 (95.7%)
+- Perplexity: ~13/15 (~85%)
+- Combined: 22/25 (88%)
+
+Issues Found by Perplexity:
+1. System queries fail (date/time) - FIXED
+2. Sensitive data warnings missing - P2 TODO
+3. Error messages too generic - P1 TODO
+
+Status: 88% complete (down from 95% after more thorough testing)

@@ -1,0 +1,104 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Tekup Development PostgreSQL",
+      "Group": "Development",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "tekup_dev",
+      "Username": "postgres",
+      "PassFile": "/tmp/pgpass",
+      "SSLMode": "prefer",
+      "SSLCompression": 0,
+      "Timeout": 10,
+      "UseSSHTunnel": 0,
+      "TunnelPort": "22",
+      "TunnelAuthentication": 0,
+      "KerberosAuthentication": false,
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": "10"
+      }
+    },
+    "2": {
+      "Name": "Tekup Unified Platform DB",
+      "Group": "Applications",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "tekup_unified",
+      "Username": "tekup_dev",
+      "PassFile": "/tmp/pgpass",
+      "SSLMode": "prefer",
+      "SSLCompression": 0,
+      "Timeout": 10,
+      "UseSSHTunnel": 0,
+      "TunnelPort": "22",
+      "TunnelAuthentication": 0,
+      "KerberosAuthentication": false,
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": "10"
+      }
+    },
+    "3": {
+      "Name": "Tekup CRM Database",
+      "Group": "Applications",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "tekup_crm",
+      "Username": "tekup_dev",
+      "PassFile": "/tmp/pgpass",
+      "SSLMode": "prefer",
+      "SSLCompression": 0,
+      "Timeout": 10,
+      "UseSSHTunnel": 0,
+      "TunnelPort": "22",
+      "TunnelAuthentication": 0,
+      "KerberosAuthentication": false,
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": "10"
+      }
+    },
+    "4": {
+      "Name": "Tekup Flow Database",
+      "Group": "Applications",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "tekup_flow",
+      "Username": "tekup_dev",
+      "PassFile": "/tmp/pgpass",
+      "SSLMode": "prefer",
+      "SSLCompression": 0,
+      "Timeout": 10,
+      "UseSSHTunnel": 0,
+      "TunnelPort": "22",
+      "TunnelAuthentication": 0,
+      "KerberosAuthentication": false,
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": "10"
+      }
+    },
+    "5": {
+      "Name": "Tekup Leads Database", 
+      "Group": "Applications",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "tekup_leads",
+      "Username": "tekup_dev",
+      "PassFile": "/tmp/pgpass",
+      "SSLMode": "prefer",
+      "SSLCompression": 0,
+      "Timeout": 10,
+      "UseSSHTunnel": 0,
+      "TunnelPort": "22",
+      "TunnelAuthentication": 0,
+      "KerberosAuthentication": false,
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": "10"
+      }
+    }
+  }
+}

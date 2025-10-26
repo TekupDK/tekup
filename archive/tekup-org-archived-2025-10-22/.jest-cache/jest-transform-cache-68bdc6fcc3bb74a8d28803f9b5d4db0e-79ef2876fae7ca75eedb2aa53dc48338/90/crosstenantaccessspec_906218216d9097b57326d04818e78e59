@@ -1,0 +1,38 @@
+2a8505f0c8b0527ab0d85c144afa1df9
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+const _common = require("@nestjs/common");
+describe('Cross-Tenant Access Handling', ()=>{
+    describe('Error Mapping Logic', ()=>{
+        it('should map Prisma P2004 errors to NotFoundException', ()=>{
+            // Simulate a Prisma P2004 error (insufficient permissions)
+            const prismaError = new Error('Insufficient permissions');
+            prismaError.code = 'P2004';
+            // This is the logic we implemented in LeadService.changeStatus
+            try {
+                if (prismaError.code === 'P2004') {
+                    throw new _common.NotFoundException('Lead not found', 'lead_not_found');
+                }
+                // If we get here, the error wasn't mapped correctly
+                fail('Expected NotFoundException to be thrown');
+            } catch (error) {
+                expect(error).toBeInstanceOf(_common.NotFoundException);
+                expect(error.message).toBe('Lead not found');
+            }
+        });
+        it('should handle other errors appropriately', ()=>{
+            // Simulate a generic error
+            const genericError = new Error('Generic database error');
+            // Verify it's not a P2004 error
+            expect(genericError.code).not.toBe('P2004');
+            // In the actual implementation, this would be handled differently
+            // For this test, we just verify the logic flow
+            const isP2004 = genericError.code === 'P2004';
+            expect(isP2004).toBe(false);
+        });
+    });
+});
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcZW1waXJcXFRla3VwLW9yZ1xcYXBwc1xcZmxvdy1hcGlcXHNyY1xcbGVhZFxcY3Jvc3MtdGVuYW50LWFjY2Vzcy5zcGVjLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE5vdEZvdW5kRXhjZXB0aW9uIH0gZnJvbSAnQG5lc3Rqcy9jb21tb24nO1xyXG5cclxuZGVzY3JpYmUoJ0Nyb3NzLVRlbmFudCBBY2Nlc3MgSGFuZGxpbmcnLCAoKSA9PiB7XHJcbiAgZGVzY3JpYmUoJ0Vycm9yIE1hcHBpbmcgTG9naWMnLCAoKSA9PiB7XHJcbiAgICBpdCgnc2hvdWxkIG1hcCBQcmlzbWEgUDIwMDQgZXJyb3JzIHRvIE5vdEZvdW5kRXhjZXB0aW9uJywgKCkgPT4ge1xyXG4gICAgICAvLyBTaW11bGF0ZSBhIFByaXNtYSBQMjAwNCBlcnJvciAoaW5zdWZmaWNpZW50IHBlcm1pc3Npb25zKVxyXG4gICAgICBjb25zdCBwcmlzbWFFcnJvcjogYW55ID0gbmV3IEVycm9yKCdJbnN1ZmZpY2llbnQgcGVybWlzc2lvbnMnKTtcclxuICAgICAgcHJpc21hRXJyb3IuY29kZSA9ICdQMjAwNCc7XHJcbiAgICAgIFxyXG4gICAgICAvLyBUaGlzIGlzIHRoZSBsb2dpYyB3ZSBpbXBsZW1lbnRlZCBpbiBMZWFkU2VydmljZS5jaGFuZ2VTdGF0dXNcclxuICAgICAgdHJ5IHtcclxuICAgICAgICBpZiAocHJpc21hRXJyb3IuY29kZSA9PT0gJ1AyMDA0Jykge1xyXG4gICAgICAgICAgdGhyb3cgbmV3IE5vdEZvdW5kRXhjZXB0aW9uKCdMZWFkIG5vdCBmb3VuZCcsICdsZWFkX25vdF9mb3VuZCcpO1xyXG4gICAgICAgIH1cclxuICAgICAgICAvLyBJZiB3ZSBnZXQgaGVyZSwgdGhlIGVycm9yIHdhc24ndCBtYXBwZWQgY29ycmVjdGx5XHJcbiAgICAgICAgZmFpbCgnRXhwZWN0ZWQgTm90Rm91bmRFeGNlcHRpb24gdG8gYmUgdGhyb3duJyk7XHJcbiAgICAgIH0gY2F0Y2ggKGVycm9yOiBhbnkpIHtcclxuICAgICAgICBleHBlY3QoZXJyb3IpLnRvQmVJbnN0YW5jZU9mKE5vdEZvdW5kRXhjZXB0aW9uKTtcclxuICAgICAgICBleHBlY3QoZXJyb3IubWVzc2FnZSkudG9CZSgnTGVhZCBub3QgZm91bmQnKTtcclxuICAgICAgfVxyXG4gICAgfSk7XHJcblxyXG4gICAgaXQoJ3Nob3VsZCBoYW5kbGUgb3RoZXIgZXJyb3JzIGFwcHJvcHJpYXRlbHknLCAoKSA9PiB7XHJcbiAgICAgIC8vIFNpbXVsYXRlIGEgZ2VuZXJpYyBlcnJvclxyXG4gICAgICBjb25zdCBnZW5lcmljRXJyb3I6IGFueSA9IG5ldyBFcnJvcignR2VuZXJpYyBkYXRhYmFzZSBlcnJvcicpO1xyXG4gICAgICBcclxuICAgICAgLy8gVmVyaWZ5IGl0J3Mgbm90IGEgUDIwMDQgZXJyb3JcclxuICAgICAgZXhwZWN0KGdlbmVyaWNFcnJvci5jb2RlKS5ub3QudG9CZSgnUDIwMDQnKTtcclxuICAgICAgXHJcbiAgICAgIC8vIEluIHRoZSBhY3R1YWwgaW1wbGVtZW50YXRpb24sIHRoaXMgd291bGQgYmUgaGFuZGxlZCBkaWZmZXJlbnRseVxyXG4gICAgICAvLyBGb3IgdGhpcyB0ZXN0LCB3ZSBqdXN0IHZlcmlmeSB0aGUgbG9naWMgZmxvd1xyXG4gICAgICBjb25zdCBpc1AyMDA0ID0gZ2VuZXJpY0Vycm9yLmNvZGUgPT09ICdQMjAwNCc7XHJcbiAgICAgIGV4cGVjdChpc1AyMDA0KS50b0JlKGZhbHNlKTtcclxuICAgIH0pO1xyXG4gIH0pO1xyXG59KTsiXSwibmFtZXMiOlsiZGVzY3JpYmUiLCJpdCIsInByaXNtYUVycm9yIiwiRXJyb3IiLCJjb2RlIiwiTm90Rm91bmRFeGNlcHRpb24iLCJmYWlsIiwiZXJyb3IiLCJleHBlY3QiLCJ0b0JlSW5zdGFuY2VPZiIsIm1lc3NhZ2UiLCJ0b0JlIiwiZ2VuZXJpY0Vycm9yIiwibm90IiwiaXNQMjAwNCJdLCJtYXBwaW5ncyI6Ijs7Ozt3QkFBa0M7QUFFbENBLFNBQVMsZ0NBQWdDO0lBQ3ZDQSxTQUFTLHVCQUF1QjtRQUM5QkMsR0FBRyx1REFBdUQ7WUFDeEQsMkRBQTJEO1lBQzNELE1BQU1DLGNBQW1CLElBQUlDLE1BQU07WUFDbkNELFlBQVlFLElBQUksR0FBRztZQUVuQiwrREFBK0Q7WUFDL0QsSUFBSTtnQkFDRixJQUFJRixZQUFZRSxJQUFJLEtBQUssU0FBUztvQkFDaEMsTUFBTSxJQUFJQyx5QkFBaUIsQ0FBQyxrQkFBa0I7Z0JBQ2hEO2dCQUNBLG9EQUFvRDtnQkFDcERDLEtBQUs7WUFDUCxFQUFFLE9BQU9DLE9BQVk7Z0JBQ25CQyxPQUFPRCxPQUFPRSxjQUFjLENBQUNKLHlCQUFpQjtnQkFDOUNHLE9BQU9ELE1BQU1HLE9BQU8sRUFBRUMsSUFBSSxDQUFDO1lBQzdCO1FBQ0Y7UUFFQVYsR0FBRyw0Q0FBNEM7WUFDN0MsMkJBQTJCO1lBQzNCLE1BQU1XLGVBQW9CLElBQUlULE1BQU07WUFFcEMsZ0NBQWdDO1lBQ2hDSyxPQUFPSSxhQUFhUixJQUFJLEVBQUVTLEdBQUcsQ0FBQ0YsSUFBSSxDQUFDO1lBRW5DLGtFQUFrRTtZQUNsRSwrQ0FBK0M7WUFDL0MsTUFBTUcsVUFBVUYsYUFBYVIsSUFBSSxLQUFLO1lBQ3RDSSxPQUFPTSxTQUFTSCxJQUFJLENBQUM7UUFDdkI7SUFDRjtBQUNGIn0=

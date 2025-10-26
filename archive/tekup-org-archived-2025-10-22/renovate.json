@@ -1,0 +1,54 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":automergeMinor",
+    ":separateMultipleMajorReleases",
+    ":maintainLockFilesWeekly",
+    ":timezone(Europe/Copenhagen)"
+  ],
+  "rangeStrategy": "bump",
+  "schedule": ["before 6am on monday"],
+  "packageRules": [
+    {
+      "matchDepTypes": ["dependencies", "devDependencies"],
+      "matchPackageNames": ["react", "react-dom", "next", "@nestjs/*"],
+      "groupName": "core-frameworks",
+      "reviewersFromCodeOwners": true
+    },
+    {
+      "matchDepTypes": ["dependencies", "devDependencies"],
+      "matchPackageNames": ["@tekup/*"],
+      "groupName": "tekup-packages",
+      "automerge": false,
+      "reviewersFromCodeOwners": true
+    },
+    {
+      "matchDepTypes": ["dependencies", "devDependencies"],
+      "matchPackageNames": ["typescript", "@types/*", "eslint*", "prettier"],
+      "groupName": "development-tools",
+      "automerge": true
+    },
+    {
+      "matchDepTypes": ["dependencies"],
+      "matchPackageNames": ["prisma", "@prisma/*"],
+      "groupName": "database-tools",
+      "automerge": false,
+      "reviewersFromCodeOwners": true
+    }
+  ],
+  "labels": ["dependencies", "renovate"],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 5,
+  "separateMinorPatch": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 3am on monday"]
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "dependencies"],
+    "automerge": true
+  }
+}

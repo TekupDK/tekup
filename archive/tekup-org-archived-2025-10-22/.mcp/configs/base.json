@@ -1,0 +1,313 @@
+{
+  "$schema": "../schemas/mcp-config.schema.json",
+  "version": "1.0.0",
+  "name": "TekUp Platform MCP Configuration",
+  "description": "Centralized MCP configuration for TekUp.org monorepo",
+  "metadata": {
+    "created": "2025-01-10T21:31:34Z",
+    "lastModified": "2025-01-10T21:31:34Z",
+    "author": "TekUp.org Development Team",
+    "repository": "https://github.com/TekUp-org/tekup-org"
+  },
+  "mcpServers": {
+    "browser": {
+      "id": "tekup-browser-unified",
+      "name": "TekUp Unified Browser Server",
+      "description": "Consolidated browser automation server combining all browser MCP implementations",
+      "version": "1.0.0",
+      "enabled": true,
+      "priority": 1,
+      "reference": "browser-unified.json",
+      "transport": {
+        "type": "unified",
+        "config": {
+          "loadBalancing": true,
+          "fallbackEnabled": true,
+          "healthChecking": true
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "browser_navigate",
+            "description": "Navigate browser to a specific URL (unified)"
+          },
+          {
+            "name": "browser_click",
+            "description": "Click on elements in the browser (unified)"
+          },
+          {
+            "name": "browser_screenshot",
+            "description": "Take screenshots of the current page (unified)"
+          },
+          {
+            "name": "browser_get_page_content",
+            "description": "Extract content from the current page (unified)"
+          },
+          {
+            "name": "browser_type_text",
+            "description": "Type text into input fields (unified)"
+          },
+          {
+            "name": "browser_scroll",
+            "description": "Scroll the page (unified)"
+          },
+          {
+            "name": "browser_wait",
+            "description": "Wait for elements or conditions (unified)"
+          },
+          {
+            "name": "agent_browser_navigate",
+            "description": "Agent-enhanced browser navigation (when available)"
+          },
+          {
+            "name": "browser_tools_extract",
+            "description": "Extract structured data from web pages (when available)"
+          }
+        ],
+        "resources": [],
+        "prompts": [],
+        "sampling": false,
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "autoStart": true,
+        "retryAttempts": 3,
+        "retryDelay": 2000,
+        "healthCheckInterval": 30000,
+        "requestTimeout": 60000,
+        "maxConcurrentRequests": 5,
+        "unified": {
+          "configFile": "browser-unified.json",
+          "loadBalancing": true,
+          "monitoring": true
+        }
+      }
+    },
+    "filesystem": {
+      "id": "tekup-filesystem",
+      "name": "TekUp Filesystem Access",
+      "description": "Secure filesystem access for TekUp workspaces",
+      "version": "1.0.0",
+      "enabled": true,
+      "priority": 2,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-filesystem",
+            "${MCP_FILESYSTEM_WORKSPACE_ROOT}"
+          ],
+          "env": {
+            "NODE_ENV": "${NODE_ENV}"
+          },
+          "timeout": 15000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "read_file",
+            "description": "Read file contents"
+          },
+          {
+            "name": "write_file", 
+            "description": "Write file contents"
+          },
+          {
+            "name": "create_directory",
+            "description": "Create directories"
+          },
+          {
+            "name": "list_directory",
+            "description": "List directory contents"
+          },
+          {
+            "name": "move_file",
+            "description": "Move or rename files"
+          },
+          {
+            "name": "search_files",
+            "description": "Search for files by pattern"
+          }
+        ],
+        "resources": [
+          {
+            "uri": "file://workspace",
+            "name": "Workspace Files",
+            "description": "Access to workspace files and directories"
+          }
+        ],
+        "logging": ["warning", "error"]
+      },
+      "config": {
+        "autoStart": true,
+        "retryAttempts": 2,
+        "retryDelay": 1000,
+        "healthCheckInterval": 60000,
+        "requestTimeout": 30000,
+        "maxConcurrentRequests": 10
+      }
+    },
+    "search": {
+      "id": "tekup-search",
+      "name": "TekUp Search Services",
+      "description": "Web search capabilities via Brave Search API",
+      "version": "1.0.0",
+      "enabled": true,
+      "priority": 3,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+          "env": {
+            "BRAVE_API_KEY": "${MCP_BRAVE_API_KEY}",
+            "NODE_ENV": "${NODE_ENV}"
+          },
+          "timeout": 10000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "brave_web_search",
+            "description": "Search the web using Brave Search"
+          },
+          {
+            "name": "brave_local_search", 
+            "description": "Search for local businesses and places"
+          }
+        ],
+        "logging": ["error"]
+      },
+      "config": {
+        "autoStart": true,
+        "retryAttempts": 3,
+        "retryDelay": 2000,
+        "healthCheckInterval": 120000,
+        "requestTimeout": 15000,
+        "maxConcurrentRequests": 3
+      }
+    },
+    "automation": {
+      "id": "tekup-automation",
+      "name": "TekUp Workflow Automation",
+      "description": "Zapier-based workflow automation",
+      "version": "1.0.0",
+      "enabled": true,
+      "priority": 4,
+      "transport": {
+        "type": "http",
+        "config": {
+          "url": "${MCP_ZAPIER_ENDPOINT}",
+          "headers": {
+            "Content-Type": "application/json",
+            "User-Agent": "TekUp-MCP/1.0.0"
+          },
+          "timeout": 30000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "zapier_webhook",
+            "description": "Trigger Zapier webhooks"
+          },
+          {
+            "name": "zapier_list_zaps",
+            "description": "List available Zaps"
+          }
+        ],
+        "logging": ["info", "error"]
+      },
+      "config": {
+        "autoStart": true,
+        "retryAttempts": 2,
+        "retryDelay": 3000,
+        "healthCheckInterval": 300000,
+        "requestTimeout": 25000,
+        "maxConcurrentRequests": 2
+      }
+    }
+  },
+  "global": {
+    "logging": {
+      "level": "info",
+      "file": ".mcp/logs/mcp.log",
+      "maxSize": "10MB",
+      "maxFiles": 5,
+      "timestamp": true,
+      "json": false
+    },
+    "security": {
+      "allowUnsignedPlugins": false,
+      "trustedAuthors": ["@modelcontextprotocol", "@tekup"],
+      "blockedPlugins": [],
+      "sandboxMode": false,
+      "requireHttps": true
+    },
+    "performance": {
+      "maxConcurrentServers": 10,
+      "defaultTimeout": 30000,
+      "connectionPoolSize": 5,
+      "requestQueueLimit": 100
+    },
+    "monitoring": {
+      "healthChecks": true,
+      "metricsCollection": true,
+      "errorReporting": true,
+      "performanceTracking": true
+    }
+  },
+  "environments": {
+    "supported": ["development", "staging", "production"],
+    "default": "development",
+    "overrides": {
+      "development": {
+        "file": "development.json",
+        "description": "Development environment overrides"
+      },
+      "staging": {
+        "file": "staging.json", 
+        "description": "Staging environment overrides"
+      },
+      "production": {
+        "file": "production.json",
+        "description": "Production environment overrides"
+      }
+    }
+  },
+  "editors": {
+    "supported": ["windsurf", "kiro", "vscode", "trae", "cursor"],
+    "adapters": {
+      "windsurf": {
+        "format": "windsurf-mcp",
+        "adapter": "../adapters/windsurf.js",
+        "configPath": "~/.codeium/windsurf/mcp_config.json"
+      },
+      "kiro": {
+        "format": "kiro-mcp",
+        "adapter": "../adapters/kiro.js", 
+        "configPath": "~/.kiro/settings/mcp.json"
+      },
+      "vscode": {
+        "format": "vscode-mcp",
+        "adapter": "../adapters/vscode.js",
+        "configPath": "~/AppData/Roaming/Code/User/mcp.json"
+      },
+      "trae": {
+        "format": "trae-mcp",
+        "adapter": "../adapters/trae.js",
+        "configPath": "~/AppData/Roaming/Trae/User/mcp.json"
+      },
+      "cursor": {
+        "format": "cursor-mcp",
+        "adapter": "../adapters/cursor.js",
+        "configPath": "~/.cursor/mcp.json"
+      }
+    }
+  }
+}

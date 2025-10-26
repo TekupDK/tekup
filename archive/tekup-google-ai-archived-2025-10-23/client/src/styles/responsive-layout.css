@@ -1,0 +1,593 @@
+/* ========================================
+   ENHANCED RESPONSIVE LAYOUT SYSTEM v2.0
+   Mobile-First Approach with Professional Grid
+   ======================================== */
+
+/* ========================================
+   RESPONSIVE GRID SYSTEM
+   ======================================== */
+
+/* Base Mobile Layout (320px+) */
+.dashboard-container {
+  padding: 1rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.stats-grid-responsive {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.charts-grid-responsive {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.sidebar-lists-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* Small Mobile (375px+) */
+@media (min-width: 375px) {
+  .dashboard-container {
+    padding: 1.25rem;
+  }
+  
+  .stats-grid-responsive {
+    gap: 1.25rem;
+  }
+}
+
+/* Large Mobile (480px+) */
+@media (min-width: 480px) {
+  .dashboard-container {
+    padding: 1.5rem;
+  }
+  
+  .stats-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Small Tablet (640px+) */
+@media (min-width: 640px) {
+  .dashboard-container {
+    padding: 2rem;
+    max-width: 1200px;
+  }
+  
+  .stats-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .charts-grid-responsive {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .sidebar-lists-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Medium Tablet (768px+) */
+@media (min-width: 768px) {
+  .dashboard-container {
+    padding: 2.5rem;
+  }
+  
+  .stats-grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .charts-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Large Tablet (1024px+) */
+@media (min-width: 1024px) {
+  .dashboard-container {
+    padding: 3rem;
+  }
+  
+  .stats-grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  
+  .charts-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+/* Desktop (1280px+) */
+@media (min-width: 1280px) {
+  .dashboard-container {
+    padding: 3rem 4rem;
+    max-width: 1400px;
+  }
+  
+  .stats-grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  
+  .charts-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
+}
+
+/* Large Desktop (1536px+) */
+@media (min-width: 1536px) {
+  .dashboard-container {
+    padding: 4rem;
+    max-width: 1600px;
+  }
+  
+  .stats-grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+  }
+  
+  .charts-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+}
+
+/* Ultra-wide (1920px+) */
+@media (min-width: 1920px) {
+  .dashboard-container {
+    max-width: 1800px;
+    padding: 4rem 5rem;
+  }
+  
+  .stats-grid-responsive {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3rem;
+  }
+  
+  .charts-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3.5rem;
+  }
+}
+
+/* ========================================
+   RESPONSIVE COMPONENT SIZING
+   ======================================== */
+
+/* Statistics Cards Responsive Sizing */
+.stats-card-responsive {
+  min-height: 120px;
+  padding: 1.25rem;
+}
+
+@media (min-width: 480px) {
+  .stats-card-responsive {
+    min-height: 140px;
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .stats-card-responsive {
+    min-height: 160px;
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-card-responsive {
+    min-height: 180px;
+    padding: 2.25rem;
+  }
+}
+
+/* Chart Containers Responsive Sizing */
+.chart-container-responsive {
+  min-height: 280px;
+  padding: 1.25rem;
+}
+
+@media (min-width: 480px) {
+  .chart-container-responsive {
+    min-height: 320px;
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .chart-container-responsive {
+    min-height: 380px;
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chart-container-responsive {
+    min-height: 420px;
+    padding: 2.5rem;
+  }
+}
+
+/* ========================================
+   RESPONSIVE TYPOGRAPHY
+   ======================================== */
+
+.dashboard-title-responsive {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle-responsive {
+  font-size: 0.875rem;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 480px) {
+  .dashboard-title-responsive {
+    font-size: 2rem;
+  }
+  
+  .dashboard-subtitle-responsive {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboard-title-responsive {
+    font-size: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .dashboard-subtitle-responsive {
+    font-size: 1.125rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-title-responsive {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-subtitle-responsive {
+    font-size: 1.25rem;
+    margin-bottom: 3rem;
+  }
+}
+
+/* Statistics Card Typography */
+.stats-value-responsive {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stats-label-responsive {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+.stats-change-responsive {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+@media (min-width: 480px) {
+  .stats-value-responsive {
+    font-size: 2.25rem;
+  }
+  
+  .stats-label-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .stats-change-responsive {
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .stats-value-responsive {
+    font-size: 2.5rem;
+  }
+  
+  .stats-label-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .stats-change-responsive {
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-value-responsive {
+    font-size: 3rem;
+  }
+  
+  .stats-label-responsive {
+    font-size: 1rem;
+  }
+  
+  .stats-change-responsive {
+    font-size: 1rem;
+  }
+}
+
+/* ========================================
+   RESPONSIVE NAVIGATION
+   ======================================== */
+
+/* Mobile Navigation Adjustments */
+@media (max-width: 1023px) {
+  .sidebar-mobile-hidden {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sidebar-mobile-visible {
+    transform: translateX(0);
+  }
+  
+  .main-content-mobile {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* Desktop Navigation */
+@media (min-width: 1024px) {
+  .sidebar-desktop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 256px;
+    height: 100vh;
+    z-index: 30;
+  }
+  
+  .main-content-desktop {
+    margin-left: 256px;
+    width: calc(100% - 256px);
+  }
+}
+
+/* ========================================
+   RESPONSIVE SPACING SYSTEM
+   ======================================== */
+
+.spacing-xs { margin: 0.5rem; }
+.spacing-sm { margin: 0.75rem; }
+.spacing-md { margin: 1rem; }
+.spacing-lg { margin: 1.5rem; }
+.spacing-xl { margin: 2rem; }
+
+@media (min-width: 768px) {
+  .spacing-xs { margin: 0.75rem; }
+  .spacing-sm { margin: 1rem; }
+  .spacing-md { margin: 1.5rem; }
+  .spacing-lg { margin: 2rem; }
+  .spacing-xl { margin: 3rem; }
+}
+
+@media (min-width: 1024px) {
+  .spacing-xs { margin: 1rem; }
+  .spacing-sm { margin: 1.25rem; }
+  .spacing-md { margin: 2rem; }
+  .spacing-lg { margin: 2.5rem; }
+  .spacing-xl { margin: 4rem; }
+}
+
+/* ========================================
+   RESPONSIVE BUTTONS AND CONTROLS
+   ======================================== */
+
+.control-button-responsive {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  min-height: 44px; /* Touch-friendly */
+  border-radius: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .control-button-responsive {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0.75rem;
+  }
+}
+
+.period-selector-responsive {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .period-selector-responsive {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+/* ========================================
+   RESPONSIVE CHARTS AND VISUALIZATIONS
+   ======================================== */
+
+.chart-responsive {
+  width: 100%;
+  height: 250px;
+}
+
+@media (min-width: 480px) {
+  .chart-responsive {
+    height: 300px;
+  }
+}
+
+@media (min-width: 768px) {
+  .chart-responsive {
+    height: 350px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chart-responsive {
+    height: 400px;
+  }
+}
+
+/* ========================================
+   RESPONSIVE LISTS AND TABLES
+   ======================================== */
+
+.list-item-responsive {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .list-item-responsive {
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.list-avatar-responsive {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+@media (min-width: 768px) {
+  .list-avatar-responsive {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+
+/* Hide/Show utilities */
+.mobile-only {
+  display: block;
+}
+
+.tablet-up {
+  display: none;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .tablet-up {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Responsive text alignment */
+.text-center-mobile {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .text-center-mobile {
+    text-align: left;
+  }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Reduce animations on mobile for better performance */
+@media (max-width: 767px) {
+  .stats-card-enhanced,
+  .chart-container-enhanced,
+  .nav-item-enhanced {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .stats-card-enhanced:hover,
+  .chart-container-enhanced:hover {
+    transform: none;
+  }
+  
+  .glass-shimmer::before {
+    animation: none;
+  }
+}
+
+/* Optimize backdrop-filter for mobile */
+@media (max-width: 767px) {
+  .glass-enhanced,
+  .stats-card-enhanced,
+  .chart-container-enhanced {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* Focus management for mobile */
+@media (max-width: 767px) {
+  :focus-visible {
+    outline: 3px solid var(--primary-glow);
+    outline-offset: 2px;
+  }
+}
+
+/* Touch-friendly sizing */
+@media (max-width: 767px) {
+  button,
+  a,
+  input,
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

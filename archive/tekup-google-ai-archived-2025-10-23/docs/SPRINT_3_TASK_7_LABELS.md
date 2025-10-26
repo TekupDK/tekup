@@ -1,0 +1,168 @@
+# 🏷️ Sprint 3 Task 7 KOMPLET - Label Workflow System\n\n\n\n**Status:** ✅ FÆRDIG | **Tid brugt:** ~2 timer | **Build:** ✅ Passing\n\n
+---
+\n\n## 📋 Overview\n\n\n\nGmail label automation system til automatisk status tracking af leads gennem hele customer journey. Baseret på state machine pattern med validerede state transitions.
+
+**Key Deliverables:**
+\n\n1. ✅ Label Service (500+ lines) med Gmail Labels API integration\n\n2. ✅ State Machine (8 states med validerede transitions)\n\n3. ✅ CLI Tools (6 commands til label management)\n\n4. ✅ Database Sync (Gmail ↔ Prisma synkronisering)
+
+---
+\n\n## 🎯 What Was Built\n\n\n\n### 1. Label Type Definitions\n\n\n\n**Fil:** `src/types/labels.ts` (150 lines)\n\n\n\n```typescript
+export type LeadStatusLabel =
+    | "new_lead"              // Fresh lead, not yet processed
+    | "quote_sent"            // Quote has been sent to customer
+    | "awaiting_response"     // Waiting for customer reply
+    | "follow_up_needed"      // Needs manual follow-up
+    | "booked"                // Booking confirmed
+    | "completed"             // Job completed
+    | "lost"                  // Lost to competitor
+    | "conflict";             // Customer conflict
+
+export const LABEL_WORKFLOW: Record<LeadStatusLabel, LabelConfig> = {
+    new_lead: {
+        displayName: "🆕 Nyt Lead",
+        color: { backgroundColor: "#4285f4" }, // Blue
+        nextStates: ["quote_sent", "lost"]
+    },
+    // ... 7 more states
+};\n\n```
+
+**State Machine:**
+\n\n```
+new_lead → quote_sent → awaiting_response → booked → completed
+                              ↓
+                       follow_up_needed
+                              ↓
+                         [any state]\n\n```
+
+**Hver label har:**
+\n\n- Unique name (`new_lead`, `quote_sent`, etc.)\n\n- Display name med emoji (`🆕 Nyt Lead`)\n\n- Gmail color (blue, orange, yellow, green, gray, red)\n\n- Valid next states (state machine transitions)\n\n- Description (dokumentation)\n\n
+---
+\n\n### 2. Label Service\n\n\n\n**Fil:** `src/services/labelService.ts` (500+ lines)\n\n
+**Core Functions:**
+
+**1. ensureLabelsExist()**
+\n\n```typescript
+// Creates all RenOS labels in Gmail if they don't exist
+const labelMap = await ensureLabelsExist();
+// Returns: Map<LeadStatusLabel, string> (label name → Gmail label ID)\n\n```
+
+**2. applyLabelToThread()**
+\n\n```typescript
+// Apply status label to email thread
+// Auto-removes other status labels (only ONE status per thread)
+await applyLabelToThread(threadId, "quote_sent", "Email sent to customer");
+
+// Validates state transition
+// Updates Gmail + Database\n\n```
+
+**3. getThreadLabelStatus()**
+\n\n```typescript
+// Get current label status for a thread
+const status = await getThreadLabelStatus(threadId);
+// Returns: { threadId, currentLabel, allLabels, hasMultipleStatusLabels }\n\n```
+
+**4. getThreadsByLabel()**
+\n\n```typescript
+// Get all threads with a specific label
+const threadIds = await getThreadsByLabel("awaiting_response");
+// Useful for finding all leads needing follow-up\n\n```
+
+**5. syncLabelsWithDatabase()**
+\n\n```typescript
+// Sync labels between Gmail and Prisma database
+await syncLabelsWithDatabase();
+// Ensures consistency across systems\n\n```
+
+---
+\n\n### 3. CLI Tool\n\n\n\n**Fil:** `src/tools/labelManager.ts` (290 lines)\n\n
+**Commands:**
+\n\n```bash\n\n# 1. Initialize labels in Gmail\n\nnpm run label:init\n\n# Creates all 8 RenOS labels with colors\n\n\n\n# 2. List all labels\n\nnpm run label:list\n\n# Shows workflow, state machine, transitions\n\n\n\n# 3. Apply label to thread\n\nnpm run label:apply <threadId> <label>\n\n# Example: npm run label:apply 18f123abc quote_sent\n\n\n\n# 4. Get thread status\n\nnpm run label:status <threadId>\n\n# Shows current label + valid next states\n\n\n\n# 5. Get threads by label\n\nnpm run label:threads <label>\n\n# Example: npm run label:threads awaiting_response\n\n\n\n# 6. Sync Gmail <-> Database\n\nnpm run label:sync\n\n# Ensures consistency\n\n```\n\n
+---
+\n\n## 📊 Test Results\n\n\n\n### CLI Test: label:list\n\n\n\n```\n\n📋 RenOS LABEL WORKFLOW
+
+🆕 Nyt Lead
+  Status: new_lead
+  Description: Fresh lead, not yet processed
+  Color: #4285f4
+  Next States: quote_sent, lost
+
+💰 Tilbud Sendt
+  Status: quote_sent
+  Description: Quote has been sent to customer
+  Color: #f4b400
+  Next States: awaiting_response, booked, lost
+
+... [6 more labels]
+
+WORKFLOW:
+new_lead → quote_sent → awaiting_response → booked → completed
+                              ↓
+                       follow_up_needed\n\n```
+
+✅ **Result:** All labels defined correctly, workflow valid\n\n
+---
+\n\n## 🔄 Integration Points\n\n\n\n### Ready for Integration (Task 8 & 9)\n\n\n\n**1. emailAutoResponseService.sendResponse()**
+\n\n```typescript
+// After sending quote email:
+await applyLabelToThread(lead.emailThreadId, "quote_sent");\n\n```
+
+**2. emailIngestWorker**
+\n\n```typescript
+// When new lead arrives:
+await applyLabelToThread(lead.emailThreadId, "new_lead");\n\n```
+
+**3. bookingService**
+\n\n```typescript
+// When booking confirmed:
+await applyLabelToThread(lead.emailThreadId, "booked");\n\n```
+
+**4. Follow-up System (Task 8)**
+\n\n```typescript
+// Find leads needing follow-up:
+const threads = await getThreadsByLabel("awaiting_response");
+// Check each thread's date, send follow-up if >5 days\n\n```
+
+**5. Conflict Resolution (Task 9)**
+\n\n```typescript
+// When conflict detected:
+await applyLabelToThread(lead.emailThreadId, "conflict");
+// Escalate to Jonas\n\n```
+
+---
+\n\n## 📁 Files Created\n\n\n\n### New Files (3 files, ~940 lines)\n\n\n\n- `src/types/labels.ts` (150 lines) - Type definitions & state machine\n\n- `src/services/labelService.ts` (500 lines) - Gmail Labels API service\n\n- `src/tools/labelManager.ts` (290 lines) - CLI tool\n\n\n\n### Modified Files (1 file)\n\n\n\n- `package.json` (+6 scripts)\n\n\n\n**Total New Code:** ~940 lines\n\n
+---
+\n\n## 🎓 Technical Decisions\n\n\n\n### 1. State Machine Pattern\n\n\n\n**Why:** Prevents invalid state transitions\n\n\n\n- Can't go from `new_lead` → `completed` (must go through workflow)\n\n- Validates transitions before applying labels\n\n- Clear, documented workflow\n\n\n\n### 2. One Status Label Per Thread\n\n\n\n**Why:** Prevents confusion and conflicting states\n\n\n\n- Auto-removes old status labels when applying new one\n\n- Thread has EXACTLY ONE current status\n\n- `hasMultipleStatusLabels` flag detects issues\n\n\n\n### 3. Gmail + Database Sync\n\n\n\n**Why:** Best of both worlds\n\n\n\n- Gmail labels: Visual organization in inbox\n\n- Database: Queryable, historical, relational\n\n- Sync function ensures consistency\n\n\n\n### 4. Color Coding\n\n\n\n**Why:** Visual clarity\n\n\n\n- Blue: New\n\n- Orange: Quote sent\n\n- Yellow: Awaiting response\n\n- Red: Follow-up needed / Conflict\n\n- Green: Booked / Completed\n\n- Gray: Lost\n\n
+---
+\n\n## 🚀 Next Steps (Sprint 3 Task 8 & 9)\n\n\n\n**Task 8: Follow-up System**
+\n\n- Use `getThreadsByLabel("awaiting_response")`\n\n- Check date of last email in thread\n\n- If >5 days → apply `follow_up_needed` label\n\n- Send smart re-engagement email\n\n- Track follow-up attempts (max 2-3)\n\n
+**Task 9: Conflict Resolution**
+\n\n- Detect upset language in emails\n\n- Apply `conflict` label automatically\n\n- Escalate to Jonas (notification)\n\n- Professional de-escalation templates\n\n- Track conflicts for learning\n\n
+---
+\n\n## ✅ Task 7 Success Criteria - ALL MET\n\n\n\n- [x] Label service created with Gmail API integration\n\n- [x] State machine defined with 8 states\n\n- [x] State transition validation working\n\n- [x] CLI tools created (6 commands)\n\n- [x] Database sync function implemented\n\n- [x] Build succeeds with no errors\n\n- [x] CLI tests pass (label:list works)\n\n- [x] Integration points documented\n\n\n\n**Status:** 🎉 SPRINT 3 TASK 7 KOMPLET\n\n
+---
+
+**Timestamp:** 2025-10-03 17:00
+**Developer:** AI Agent (GitHub Copilot)
+**Build Status:** ✅ Passing
+**CLI Tests:** ✅ Passing
+**Ready for:** Task 8 (Follow-up System) implementation\n\n
+---
+\n\n## 💡 Usage Examples\n\n\n\n**Setup (one-time):**
+\n\n```bash
+npm run label:init\n\n```
+
+**Daily Usage:**
+\n\n```bash\n\n# See all leads awaiting response\n\nnpm run label:threads awaiting_response\n\n\n\n# Apply label to specific lead\n\nnpm run label:apply 18f123abc booked\n\n\n\n# Check status\n\nnpm run label:status 18f123abc\n\n\n\n# Weekly sync\n\nnpm run label:sync\n\n```\n\n
+**In Code:**
+\n\n```typescript
+import { applyLabelToThread, getThreadsByLabel } from "./services/labelService";
+
+// After sending quote:
+await applyLabelToThread(threadId, "quote_sent");
+
+// Find follow-ups needed:
+const needsFollowUp = await getThreadsByLabel("awaiting_response");\n\n```
+
+---
+
+All systems operational! Ready for Task 8 🚀

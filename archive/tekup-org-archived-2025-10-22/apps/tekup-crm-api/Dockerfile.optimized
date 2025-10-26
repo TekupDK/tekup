@@ -1,0 +1,62 @@
+# Multi-stage Docker build for tekup-crm-api
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@9.9.0 --activate
+WORKDIR /app
+
+# Dependencies stage
+FROM base AS deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/config/package.json ./packages/config/
+COPY packages/auth/package.json ./packages/auth/
+COPY packages/api-client/package.json ./packages/api-client/
+COPY apps/tekup-crm-api/package.json ./apps/tekup-crm-api/
+RUN pnpm install --frozen-lockfile --filter @tekup/crm-api...
+
+# Build stage
+FROM base AS builder
+COPY . .
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=deps /app/packages/config/node_modules ./packages/config/node_modules
+COPY --from=deps /app/packages/auth/node_modules ./packages/auth/node_modules
+COPY --from=deps /app/packages/api-client/node_modules ./packages/api-client/node_modules
+COPY --from=deps /app/apps/tekup-crm-api/node_modules ./apps/tekup-crm-api/node_modules
+
+# Build dependencies first
+RUN pnpm --filter @tekup/shared build
+RUN pnpm --filter @tekup/config build
+RUN pnpm --filter @tekup/auth build
+RUN pnpm --filter @tekup/api-client build
+# Build the CRM API
+RUN pnpm --filter @tekup/crm-api build
+
+# Production stage
+FROM node:20-alpine AS runner
+RUN addgroup --system --gid 1001 tekup
+RUN adduser --system --uid 1001 crm-api
+WORKDIR /app
+USER crm-api
+
+# Copy built application
+COPY --from=builder --chown=crm-api:tekup /app/apps/tekup-crm-api/dist ./dist
+COPY --from=builder --chown=crm-api:tekup /app/apps/tekup-crm-api/package.json ./
+COPY --from=builder --chown=crm-api:tekup /app/apps/tekup-crm-api/prisma ./prisma
+COPY --from=builder --chown=crm-api:tekup /app/packages/config/dist ./packages/config/dist
+COPY --from=builder --chown=crm-api:tekup /app/packages/shared/dist ./packages/shared/dist
+COPY --from=builder --chown=crm-api:tekup /app/packages/auth/dist ./packages/auth/dist
+COPY --from=builder --chown=crm-api:tekup /app/packages/api-client/dist ./packages/api-client/dist
+
+# Install production dependencies only
+RUN corepack enable && corepack prepare pnpm@9.9.0 --activate
+COPY --from=builder /app/pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
+# Generate Prisma client
+RUN pnpm exec prisma generate
+
+EXPOSE 3002
+ENV NODE_ENV=production
+ENV PORT=3002
+
+CMD ["node", "dist/main.js"]

@@ -1,0 +1,197 @@
+# Cursor AI Rules for Tekup-org Development
+
+## Project Context
+You are helping develop the Tekup Unified Platform, specifically the Lead Platform module. This is a production multi-tenant SaaS system with high quality and security standards.
+
+## Development Priorities
+1. **Lead Platform Module Development** - Currently the main focus
+2. **Integration with existing CRM patterns** - Follow established conventions
+3. **Tailwind CSS 4.1 implementation** - Use futuristic design system
+4. **TypeScript everywhere** - Strict type safety required
+5. **Multi-tenant architecture** - Always consider tenant isolation
+
+## Code Generation Rules
+
+### TypeScript Standards
+- Always use strict TypeScript with proper types
+- Prefer interfaces over types where appropriate
+- Use generic types for reusable components
+- Implement proper error handling with Result/Either patterns
+- Add JSDoc comments for complex functions
+
+### React/Next.js Patterns
+```typescript
+// Preferred component structure
+interface Props {
+  // ... props with proper types
+}
+
+export function ComponentName({ ...props }: Props) {
+  // hooks first
+  // derived state
+  // event handlers
+  // render
+}
+```
+
+### Database Patterns
+- Always include `tenant_id` for multi-tenancy
+- Use proper foreign key constraints
+- Implement soft deletes with `deleted_at`
+- Add `created_at` and `updated_at` timestamps
+- Use prepared statements to prevent SQL injection
+
+```sql
+-- Example table structure
+CREATE TABLE leads (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tenant_id INTEGER NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    status VARCHAR(50) DEFAULT 'new',
+    score INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted_at DATETIME NULL,
+    FOREIGN KEY (tenant_id) REFERENCES tenants(id)
+);
+```
+
+### API Design Patterns
+- Use RESTful conventions: GET, POST, PUT/PATCH, DELETE
+- Follow `/api/v1/leads/*` endpoint structure
+- Return consistent response formats:
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+```
+
+### Tailwind CSS 4.1 Guidelines
+- Use CSS-first configuration approach
+- Implement glassmorphism: `backdrop-blur-md bg-white/10`
+- Use P3 wide gamut colors: `bg-[color(display-p3 0.2 0.8 1)]`
+- Add 3D transforms: `transform-style-preserve-3d`
+- Implement smooth animations: `transition-all duration-300 ease-out`
+- Use container queries: `@container (min-width: 320px)`
+
+### Security Requirements
+- Validate all inputs at API boundaries
+- Implement proper authentication checks
+- Ensure tenant isolation in all queries
+- Use parameterized queries for database operations
+- Add rate limiting to API endpoints
+- Sanitize user inputs to prevent XSS
+
+### Performance Guidelines
+- Implement pagination for list endpoints (limit 50 items)
+- Use database indexes for frequently queried columns
+- Implement caching for expensive operations
+- Lazy load non-critical UI components
+- Optimize bundle sizes with dynamic imports
+
+## File Naming Conventions
+- Components: `PascalCase.tsx`
+- Utilities: `camelCase.ts`
+- API routes: `kebab-case.ts`
+- Database migrations: `YYYY-MM-DD-HH-mm-descriptive-name.sql`
+
+## Testing Requirements
+- Write unit tests for all business logic
+- Add integration tests for API endpoints
+- Include E2E tests for critical user flows
+- Test multi-tenant scenarios
+- Validate error handling paths
+
+## Error Handling Patterns
+```typescript
+// Preferred error handling
+import { Result } from '@/lib/result';
+
+async function createLead(data: LeadData): Promise<Result<Lead, Error>> {
+  try {
+    // validation
+    // business logic
+    return Result.ok(lead);
+  } catch (error) {
+    return Result.err(error);
+  }
+}
+```
+
+## Documentation Standards
+- Add JSDoc comments for public APIs
+- Include usage examples in comments
+- Document complex business logic
+- Update OpenAPI specs for API changes
+- Maintain README files for each module
+
+## Code Quality Checklist
+Before suggesting code, verify:
+- [ ] TypeScript strict mode compliance
+- [ ] Multi-tenant security (tenant_id checks)
+- [ ] Proper error handling
+- [ ] Input validation and sanitization  
+- [ ] Tailwind CSS 4.1 patterns used
+- [ ] Performance considerations addressed
+- [ ] Tests included where appropriate
+- [ ] Documentation updated
+
+## Common Patterns to Follow
+
+### Lead Management CRUD
+```typescript
+// Service pattern
+export class LeadService {
+  async create(tenantId: string, data: CreateLeadDto): Promise<Result<Lead, Error>>
+  async findById(tenantId: string, id: string): Promise<Result<Lead, Error>>
+  async update(tenantId: string, id: string, data: UpdateLeadDto): Promise<Result<Lead, Error>>
+  async delete(tenantId: string, id: string): Promise<Result<void, Error>>
+  async list(tenantId: string, options: ListOptions): Promise<Result<PaginatedLeads, Error>>
+}
+```
+
+### React Hook Patterns
+```typescript
+// Custom hooks for data fetching
+export function useLeads(tenantId: string) {
+  return useQuery({
+    queryKey: ['leads', tenantId],
+    queryFn: () => leadService.list(tenantId),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
+```
+
+### Component Props Patterns
+```typescript
+// Consistent prop interfaces
+interface BaseProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+interface DataProps<T> extends BaseProps {
+  data: T;
+  loading?: boolean;
+  error?: Error;
+}
+```
+
+## Integration Points to Consider
+- AgentScope backend for AI-powered lead scoring
+- CRM module for customer conversion workflows
+- Shared UI components from packages/ui
+- Database schema compatibility with existing tables
+- Email/SMS services for follow-up automation
+
+## Performance Budgets
+- Frontend bundles: < 250KB gzipped
+- API response times: < 200ms average
+- Database query times: < 50ms average
+- First contentful paint: < 1.5s
+- Largest contentful paint: < 2.5s
+
+Remember: This is a production system. Prioritize code quality, security, and maintainability over quick implementations.

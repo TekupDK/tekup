@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS variables */
+:root {
+  --primary: #3B82F6;
+  --primary-dark: #1E40AF;
+  --secondary: #10B981;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --dark: #111827;
+  --light: #F9FAFB;
+  --border: #E5E7EB;
+}
+
+/* Custom component styles */
+.glass-card {
+  @apply bg-white bg-opacity-95 backdrop-blur-xl border border-white border-opacity-20;
+}
+
+.card-hover {
+  @apply transition-all duration-300 ease-out;
+}
+
+.card-hover:hover {
+  @apply -translate-y-2 shadow-card-hover;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-primary-500 to-primary-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-300 ease-out;
+}
+
+.btn-primary:hover {
+  @apply -translate-y-0.5 shadow-lg shadow-primary-500/40;
+}
+
+.loading-spinner {
+  @apply border-2 border-gray-300 border-t-primary-500 rounded-full w-5 h-5 animate-spin;
+}
+
+.notification {
+  @apply transform translate-x-full transition-transform duration-300 ease-out;
+}
+
+.notification.show {
+  @apply translate-x-0;
+}
+
+.sidebar {
+  @apply transform -translate-x-full transition-transform duration-300 ease-out;
+}
+
+.sidebar.open {
+  @apply translate-x-0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full hover:bg-gray-400;
+}
+
+/* Focus styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile responsive utilities */
+@media (max-width: 768px) {
+  .mobile-hide {
+    @apply hidden;
+  }
+  
+  .mobile-show {
+    @apply block;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    @apply hidden;
+  }
+  
+  body {
+    @apply text-black bg-white;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass-card {
+    @apply bg-white border-gray-300;
+  }
+  
+  .btn-primary {
+    @apply bg-blue-700 border-2 border-blue-800;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .btn-primary,
+  .notification,
+  .sidebar,
+  .animate-fade-in {
+    @apply transition-none;
+  }
+  
+  .loading-spinner {
+    @apply animate-none;
+  }
+}

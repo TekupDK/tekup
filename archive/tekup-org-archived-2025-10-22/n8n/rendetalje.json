@@ -1,0 +1,507 @@
+{
+    "name": "Rendetalje Friday - Lead Intelligence System",
+    "nodes": [
+        {
+            "parameters": {
+                "pollTimes": {
+                    "item": [
+                        {
+                            "mode": "everyMinute"
+                        }
+                    ]
+                },
+                "simple": false,
+                "filters": {
+                    "labelIds": [
+                        "INBOX"
+                    ],
+                    "sender": ""
+                },
+                "format": "resolved"
+            },
+            "id": "gmail-trigger",
+            "name": "Gmail Trigger - Monitor Inbox",
+            "type": "n8n-nodes-base.gmailTrigger",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "gmail-creds",
+                    "name": "Gmail - [info@rendetalje.dk](mailto:info@rendetalje.dk)"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "lead-sources",
+                            "leftValue": "={{ $json.from }}",
+                            "rightValue": "leadmail.no",
+                            "operator": {
+                                "type": "string",
+                                "operation": "contains"
+                            }
+                        }
+                    ],
+                    "combinator": "or"
+                },
+                "options": {}
+            },
+            "id": "lead-source-router",
+            "name": "Lead Source Router",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "search",
+                "q": "from:{{ $json.from.split('@')[0] }}@{{ $json.from.split('@')[1] }} OR to:{{ $json.from.split('@')[0] }}@{{ $json.from.split('@')[1] }}",
+                "returnAll": true,
+                "additionalFields": {
+                    "format": "metadata"
+                }
+            },
+            "id": "gmail-search-existing",
+            "name": "🚨 DOBBELTTJEK - Søg Eksisterende",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2,
+            "position": [
+                680,
+                200
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "gmail-creds",
+                    "name": "Gmail - [info@rendetalje.dk](mailto:info@rendetalje.dk)"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "existing-communication",
+                            "leftValue": "={{ $json.length }}",
+                            "rightValue": 1,
+                            "operator": {
+                                "type": "number",
+                                "operation": "largerEqual"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "check-existing-comm",
+            "name": "Tjek Om Vi Har Kommunikeret Før",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                900,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.openai.com/v1/chat/completions",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "openAiApi",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "{\n  \"model\": \"gpt-4\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"🦾 NAVN: Friday\\n🧭 ROLLE: Green Ops & Intelligence Officer\\n🏢 VIRKSOMHED: Rendetalje.dk ApS (CVR 45564096), Aarhus\\n🌱 BRAND: Miljøvenlig, menneskelig, ærlig og 100% kvalitetsfokuseret\\n\\n## LEAD-INTELLIGENS\\nDu analyserer og responderer på leads:\\n- Identificér leadtype: Privat, flytning, erhverv, special, Airbnb, akut\\n- Estimér realistisk tid og pris ud fra m², opgavetype, services\\n- Timepris: 349 kr/time inkl. moms\\n\\n## TIDSESTIMERING (baseret på faktiske data):\\n- Fast rengøring første gang: +100% af estimat\\n- Fast rengøring efterfølgende: 30-40 m²/time\\n- Flytterengøring: +150-200% overskridelse\\n- Hovedrengøring: ~40 m²/time\\n\\n## LEADHÅNDTERING REGLER:\\n- Rengøring.nu (leadmail.no): ALDRIG svar direkte - opret ny email\\n- Rengøring Aarhus (leadpoint.dk): Kan svares direkte\\n- AdHelp: Send til kundens email, IKKE til [mw@adhelp.dk](mailto:mw@adhelp.dk)\\n\\n## TONE:\\n- Menneskelig, ærlig, konkret\\n- Undgå overforklaring\\n- Ingen emojis, ingen salgspres\\n- Bekræft altid varighed og pris\\n\\n## HVIS INFORMATION MANGLER:\\nSpørg venligt: 'Må jeg få oplyst adresse og ønsket dato?'\\n\\n## FASTE FAKTA:\\n- Pris: 349 kr/time inkl. moms\\n- Område: Aarhus og omegn\\n- Booking: rendetalje.dk/book-nu\\n- Kontakt: [info@rendetalje.dk](mailto:info@rendetalje.dk) // +45 22 65 02 26\\n- Motto: Detaljen gør forskellen – naturligvis.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"LEAD EMAIL:\\nFra: {{ $json.from }}\\nEmne: {{ $json.subject }}\\nIndhold: {{ $json.snippet }}\\n\\nLead-kilde: {{ $('Lead Source Router').item.json.leadSource }}\\nKalender ledighed: {{ $('Google Calendar Check').item.json.availability }}\\n\\nLav et professionelt tilbud på dansk med:\\n1. Estimeret tid og pris\\n2. Forslag til 2 konkrete tider\\n3. Næste skridt for booking\"\n    }\n  ],\n  \"temperature\": 0.7,\n  \"max_tokens\": 800\n}",
+                "options": {}
+            },
+            "id": "ai-generate-response",
+            "name": "Friday AI - Generer Svar",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1340,
+                400
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "openai-creds",
+                    "name": "OpenAI API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "calendarId": "[c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com](mailto:c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com)",
+                "start": "={{ DateTime.now().plus({ days: 1 }).startOf('day').toISO() }}",
+                "end": "={{ DateTime.now().plus({ days: 14 }).endOf('day').toISO() }}",
+                "options": {
+                    "maxResults": 50
+                }
+            },
+            "id": "google-calendar-check",
+            "name": "Google Calendar Check",
+            "type": "n8n-nodes-base.googleCalendar",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                400
+            ],
+            "credentials": {
+                "googleCalendarOAuth2Api": {
+                    "id": "google-calendar-creds",
+                    "name": "Google Calendar - RenOS"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// 📊 RENDETALJE PRIS & TIDS CALCULATOR\n// Baseret på faktiske data fra 50+ opgaver\n\nconst email = $input.first().json;\nconst timePriceIncVat = 349;\n\n// 🔍 UDTRÆK INFO FRA EMAIL\nfunction extractLeadInfo(emailContent, subject) {\n  const content = emailContent.toLowerCase();\n  const subjectLower = subject.toLowerCase();\n  \n  // 🏠 LEAD TYPE DETECTION\n  let leadType = 'hovedrengøring';\n  if (content.includes('flyt') || content.includes('moving') || subjectLower.includes('flyt')) {\n    leadType = 'flytterengøring';\n  } else if (content.includes('ugentlig') || content.includes('fast') || content.includes('løbende')) {\n    leadType = 'fast rengøring';\n  } else if (content.includes('vinduer') || content.includes('window')) {\n    leadType = 'vinduer';\n  }\n  \n  // 📏 STØRRELSE DETECTION\n  let squareMeters = 80; // default\n  const sizeMatch = content.match(/(\\d+)\\s*m[²2]/);\n  if (sizeMatch) {\n    squareMeters = parseInt(sizeMatch[1]);\n  }\n  \n  return { leadType, squareMeters };\n}\n\n// ⏰ TIDSBEREGNING BASERET PÅ FAKTISKE DATA\nfunction calculateTime(leadType, squareMeters) {\n  let hours = 4; // default\n  \n  switch(leadType) {\n    case 'fast rengøring':\n      // Første gang: +100% af estimat, derefter stabilt\n      const baseHours = squareMeters / 35; // ~30-40 m²/t\n      hours = Math.ceil(baseHours * 2); // Første gang dobbelt tid\n      break;\n      \n    case 'flytterengøring':\n      // +150-200% overskridelse er normalt\n      hours = Math.ceil(squareMeters / 8) * 2.5; // 5-8 m²/t * safety factor\n      break;\n      \n    case 'hovedrengøring':\n      // ~40 m²/time\n      hours = Math.ceil(squareMeters / 40);\n      if (hours < 3) hours = 3; // minimum\n      break;\n      \n    case 'vinduer':\n      hours = Math.ceil(squareMeters / 60); // hurtigere\n      if (hours < 2) hours = 2;\n      break;\n  }\n  \n  return Math.max(hours, 2); // minimum 2 timer\n}\n\n// 🧮 BEREGNINGER\nconst leadInfo = extractLeadInfo(email.snippet || '', email.subject || '');\nconst estimatedHours = calculateTime(leadInfo.leadType, leadInfo.squareMeters);\nconst totalPrice = estimatedHours * timePriceIncVat;\n\n// 🎯 LEAD SOURCE LOGIC\nlet leadSource = 'direkte';\nlet responseType = 'reply';\n\nif (email.from.includes('leadmail.no')) {\n  leadSource = 'rengøring.nu';\n  responseType = 'new_email'; // ALDRIG svar direkte!\n} else if (email.from.includes('leadpoint.dk')) {\n  leadSource = 'rengøring aarhus';\n  responseType = 'reply';\n} else if (email.from.includes('adhelp.dk')) {\n  leadSource = 'adhelp';\n  responseType = 'customer_direct';\n}\n\n// 📤 OUTPUT\nreturn {\n  leadType: leadInfo.leadType,\n  squareMeters: leadInfo.squareMeters,\n  estimatedHours: estimatedHours,\n  pricePerHour: timePriceIncVat,\n  totalPrice: totalPrice,\n  leadSource: leadSource,\n  responseType: responseType,\n  calculation: `${leadInfo.leadType} på ${leadInfo.squareMeters}m² = ca. ${estimatedHours} timer à ${timePriceIncVat} kr = ${totalPrice} kr inkl. moms`\n};"
+            },
+            "id": "price-calculator",
+            "name": "💰 Pris & Tids Calculator",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                900,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "response-type-check",
+                            "leftValue": "={{ $json.responseType }}",
+                            "rightValue": "new_email",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "or"
+                },
+                "options": {}
+            },
+            "id": "response-type-router",
+            "name": "Response Type Router",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                1560,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "sendTo": "={{ $('Gmail Trigger - Monitor Inbox').item.json.from }}",
+                "subject": "Re: {{ $('Gmail Trigger - Monitor Inbox').item.json.subject }}",
+                "message": "={{ $json.choices[0].message.content }}",
+                "options": {
+                    "replyTo": "[info@rendetalje.dk](mailto:info@rendetalje.dk)"
+                }
+            },
+            "id": "gmail-reply",
+            "name": "Gmail - Send Direkte Svar",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2,
+            "position": [
+                1780,
+                300
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "gmail-creds",
+                    "name": "Gmail - [info@rendetalje.dk](mailto:info@rendetalje.dk)"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "create",
+                "sendTo": "={{ $('Price Calculator').item.json.customerEmail || $('Gmail Trigger - Monitor Inbox').item.json.from }}",
+                "subject": "Tilbud fra Rendetalje.dk - {{ $('Price Calculator').item.json.leadType }}",
+                "message": "={{ $json.choices[0].message.content }}",
+                "options": {
+                    "replyTo": "[info@rendetalje.dk](mailto:info@rendetalje.dk)"
+                }
+            },
+            "id": "gmail-new-email",
+            "name": "Gmail - Opret Ny Email",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2,
+            "position": [
+                1780,
+                500
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "gmail-creds",
+                    "name": "Gmail - [info@rendetalje.dk](mailto:info@rendetalje.dk)"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "sendTo": "[jonas@rendetalje.dk](mailto:jonas@rendetalje.dk)",
+                "subject": "🚨 FRIDAY ALERT: Eksisterende kommunikation fundet",
+                "message": "STOP - Friday har fundet eksisterende kommunikation med:\\n\\nKunde: {{ $('Gmail Trigger - Monitor Inbox').item.json.from }}\\nEmne: {{ $('Gmail Trigger - Monitor Inbox').item.json.subject }}\\n\\nAntal tidligere emails: {{ $('Gmail Search Existing').item.json.length }}\\n\\nTjek venligst manuelt om vi allerede har sendt tilbud til denne kunde.\\n\\nLink til original email: [Gmail]\\n\\n---\\nFriday AI System\\nRendetalje.dk",
+                "options": {
+                    "replyTo": "[info@rendetalje.dk](mailto:info@rendetalje.dk)"
+                }
+            },
+            "id": "alert-jonas",
+            "name": "🚨 Alert Jonas - Stop Flow",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                100
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "gmail-creds",
+                    "name": "Gmail - [info@rendetalje.dk](mailto:info@rendetalje.dk)"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "create",
+                "resource": "spreadsheet",
+                "title": "Rendetalje Lead Log {{ DateTime.now().toFormat('yyyy-MM') }}",
+                "sheetsUi": {
+                    "sheetValues": [
+                        {
+                            "sheetName": "Friday Lead Intelligence",
+                            "headerRow": true,
+                            "values": [
+                                [
+                                    "Dato",
+                                    "Fra",
+                                    "Emne",
+                                    "Lead Type",
+                                    "m²",
+                                    "Estimeret Timer",
+                                    "Pris",
+                                    "Lead Kilde",
+                                    "Response Type",
+                                    "Status"
+                                ],
+                                [
+                                    "={{ DateTime.now().toFormat('dd/MM/yyyy HH:mm') }}",
+                                    "={{ $('Gmail Trigger - Monitor Inbox').item.json.from }}",
+                                    "={{ $('Gmail Trigger - Monitor Inbox').item.json.subject }}",
+                                    "={{ $('Price Calculator').item.json.leadType }}",
+                                    "={{ $('Price Calculator').item.json.squareMeters }}",
+                                    "={{ $('Price Calculator').item.json.estimatedHours }}",
+                                    "={{ $('Price Calculator').item.json.totalPrice }}",
+                                    "={{ $('Price Calculator').item.json.leadSource }}",
+                                    "={{ $('Price Calculator').item.json.responseType }}",
+                                    "Processed by Friday"
+                                ]
+                            ]
+                        }
+                    ]
+                }
+            },
+            "id": "google-sheets-log",
+            "name": "📊 Log til Google Sheets",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4,
+            "position": [
+                2000,
+                400
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "google-sheets-creds",
+                    "name": "Google Sheets"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Gmail Trigger - Monitor Inbox": {
+            "main": [
+                [
+                    {
+                        "node": "Lead Source Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Lead Source Router": {
+            "main": [
+                [
+                    {
+                        "node": "🚨 DOBBELTTJEK - Søg Eksisterende",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "🚨 DOBBELTTJEK - Søg Eksisterende",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "🚨 DOBBELTTJEK - Søg Eksisterende": {
+            "main": [
+                [
+                    {
+                        "node": "Tjek Om Vi Har Kommunikeret Før",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Tjek Om Vi Har Kommunikeret Før": {
+            "main": [
+                [
+                    {
+                        "node": "🚨 Alert Jonas - Stop Flow",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "💰 Pris & Tids Calculator",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "💰 Pris & Tids Calculator": {
+            "main": [
+                [
+                    {
+                        "node": "Google Calendar Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Calendar Check": {
+            "main": [
+                [
+                    {
+                        "node": "Friday AI - Generer Svar",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Friday AI - Generer Svar": {
+            "main": [
+                [
+                    {
+                        "node": "Response Type Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Response Type Router": {
+            "main": [
+                [
+                    {
+                        "node": "Gmail - Opret Ny Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Gmail - Send Direkte Svar",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Gmail - Send Direkte Svar": {
+            "main": [
+                [
+                    {
+                        "node": "📊 Log til Google Sheets",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Gmail - Opret Ny Email": {
+            "main": [
+                [
+                    {
+                        "node": "📊 Log til Google Sheets",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [
+        {
+            "createdAt": "2025-09-19T23:40:00.000Z",
+            "updatedAt": "2025-09-19T23:40:00.000Z",
+            "id": "rendetalje-friday",
+            "name": "Rendetalje Friday AI"
+        }
+    ],
+    "triggerCount": 1,
+    "updatedAt": "2025-09-19T23:40:00.000Z",
+    "versionId": "friday-v1.0"
+}

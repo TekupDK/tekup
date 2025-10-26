@@ -1,0 +1,155 @@
+{
+  "$schema": "../schemas/mcp-config.schema.json",
+  "extends": "base.json",
+  "environment": "production",
+  "description": "Production environment configuration with security and performance optimizations",
+  "mcpServers": {
+    "browser": {
+      "transport": {
+        "config": {
+          "env": {
+            "BROWSER_MCP_PORT": "3030",
+            "NODE_ENV": "production"
+          },
+          "timeout": 30000,
+          "retryAttempts": 5,
+          "retryDelay": 2000
+        }
+      },
+      "capabilities": {
+        "logging": ["warning", "error"]
+      },
+      "config": {
+        "healthCheckInterval": 60000,
+        "requestTimeout": 45000,
+        "maxConcurrentRequests": 3
+      }
+    },
+    "filesystem": {
+      "transport": {
+        "config": {
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-filesystem",
+            "${MCP_FILESYSTEM_WORKSPACE_ROOT}"
+          ],
+          "env": {
+            "NODE_ENV": "production"
+          },
+          "timeout": 10000
+        }
+      },
+      "capabilities": {
+        "logging": ["error"]
+      },
+      "config": {
+        "healthCheckInterval": 300000,
+        "requestTimeout": 20000,
+        "maxConcurrentRequests": 5
+      }
+    },
+    "search": {
+      "transport": {
+        "config": {
+          "env": {
+            "BRAVE_API_KEY": "${MCP_BRAVE_API_KEY}",
+            "NODE_ENV": "production"
+          },
+          "timeout": 8000,
+          "retryAttempts": 2
+        }
+      },
+      "capabilities": {
+        "logging": ["error"]
+      },
+      "config": {
+        "healthCheckInterval": 600000,
+        "requestTimeout": 10000,
+        "maxConcurrentRequests": 2
+      }
+    },
+    "automation": {
+      "transport": {
+        "config": {
+          "url": "${MCP_ZAPIER_ENDPOINT}",
+          "headers": {
+            "Content-Type": "application/json",
+            "User-Agent": "TekUp-MCP/1.0.0",
+            "X-Environment": "production"
+          },
+          "timeout": 25000
+        }
+      },
+      "capabilities": {
+        "logging": ["error"]
+      },
+      "config": {
+        "healthCheckInterval": 900000,
+        "requestTimeout": 20000,
+        "maxConcurrentRequests": 1
+      }
+    }
+  },
+  "global": {
+    "logging": {
+      "level": "error",
+      "file": "/var/log/tekup/mcp-production.log",
+      "maxSize": "100MB",
+      "maxFiles": 30,
+      "timestamp": true,
+      "json": true,
+      "console": false,
+      "structured": true,
+      "rotation": "daily"
+    },
+    "security": {
+      "allowUnsignedPlugins": false,
+      "sandboxMode": true,
+      "requireHttps": true,
+      "encryptionRequired": true,
+      "auditLogging": true,
+      "rateLimiting": {
+        "enabled": true,
+        "maxRequestsPerMinute": 100,
+        "maxRequestsPerHour": 1000
+      }
+    },
+    "performance": {
+      "maxConcurrentServers": 5,
+      "defaultTimeout": 15000,
+      "connectionPoolSize": 3,
+      "requestQueueLimit": 50,
+      "memoryLimit": "512MB",
+      "cpuLimit": "50%"
+    },
+    "monitoring": {
+      "healthChecks": true,
+      "metricsCollection": true,
+      "errorReporting": true,
+      "performanceTracking": true,
+      "alerting": {
+        "enabled": true,
+        "errorThreshold": 10,
+        "responseTimeThreshold": 5000,
+        "notificationChannels": ["email", "slack"]
+      }
+    },
+    "production": {
+      "clustering": {
+        "enabled": true,
+        "instances": "auto",
+        "loadBalancer": true
+      },
+      "caching": {
+        "enabled": true,
+        "ttl": 300,
+        "maxSize": "100MB"
+      },
+      "backup": {
+        "enabled": true,
+        "interval": "daily",
+        "retention": 30
+      }
+    }
+  }
+}

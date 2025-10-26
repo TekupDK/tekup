@@ -1,0 +1,384 @@
+name: Port Registry Validation
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'config/ports/**'
+      - 'docker-compose*.yml'
+      - '**/package.json'
+      - 'scripts/tekup-port.ps1'
+  push:
+    branches: [main]
+    paths:
+      - 'config/ports/**'
+  workflow_dispatch:
+
+jobs:
+  validate-ports:
+    name: Validate Port Configuration
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+        
+    - name: Install pnpm
+      run: npm install -g pnpm
+      
+    - name: Setup Python for validation scripts
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install Python dependencies
+      run: |
+        pip install pyyaml jsonschema requests
+        
+    - name: Create port validation script
+      run: |
+        cat > validate_ports.py << 'EOF'
+        import yaml
+        import json
+        import sys
+        import requests
+        from collections import defaultdict
+        
+        def load_port_registry():
+            try:
+                with open('config/ports/registry.yaml', 'r') as f:
+                    return yaml.safe_load(f)
+            except FileNotFoundError:
+                print("❌ Port registry not found at config/ports/registry.yaml")
+                return None
+            except yaml.YAMLError as e:
+                print(f"❌ Invalid YAML syntax in port registry: {e}")
+                return None
+        
+        def validate_port_ranges(registry):
+            """Validate port range definitions"""
+            errors = []
+            
+            if 'port_ranges' not in registry:
+                errors.append("Missing 'port_ranges' section in registry")
+                return errors
+                
+            ranges = registry['port_ranges']
+            
+            # Check for overlapping ranges
+            used_ports = set()
+            for category, config in ranges.items():
+                if isinstance(config, dict) and 'range' in config:
+                    range_str = config['range']
+                    if '-' in range_str:
+                        start, end = map(int, range_str.split('-'))
+                        current_ports = set(range(start, end + 1))
+                        
+                        overlap = used_ports.intersection(current_ports)
+                        if overlap:
+                            errors.append(f"Port range overlap in category '{category}': ports {sorted(overlap)}")
+                        
+                        used_ports.update(current_ports)
+            
+            return errors
+        
+        def validate_service_ports(registry):
+            """Validate service port assignments"""
+            errors = []
+            
+            if 'services' not in registry:
+                errors.append("Missing 'services' section in registry")
+                return errors
+            
+            services = registry['services']
+            port_assignments = defaultdict(list)
+            
+            for service_name, config in services.items():
+                if not isinstance(config, dict):
+                    errors.append(f"Service '{service_name}' has invalid configuration")
+                    continue
+                    
+                # Check required fields
+                if 'category' not in config:
+                    errors.append(f"Service '{service_name}' missing required field 'category'")
+                
+                # Check port assignments
+                if 'environments' in config:
+                    for env, port in config['environments'].items():
+                        if not isinstance(port, int) or port < 1 or port > 65535:
+                            errors.append(f"Service '{service_name}' has invalid port {port} for environment '{env}'")
+                        else:
+                            port_assignments[port].append(f"{service_name}({env})")
+                
+                # Check base_port if present
+                if 'base_port' in config:
+                    port = config['base_port']
+                    if not isinstance(port, int) or port < 1 or port > 65535:
+                        errors.append(f"Service '{service_name}' has invalid base_port {port}")
+            
+            # Check for port conflicts
+            for port, assignments in port_assignments.items():
+                if len(assignments) > 1:
+                    errors.append(f"Port conflict on {port}: assigned to {', '.join(assignments)}")
+            
+            return errors
+        
+        def validate_reserved_ports(registry):
+            """Validate reserved ports list"""
+            errors = []
+            
+            if 'reserved_ports' not in registry:
+                return errors  # Optional section
+            
+            reserved = registry['reserved_ports']
+            if not isinstance(reserved, list):
+                errors.append("'reserved_ports' must be a list")
+                return errors
+            
+            for i, entry in enumerate(reserved):
+                if not isinstance(entry, dict):
+                    errors.append(f"Reserved port entry {i} must be an object")
+                    continue
+                    
+                if 'port' not in entry:
+                    errors.append(f"Reserved port entry {i} missing required field 'port'")
+                    
+                if 'description' not in entry:
+                    errors.append(f"Reserved port entry {i} missing required field 'description'")
+            
+            return errors
+        
+        def check_docker_compose_consistency():
+            """Check if Docker Compose files use ports from registry"""
+            errors = []
+            
+            try:
+                with open('docker-compose.dev.yml', 'r') as f:
+                    compose_content = f.read()
+                    
+                # Simple check for common port patterns
+                import re
+                port_patterns = re.findall(r'"(\d+):\d+"', compose_content)
+                
+                if port_patterns:
+                    print(f"ℹ️  Found {len(port_patterns)} port mappings in docker-compose.dev.yml")
+                    
+            except FileNotFoundError:
+                print("ℹ️  No docker-compose.dev.yml found - skipping consistency check")
+            
+            return errors
+        
+        def main():
+            print("🔍 Validating TekUp Port Registry...")
+            
+            registry = load_port_registry()
+            if not registry:
+                sys.exit(1)
+            
+            all_errors = []
+            
+            # Run all validation checks
+            all_errors.extend(validate_port_ranges(registry))
+            all_errors.extend(validate_service_ports(registry))
+            all_errors.extend(validate_reserved_ports(registry))
+            all_errors.extend(check_docker_compose_consistency())
+            
+            if all_errors:
+                print(f"❌ Validation failed with {len(all_errors)} errors:")
+                for error in all_errors:
+                    print(f"   • {error}")
+                sys.exit(1)
+            else:
+                print("✅ Port registry validation passed!")
+                
+                # Print summary
+                services_count = len(registry.get('services', {}))
+                ranges_count = len(registry.get('port_ranges', {}))
+                reserved_count = len(registry.get('reserved_ports', []))
+                
+                print(f"📊 Registry Summary:")
+                print(f"   • Services: {services_count}")
+                print(f"   • Port ranges: {ranges_count}")
+                print(f"   • Reserved ports: {reserved_count}")
+        
+        if __name__ == "__main__":
+            main()
+        EOF
+        
+    - name: Run port registry validation
+      run: python validate_ports.py
+      
+    - name: Check for port conflicts in package.json files
+      run: |
+        echo "🔍 Scanning package.json files for port configurations..."
+        find . -name "package.json" -not -path "./node_modules/*" -exec grep -l "port\|PORT" {} \; | while read file; do
+          echo "📦 Checking $file"
+          # Extract port numbers from scripts
+          grep -E "(port|PORT)" "$file" || true
+        done
+        
+    - name: Validate Docker Compose port mappings
+      run: |
+        echo "🐳 Validating Docker Compose port mappings..."
+        for compose_file in docker-compose*.yml; do
+          if [ -f "$compose_file" ]; then
+            echo "Checking $compose_file"
+            # Extract port mappings
+            grep -E "^\s*-\s*\"[0-9]+:[0-9]+\"" "$compose_file" || true
+          fi
+        done
+        
+    - name: Generate port allocation report
+      run: |
+        cat > port_report.py << 'EOF'
+        import yaml
+        import json
+        
+        def generate_report():
+            try:
+                with open('config/ports/registry.yaml', 'r') as f:
+                    registry = yaml.safe_load(f)
+            except:
+                print("Could not load registry")
+                return
+            
+            services = registry.get('services', {})
+            
+            print("📊 TekUp Port Allocation Report")
+            print("=" * 50)
+            
+            # Group by category
+            categories = {}
+            for service, config in services.items():
+                category = config.get('category', 'uncategorized')
+                if category not in categories:
+                    categories[category] = []
+                categories[category].append((service, config))
+            
+            for category, service_list in categories.items():
+                print(f"\n🏷️  {category.upper()}")
+                print("-" * 30)
+                
+                for service, config in service_list:
+                    if 'environments' in config:
+                        dev_port = config['environments'].get('development', 'N/A')
+                        print(f"  {service:25} → {dev_port}")
+                    elif 'base_port' in config:
+                        print(f"  {service:25} → {config['base_port']}")
+            
+            # Port range utilization
+            print(f"\n📈 Port Range Utilization")
+            print("-" * 30)
+            
+            ranges = registry.get('port_ranges', {})
+            for category, range_config in ranges.items():
+                if isinstance(range_config, dict) and 'range' in range_config:
+                    range_str = range_config['range']
+                    print(f"  {category:20} → {range_str}")
+        
+        generate_report()
+        EOF
+        
+        python port_report.py
+        
+    - name: Comment PR with validation results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          let comment = `## 🔍 Port Registry Validation Results\n\n`;
+          comment += `✅ Port registry validation completed successfully!\n\n`;
+          comment += `### Changes Detected\n`;
+          comment += `This PR includes changes to port configuration files.\n\n`;
+          comment += `### Validation Steps Performed\n`;
+          comment += `- ✅ Port registry syntax validation\n`;
+          comment += `- ✅ Port range conflict detection\n`;
+          comment += `- ✅ Service port assignment validation\n`;
+          comment += `- ✅ Docker Compose consistency check\n`;
+          comment += `- ✅ Package.json port scanning\n\n`;
+          comment += `### Next Steps\n`;
+          comment += `After merging, remember to:\n`;
+          comment += `1. Update any running services with new port assignments\n`;
+          comment += `2. Run \`./scripts/tekup-port.ps1 status\` to verify configuration\n`;
+          comment += `3. Update documentation if port ranges have changed\n`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+  
+  security-scan:
+    name: Security Port Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Run port security scan
+      run: |
+        cat > security_scan.py << 'EOF'
+        import yaml
+        import socket
+        import sys
+        
+        def scan_common_vulnerabilities():
+            print("🔒 Running port security scan...")
+            
+            # Load registry
+            try:
+                with open('config/ports/registry.yaml', 'r') as f:
+                    registry = yaml.safe_load(f)
+            except:
+                print("Could not load registry for security scan")
+                return
+            
+            warnings = []
+            errors = []
+            
+            services = registry.get('services', {})
+            
+            for service, config in services.items():
+                if 'environments' in config:
+                    for env, port in config['environments'].items():
+                        # Check for dangerous ports
+                        if port in [22, 23, 135, 139, 445, 1433, 1521, 3389]:
+                            errors.append(f"⚠️ Service {service} using dangerous port {port} in {env}")
+                        
+                        # Check for common web ports without HTTPS
+                        if port in [80, 8080, 3000, 4000] and env == 'production':
+                            warnings.append(f"🔓 Service {service} using HTTP port {port} in production")
+                        
+                        # Check for database ports in production
+                        if port in [5432, 3306, 27017, 6379] and env == 'production':
+                            warnings.append(f"🗄️ Database port {port} for {service} exposed in production")
+            
+            if errors:
+                print("❌ Security errors found:")
+                for error in errors:
+                    print(f"  {error}")
+                sys.exit(1)
+            
+            if warnings:
+                print("⚠️ Security warnings:")
+                for warning in warnings:
+                    print(f"  {warning}")
+            
+            if not errors and not warnings:
+                print("✅ No security issues found in port configuration")
+        
+        scan_common_vulnerabilities()
+        EOF
+        
+        python security_scan.py

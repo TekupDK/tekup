@@ -1,0 +1,128 @@
+# =============================================================================
+# TekUp MCP Gateway - Development Container
+# =============================================================================
+
+FROM node:20-alpine AS base
+
+# Install system dependencies for development
+RUN apk add --no-cache \
+    curl \
+    git \
+    bash \
+    procps \
+    htop \
+    vim \
+    && npm install -g nodemon tsx
+
+# Set working directory
+WORKDIR /app
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs
+
+# =============================================================================
+# DEPENDENCIES STAGE
+# =============================================================================
+
+FROM base AS deps
+
+# Copy package files
+COPY package*.json ./
+COPY pnpm-lock.yaml* ./
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# =============================================================================
+# DEVELOPMENT STAGE
+# =============================================================================
+
+FROM base AS development
+
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy source code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/cache /app/tmp && \
+    chown -R nodejs:nodejs /app
+
+# Development-specific configurations
+ENV NODE_ENV=development
+ENV MCP_ENV=development
+ENV DEBUG=mcp:*
+
+# Expose ports
+EXPOSE 3000 9229
+
+# Switch to non-root user
+USER nodejs
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Start the application with hot-reload
+CMD ["nodemon", "--inspect=0.0.0.0:9229", "--watch", "src", "--ext", "ts,js,json", "--exec", "tsx", "src/index.ts"]
+
+# =============================================================================
+# BUILD STAGE (for production builds)
+# =============================================================================
+
+FROM base AS builder
+
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN pnpm run build
+
+# =============================================================================
+# PRODUCTION STAGE
+# =============================================================================
+
+FROM node:20-alpine AS production
+
+# Install only production dependencies
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs
+
+# Copy built application
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY package*.json ./
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/cache && \
+    chown -R nodejs:nodejs /app
+
+# Production environment
+ENV NODE_ENV=production
+ENV MCP_ENV=production
+
+# Expose port
+EXPOSE 3000
+
+# Switch to non-root user
+USER nodejs
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=30s \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Start the application
+CMD ["node", "dist/index.js"]

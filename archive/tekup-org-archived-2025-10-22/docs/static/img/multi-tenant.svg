@@ -1,0 +1,15 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="40" width="50" height="50" rx="8" fill="#007acc" fill-opacity="0.8"/>
+<rect x="75" y="40" width="50" height="50" rx="8" fill="#10b981" fill-opacity="0.8"/>
+<rect x="130" y="40" width="50" height="50" rx="8" fill="#f59e0b" fill-opacity="0.8"/>
+<rect x="20" y="110" width="160" height="60" rx="8" fill="#1e293b" stroke="#007acc" stroke-width="2"/>
+<text x="100" y="145" text-anchor="middle" fill="#e2e8f0" font-family="monospace" font-size="12">Multi-Tenant Core</text>
+<path d="M45 90 L45 110" stroke="#007acc" stroke-width="2" marker-end="url(#arrowhead)"/>
+<path d="M100 90 L100 110" stroke="#10b981" stroke-width="2" marker-end="url(#arrowhead)"/>
+<path d="M155 90 L155 110" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowhead)"/>
+<defs>
+<marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+<polygon points="0 0, 10 3.5, 0 7" fill="#007acc"/>
+</marker>
+</defs>
+</svg>

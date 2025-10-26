@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --jarvis-primary: 0 217 255;
+    --jarvis-secondary: 0 153 204;
+    --jarvis-accent: 255 107 53;
+    --jarvis-dark: 10 10 10;
+    --jarvis-surface: 26 26 26;
+    --jarvis-border: 51 51 51;
+  }
+  
+  * {
+    @apply border-jarvis-border;
+  }
+  
+  body {
+    @apply bg-jarvis-dark text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-jarvis-surface;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-jarvis-border rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-jarvis-primary/30;
+  }
+}
+
+@layer components {
+  .jarvis-glow {
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+  }
+  
+  .jarvis-button {
+    @apply px-4 py-2 bg-jarvis-primary/20 border border-jarvis-primary/40 rounded-lg 
+           text-jarvis-primary font-medium transition-all duration-200 
+           hover:bg-jarvis-primary/30 hover:border-jarvis-primary/60 
+           focus:outline-none focus:ring-2 focus:ring-jarvis-primary/50;
+  }
+  
+  .jarvis-button-primary {
+    @apply px-6 py-3 bg-jarvis-primary text-jarvis-dark font-semibold rounded-lg
+           transition-all duration-200 hover:bg-jarvis-secondary
+           focus:outline-none focus:ring-2 focus:ring-jarvis-primary/50 jarvis-glow;
+  }
+  
+  .jarvis-button-secondary {
+    @apply px-6 py-3 bg-jarvis-secondary/20 border border-jarvis-secondary/40 text-jarvis-secondary font-semibold rounded-lg
+           transition-all duration-200 hover:bg-jarvis-secondary/30 hover:border-jarvis-secondary/60
+           focus:outline-none focus:ring-2 focus:ring-jarvis-secondary/50;
+  }
+  
+  .jarvis-input {
+    @apply w-full px-4 py-3 bg-jarvis-surface border border-jarvis-border rounded-lg
+           text-white placeholder:text-gray-400 
+           focus:outline-none focus:ring-2 focus:ring-jarvis-primary/50 focus:border-jarvis-primary/50
+           transition-all duration-200;
+  }
+  
+  .jarvis-card {
+    @apply bg-jarvis-surface border border-jarvis-border rounded-xl p-6
+           backdrop-blur-sm transition-all duration-300
+           hover:border-jarvis-primary/30 hover:shadow-lg hover:shadow-jarvis-primary/10;
+  }
+}
+
+/* Animation keyframes */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.6);
+  }
+}
+
+@keyframes wave-animation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes typing {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-wave {
+  animation: wave-animation 2s ease-in-out infinite;
+}
+
+.animate-typing {
+  animation: typing 1.5s ease-in-out infinite;
+}

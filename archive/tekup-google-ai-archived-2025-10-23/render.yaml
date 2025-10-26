@@ -1,0 +1,101 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: renos-database
+    env: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile.postgres
+    dockerContext: .
+    envVars:
+      - key: POSTGRES_DB
+        value: renos_db
+      - key: POSTGRES_USER
+        value: renos_user
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+
+  # Backend API
+  - type: web
+    name: tekup-renos
+    env: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install --omit=dev && npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && exec node dist/index.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_dQil49phImPE@ep-falling-night-a2hato6b-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - key: RUN_MODE
+        value: production
+      - key: LOG_LEVEL
+        value: info
+      - key: ORGANISATION_NAME
+        sync: false
+      - key: GEMINI_KEY
+        sync: false
+      - key: GOOGLE_PROJECT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_EMAIL
+        sync: false
+      - key: GOOGLE_PRIVATE_KEY
+        sync: false
+      - key: GOOGLE_IMPERSONATED_USER
+        sync: false
+      - key: GOOGLE_CALENDAR_ID
+        value: c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com
+      - key: DEFAULT_EMAIL_FROM
+        sync: false
+      - key: GMAIL_CLIENT_ID
+        sync: false
+      - key: GMAIL_CLIENT_SECRET
+        sync: false
+      - key: GMAIL_REDIRECT_URI
+        sync: false
+      - key: GMAIL_PROJECT_ID
+        sync: false
+      - key: GMAIL_USER_EMAIL
+        sync: false
+      - key: FRONTEND_URL
+        value: https://tekup-renos-1.onrender.com
+      - key: ENABLE_AUTH
+        value: "true"
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: REDIS_URL
+        sync: false
+
+  # Frontend Static Site
+  - type: web
+    name: tekup-renos-1
+    env: static
+    plan: free
+    region: frankfurt
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: ./client/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://tekup-renos.onrender.com
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false
+
+databases:
+  - name: renos-database
+    databaseName: renos_db
+    user: renos_user
+    plan: free
+    region: frankfurt
+# API URL fix - force rebuild: 2025-10-08 17:40
+
+# Build trigger: 17:41

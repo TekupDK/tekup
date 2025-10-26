@@ -1,0 +1,126 @@
+{
+  "git_hooks": {
+    "pre_commit": {
+      "enabled": true,
+      "hooks": [
+        {
+          "name": "codebuff_consistency_check",
+          "description": "Run CodebuffAI monorepo consistency agent to check code patterns",
+          "command": "codebuff run monorepo-consistency-agent --task=\"pre-commit-check\"",
+          "files": ["*.ts", "*.tsx", "*.js", "*.jsx", "*.json"],
+          "fail_on_error": true
+        },
+        {
+          "name": "lint_staged",
+          "description": "Run existing lint-staged configuration",
+          "command": "lint-staged",
+          "fail_on_error": true
+        },
+        {
+          "name": "tailwind_patterns_check", 
+          "description": "Verify Tailwind CSS 4.1 patterns are followed",
+          "command": "codebuff validate --config=.codebuff/jarvis-frontend-patterns.json",
+          "files": ["*.tsx", "*.ts", "*.css"],
+          "fail_on_error": false
+        }
+      ]
+    },
+    "pre_push": {
+      "enabled": true,
+      "hooks": [
+        {
+          "name": "agent_integration_test",
+          "description": "Test agent integrations before push",
+          "command": "codebuff test --config=.codebuff/agent-config.json",
+          "fail_on_error": true
+        },
+        {
+          "name": "build_check",
+          "description": "Ensure all packages build successfully",
+          "command": "pnpm build",
+          "fail_on_error": true
+        }
+      ]
+    },
+    "commit_msg": {
+      "enabled": true,
+      "hooks": [
+        {
+          "name": "commit_msg_validation",
+          "description": "Validate commit message format",
+          "command": "codebuff validate-commit --msg=\"$1\"",
+          "fail_on_error": false
+        }
+      ]
+    }
+  },
+  "lint_staged_config": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "codebuff check --type=typescript"
+    ],
+    "*.{css,scss}": [
+      "prettier --write",
+      "codebuff check --type=styles --validate-tailwind"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.prisma": [
+      "prisma format",
+      "codebuff check --type=database --validate-schema"
+    ]
+  },
+  "husky_hooks": {
+    "install_command": "husky install",
+    "hooks_to_create": [
+      {
+        "hook": "pre-commit",
+        "script": ".codebuff/hooks/pre-commit.sh"
+      },
+      {
+        "hook": "pre-push", 
+        "script": ".codebuff/hooks/pre-push.sh"
+      },
+      {
+        "hook": "commit-msg",
+        "script": ".codebuff/hooks/commit-msg.sh"
+      }
+    ]
+  },
+  "consistency_checks": {
+    "file_naming": {
+      "patterns": {
+        "components": "kebab-case",
+        "hooks": "camelCase",
+        "utilities": "camelCase",
+        "constants": "SCREAMING_SNAKE_CASE"
+      }
+    },
+    "architecture": {
+      "enforce_patterns": [
+        "consistent-module-structure",
+        "tenant-isolation",
+        "error-handling-standards",
+        "api-response-format"
+      ]
+    },
+    "design_system": {
+      "tailwind_version": "4.1",
+      "required_classes": [
+        "glass-card",
+        "btn-futuristic", 
+        "nav-futuristic",
+        "input-futuristic"
+      ],
+      "forbidden_classes": [
+        "bg-white",
+        "bg-black",
+        "text-black",
+        "text-white"
+      ],
+      "require_hsl_colors": true
+    }
+  }
+}

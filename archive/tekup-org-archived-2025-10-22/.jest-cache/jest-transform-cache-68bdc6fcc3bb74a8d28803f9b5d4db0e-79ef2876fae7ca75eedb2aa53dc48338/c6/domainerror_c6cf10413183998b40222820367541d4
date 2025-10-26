@@ -1,0 +1,44 @@
+d6fc9d1b6def006dcc3117abee5f046b
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: Object.getOwnPropertyDescriptor(all, name).get
+    });
+}
+_export(exports, {
+    get DomainError () {
+        return DomainError;
+    },
+    get InvalidStatusTransitionError () {
+        return InvalidStatusTransitionError;
+    }
+});
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+class DomainError extends Error {
+    constructor(code, message){
+        super(message || code), _define_property(this, "code", void 0), this.code = code;
+    }
+}
+class InvalidStatusTransitionError extends DomainError {
+    constructor(message){
+        super('invalid_status_transition', message);
+    }
+}
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcZW1waXJcXFRla3VwLW9yZ1xcYXBwc1xcZmxvdy1hcGlcXHNyY1xcY29tbW9uXFxkb21haW4tZXJyb3IudHMiXSwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGNsYXNzIERvbWFpbkVycm9yIGV4dGVuZHMgRXJyb3Ige1xyXG4gIGNvbnN0cnVjdG9yKHB1YmxpYyBjb2RlOiBzdHJpbmcsIG1lc3NhZ2U/OiBzdHJpbmcpIHtcclxuICAgIHN1cGVyKG1lc3NhZ2UgfHwgY29kZSk7XHJcbiAgfVxyXG59XHJcblxyXG5leHBvcnQgY2xhc3MgSW52YWxpZFN0YXR1c1RyYW5zaXRpb25FcnJvciBleHRlbmRzIERvbWFpbkVycm9yIHtcclxuICBjb25zdHJ1Y3RvcihtZXNzYWdlPzogc3RyaW5nKSB7IHN1cGVyKCdpbnZhbGlkX3N0YXR1c190cmFuc2l0aW9uJywgbWVzc2FnZSk7IH1cclxufVxyXG4iXSwibmFtZXMiOlsiRG9tYWluRXJyb3IiLCJJbnZhbGlkU3RhdHVzVHJhbnNpdGlvbkVycm9yIiwiRXJyb3IiLCJjb2RlIiwibWVzc2FnZSJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7UUFBYUE7ZUFBQUE7O1FBTUFDO2VBQUFBOzs7Ozs7Ozs7Ozs7Ozs7O0FBTk4sTUFBTUQsb0JBQW9CRTtJQUMvQixZQUFZLEFBQU9DLElBQVksRUFBRUMsT0FBZ0IsQ0FBRTtRQUNqRCxLQUFLLENBQUNBLFdBQVdELG9EQURBQSxPQUFBQTtJQUVuQjtBQUNGO0FBRU8sTUFBTUYscUNBQXFDRDtJQUNoRCxZQUFZSSxPQUFnQixDQUFFO1FBQUUsS0FBSyxDQUFDLDZCQUE2QkE7SUFBVTtBQUMvRSJ9

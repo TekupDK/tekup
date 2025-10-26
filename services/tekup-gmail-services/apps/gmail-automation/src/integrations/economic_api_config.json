@@ -1,0 +1,38 @@
+{
+  "economic_api": {
+    "base_url": "https://restapi.e-conomic.com",
+    "demo_mode": true,
+    "demo_headers": {
+      "X-AppSecretToken": "demo",
+      "X-AgreementGrantToken": "demo"
+    },
+    "production_headers": {
+      "X-AppSecretToken": "YOUR_APP_SECRET_TOKEN",
+      "X-AgreementGrantToken": "YOUR_AGREEMENT_GRANT_TOKEN"
+    },
+    "endpoints": {
+      "customers": "/customers",
+      "products": "/products", 
+      "invoices": "/invoices",
+      "suppliers": "/suppliers",
+      "vouchers": "/vouchers",
+      "accounts": "/accounts"
+    },
+    "rate_limits": {
+      "requests_per_minute": 60,
+      "requests_per_hour": 1000
+    }
+  },
+  "voucher_settings": {
+    "default_text": "PDF Bilag: {filename}",
+    "auto_assign_voucher_number": true,
+    "max_file_size_mb": 10,
+    "supported_formats": ["pdf", "jpg", "png", "doc", "docx"]
+  },
+  "integration_features": {
+    "duplicate_detection": true,
+    "auto_categorization": true,
+    "webhook_notifications": false,
+    "batch_processing": true
+  }
+}

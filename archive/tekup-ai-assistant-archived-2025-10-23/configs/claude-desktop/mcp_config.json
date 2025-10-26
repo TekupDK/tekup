@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "web-scraper": {
+      "command": "python",
+      "args": ["scripts/mcp_web_scraper.py"]
+    }
+  }
+}
+

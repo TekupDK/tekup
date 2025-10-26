@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdaptiveUI - Generative User Interfaces Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#3b82f6',
+              secondary: '#64748b',
+              accent: '#f59e0b',
+              success: '#10b981',
+              warning: '#f59e0b',
+              error: '#ef4444'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .component {
+      position: absolute;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .component:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .component.navigation {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+    }
+    
+    .component.content {
+      background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+    }
+    
+    .component.button {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      border: none;
+    }
+    
+    .component.input {
+      background: white;
+      color: #1e293b;
+      border: 2px solid #3b82f6;
+    }
+    
+    .component.card {
+      background: white;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .metrics-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .evolution-counter {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .tracking-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    .tracking-indicator.active {
+      background-color: #10b981;
+    }
+    
+    .tracking-indicator.inactive {
+      background-color: #ef4444;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .layout-canvas {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+  <div class="gradient-bg min-h-screen">
+    <!-- Header -->
+    <header class="relative z-10 flex justify-between items-center p-6">
+      <div>
+        <h1 class="text-3xl font-bold tracking-wider">AdaptiveUI</h1>
+        <p class="text-white/80 text-sm">Generative User Interfaces That Design Themselves</p>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <div class="evolution-counter px-3 py-2 rounded-lg">
+          <span class="text-sm font-medium">Evolution: </span>
+          <span id="evolutionCount" class="font-bold text-brand-success">0</span>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <div id="trackingIndicator" class="tracking-indicator active"></div>
+          <span id="trackingStatus" class="text-sm">Tracking</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 px-6 pb-6">
+      <!-- Hero Section -->
+      <div class="text-center mb-8">
+        <h2 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
+          UI That <span class="text-brand-accent">Adapts</span> in Real-Time
+        </h2>
+        <p class="text-xl text-white/80 max-w-3xl mx-auto">
+          Watch as the interface evolves based on user behavior, automatically generates optimal layouts, 
+          and runs A/B tests to converge on the perfect design for each user.
+        </p>
+      </div>
+
+      <!-- Interactive Demo -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Layout Canvas -->
+        <div class="lg:col-span-2">
+          <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+            <h3 class="text-xl font-semibold mb-4">Live Layout Evolution</h3>
+            <div class="layout-canvas" id="layoutCanvas">
+              <!-- Components will be dynamically positioned here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="space-y-4">
+          <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+            <h3 class="text-lg font-semibold mb-4">Controls</h3>
+            <div class="space-y-3">
+              <button id="evolveBtn" class="w-full bg-brand-primary hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                🚀 Evolve Interface
+              </button>
+              <button id="generateBtn" class="w-full bg-brand-accent hover:bg-yellow-600 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                🎨 Generate New Layout
+              </button>
+              <button id="abTestBtn" class="w-full bg-brand-secondary hover:bg-gray-600 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                🧪 Run A/B Test
+              </button>
+              <button id="trackingBtn" class="w-full bg-brand-success hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                📊 Toggle Tracking
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+            <h3 class="text-lg font-semibold mb-4">Current Layout</h3>
+            <div class="text-sm space-y-2">
+              <div>ID: <span id="layoutId" class="font-mono text-brand-accent">default</span></div>
+              <div>Version: <span id="layoutVersion" class="font-mono text-brand-accent">1.0.0</span></div>
+              <div>Components: <span id="componentCount" class="font-mono text-brand-accent">3</span></div>
+              <div>Style: <span id="layoutStyle" class="font-mono text-brand-accent">minimal</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics and Results -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Performance Metrics -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+          <h3 class="text-xl font-semibold mb-4">Performance Metrics</h3>
+          <div class="space-y-3" id="metricsContainer">
+            <div class="flex justify-between">
+              <span>Load Time:</span>
+              <span id="loadTime" class="font-mono text-brand-accent">--</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Render Time:</span>
+              <span id="renderTime" class="font-mono text-brand-accent">--</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Interaction Latency:</span>
+              <span id="interactionLatency" class="font-mono text-brand-accent">--</span>
+            </div>
+            <div class="flex justify-between">
+              <span>User Satisfaction:</span>
+              <span id="userSatisfaction" class="font-mono text-brand-accent">--</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Conversion Rate:</span>
+              <span id="conversionRate" class="font-mono text-brand-accent">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- A/B Test Results -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+          <h3 class="text-xl font-semibold mb-4">A/B Test Results</h3>
+          <div id="abTestResults" class="space-y-3">
+            <p class="text-white/60 text-sm">No test results yet. Run an A/B test to see results.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mt-12 bg-white/10 backdrop-blur-sm rounded-xl p-8">
+        <h3 class="text-2xl font-bold text-center mb-8">How AdaptiveUI Works</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-brand-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl">👁️</span>
+            </div>
+            <h4 class="text-lg font-semibold mb-2">Observe</h4>
+            <p class="text-white/80 text-sm">
+              Tracks user interactions, clicks, time spent, and behavior patterns in real-time
+            </p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 bg-brand-accent rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl">🧠</span>
+            </div>
+            <h4 class="text-lg font-semibold mb-2">Generate</h4>
+            <p class="text-white/80 text-sm">
+              AI generates interface variations and optimal layouts based on user behavior
+            </p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 bg-brand-success rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl">⚡</span>
+            </div>
+            <h4 class="text-lg font-semibold mb-2">Evolve</h4>
+            <p class="text-white/80 text-sm">
+              Automatically A/B tests variations and converges on optimal design for each user
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // AdaptiveUI Demo Implementation
+    class AdaptiveUIDemo {
+      constructor() {
+        this.evolutionCount = 0;
+        this.isTracking = true;
+        this.currentLayout = this.getDefaultLayout();
+        this.metrics = this.generateMetrics();
+        this.abTestResults = [];
+        
+        this.initializeEventListeners();
+        this.renderLayout();
+        this.updateMetrics();
+        this.startAutoEvolution();
+      }
+
+      getDefaultLayout() {
+        return {
+          id: 'default',
+          version: '1.0.0',
+          components: [
+            {
+              id: 'header',
+              type: 'navigation',
+              position: { x: 10, y: 5 },
+              size: { width: 80, height: 15 },
+              properties: { title: 'Adaptive Interface' }
+            },
+            {
+              id: 'main-content',
+              type: 'content',
+              position: { x: 10, y: 25 },
+              size: { width: 60, height: 40 },
+              properties: { content: 'Main content area' }
+            },
+            {
+              id: 'sidebar',
+              type: 'content',
+              position: { x: 75, y: 25 },
+              size: { width: 20, height: 40 },
+              properties: { content: 'Sidebar' }
+            },
+            {
+              id: 'action-button',
+              type: 'button',
+              position: { x: 35, y: 70 },
+              size: { width: 30, height: 12 },
+              properties: { text: 'Take Action' }
+            }
+          ],
+          style: 'minimal'
+        };
+      }
+
+      initializeEventListeners() {
+        document.getElementById('evolveBtn').addEventListener('click', () => this.evolveInterface());
+        document.getElementById('generateBtn').addEventListener('click', () => this.generateNewLayout());
+        document.getElementById('abTestBtn').addEventListener('click', () => this.runABTest());
+        document.getElementById('trackingBtn').addEventListener('click', () => this.toggleTracking());
+      }
+
+      evolveInterface() {
+        this.evolutionCount++;
+        document.getElementById('evolutionCount').textContent = this.evolutionCount;
+        
+        // Simulate evolution by adjusting component positions
+        this.currentLayout.components.forEach(component => {
+          component.position.x += (Math.random() - 0.5) * 10;
+          component.position.y += (Math.random() - 0.5) * 10;
+          
+          // Keep components within bounds
+          component.position.x = Math.max(0, Math.min(90, component.position.x));
+          component.position.y = Math.max(0, Math.min(85, component.position.y));
+        });
+        
+        // Update metrics
+        this.metrics = this.generateMetrics();
+        
+        this.renderLayout();
+        this.updateMetrics();
+        this.updateLayoutInfo();
+        
+        console.log('Interface evolved:', this.currentLayout.id);
+      }
+
+      generateNewLayout() {
+        const layouts = ['minimal', 'detailed', 'compact', 'spacious'];
+        const newStyle = layouts[Math.floor(Math.random() * layouts.length)];
+        
+        this.currentLayout = this.generateLayoutForStyle(newStyle);
+        this.currentLayout.id = `layout_${Date.now()}`;
+        this.currentLayout.version = `1.0.${Date.now()}`;
+        
+        this.renderLayout();
+        this.updateLayoutInfo();
+        
+        console.log('New layout generated:', this.currentLayout.id);
+      }
+
+      generateLayoutForStyle(style) {
+        const layouts = {
+          minimal: {
+            components: [
+              { id: 'header', type: 'navigation', position: { x: 10, y: 5 }, size: { width: 80, height: 15 }, properties: { title: 'Minimal Interface' } },
+              { id: 'content', type: 'content', position: { x: 20, y: 30 }, size: { width: 60, height: 50 }, properties: { content: 'Essential content only' } },
+              { id: 'button', type: 'button', position: { x: 35, y: 85 }, size: { width: 30, height: 12 }, properties: { text: 'Action' } }
+            ]
+          },
+          detailed: {
+            components: [
+              { id: 'header', type: 'navigation', position: { x: 0, y: 0 }, size: { width: 100, height: 12 }, properties: { title: 'Detailed Interface' } },
+              { id: 'sidebar', type: 'content', position: { x: 0, y: 12 }, size: { width: 25, height: 80 }, properties: { content: 'Navigation' } },
+              { id: 'main', type: 'content', position: { x: 27, y: 12 }, size: { width: 50, height: 60 }, properties: { content: 'Rich content' } },
+              { id: 'widgets', type: 'content', position: { x: 80, y: 12 }, size: { width: 18, height: 80 }, properties: { content: 'Widgets' } },
+              { id: 'footer', type: 'content', position: { x: 0, y: 94 }, size: { width: 100, height: 6 }, properties: { content: 'Footer' } }
+            ]
+          },
+          compact: {
+            components: [
+              { id: 'header', type: 'navigation', position: { x: 0, y: 0 }, size: { width: 100, height: 8 }, properties: { title: 'Compact Interface' } },
+              { id: 'toolbar', type: 'navigation', position: { x: 0, y: 8 }, size: { width: 100, height: 6 }, properties: { content: 'Tools' } },
+              { id: 'grid', type: 'content', position: { x: 2, y: 16 }, size: { width: 96, height: 76 }, properties: { content: 'Compact grid' } }
+            ]
+          },
+          spacious: {
+            components: [
+              { id: 'header', type: 'navigation', position: { x: 0, y: 0 }, size: { width: 100, height: 18 }, properties: { title: 'Spacious Interface' } },
+              { id: 'hero', type: 'content', position: { x: 10, y: 22 }, size: { width: 80, height: 35 }, properties: { content: 'Hero section' } },
+              { id: 'blocks', type: 'content', position: { x: 5, y: 62 }, size: { width: 90, height: 30 }, properties: { content: 'Content blocks' } }
+            ]
+          }
+        };
+        
+        return {
+          ...this.currentLayout,
+          components: layouts[style].components,
+          style: style
+        };
+      }
+
+      runABTest() {
+        // Simulate A/B test results
+        const variations = ['minimal', 'detailed', 'compact', 'spacious'];
+        this.abTestResults = variations.map(style => ({
+          variationId: `variation_${style}`,
+          style: style,
+          userCount: Math.floor(Math.random() * 100) + 50,
+          conversionRate: Math.random() * 0.3 + 0.1,
+          confidence: Math.random() * 0.3 + 0.7,
+          winner: Math.random() > 0.7
+        }));
+        
+        this.updateABTestResults();
+        console.log('A/B test completed:', this.abTestResults);
+      }
+
+      toggleTracking() {
+        this.isTracking = !this.isTracking;
+        const indicator = document.getElementById('trackingIndicator');
+        const status = document.getElementById('trackingStatus');
+        
+        if (this.isTracking) {
+          indicator.className = 'tracking-indicator active';
+          status.textContent = 'Tracking';
+        } else {
+          indicator.className = 'tracking-indicator inactive';
+          status.textContent = 'Stopped';
+        }
+        
+        console.log('Tracking:', this.isTracking ? 'started' : 'stopped');
+      }
+
+      generateMetrics() {
+        return {
+          loadTime: Math.random() * 100 + 50,
+          renderTime: Math.random() * 50 + 20,
+          interactionLatency: Math.random() * 20 + 5,
+          userSatisfaction: Math.random() * 0.4 + 0.6,
+          conversionRate: Math.random() * 0.2 + 0.1
+        };
+      }
+
+      renderLayout() {
+        const canvas = document.getElementById('layoutCanvas');
+        canvas.innerHTML = '';
+        
+        this.currentLayout.components.forEach(component => {
+          const element = document.createElement('div');
+          element.className = `component ${component.type}`;
+          element.style.left = `${component.position.x}%`;
+          element.style.top = `${component.position.y}%`;
+          element.style.width = `${component.size.width}%`;
+          element.style.height = `${component.size.height}%`;
+          
+          // Set content based on component type
+          switch (component.type) {
+            case 'navigation':
+              element.innerHTML = `<strong>${component.properties.title}</strong>`;
+              break;
+            case 'content':
+              element.innerHTML = component.properties.content;
+              break;
+            case 'button':
+              element.innerHTML = component.properties.text;
+              break;
+            default:
+              element.innerHTML = component.id;
+          }
+          
+          // Add click interaction
+          element.addEventListener('click', () => {
+            console.log(`Clicked ${component.id}`);
+            if (this.isTracking) {
+              // Simulate interaction tracking
+              this.metrics.userSatisfaction = Math.min(1, this.metrics.userSatisfaction + 0.01);
+              this.updateMetrics();
+            }
+          });
+          
+          canvas.appendChild(element);
+        });
+      }
+
+      updateMetrics() {
+        document.getElementById('loadTime').textContent = `${this.metrics.loadTime.toFixed(2)}ms`;
+        document.getElementById('renderTime').textContent = `${this.metrics.renderTime.toFixed(2)}ms`;
+        document.getElementById('interactionLatency').textContent = `${this.metrics.interactionLatency.toFixed(2)}ms`;
+        document.getElementById('userSatisfaction').textContent = `${(this.metrics.userSatisfaction * 100).toFixed(1)}%`;
+        document.getElementById('conversionRate').textContent = `${(this.metrics.conversionRate * 100).toFixed(1)}%`;
+      }
+
+      updateLayoutInfo() {
+        document.getElementById('layoutId').textContent = this.currentLayout.id;
+        document.getElementById('layoutVersion').textContent = this.currentLayout.version;
+        document.getElementById('componentCount').textContent = this.currentLayout.components.length;
+        document.getElementById('layoutStyle').textContent = this.currentLayout.style;
+      }
+
+      updateABTestResults() {
+        const container = document.getElementById('abTestResults');
+        
+        if (this.abTestResults.length === 0) {
+          container.innerHTML = '<p class="text-white/60 text-sm">No test results yet. Run an A/B test to see results.</p>';
+          return;
+        }
+        
+        container.innerHTML = this.abTestResults.map(result => `
+          <div class="p-3 rounded-lg ${result.winner ? 'bg-brand-success/20 border border-brand-success/30' : 'bg-white/10 border border-white/20'}">
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-medium">${result.style}</span>
+              ${result.winner ? '<span class="text-brand-success text-sm">🏆 Winner</span>' : ''}
+            </div>
+            <div class="text-xs space-y-1">
+              <div>Users: ${result.userCount}</div>
+              <div>Conversion: ${(result.conversionRate * 100).toFixed(1)}%</div>
+              <div>Confidence: ${(result.confidence * 100).toFixed(1)}%</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      startAutoEvolution() {
+        // Auto-evolve every 30 seconds
+        setInterval(() => {
+          if (this.isTracking) {
+            this.evolveInterface();
+          }
+        }, 30000);
+      }
+    }
+
+    // Initialize the demo when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      new AdaptiveUIDemo();
+    });
+  </script>
+</body>
+</html>

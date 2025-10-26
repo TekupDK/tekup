@@ -1,0 +1,356 @@
+# 🚀 RenOS Next Steps Guide - 2. Oktober 2025\n\n\n\n## 🎯 Current Status\n\n\n\n**System Completion:** 85% fungerende! 🎉  
+**Last Deployment:** Email Approval Workflow (e0ad864) - Building NU  
+**Environment:** Production (live mode) ✅\n\n
+---
+\n\n## ✅ Hvad Er Lige Blevet Deployed (NU)\n\n\n\n### **Email Approval Workflow - COMPLET!**\n\n\n\n**Backend Routes:**\n\n```
+GET  /api/email-approval/pending         - List pending emails\n\nGET  /api/email-approval/stats          - Statistics\n\nPOST /api/email-approval/:id/approve    - Approve & send\n\nPOST /api/email-approval/:id/reject     - Reject with reason\n\nPUT  /api/email-approval/:id/edit       - Edit before approval\n\n```
+
+**Frontend Page:**\n\n```
+https://tekup-renos-1.onrender.com/email-approval
+
+Features:
+✅ 2-panel layout (email list + preview)\n\n✅ Edit subject/body before sending
+✅ Approve → sends via Gmail instantly
+✅ Reject → logs reason for audit
+✅ Real-time stats (pending/approved/rejected)
+✅ Professional Danish UI\n\n```
+
+**Database:**\n\n```sql
+EmailResponse model:\n\n- id, emailThreadId, leadId\n\n- subject, body, status\n\n- approvedBy, rejectedReason\n\n- sentAt, createdAt, updatedAt\n\n```
+
+---
+\n\n## 🔄 Step 1: Test Email Approval (10-15 Min) - IN PROGRESS\n\n\n\n### **A. Wait for Deployment (2-3 min)**\n\n\n\n**Check Render Logs:**\n\n```
+Monitor: https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg/logs
+
+Wait for:
+✅ "==> Your service is live 🎉"
+✅ No error messages
+✅ Service restart successful\n\n```
+
+---
+\n\n### **B. Test Email Approval Page (1 min)**\n\n\n\n**URL:**\n\n```
+https://tekup-renos-1.onrender.com/email-approval\n\n```
+
+**Expected:**\n\n- ✅ "Email Godkendelse" i navigation menu\n\n- ✅ 2-panel layout vises\n\n- ✅ "Ingen ventende emails til godkendelse" (hvis tom)\n\n- ✅ Loading state fungerer\n\n- ✅ No console errors\n\n
+**Screenshot/Note:** Tag billede af empty state for dokumentation\n\n
+---
+\n\n### **C. Generate Pending Emails via AI (2 min)**\n\n\n\n**Option 1: Trigger Auto-Response (Recommended)**\n\n```bash\n\n# Locally (if you have new test emails):\n\nnpm run email:pending\n\n\n\n# Or wait for cron job (runs every 30 seconds in production)\n\n```\n\n
+**Option 2: Run Email Ingest**\n\n```
+Open: https://tekup-renos.onrender.com/api/dashboard/email-ingest/stats
+
+This will:\n\n1. Parse Gmail threads\n\n2. Match to customers/leads\n\n3. Trigger AI auto-response for new leads\n\n4. Create EmailResponse records with status='pending'\n\n```
+
+**Expected Response:**\n\n```json
+{
+  "status": "success",
+  "totalThreads": 150+,
+  "matchedThreads": 100+,
+  "unmatchedThreads": 50+,
+  "timestamp": "2025-10-02T..."
+}\n\n```
+
+---
+\n\n### **D. Verify Pending Emails Appear (1 min)**\n\n\n\n**Refresh Email Approval Page:**\n\n```
+https://tekup-renos-1.onrender.com/email-approval\n\n```
+
+**Expected:**\n\n- ✅ List af pending emails vises (left panel)\n\n- ✅ Each email shows: recipient, subject, created timestamp\n\n- ✅ Click email → preview i right panel\n\n- ✅ Preview shows: to, from, subject, body (formatted HTML)\n\n
+---
+\n\n### **E. Test Edit Functionality (2 min)**\n\n\n\n**Actions:**\n\n1. Select en pending email\n\n2. Click "Rediger" button\n\n3. Edit subject (e.g., add emoji 📧)\n\n4. Edit body (e.g., add custom greeting)\n\n5. Click "Gem Ændringer"
+
+**Expected:**\n\n```
+PUT /api/email-approval/:id/edit
+→ Status 200
+→ Email opdateret i database
+→ Preview opdateres instantly
+→ Success toast: "Email opdateret"\n\n```
+
+---
+\n\n### **F. Test Approve Workflow (2 min)**\n\n\n\n**Actions:**\n\n1. Select edited email (or another pending)\n\n2. Click "Godkend" button\n\n3. Confirm i dialog: "Er du sikker på at du vil godkende denne email?"\n\n4. Click "Ja, godkend"
+
+**Expected Backend Flow:**\n\n```
+POST /api/email-approval/:id/approve
+→ Update status to 'approved'
+→ Call gmailService.sendEmail()
+→ Update sentAt timestamp
+→ Return 200 success\n\n```
+
+**Expected Frontend:**\n\n```
+✅ Email forsvinder fra pending list
+✅ Success toast: "Email godkendt og sendt!"
+✅ Stats opdateres (approved count +1)\n\n```
+
+**Verify in Gmail:**\n\n```
+Login: info@rendetalje.dk
+Check: Sent folder
+Look for: Email du lige approved
+Verify: Recipient, subject, body korrekt\n\n```
+
+---
+\n\n### **G. Test Reject Workflow (1 min)**\n\n\n\n**Actions:**\n\n1. Select another pending email\n\n2. Click "Afvis" button\n\n3. Enter reason: "Ikke relevant for dette tilbud"\n\n4. Click "Ja, afvis"
+
+**Expected:**\n\n```
+POST /api/email-approval/:id/reject
+→ Update status to 'rejected'
+→ Save rejectedReason
+→ Email removed from pending list
+→ Success toast: "Email afvist"\n\n```
+
+---
+\n\n### **H. Check Statistics (30 sek)**\n\n\n\n**Visit Stats Endpoint:**\n\n```
+https://tekup-renos.onrender.com/api/email-approval/stats\n\n```
+
+**Expected Response:**\n\n```json
+{
+  "total": 10,
+  "pending": 7,
+  "approved": 2,
+  "rejected": 1,
+  "sent": 2
+}\n\n```
+
+**Or Check Dashboard:**
+Stats should display på email-approval page header
+
+---
+\n\n## 🎯 Step 2: Verify Service Account Calendar Access (5-10 Min)\n\n\n\n### **Why This Matters:**\n\nCalendar booking features kræver at service account kan **write** til Google Calendar.\n\n
+---
+\n\n### **A. Check Current Setup**\n\n\n\n**Service Account Email:**\n\n```
+renos-319@renos-465008.iam.gserviceaccount.com\n\n```
+
+**Target Calendar:**\n\n```
+RenOS Automatisk Booking
+ID: c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com\n\n```
+
+**Required Permissions:**\n\n- ✅ Make changes to events (write)\n\n- ✅ See all event details (read)\n\n
+---
+\n\n### **B. Test Calendar Write Access (Locally)**\n\n\n\n**Run Test Command:**\n\n```powershell
+npm run data:calendar\n\n```
+
+**Expected Output (Success):**\n\n```
+🔧 Testing Google Calendar integration...
+✅ Service account initialized
+✅ Calendar ID: c_3957...
+✅ Calendar access verified
+✅ Test event created: "RenOS Test Booking"
+✅ Calendar write permissions confirmed!\n\n```
+
+**Expected Output (Fail):**\n\n```
+❌ Error: Calendar not found
+❌ Error: Insufficient permissions
+❌ Error: Domain-wide delegation not setup\n\n```
+
+---
+\n\n### **C. If Access Fails - Fix Options**\n\n\n\n**Option 1: Share Calendar with Service Account (Quickest)**\n\n```\n\n1. Open Google Calendar\n\n2. Find "RenOS Automatisk Booking" calendar\n\n3. Settings → Share with specific people\n\n4. Add: renos-319@renos-465008.iam.gserviceaccount.com\n\n5. Permission: "Make changes to events"\n\n6. Save\n\n```
+
+**Option 2: Verify Domain-Wide Delegation**\n\n```\n\n1. Go to: https://admin.google.com/ac/owl/domainwidedelegation\n\n2. Find client ID: 107849328657107849328 (from service account)\n\n3. Verify scopes include:
+   - https://www.googleapis.com/auth/calendar\n\n   - https://www.googleapis.com/auth/calendar.events\n\n4. If missing, add scopes and save\n\n```
+
+**Option 3: Check Service Account Key**\n\n```
+Verify GOOGLE_PRIVATE_KEY i Render er:\n\n- Correctly formatted (with \n preserved)\n\n- Matches renos-319 service account\n\n- Not expired or rotated\n\n```
+
+---
+\n\n### **D. Test Calendar Booking (Production)**\n\n\n\n**Create Test Booking via API:**\n\n```bash\n\n# POST request\n\ncurl -X POST https://tekup-renos.onrender.com/api/bookings \\n\n  -H "Content-Type: application/json" \
+  -d '{
+    "customerId": 1,
+    "date": "2025-10-05",
+    "startTime": "10:00",
+    "duration": 120,
+    "notes": "Test booking from RenOS"
+  }'\n\n```
+
+**Expected Response (Success):**\n\n```json
+{
+  "id": 123,
+  "customerId": 1,
+  "date": "2025-10-05T10:00:00Z",
+  "duration": 120,
+  "status": "confirmed",
+  "googleEventId": "abc123xyz",
+  "createdAt": "2025-10-02T..."
+}\n\n```
+
+**Verify in Google Calendar:**\n\n```\n\n1. Open: https://calendar.google.com\n\n2. Find: "RenOS Automatisk Booking" calendar\n\n3. Look for: Event on Oct 5, 10:00-12:00\n\n4. Verify: Title, description, attendees korrekt\n\n```
+
+---
+\n\n## 📅 Step 3: Implement Calendar Booking UI (6-8 Timer)\n\n\n\n### **What's Ready:**\n\n✅ Backend API routes kode (IMPLEMENTATION_PLAN.md)  \n\n✅ Frontend modal component kode (IMPLEMENTATION_PLAN.md)  
+✅ Google Calendar integration tested  
+✅ Database schema ready
+
+---
+\n\n### **A. Backend Implementation (2-3 timer)**\n\n\n\n**File: `src/api/bookingRoutes.ts`**
+
+Copy from IMPLEMENTATION_PLAN.md lines 530-650:\n\n```typescript
+import { Router } from "express";
+import { prisma } from "../db";
+import { calendarService } from "../services/calendarService";
+
+// Full CRUD routes
+// GET /api/bookings - List all\n\n// GET /api/bookings/:id - Get one\n\n// POST /api/bookings - Create\n\n// PUT /api/bookings/:id - Update\n\n// DELETE /api/bookings/:id - Delete\n\n// GET /api/bookings/availability - Check slots\n\n```
+
+**Add to `src/server.ts`:**\n\n```typescript
+import bookingRouter from "./api/bookingRoutes";
+app.use("/api/bookings", bookingRouter);\n\n```
+
+**Features:**\n\n- ✅ CRUD operations\n\n- ✅ Availability check (conflicts)\n\n- ✅ Google Calendar sync\n\n- ✅ Customer/Lead validation\n\n- ✅ Status management (pending/confirmed/cancelled)\n\n
+---
+\n\n### **B. Frontend Implementation (3-4 timer)**\n\n\n\n**File: `client/src/components/BookingModal.tsx`**
+
+Copy from IMPLEMENTATION_PLAN.md lines 677-900:\n\n```typescript
+import { useState } from "react";
+import { api } from "../services/api";
+
+// Features:
+// - Customer/Lead selection dropdown\n\n// - Date picker (react-datepicker)\n\n// - Time slot selection\n\n// - Duration input (minutes)\n\n// - Notes/description field\n\n// - Availability check (conflicts)\n\n// - Create booking → Google Calendar\n\n```
+
+**Update `client/src/components/Bookings.tsx`:**\n\n```typescript
+import BookingModal from "./BookingModal";
+
+// Add state
+const [showModal, setShowModal] = useState(false);
+
+// Add button
+<button onClick={() => setShowModal(true)}>
+  Ny Booking
+</button>
+
+// Add modal
+{showModal && (
+  <BookingModal
+    onClose={() => setShowModal(false)}
+    onSuccess={handleBookingCreated}
+  />
+)}\n\n```
+
+---
+\n\n### **C. Testing Checklist (1 time)**\n\n\n\n**Local Testing:**\n\n```powershell\n\n# Backend\n\nnpm run dev\n\n\n\n# Frontend\n\nnpm run dev:client\n\n\n\n# Test endpoints\n\ncurl http://localhost:3000/api/bookings\n\ncurl http://localhost:3000/api/bookings/availability?date=2025-10-05\n\n```
+
+**UI Testing:**\n\n- [ ] Open Bookings page\n\n- [ ] Click "Ny Booking" button\n\n- [ ] Modal opens with form\n\n- [ ] Select customer from dropdown\n\n- [ ] Choose date (date picker)\n\n- [ ] Select time slot (no conflicts)\n\n- [ ] Enter duration (e.g., 120 min)\n\n- [ ] Add notes\n\n- [ ] Click "Opret Booking"\n\n- [ ] Success toast shows\n\n- [ ] Booking appears i list\n\n- [ ] Verify in Google Calendar\n\n
+**Edge Cases:**\n\n- [ ] Test conflict detection (overlapping times)\n\n- [ ] Test invalid date (past date)\n\n- [ ] Test missing required fields\n\n- [ ] Test calendar API failure (graceful error)\n\n
+---
+\n\n### **D. Deployment (30 min)**\n\n\n\n**Commit & Push:**\n\n```powershell
+git add .
+git commit -m "feat: Implement Calendar Booking UI with conflict detection"
+git push origin main\n\n```
+
+**Render Auto-Deploy:**\n\n- Wait 3-4 minutes\n\n- Check logs for success\n\n- Test production: https://tekup-renos-1.onrender.com/bookings\n\n
+---
+\n\n## 🔥 Step 4: Security - Rotate Exposed Credentials (URGENT - 2-3 Timer)\n\n\n\n### **Problem:**\n\n6 GitGuardian security alerts for exposed credentials på GitHub:\n\n- Google service account private key\n\n- Database connection strings\n\n- API keys\n\n- Clerk secrets\n\n
+---
+\n\n### **A. Identify Exposed Files (15 min)**\n\n\n\n**Check GitGuardian Alerts:**\n\n```
+Visit: https://dashboard.gitguardian.com
+Login with GitHub
+Review alerts:\n\n1. renos-465008-90464e3ff9b7.json (service account key)\n\n2. credentials.json (OAuth credentials)\n\n3. .env files committed\n\n4. Other sensitive files\n\n```
+
+**Local Search:**\n\n```powershell\n\n# Find sensitive files in Git history\n\ngit log --all --full-history --pretty=format:"%H" -- credentials.json\n\ngit log --all --full-history --pretty=format:"%H" -- renos-*.json\n\ngit log --all --full-history --pretty=format:"%H" -- .env\n\n```\n\n
+---
+\n\n### **B. Rotate Google Service Account Key (30 min)**\n\n\n\n**1. Create New Service Account Key:**\n\n```
+Visit: https://console.cloud.google.com/iam-admin/serviceaccounts
+Project: renos-465008
+Find: renos-319@renos-465008.iam.gserviceaccount.com
+Keys tab → ADD KEY → Create new key
+Type: JSON
+Download: renos-465008-NEW.json (KEEP SECURE!)\n\n```
+
+**2. Update Render Environment Variables:**\n\n```
+Render Dashboard → tekup-renos → Environment
+Find: GOOGLE_PRIVATE_KEY
+Value: Copy from new JSON (format: "-----BEGIN PRIVATE KEY-----\n...")
+Find: GOOGLE_CLIENT_EMAIL
+Verify: renos-319@renos-465008.iam.gserviceaccount.com
+Save → Wait for redeploy (2-3 min)\n\n```
+
+**3. Delete Old Service Account Key:**\n\n```
+Google Cloud Console → Service Accounts
+Keys tab → Find old key ID
+Click ⋮ (menu) → Delete
+Confirm deletion\n\n```
+
+**4. Test:**\n\n```
+npm run verify:google
+Expected: ✅ Service account authentication successful\n\n```
+
+---
+\n\n### **C. Rotate Database Credentials (15 min)**\n\n\n\n**1. Create New Database Password (Neon):**\n\n```
+Visit: https://console.neon.tech
+Project: neondb
+Settings → Reset password
+Copy new password (KEEP SECURE!)\n\n```
+
+**2. Update Connection String:**\n\n```
+New format:
+postgresql://neondb_owner:NEW_PASSWORD@ep-falling-night-a2hato6b-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require
+
+Update in:\n\n- Render environment variables (DATABASE_URL)\n\n- Local .env (DO NOT COMMIT!)\n\n```
+
+**3. Test Connection:**\n\n```powershell
+npm run db:studio
+Expected: Prisma Studio åbner successfully\n\n```
+
+---
+\n\n### **D. Clean Git History (1-2 timer)**\n\n\n\n**WARNING:** This rewrites Git history! Koordiner med team først.\n\n
+**1. Install BFG Repo-Cleaner:**\n\n```powershell\n\n# Download BFG\n\nInvoke-WebRequest -Uri "https://repo1.maven.org/maven2/com/madgag/bfg/1.14.0/bfg-1.14.0.jar" -OutFile "bfg.jar"\n\n\n\n# Verify download\n\njava -jar bfg.jar --version\n\n```\n\n
+**2. Clone Fresh Copy:**\n\n```powershell
+cd ..
+git clone --mirror https://github.com/JonasAbde/tekup-renos.git tekup-renos-cleanup
+cd tekup-renos-cleanup\n\n```
+
+**3. Run BFG to Remove Sensitive Files:**\n\n```powershell\n\n# Remove specific files\n\njava -jar ../bfg.jar --delete-files "credentials.json" .\n\njava -jar ../bfg.jar --delete-files "renos-*.json" .
+java -jar ../bfg.jar --delete-files ".env" .
+java -jar ../bfg.jar --delete-files "client_secret_*.json" .
+\n\n# Clean up\n\ngit reflog expire --expire=now --all\n\ngit gc --prune=now --aggressive\n\n```
+
+**4. Force Push (DANGER!):**\n\n```powershell
+git push --force\n\n```
+
+**5. Re-clone Locally:**\n\n```powershell
+cd ..
+rm -rf "Tekup Google AI"
+git clone https://github.com/JonasAbde/tekup-renos.git "Tekup Google AI"
+cd "Tekup Google AI"\n\n```
+
+---
+\n\n### **E. Update .gitignore (10 min)**\n\n\n\n**Add to `.gitignore`:**\n\n```gitignore\n\n# Sensitive files (NEVER COMMIT!)\n\n.env\n\n.env.*
+credentials.json
+client_secret_*.json
+renos-*.json
+*-service-account.json
+\n\n# Database\n\n*.db\n\n*.sqlite
+prisma/.env
+\n\n# IDE\n\n.vscode/settings.json\n\n.idea/
+\n\n# OS\n\n.DS_Store\n\nThumbs.db\n\n```
+
+**Commit:**\n\n```powershell
+git add .gitignore
+git commit -m "security: Update .gitignore to prevent credential exposure"
+git push origin main\n\n```
+
+---
+\n\n### **F. Verify Security (15 min)**\n\n\n\n**1. Check GitGuardian:**\n\n```
+Visit: https://dashboard.gitguardian.com
+Expected: All alerts resolved or marked as "rotated"\n\n```
+
+**2. GitHub Secret Scanning:**\n\n```
+Visit: https://github.com/JonasAbde/tekup-renos/security
+Check: No active secret scanning alerts\n\n```
+
+**3. Test Production:**\n\n```
+https://tekup-renos.onrender.com/health
+Expected: ✅ All services healthy with new credentials\n\n```
+
+---
+\n\n## 📊 Progress Tracker\n\n\n\n### **After All Steps:**\n\n```\n\n✅ 1. Environment Variables Setup - DONE\n\n✅ 2. Manual Deploy & Verification - DONE\n\n✅ 3. Email Approval Workflow - DONE (deploying)\n\n🔄 4. Test Email Approval - IN PROGRESS\n\n⏳ 5. Verify Calendar Access - 5-10 min\n\n⏳ 6. Calendar Booking UI - 6-8 timer\n\n⏳ 7. Security Rotation - 2-3 timer (URGENT!)\n\n
+Total Remaining: 9-12 timer → 100% 🎉\n\n```
+
+---
+\n\n## 🎯 Recommended Order\n\n\n\n### **Today (2. Oktober):**\n\n1. ✅ Wait for email approval deployment (2-3 min)\n\n2. ✅ Test email approval workflow (10-15 min)\n\n3. ✅ Verify calendar access (5-10 min)\n\n4. ⏳ **Start security rotation (2-3 timer) - KRITISK!**\n\n\n\n### **Tomorrow (3. Oktober):**\n\n5. ⏳ Implement calendar booking UI (6-8 timer)\n\n6. ✅ Full system testing\n\n7. ✅ Production ready! 🚀
+
+---
+\n\n## 💡 Tips & Best Practices\n\n\n\n### **Testing:**\n\n- Always test locally først (npm run dev:all)\n\n- Use Postman/curl for API testing\n\n- Check browser console for errors\n\n- Monitor Render logs during deployment\n\n\n\n### **Security:**\n\n- NEVER commit .env or credentials\n\n- Rotate credentials immediately after exposure\n\n- Use environment variables i Render\n\n- Keep .gitignore updated\n\n\n\n### **Deployment:**\n\n- Commit messages should be descriptive\n\n- Test locally before pushing\n\n- Monitor Render logs for errors\n\n- Keep backup af working configuration\n\n
+---
+\n\n## 📞 Support\n\n\n\n**Issues?**\n\n- Check TROUBLESHOOTING.md\n\n- Review Render logs\n\n- Search GitHub issues\n\n- Ask in chat\n\n
+**Documentation:**\n\n- IMPLEMENTATION_PLAN.md - Fuld kode\n\n- GOOGLE_CALENDAR_SETUP.md - Calendar guide\n\n- DEBUG_EMAIL_INGEST.md - Email debugging\n\n- USER_GUIDE.md - Bruger instruktioner\n\n
+---
+\n\n## 🎉 You're Almost There!\n\n\n\n**Current Status:** 85% complete  
+**Remaining Work:** 9-12 timer  
+**Next Milestone:** 100% production-ready system! 🚀\n\n
+**Fortsæt det gode arbejde!** 💪

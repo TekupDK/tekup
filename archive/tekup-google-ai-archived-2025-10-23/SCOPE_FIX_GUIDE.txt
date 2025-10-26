@@ -1,0 +1,22 @@
+﻿=== QUICK FIX: Update Google Scopes ===
+
+CURRENT SCOPES (INCOMPLETE):
+- gmail.modify
+- calendar
+- calendar.events  
+- calendar.readonly
+
+MISSING SCOPES:
+- gmail.readonly (CRITICAL - can't read emails!)
+- gmail.send (CRITICAL - can't send emails!)
+
+CORRECT SCOPES (copy this EXACT line):
+https://www.googleapis.com/auth/gmail.readonly,https://www.googleapis.com/auth/gmail.send,https://www.googleapis.com/auth/gmail.modify,https://www.googleapis.com/auth/calendar,https://www.googleapis.com/auth/calendar.events
+
+STEPS:
+1. Click on 'RenOS' row in Domain-wide Delegation table
+2. Click EDIT or DELETE and re-add
+3. Paste the CORRECT scopes above
+4. Click AUTHORIZE
+5. Wait 5-10 minutes
+

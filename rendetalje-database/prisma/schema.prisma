@@ -1,0 +1,391 @@
+// RendetaljeOS Prisma Schema
+// Complete database schema for multi-tenant cleaning operations management
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  owner
+  admin
+  employee
+  customer
+}
+
+enum JobStatus {
+  scheduled
+  confirmed
+  in_progress
+  completed
+  cancelled
+  rescheduled
+}
+
+enum ServiceType {
+  standard
+  deep
+  window
+  moveout
+  office
+}
+
+// Organizations (Multi-tenant support)
+model Organization {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  email             String?
+  phone             String?
+  address           Json?
+  settings          Json?    @default("{}")
+  subscriptionPlan  String?  @default("basic")
+  createdAt         DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime @updatedAt @db.Timestamptz(6)
+
+  users             User[]
+  customers         Customer[]
+  teamMembers       TeamMember[]
+  jobs              Job[]
+  recurringJobs     RecurringJob[]
+  customerMessages  CustomerMessage[]
+  chatSessions      ChatSession[]
+  qualityChecklists QualityChecklist[]
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+
+  @@map("organizations")
+}
+
+// Users (All user types)
+model User {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String   @db.Uuid
+  email           String   @unique
+  name            String
+  role            UserRole
+  phone           String?
+  avatarUrl       String?
+  settings        Json?    @default("{}")
+  isActive        Boolean  @default(true)
+  lastLoginAt     DateTime? @db.Timestamptz(6)
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  teamMember      TeamMember?
+  customerMessages CustomerMessage[]
+  chatSessions    ChatSession[]
+  jobQualityAssessments JobQualityAssessment[]
+  notifications   Notification[]
+  auditLogs       AuditLog[]
+
+  @@index([organizationId])
+  @@index([email])
+  @@map("users")
+}
+
+// Customers
+model Customer {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId    String   @db.Uuid
+  userId            String?  @db.Uuid
+  name              String
+  email             String?
+  phone             String?
+  address           Json
+  preferences       Json?    @default("{}")
+  totalJobs         Int      @default(0)
+  totalRevenue      Decimal  @default(0) @db.Decimal(10, 2)
+  satisfactionScore Decimal? @db.Decimal(3, 2)
+  notes             String?
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime @updatedAt @db.Timestamptz(6)
+
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  jobs              Job[]
+  recurringJobs     RecurringJob[]
+  customerMessages  CustomerMessage[]
+  customerReviews   CustomerReview[]
+
+  @@index([organizationId])
+  @@map("customers")
+}
+
+// Team Members
+model TeamMember {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId              String   @unique @db.Uuid
+  organizationId      String   @db.Uuid
+  employeeId          String?
+  skills              String[]
+  hourlyRate          Decimal? @db.Decimal(8, 2)
+  availability        Json?    @default("{}")
+  performanceMetrics  Json?    @default("{}")
+  isActive            Boolean  @default(true)
+  hireDate            DateTime? @db.Date
+  createdAt           DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime @updatedAt @db.Timestamptz(6)
+
+  user                User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  jobAssignments      JobAssignment[]
+  timeEntries         TimeEntry[]
+
+  @@index([organizationId])
+  @@map("team_members")
+}
+
+// Jobs (Core entity)
+model Job {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId      String   @db.Uuid
+  customerId          String   @db.Uuid
+  jobNumber           String   @unique
+  serviceType         ServiceType
+  status              JobStatus @default(scheduled)
+  scheduledDate       DateTime  @db.Timestamptz(6)
+  estimatedDuration   Int
+  actualDuration      Int?
+  location            Json
+  specialInstructions String?
+  checklist           Json?    @default("[]")
+  photos              Json?    @default("[]")
+  customerSignature   String?
+  qualityScore        Int?
+  profitability       Json?
+  recurringJobId      String?  @db.Uuid
+  parentJobId         String?  @db.Uuid
+  invoiceId           String?
+  createdAt           DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime @updatedAt @db.Timestamptz(6)
+
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer            Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  jobAssignments      JobAssignment[]
+  timeEntries         TimeEntry[]
+  customerMessages    CustomerMessage[]
+  jobQualityAssessments JobQualityAssessment[]
+  customerReviews     CustomerReview[]
+
+  @@index([organizationId])
+  @@index([customerId])
+  @@index([scheduledDate])
+  @@index([status])
+  @@map("jobs")
+}
+
+// Job Assignments (Many-to-many)
+model JobAssignment {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  jobId           String   @db.Uuid
+  teamMemberId    String   @db.Uuid
+  role            String   @default("cleaner")
+  assignedAt      DateTime @default(now()) @db.Timestamptz(6)
+
+  job             Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  teamMember      TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, teamMemberId])
+  @@index([jobId])
+  @@index([teamMemberId])
+  @@map("job_assignments")
+}
+
+// Time Entries
+model TimeEntry {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  jobId           String   @db.Uuid
+  teamMemberId    String   @db.Uuid
+  startTime       DateTime @db.Timestamptz(6)
+  endTime         DateTime? @db.Timestamptz(6)
+  breakDuration   Int      @default(0)
+  notes           String?
+  location        Json?
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+
+  job             Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  teamMember      TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([teamMemberId])
+  @@map("time_entries")
+}
+
+// Recurring Jobs
+model RecurringJob {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId      String   @db.Uuid
+  customerId          String   @db.Uuid
+  serviceType         ServiceType
+  frequency           String
+  dayOfWeek           Int?
+  timeOfDay           DateTime? @db.Time
+  estimatedDuration   Int
+  location            Json
+  specialInstructions String?
+  checklist           Json?    @default("[]")
+  isActive            Boolean  @default(true)
+  nextScheduledDate   DateTime? @db.Timestamptz(6)
+  createdAt           DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime @updatedAt @db.Timestamptz(6)
+
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer            Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("recurring_jobs")
+}
+
+// Customer Messages
+model CustomerMessage {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String   @db.Uuid
+  customerId      String   @db.Uuid
+  jobId           String?  @db.Uuid
+  senderId        String?  @db.Uuid
+  senderType      String
+  messageType     String   @default("text")
+  content         String
+  attachments     Json?    @default("[]")
+  isRead          Boolean  @default(false)
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  job             Job? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  sender          User? @relation(fields: [senderId], references: [id], onDelete: SetNull)
+
+  @@map("customer_messages")
+}
+
+// Chat Sessions
+model ChatSession {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String   @db.Uuid
+  organizationId  String   @db.Uuid
+  context         String
+  title           String?
+  metadata        Json?    @default("{}")
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  chatMessages    ChatMessage[]
+
+  @@index([userId])
+  @@map("chat_sessions")
+}
+
+// Chat Messages
+model ChatMessage {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId       String   @db.Uuid
+  role            String
+  content         String
+  metadata        Json?    @default("{}")
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  session         ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("chat_messages")
+}
+
+// Quality Checklists
+model QualityChecklist {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String   @db.Uuid
+  serviceType     ServiceType
+  name            String
+  items           Json
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  jobQualityAssessments JobQualityAssessment[]
+
+  @@map("quality_checklists")
+}
+
+// Job Quality Assessments
+model JobQualityAssessment {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  jobId           String   @db.Uuid
+  checklistId     String   @db.Uuid
+  assessedById    String?  @db.Uuid
+  completedItems  Json
+  overallScore    Int?
+  notes           String?
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  job             Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  checklist       QualityChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  assessedBy      User? @relation(fields: [assessedById], references: [id], onDelete: SetNull)
+
+  @@map("job_quality_assessments")
+}
+
+// Customer Reviews
+model CustomerReview {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  jobId           String   @db.Uuid
+  customerId      String   @db.Uuid
+  rating          Int
+  reviewText      String?
+  photos          Json?    @default("[]")
+  isPublic        Boolean  @default(true)
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  job             Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("customer_reviews")
+}
+
+// Notifications
+model Notification {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String   @db.Uuid
+  userId          String   @db.Uuid
+  type            String
+  title           String
+  message         String
+  data            Json?    @default("{}")
+  isRead          Boolean  @default(false)
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+// Audit Logs
+model AuditLog {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String   @db.Uuid
+  userId          String?  @db.Uuid
+  action          String
+  entityType      String
+  entityId        String?  @db.Uuid
+  oldValues       Json?
+  newValues       Json?
+  ipAddress       String?
+  userAgent       String?
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user            User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}

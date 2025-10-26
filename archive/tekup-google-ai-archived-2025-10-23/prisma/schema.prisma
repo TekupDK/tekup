@@ -1,0 +1,535 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ChatSession {
+  id        String        @id @default(cuid())
+  userId    String?
+  channel   String?
+  locale    String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  messages  ChatMessage[]
+
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  role      String
+  content   String
+  timestamp DateTime    @default(now())
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
+}
+
+model Lead {
+  id               String          @id @default(cuid())
+  sessionId        String?
+  customerId       String?
+  source           String?
+  name             String?
+  email            String?
+  phone            String?
+  address          String?
+  squareMeters     Float?
+  rooms            Int?
+  taskType         String?
+  preferredDates   String[]
+  status           String          @default("new")
+  emailThreadId    String?
+  followUpAttempts Int             @default(0)
+  lastFollowUpDate DateTime?
+  idempotencyKey   String?         @unique // For deduplication: email+subject+date or upstream messageId
+  
+  // Firecrawl Enrichment Fields
+  companyName      String?         // Extracted from company website
+  industry         String?         // Business sector/industry
+  estimatedSize    String?         // Number of employees (e.g., "10-50", "100+")
+  estimatedValue   Float?          // Potential annual value in DKK
+  enrichmentData   Json?           // Full scraped data (services, locations, etc.)
+  lastEnriched     DateTime?       // When enrichment was last performed
+  
+  // Lead Scoring Fields (AI-based prioritization)
+  score            Int?            @default(0)        // 0-100 lead quality score
+  priority         String?         @default("medium") // high/medium/low priority
+  lastScored       DateTime?                          // When lead was last scored
+  scoreMetadata    Json?                              // Detailed scoring breakdown
+  
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  bookings         Booking[]
+  conversations    Conversation[]
+  customer         Customer?       @relation(fields: [customerId], references: [id])
+  quotes           Quote[]
+  emailResponses   EmailResponse[]
+  escalations      Escalation[]
+
+  @@index([email, createdAt]) // Composite index for fast duplicate checks
+  @@index([estimatedValue]) // Index for prioritizing high-value leads
+  @@index([score, priority]) // Index for lead scoring queries
+  @@map("leads")
+}
+
+model Quote {
+  id             String    @id @default(cuid())
+  leadId         String
+  hourlyRate     Float
+  estimatedHours Float
+  subtotal       Float
+  vatRate        Float
+  total          Float
+  notes          String?
+  validUntil     DateTime?
+  status         String    @default("draft")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  lead           Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("quotes")
+}
+
+model Booking {
+  id                String    @id @default(cuid())
+  customerId        String?
+  leadId            String?
+  quoteId           String?
+  serviceType       String? // Privatrengøring, Flytterengøring, Hovedrengøring, Erhverv, Airbnb, Vinduer
+  address           String?
+  scheduledAt       DateTime  @default(now()) // Make optional for backward compatibility
+  estimatedDuration Int       @default(120) // minutes
+  startTime         DateTime?
+  endTime           DateTime?
+  status            String    @default("scheduled") // scheduled, confirmed, completed, cancelled
+  calendarEventId   String?
+  calendarLink      String?
+  notes             String?
+
+  // Sprint 2: Time Tracking
+  actualStartTime DateTime? // When timer was actually started
+  actualEndTime   DateTime? // When timer was actually stopped
+  actualDuration  Int? // Actual minutes worked (excluding breaks)
+  timeVariance    Int? // Difference between estimated and actual (minutes)
+  efficiencyScore Float? // actualDuration / estimatedDuration (1.0 = perfect)
+  timeNotes       String?   @db.Text // Notes about time spent
+  timerStatus     String    @default("not_started") // not_started, running, paused, completed
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer    Customer?            @relation(fields: [customerId], references: [id])
+  lead        Lead?                @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  planBooking CleaningPlanBooking?
+  breaks      Break[] // Sprint 2: Time tracking breaks
+  invoices    Invoice[] // Sprint 3: Invoices generated from this booking
+
+  @@index([customerId])
+  @@index([leadId])
+  @@index([scheduledAt])
+  @@index([status])
+  @@index([timerStatus])
+  @@map("bookings")
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  metric    String
+  value     Float
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@unique([date, metric])
+  @@map("analytics")
+}
+
+// TaskExecution Model - GDPR-compliant audit trail for AI decisions
+model TaskExecution {
+  id              String   @id @default(cuid())
+  taskType        String   // email.compose, email.send, calendar.book, lead.score, etc.
+  taskPayload     Json     // Input data for the task
+  status          String   // pending, success, failed, retried
+  result          Json?    // Output/result of the task execution
+  error           String?  @db.Text // Error message if task failed
+  duration        Int?     // Execution time in milliseconds
+  traceId         String?  // Correlation ID for distributed tracing
+  sessionId       String?  // User session ID
+  userId          String?  // User who triggered the task (if applicable)
+  intent          String?  // Original user intent (from intentClassifier)
+  confidence      Float?   // Confidence score of intent classification
+  correctionType  String?  // Type of correction applied (from agentReflector)
+  executedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@index([taskType, status])
+  @@index([executedAt])
+  @@index([traceId])
+  @@index([sessionId])
+  @@map("task_executions")
+}
+
+model Customer {
+  id            String         @id @default(cuid())
+  name          String
+  email         String?        @unique
+  phone         String?
+  address       String?
+  companyName   String?
+  notes         String?
+  status        String         @default("active")
+  tags          String[]
+  totalLeads    Int            @default(0)
+  totalBookings Int            @default(0)
+  totalRevenue  Float          @default(0)
+  lastContactAt DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  conversations Conversation[]
+  leads         Lead[]
+  emailThreads  EmailThread[]
+  bookings      Booking[]
+  cleaningPlans CleaningPlan[]
+
+  @@index([email])
+  @@index([status])
+  @@map("customers")
+}
+
+model Conversation {
+  id            String         @id @default(cuid())
+  customerId    String?
+  leadId        String?
+  subject       String?
+  channel       String         @default("email")
+  status        String         @default("active")
+  gmailThreadId String?        @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  closedAt      DateTime?
+  customer      Customer?      @relation(fields: [customerId], references: [id])
+  lead          Lead?          @relation(fields: [leadId], references: [id])
+  messages      EmailMessage[] @relation("ConversationMessages")
+
+  @@index([customerId])
+  @@index([leadId])
+  @@index([gmailThreadId])
+  @@index([status])
+  @@map("conversations")
+}
+
+model EmailIngestRun {
+  id            String    @id @default(cuid())
+  startedAt     DateTime  @default(now())
+  finishedAt    DateTime?
+  status        String    @default("running") // running, completed, failed
+  totalEmails   Int       @default(0)
+  newEmails     Int       @default(0)
+  updatedEmails Int       @default(0)
+  errors        Int       @default(0)
+  errorLog      Json? // Array of error messages
+  createdAt     DateTime  @default(now())
+
+  @@map("email_ingest_runs")
+}
+
+model EmailThread {
+  id            String    @id @default(cuid())
+  gmailThreadId String    @unique
+  customerId    String?
+  subject       String
+  snippet       String?
+  lastMessageAt DateTime
+  participants  String[] // Email addresses in thread
+  messageCount  Int       @default(0)
+  labels        String[] // Gmail labels
+  isMatched     Boolean   @default(false)
+  matchedAt     DateTime?
+  matchedBy     String? // "exact_email", "domain", "heuristic"
+  confidence    Float? // 0-1 score for heuristic matches
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  customer Customer?      @relation(fields: [customerId], references: [id])
+  messages EmailMessage[]
+
+  @@index([customerId])
+  @@index([gmailThreadId])
+  @@index([lastMessageAt])
+  @@index([isMatched])
+  @@map("email_threads")
+}
+
+model EmailMessage {
+  id             String   @id @default(cuid())
+  gmailMessageId String?  @unique
+  gmailThreadId  String
+  threadId       String?
+  from           String
+  to             String[]
+  subject        String?
+  body           String   @db.Text
+  bodyPreview    String?
+  direction      String   @default("inbound") // inbound, outbound, ai_generated
+  status         String   @default("delivered")
+  isAiGenerated  Boolean  @default(false)
+  aiModel        String?
+  sentAt         DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  conversationId String?
+
+  thread       EmailThread?  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  conversation Conversation? @relation("ConversationMessages", fields: [conversationId], references: [id])
+
+  @@index([threadId])
+  @@index([conversationId])
+  @@index([gmailMessageId])
+  @@index([sentAt])
+  @@index([direction])
+  @@map("email_messages")
+}
+
+model EmailResponse {
+  id             String    @id @default(cuid())
+  leadId         String
+  recipientEmail String
+  subject        String
+  body           String    @db.Text
+  status         String    @default("pending") // pending, approved, sent, rejected
+  gmailThreadId  String?
+  gmailMessageId String?
+  sentAt         DateTime?
+  rejectedReason String?
+  aiModel        String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id])
+
+  @@index([leadId])
+  @@index([status])
+  @@map("email_responses")
+}
+
+model Escalation {
+  id              String    @id @default(cuid())
+  leadId          String
+  customerEmail   String
+  customerName    String?
+  threadId        String
+  severity        String // low, medium, high, critical
+  conflictScore   Int
+  matchedKeywords String[]
+  emailSnippet    String    @db.Text
+  escalatedAt     DateTime  @default(now())
+  escalatedBy     String // system or manual
+  jonasNotified   Boolean   @default(false)
+  resolvedAt      DateTime?
+  resolution      String?   @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id])
+
+  @@index([leadId])
+  @@index([severity])
+  @@index([escalatedAt])
+  @@map("escalations")
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  duration    Int // Duration in minutes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Label {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Cleaning Plans System (Sprint 1)
+model CleaningPlan {
+  id                String   @id @default(cuid())
+  customerId        String
+  name              String // "Ugentlig Kontorrengøring", "Månedlig Hovedrengøring"
+  description       String?  @db.Text
+  serviceType       String // "Fast Rengøring", "Flytterengøring", "Hovedrengøring", etc.
+  frequency         String   @default("once") // once, weekly, biweekly, monthly
+  isTemplate        Boolean  @default(false) // Can be used as template for future plans
+  isActive          Boolean  @default(true)
+  estimatedDuration Int      @default(120) // minutes
+  estimatedPrice    Float? // Calculated from tasks
+  squareMeters      Float?
+  address           String?
+  notes             String?  @db.Text
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  customer     Customer              @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tasks        CleaningTask[]
+  planBookings CleaningPlanBooking[]
+
+  @@index([customerId])
+  @@index([serviceType])
+  @@index([isActive])
+  @@index([isTemplate])
+  @@map("cleaning_plans")
+}
+
+model CleaningTask {
+  id            String   @id @default(cuid())
+  planId        String
+  name          String // "Støvsug alle rum", "Rengør toilet", "Vinduespolering"
+  description   String?  @db.Text
+  category      String // "Cleaning", "Kitchen", "Bathroom", "Windows", "Special"
+  estimatedTime Int      @default(15) // minutes
+  isRequired    Boolean  @default(true)
+  isCompleted   Boolean  @default(false)
+  sortOrder     Int      @default(0)
+  pricePerTask  Float? // Optional individual task pricing
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  plan CleaningPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@index([category])
+  @@map("cleaning_tasks")
+}
+
+model CleaningPlanBooking {
+  id             String   @id @default(cuid())
+  planId         String
+  bookingId      String   @unique
+  completedTasks String[] // Array of task IDs that were completed
+  actualDuration Int? // Actual time taken in minutes
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  plan    CleaningPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  booking Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@index([bookingId])
+  @@map("cleaning_plan_bookings")
+}
+
+// Sprint 2: Time Tracking System
+model Break {
+  id        String    @id @default(cuid())
+  bookingId String
+  startTime DateTime
+  endTime   DateTime?
+  duration  Int? // Duration in minutes (calculated when endTime is set)
+  reason    String? // "lunch", "equipment", "bathroom", "transport", "other"
+  notes     String?   @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@index([startTime])
+  @@map("breaks")
+}
+
+// Sprint 3: Invoicing System
+model Invoice {
+  id              String  @id @default(cuid())
+  invoiceNumber   String  @unique // "INV-2025-001"
+  bookingId       String?
+  customerId      String
+  customerName    String
+  customerEmail   String?
+  customerAddress String? @db.Text
+
+  // Invoice details
+  issueDate DateTime @default(now())
+  dueDate   DateTime // Typically issueDate + 14 days
+  status    String   @default("draft") // draft, sent, paid, overdue, cancelled
+
+  // Pricing
+  subtotal  Float // Sum of line items
+  vatRate   Float @default(25.0) // Danish VAT is 25%
+  vatAmount Float // subtotal * (vatRate / 100)
+  total     Float // subtotal + vatAmount
+
+  // Payment
+  paidAt        DateTime?
+  paidAmount    Float?
+  paymentMethod String? // "bank_transfer", "mobilepay", "cash", "card"
+  paymentRef    String? // Payment reference/transaction ID
+
+  // Billy.dk integration
+  billyInvoiceId String?   @unique
+  billyContactId String?
+  billySyncedAt  DateTime?
+  billyPdfUrl    String?
+
+  // Metadata
+  notes          String?   @db.Text
+  internalNotes  String?   @db.Text // Not visible to customer
+  sentAt         DateTime?
+  reminderSentAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  booking   Booking?          @relation(fields: [bookingId], references: [id])
+  lineItems InvoiceLineItem[]
+
+  @@index([customerId])
+  @@index([bookingId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([invoiceNumber])
+  @@map("invoices")
+}
+
+model InvoiceLineItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  description String // "Boligrengøring 80m²", "Vinduespudsning"
+  quantity    Float    @default(1.0) // Usually hours worked
+  unitPrice   Float // Price per unit (kr/hour typically 300-350)
+  amount      Float // quantity * unitPrice
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@map("invoice_line_items")
+}
+
+// ============================================================================
+// Firecrawl Scraping Models
+// ============================================================================
+
+model CompetitorPricing {
+  id            String   @id @default(cuid())
+  competitor    String // "Molly", "Renova", "Hjemme", "ISS"
+  websiteUrl    String // URL scraped
+  pricingData   Json // Full scraped pricing structure
+  scrapedAt     DateTime @default(now())
+  creditsUsed   Int      @default(1) // Firecrawl credits consumed
+
+  @@index([competitor, scrapedAt]) // For time-series analysis
+  @@map("competitor_pricing")
+}
+

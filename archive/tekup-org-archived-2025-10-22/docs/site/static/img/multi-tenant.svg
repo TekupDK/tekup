@@ -1,0 +1,38 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tenantGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Central server -->
+  <rect x="85" y="80" width="30" height="40" fill="url(#tenantGradient)" stroke="#059669" stroke-width="2" rx="4"/>
+  
+  <!-- Tenant boxes -->
+  <rect x="30" y="30" width="25" height="25" fill="#34d399" stroke="#059669" stroke-width="1.5" rx="3"/>
+  <rect x="145" y="30" width="25" height="25" fill="#34d399" stroke="#059669" stroke-width="1.5" rx="3"/>
+  <rect x="30" y="145" width="25" height="25" fill="#34d399" stroke="#059669" stroke-width="1.5" rx="3"/>
+  <rect x="145" y="145" width="25" height="25" fill="#34d399" stroke="#059669" stroke-width="1.5" rx="3"/>
+  
+  <!-- Connection lines -->
+  <line x1="55" y1="42" x2="85" y2="90" stroke="#6ee7b7" stroke-width="2"/>
+  <line x1="145" y1="42" x2="115" y2="90" stroke="#6ee7b7" stroke-width="2"/>
+  <line x1="55" y1="157" x2="85" y2="120" stroke="#6ee7b7" stroke-width="2"/>
+  <line x1="145" y1="157" x2="115" y2="120" stroke="#6ee7b7" stroke-width="2"/>
+  
+  <!-- Tenant labels -->
+  <text x="42" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#059669">T1</text>
+  <text x="157" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#059669">T2</text>
+  <text x="42" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#059669">T3</text>
+  <text x="157" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#059669">T4</text>
+  
+  <!-- Security shield -->
+  <path d="M100 65 L105 60 L100 55 L95 60 Z" fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
+  
+  <!-- Database symbol -->
+  <ellipse cx="100" cy="135" rx="15" ry="5" fill="#6ee7b7" stroke="#059669" stroke-width="1.5"/>
+  <ellipse cx="100" cy="145" rx="15" ry="5" fill="#6ee7b7" stroke="#059669" stroke-width="1.5"/>
+  <line x1="85" y1="135" x2="85" y2="145" stroke="#059669" stroke-width="1.5"/>
+  <line x1="115" y1="135" x2="115" y2="145" stroke="#059669" stroke-width="1.5"/>
+</svg>

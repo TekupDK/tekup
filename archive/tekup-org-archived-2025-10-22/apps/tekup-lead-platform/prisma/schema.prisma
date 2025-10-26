@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  tenantId  String
+  email     String?
+  phone     String?
+  name      String?
+  company   String?
+  message   String?
+  payload   Json     // Store complete lead payload as JSON
+  status    String   @default("new") // new, qualified, contacted, converted, lost
+  source    String?  // nettbureau, leadpoint, 3match, website, phone, email
+  priority  String?  // high, medium, low
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  events    LeadEvent[]
+  activities LeadActivity[]
+  assignments LeadAssignment[]
+
+  @@map("leads")
+  @@index([tenantId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model LeadEvent {
+  id        String   @id @default(cuid())
+  leadId    String
+  tenantId  String
+  eventType String   // created, qualified, contacted, converted, status_changed
+  data      Json?
+  createdAt DateTime @default(now())
+
+  // Relations
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("lead_events")
+  @@index([leadId])
+  @@index([tenantId])
+}
+
+model LeadActivity {
+  id          String   @id @default(cuid())
+  leadId      String
+  tenantId    String
+  userId      String?  // Who performed the activity
+  activityType String  // call, email, meeting, note, task
+  subject     String?
+  description String?
+  status      String?  // completed, pending, cancelled
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations  
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("lead_activities")
+  @@index([leadId])
+  @@index([tenantId])
+  @@index([dueDate])
+}
+
+model LeadAssignment {
+  id         String   @id @default(cuid())
+  leadId     String
+  tenantId   String
+  userId     String   // Who the lead is assigned to
+  assignedBy String?  // Who made the assignment
+  status     String   @default("active") // active, completed, transferred
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("lead_assignments")
+  @@index([leadId])
+  @@index([tenantId])
+  @@index([userId])
+}
+
+// User model for lead assignments (basic fields)
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  tenantId  String
+  role      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+  @@index([tenantId])
+}
+
+// Configuration for tenant-specific lead qualification rules
+model TenantConfig {
+  id                String   @id @default(cuid())
+  tenantId          String   @unique
+  qualificationRules Json    // Store qualification rules as JSON
+  scoringWeights    Json?    // Store scoring weights as JSON
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("tenant_configs")
+}

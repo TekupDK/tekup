@@ -1,0 +1,282 @@
+/* Sandbox Environment Container */
+.sandboxEnvironment {
+  border: 2px solid var(--ifm-color-primary-light);
+  border-radius: 8px;
+  background: var(--ifm-background-color);
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+/* Status Bar */
+.statusBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--ifm-color-primary-lightest);
+  border-bottom: 1px solid var(--ifm-color-primary-light);
+}
+
+.statusInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statusIndicator {
+  font-size: 0.875rem;
+}
+
+.statusText {
+  font-weight: 500;
+  color: var(--ifm-color-primary-dark);
+}
+
+.statusActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.environmentSelect {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--ifm-color-primary);
+  border-radius: 4px;
+  background: white;
+  color: var(--ifm-color-primary-dark);
+  font-size: 0.875rem;
+}
+
+/* Status Variants */
+.connected {
+  color: var(--ifm-color-success);
+}
+
+.connecting {
+  color: var(--ifm-color-warning);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.disconnected {
+  color: var(--ifm-color-danger);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Configuration Panel */
+.configPanel {
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.configDetails {
+  margin: 0;
+}
+
+.configSummary {
+  padding: 0.75rem 1rem;
+  background: var(--ifm-color-emphasis-100);
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+
+.configSummary:hover {
+  background: var(--ifm-color-emphasis-200);
+}
+
+.configSummary::-webkit-details-marker {
+  display: none;
+}
+
+.configSummary::before {
+  content: '▶';
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.configDetails[open] .configSummary::before {
+  transform: rotate(90deg);
+}
+
+.configContent {
+  padding: 1rem;
+  background: var(--ifm-background-color);
+}
+
+.configLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.configInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-family: var(--ifm-font-family-monospace);
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+}
+
+.configInput:focus {
+  outline: none;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--ifm-color-primary-rgb), 0.2);
+}
+
+/* Feature Toggles */
+.featureToggles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.featureToggle {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.featureToggle:hover {
+  background: var(--ifm-hover-overlay);
+  border-color: var(--ifm-color-primary);
+}
+
+.featureToggle input[type="checkbox"] {
+  margin: 0;
+}
+
+/* Sandbox Content */
+.sandboxContent {
+  min-height: 200px;
+}
+
+.connectedContent {
+  padding: 1rem;
+}
+
+.disconnectedContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: var(--ifm-color-emphasis-100);
+}
+
+/* Sandbox Footer */
+.sandboxFooter {
+  padding: 0.5rem 1rem;
+  background: var(--ifm-color-emphasis-100);
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .statusBar {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  
+  .statusActions {
+    justify-content: space-between;
+  }
+  
+  .configContent .row {
+    flex-direction: column;
+  }
+  
+  .featureToggles {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+}
+
+/* Dark Mode Adjustments */
+[data-theme='dark'] .statusBar {
+  background: rgba(var(--ifm-color-primary-rgb), 0.1);
+}
+
+[data-theme='dark'] .configSummary {
+  background: var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] .configSummary:hover {
+  background: var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .environmentSelect {
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+[data-theme='dark'] .configInput {
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+[data-theme='dark'] .featureToggle {
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+[data-theme='dark'] .disconnectedContent {
+  background: var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] .sandboxFooter {
+  background: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+/* Accessibility */
+.configSummary:focus {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.featureToggle:focus-within {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+/* Animation for connection status */
+@keyframes connectSuccess {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.connected {
+  animation: connectSuccess 0.5s ease;
+}
+
+/* Print Styles */
+@media print {
+  .sandboxEnvironment {
+    border: 1px solid #000;
+  }
+  
+  .statusBar,
+  .configPanel,
+  .sandboxFooter {
+    display: none;
+  }
+  
+  .connectedContent {
+    padding: 0;
+  }
+}

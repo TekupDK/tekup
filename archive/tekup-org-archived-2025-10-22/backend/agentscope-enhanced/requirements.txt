@@ -1,0 +1,25 @@
+# Core dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.11.0
+websockets>=12.0
+
+# AgentScope and AI libraries (already installed)
+agentscope>=1.0.2
+openai>=1.107.0
+anthropic>=0.66.0
+google-generativeai>=0.8.3
+tiktoken>=0.11.0
+
+# Async and utilities
+aiohttp>=3.12.0
+python-multipart>=0.0.20
+python-dotenv>=1.0.0
+
+# Logging and monitoring
+python-json-logger>=2.0.0
+
+# Optional: Specialized model serving (for future Jarvis Foundation Model)
+# torch==2.1.0
+# transformers==4.36.0
+# accelerate==0.25.0

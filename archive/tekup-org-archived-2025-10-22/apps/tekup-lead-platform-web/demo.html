@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TekUp Lead Platform - Rendetalje Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-lg">
+            <div class="p-4 border-b">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-semibold">R</span>
+                    </div>
+                    <div>
+                        <h1 class="font-semibold text-gray-900">Rendetalje</h1>
+                        <p class="text-xs text-gray-500">Lead Platform</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="p-4 space-y-2">
+                <a href="#" class="flex items-center p-2 bg-blue-50 text-blue-700 rounded-lg">
+                    <span class="mr-3">📊</span> Dashboard
+                </a>
+                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <span class="mr-3">👥</span> Leads
+                </a>
+                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <span class="mr-3">📅</span> Kalender
+                </a>
+                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <span class="mr-3">⚡</span> SLA & Handlinger
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b p-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-xl font-semibold text-gray-900">Rendetalje Dashboard</h1>
+                        <p class="text-gray-500">Rengøring • Aarhus</p>
+                    </div>
+                    <div class="flex items-center space-x-6 text-sm">
+                        <div class="text-center">
+                            <div class="text-lg font-semibold text-green-600">89%</div>
+                            <div class="text-xs text-gray-500">Qualification Rate</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-semibold text-blue-600">2.3h</div>
+                            <div class="text-xs text-gray-500">Avg Response</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mr-4">
+                                👥
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-gray-900">156</div>
+                                <div class="text-sm text-gray-500">Total Leads</div>
+                                <div class="text-xs text-green-600">+12%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center mr-4">
+                                ✓
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-gray-900">89</div>
+                                <div class="text-sm text-gray-500">Qualified</div>
+                                <div class="text-xs text-green-600">+8%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mr-4">
+                                📈
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-gray-900">23</div>
+                                <div class="text-sm text-gray-500">Converted</div>
+                                <div class="text-xs text-green-600">+15%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center mr-4">
+                                ⏱️
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-gray-900">2.3h</div>
+                                <div class="text-sm text-gray-500">Avg Response</div>
+                                <div class="text-xs text-green-600">-23%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Lead Chart -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-medium mb-4">Lead Metrics - Rendetalje</h3>
+                        <canvas id="leadChart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <!-- SLA Status -->
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-medium mb-4">SLA Status</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-red-600">⚠️ Overtrådt</span>
+                                <span class="font-semibold text-red-600">2</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-yellow-600">⏰ I risiko</span>
+                                <span class="font-semibold text-yellow-600">5</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-green-600">✅ På sporet</span>
+                                <span class="font-semibold text-green-600">16</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 space-y-3">
+                            <div class="p-3 bg-red-50 border-l-4 border-red-400 rounded">
+                                <div class="text-sm font-medium text-gray-900">#1234 - Maria Hansen</div>
+                                <div class="text-xs text-gray-600">Flytterengøring • 4.2h forsinket</div>
+                            </div>
+                            <div class="p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                                <div class="text-sm font-medium text-gray-900">#1236 - Søren Madsen</div>
+                                <div class="text-xs text-gray-600">Almindelig rengøring • 0.5h tilbage</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Leads -->
+                <div class="mt-8 bg-white rounded-lg shadow">
+                    <div class="px-6 py-4 border-b">
+                        <h3 class="text-lg font-medium">Seneste Leads</h3>
+                    </div>
+                    <div class="divide-y">
+                        <div class="p-4 hover:bg-gray-50">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                                        <span class="text-sm font-medium">AL</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Anna Larsen</h4>
+                                        <p class="text-sm text-gray-600">Flytterengøring • 8000 Aarhus C • 95 m²</p>
+                                        <p class="text-xs text-gray-500">anna@email.dk • Leadpoint • 12 min siden</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">Hot (89)</span>
+                                    <span class="px-2 py-1 bg-blue-50 text-blue-700 border border-blue-200 text-xs rounded">New</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 hover:bg-gray-50">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                                        <span class="text-sm font-medium">MN</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Michael Nielsen</h4>
+                                        <p class="text-sm text-gray-600">Erhvervsrengøring • 8200 Aarhus N • 240 m²</p>
+                                        <p class="text-xs text-gray-500">michael.n@hotmail.com • 3Match • 1t 23min siden</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">Warm (74)</span>
+                                    <span class="px-2 py-1 bg-yellow-50 text-yellow-700 border border-yellow-200 text-xs rounded">Contacted</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lead Chart
+        const ctx = document.getElementById('leadChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun'],
+                datasets: [{
+                    label: 'Total Leads',
+                    data: [45, 52, 48, 61, 59, 67],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'Qualified',
+                    data: [38, 44, 41, 52, 48, 58],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'Converted',
+                    data: [8, 12, 9, 14, 11, 16],
+                    borderColor: '#8b5cf6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

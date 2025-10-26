@@ -1,0 +1,110 @@
+groups:
+  - name: database.rules
+    rules:
+      # PostgreSQL Connection Issues
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL instance is down"
+          description: "PostgreSQL instance {{ $labels.instance }} is down for more than 1 minute"
+
+      # High Connection Usage
+      - alert: PostgreSQLConnectionsHigh
+        expr: (pg_stat_database_numbackends / pg_settings_max_connections) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL connection usage is high"
+          description: "PostgreSQL connection usage is above 80% ({{ $value }}%) on {{ $labels.instance }}"
+
+      # Slow Queries
+      - alert: PostgreSQLSlowQueries
+        expr: rate(pg_stat_activity_max_tx_duration[5m]) > 60
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL slow queries detected"
+          description: "PostgreSQL has queries running longer than 60s on {{ $labels.instance }}"
+
+      # Database Size Growth
+      - alert: PostgreSQLDatabaseSizeGrowth
+        expr: increase(pg_database_size_bytes[1h]) > 1073741824  # 1GB
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "PostgreSQL database growing rapidly"
+          description: "Database {{ $labels.datname }} has grown by more than 1GB in the last hour"
+
+      # Index Hit Ratio Low
+      - alert: PostgreSQLIndexHitRatioLow
+        expr: (pg_stat_database_blks_hit / (pg_stat_database_blks_hit + pg_stat_database_blks_read)) * 100 < 95
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL index hit ratio is low"
+          description: "Index hit ratio is {{ $value }}% on database {{ $labels.datname }} (should be > 95%)"
+
+      # Lock Wait Time High
+      - alert: PostgreSQLLockWaitTimeHigh
+        expr: pg_locks_count > 100
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL lock wait time is high"
+          description: "Too many locks detected ({{ $value }}) on {{ $labels.instance }}"
+
+      # Disk Space Warning
+      - alert: PostgreSQLDiskSpaceLow
+        expr: (pg_database_size_bytes / (1024*1024*1024)) > 50  # 50GB
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL database approaching size limit"
+          description: "Database {{ $labels.datname }} is {{ $value }}GB (approaching limits)"
+
+      # Redis Alerts
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis instance is down"
+          description: "Redis instance {{ $labels.instance }} is down"
+
+      - alert: RedisMemoryUsageHigh
+        expr: (redis_memory_used_bytes / redis_memory_max_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis memory usage is high"
+          description: "Redis memory usage is {{ $value }}% on {{ $labels.instance }}"
+
+      # Application Performance
+      - alert: HighResponseTime
+        expr: http_request_duration_seconds{quantile="0.95"} > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s on {{ $labels.instance }}"
+
+      - alert: ErrorRateHigh
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }} requests/sec on {{ $labels.instance }}"

@@ -1,0 +1,39 @@
+# Development Dockerfile for Website app (standalone, no monorepo assumptions)
+FROM node:20-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Install pnpm globally
+RUN npm install -g pnpm@latest
+
+# Copy package.json and lockfile for dependency install
+COPY package.json pnpm-lock.yaml* ./
+
+# Install dependencies
+RUN pnpm install --no-frozen-lockfile
+
+# Copy website source code
+COPY . .
+
+# Create a non-root user for security
+RUN groupadd -r tekup && useradd -r -g tekup -s /bin/bash tekup
+RUN chown -R tekup:tekup /app
+USER tekup
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080 || exit 1
+
+# Default command
+CMD ["pnpm", "dev", "--host", "*******"]

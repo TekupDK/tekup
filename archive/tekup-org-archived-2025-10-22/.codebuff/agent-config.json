@@ -1,0 +1,148 @@
+{
+  "workspace": {
+    "name": "Tekup-org",
+    "type": "monorepo",
+    "packageManager": "pnpm",
+    "nodeVersion": ">=20.10.0"
+  },
+  "environment": {
+    "development": {
+      "database": {
+        "type": "sqlite",
+        "url": "file:./dev.db",
+        "provider": "prisma"
+      },
+      "agentscope": {
+        "host": "localhost",
+        "port": 8001,
+        "protocol": "http"
+      },
+      "unified_platform": {
+        "host": "localhost",
+        "port": 3000,
+        "protocol": "http"
+      },
+      "jarvis_frontend": {
+        "host": "localhost",
+        "port": 3005,
+        "protocol": "http"
+      }
+    }
+  },
+  "agents": {
+    "lead-platform-agent": {
+      "description": "Implements Lead Platform Module following CRM patterns",
+      "capabilities": [
+        "entity_generation",
+        "controller_creation",
+        "service_implementation", 
+        "dto_creation",
+        "prisma_schema_updates"
+      ],
+      "patterns": {
+        "base_path": "src/modules",
+        "follows_pattern": "crm",
+        "naming_convention": "kebab-case",
+        "file_structure": {
+          "module": "{module}.module.ts",
+          "controller": "{module}.controller.ts",
+          "service": "{module}.service.ts",
+          "dto": "dto/{action}-{module}.dto.ts",
+          "entity": "entities/{module}.entity.ts"
+        }
+      },
+      "tech_stack": {
+        "framework": "nestjs",
+        "orm": "prisma",
+        "database": "sqlite",
+        "validation": "class-validator",
+        "transformation": "class-transformer"
+      },
+      "standards": {
+        "tenant_isolation": true,
+        "error_handling": "consistent",
+        "api_patterns": "rest",
+        "response_format": "standardized"
+      }
+    },
+    "legacy-migration-agent": {
+      "description": "Migrates legacy services to unified platform patterns",
+      "capabilities": [
+        "legacy_analysis",
+        "pattern_extraction",
+        "migration_planning",
+        "code_transformation",
+        "data_migration"
+      ],
+      "migration_targets": [
+        "flow-api",
+        "tekup-crm-api", 
+        "tekup-lead-platform"
+      ],
+      "output_patterns": {
+        "follows": "unified-platform-standards",
+        "maintains": "business_logic",
+        "updates": "dependencies"
+      }
+    },
+    "monorepo-consistency-agent": {
+      "description": "Maintains consistency across 37+ apps in the monorepo",
+      "capabilities": [
+        "pattern_enforcement",
+        "dependency_alignment",
+        "code_quality_checks",
+        "design_system_compliance",
+        "api_standardization"
+      ],
+      "checks": {
+        "file_structure": "consistent",
+        "naming_conventions": "enforced",
+        "tailwind_version": "4.1",
+        "typescript_standards": "strict",
+        "api_patterns": "rest_compliant"
+      },
+      "design_system": {
+        "css_framework": "tailwindcss",
+        "version": "4.1",
+        "features": [
+          "css_first_configuration",
+          "p3_wide_gamut_colors",
+          "glassmorphism_effects",
+          "3d_transforms",
+          "container_queries",
+          "smooth_animations"
+        ]
+      }
+    }
+  },
+  "project_structure": {
+    "apps": {
+      "path": "apps/*",
+      "count": "37+",
+      "key_apps": [
+        "tekup-unified-platform",
+        "tekup-crm-web",
+        "flow-api",
+        "flow-web",
+        "voice-agent",
+        "agents-hub"
+      ]
+    },
+    "packages": {
+      "path": "packages/*",
+      "shared_packages": [
+        "shared",
+        "auth", 
+        "ui",
+        "config"
+      ]
+    }
+  },
+  "conventions": {
+    "file_naming": "kebab-case",
+    "component_naming": "PascalCase", 
+    "variable_naming": "camelCase",
+    "constant_naming": "SCREAMING_SNAKE_CASE",
+    "database_naming": "snake_case"
+  }
+}

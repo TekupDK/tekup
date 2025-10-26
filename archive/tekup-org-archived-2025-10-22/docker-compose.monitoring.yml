@@ -1,0 +1,110 @@
+services:
+  # PostgreSQL Monitoring
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@tekup-org-postgres-1:5432/tekup_test?sslmode=disable"
+    ports:
+      - "9187:9187"
+    depends_on:
+      - tekup-org-postgres-1
+    networks:
+      - tekup-org_default
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: tekup-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    networks:
+      - tekup-org_default
+
+  # Grafana - Visualization
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: tekup-grafana
+    ports:
+      - "3333:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=tekup2024!
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    networks:
+      - tekup-org_default
+    depends_on:
+      - prometheus
+
+  # AlertManager - Alert routing
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: tekup-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - alertmanager_data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=http://localhost:9093'
+    networks:
+      - tekup-org_default
+
+  # PgBouncer - Connection pooling
+  pgbouncer:
+    image: pgbouncer/pgbouncer:latest
+    container_name: tekup-pgbouncer
+    ports:
+      - "6432:6432"
+    volumes:
+      - ./monitoring/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./monitoring/userlist.txt:/etc/pgbouncer/userlist.txt
+    environment:
+      - DATABASES_HOST=tekup-org-postgres-1
+      - DATABASES_PORT=5432
+      - DATABASES_USER=postgres
+      - DATABASES_PASSWORD=postgres
+      - DATABASES_DBNAME=tekup_test
+    depends_on:
+      - tekup-org-postgres-1
+    networks:
+      - tekup-org_default
+
+  # Redis monitoring
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    ports:
+      - "9121:9121"
+    environment:
+      - REDIS_ADDR=tekup-org-redis-1:6379
+    depends_on:
+      - tekup-org-redis-1
+    networks:
+      - tekup-org_default
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  alertmanager_data:
+
+networks:
+  tekup-org_default:
+    external: true

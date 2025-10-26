@@ -1,0 +1,52 @@
+{
+  "name": "@tekup/jarvis",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Komplet Jarvis AI Assistant - Voice, Chat og AI Integration",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "next dev -p 3005",
+    "build": "pnpm --filter @tekup/shared build && next build",
+    "start": "next start -p 3002",
+    "typecheck": "tsc --noEmit",
+    "lint": "next lint",
+    "test": "jest --passWithNoTests"
+  },
+  "dependencies": {
+    "@google-cloud/speech": "^6.1.0",
+    "@google-cloud/text-to-speech": "^5.4.0",
+    "@tekup/api-client": "workspace:*",
+    "@tekup/auth": "workspace:*",
+    "@tekup/design-system": "workspace:*",
+    "@tekup/shared": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^10.18.0",
+    "lucide-react": "^0.462.0",
+    "next": "^15.5.2",
+    "openai": "^4.68.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "socket.io-client": "^4.8.1",
+    "swr": "^2.2.4",
+    "tailwind-merge": "^2.6.0",
+    "uuid": "^11.1.0",
+    "zustand": "^4.4.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@tailwindcss/vite": "^4.1.1",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "autoprefixer": "^10.4.15",
+    "eslint": "^8.48.0",
+    "eslint-config-next": "^13.5.11",
+    "jest": "^29.7.0",
+    "postcss": "^8.4.29",
+    "tailwindcss": "^4.1.1",
+    "typescript": "^5.6.3"
+  }
+}

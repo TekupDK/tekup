@@ -1,0 +1,376 @@
+/**
+ * Company Enrichment Handler - DISABLED (Phase 2 Feature)
+ * 
+ * This handler has build errors due to incorrect logger usage patterns.
+ * Disabling for now as it's Phase 2 functionality and not needed for Phase 0 validation.
+ * 
+ * TODO Phase 2: Fix logger calls and re-enable
+ * 
+ * @see docs/FIRECRAWL_USE_CASES_RENOS.md - Use Case #3
+ */
+
+/* DISABLED FOR PHASE 0 - HAS BUILD ERRORS
+
+/**
+ * Company Enrichment Handler
+ * 
+ * Automatically enriches lead data by scraping company websites.
+ * Uses email domain to find company website and extract structured information.
+ * 
+ * Use Cases:
+ * - Lead qualification (company size, industry)
+ * - Sales prioritization (high-value companies first)
+ * - Personalized email responses
+ * 
+ * @see docs/FIRECRAWL_USE_CASES_RENOS.md - Use Case #3
+ */
+
+import { prisma } from '../../services/databaseService';
+import { firecrawlService } from '../../services/firecrawlService';
+import { logger } from '../../logger';
+import type { PlannedTask } from '../../types';
+import type { ExecutionAction } from './types';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface CompanyEnrichmentPayload {
+  leadId: string;
+  email?: string;
+  companyDomain?: string;
+}
+
+interface CompanyInfo {
+  companyName?: string;
+  industry?: string;
+  services?: string[];
+  employees?: string;
+  locations?: string[];
+  phone?: string;
+  website?: string;
+  description?: string;
+}
+
+// ============================================================================
+// Company Enrichment Handler
+// ============================================================================
+
+/**
+ * Enrich lead data by scraping company website
+ * 
+ * @example
+ * Task payload:
+ * {
+ *   type: 'company.enrich',
+ *   payload: {
+ *     leadId: 'lead_123',
+ *     email: 'info@firma-abc.dk'
+ *   }
+ * }
+ */
+export async function companyEnrichmentHandler(
+  task: PlannedTask<CompanyEnrichmentPayload>
+): Promise<ExecutionAction> {
+  const { leadId, email, companyDomain } = task.payload;
+
+  try {
+    // 1. Verify Firecrawl is configured
+    if (!firecrawlService.isConfigured()) {
+      return {
+        taskId: task.id,
+        provider: 'system',
+        status: 'skipped',
+        detail: 'Firecrawl API key not configured - enrichment skipped'
+      };
+    }
+
+    // 2. Fetch lead from database
+    const lead = await prisma.lead.findUnique({
+      where: { id: leadId }
+    });
+
+    if (!lead) {
+      logger.error('Lead not found', { leadId });
+      return {
+        status: 'failed',
+        action: 'enrich_company_data',
+        details: {
+          error: 'Lead not found',
+          leadId
+        }
+      };
+    }
+
+    // 3. Extract company domain from email or use provided domain
+    const domain = companyDomain || extractDomainFromEmail(email || lead.email);
+
+    if (!domain) {
+      logger.warn('No company domain available for enrichment', { leadId, email: lead.email });
+      return {
+        status: 'failed',
+        action: 'enrich_company_data',
+        details: {
+          reason: 'No valid company domain',
+          leadId
+        }
+      };
+    }
+
+    // 4. Skip common free email providers
+    if (isFreemailProvider(domain)) {
+      logger.info('Skipping enrichment for freemail provider', { domain });
+      return {
+        status: 'success',
+        action: 'skip_enrichment',
+        details: {
+          reason: 'Freemail provider (not a company)',
+          domain
+        }
+      };
+    }
+
+    // 5. Build website URL
+    const websiteUrl = `https://${domain}`;
+
+    logger.info('Scraping company website', { websiteUrl, leadId });
+
+    // 6. Extract company information using Firecrawl
+    const extractResult = await firecrawlService.extract<CompanyInfo>(websiteUrl, {
+      schema: {
+        companyName: {
+          type: 'string',
+          description: 'Official company name'
+        },
+        industry: {
+          type: 'string',
+          description: 'Industry or sector (e.g., "Byggeri", "IT", "Finans")'
+        },
+        services: {
+          type: 'array',
+          description: 'List of services or products offered'
+        },
+        employees: {
+          type: 'string',
+          description: 'Estimated number of employees (e.g., "10-50", "100+")'
+        },
+        locations: {
+          type: 'array',
+          description: 'Office locations or cities where company operates'
+        },
+        phone: {
+          type: 'string',
+          description: 'Company phone number'
+        },
+        description: {
+          type: 'string',
+          description: 'Brief company description or tagline'
+        }
+      },
+      prompt: 'Extract company information from this website. Focus on business details relevant for B2B sales qualification.'
+    });
+
+    if (!extractResult.success || !extractResult.data) {
+      logger.error('Company enrichment failed', {
+        websiteUrl,
+        error: extractResult.error
+      });
+
+      return {
+        status: 'failed',
+        action: 'enrich_company_data',
+        details: {
+          error: extractResult.error || 'Failed to extract company data',
+          websiteUrl,
+          creditsUsed: extractResult.creditsUsed
+        }
+      };
+    }
+
+    const companyInfo = extractResult.data;
+
+    logger.info('Company data extracted successfully', {
+      companyName: companyInfo.companyName,
+      industry: companyInfo.industry,
+      employees: companyInfo.employees,
+      creditsUsed: extractResult.creditsUsed
+    });
+
+    // 7. Calculate potential value based on company size
+    const potentialValue = estimatePotentialValue(companyInfo);
+
+    // 8. Update lead in database with enriched data
+    const updatedLead = await prisma.lead.update({
+      where: { id: leadId },
+      data: {
+        companyName: companyInfo.companyName,
+        industry: companyInfo.industry,
+        estimatedSize: companyInfo.employees,
+        estimatedValue: potentialValue,
+        notes: lead.notes
+          ? `${lead.notes}\n\n[Auto-enriched]\nServices: ${companyInfo.services?.join(', ') || 'N/A'}\nLocations: ${companyInfo.locations?.join(', ') || 'N/A'}\nWebsite: ${websiteUrl}`
+          : `Services: ${companyInfo.services?.join(', ') || 'N/A'}\nLocations: ${companyInfo.locations?.join(', ') || 'N/A'}\nWebsite: ${websiteUrl}`,
+        lastEnriched: new Date()
+      }
+    });
+
+    // 9. If high-value lead, notify sales team
+    if (potentialValue >= 10000) {
+      logger.info('High-value lead detected!', {
+        leadId,
+        companyName: companyInfo.companyName,
+        potentialValue,
+        employees: companyInfo.employees
+      });
+
+      // TODO: Send notification to sales team
+      // await notifyHighValueLead(updatedLead, companyInfo);
+    }
+
+    return {
+      status: 'success',
+      action: 'enrich_company_data',
+      details: {
+        leadId,
+        companyName: companyInfo.companyName,
+        industry: companyInfo.industry,
+        employees: companyInfo.employees,
+        potentialValue,
+        websiteUrl,
+        creditsUsed: extractResult.creditsUsed,
+        isHighValue: potentialValue >= 10000
+      }
+    };
+
+  } catch (error) {
+    logger.error('Company enrichment handler error', {
+      leadId,
+      error
+    });
+
+    return {
+      status: 'failed',
+      action: 'enrich_company_data',
+      details: {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        leadId
+      }
+    };
+  }
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Extract domain from email address
+ */
+function extractDomainFromEmail(email: string | null | undefined): string | null {
+  if (!email || typeof email !== 'string') {
+    return null;
+  }
+
+  const match = email.match(/@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  return match ? match[1].toLowerCase() : null;
+}
+
+/**
+ * Check if domain is a common freemail provider
+ */
+function isFreemailProvider(domain: string): boolean {
+  const freemailProviders = [
+    'gmail.com',
+    'hotmail.com',
+    'outlook.com',
+    'yahoo.com',
+    'yahoo.dk',
+    'live.com',
+    'live.dk',
+    'icloud.com',
+    'me.com',
+    'aol.com',
+    'mail.com',
+    'protonmail.com',
+    'tutanota.com'
+  ];
+
+  return freemailProviders.includes(domain.toLowerCase());
+}
+
+/**
+ * Estimate potential annual value based on company info
+ * 
+ * Factors:
+ * - Company size (employees)
+ * - Industry (some industries have higher cleaning needs)
+ * - Services offered (B2B companies often need more cleaning)
+ */
+function estimatePotentialValue(companyInfo: CompanyInfo): number {
+  let baseValue = 5000; // Default minimum potential
+
+  // Adjust based on employee count
+  const employees = companyInfo.employees || '';
+
+  if (employees.includes('100+') || employees.includes('200+')) {
+    baseValue = 50000; // Large company
+  } else if (employees.includes('50-100') || employees.includes('50+')) {
+    baseValue = 25000; // Medium-large company
+  } else if (employees.includes('20-50') || employees.includes('25-50')) {
+    baseValue = 15000; // Medium company
+  } else if (employees.includes('10-20') || employees.includes('10+')) {
+    baseValue = 10000; // Small-medium company
+  } else if (employees.includes('5-10')) {
+    baseValue = 7000; // Small company
+  }
+
+  // Adjust based on industry (some industries need more frequent cleaning)
+  const industry = (companyInfo.industry || '').toLowerCase();
+  const highValueIndustries = [
+    'hospital',
+    'sundhed',
+    'healthcare',
+    'restaurant',
+    'hotel',
+    'byggeri',
+    'construction',
+    'produktion',
+    'manufacturing',
+    'finans',
+    'finance',
+    'retail',
+    'detailhandel'
+  ];
+
+  const hasHighValueIndustry = highValueIndustries.some(keyword =>
+    industry.includes(keyword)
+  );
+
+  if (hasHighValueIndustry) {
+    baseValue *= 1.5; // 50% increase for high-value industries
+  }
+
+  // Adjust based on locations (multi-location companies need more)
+  const locationCount = companyInfo.locations?.length || 0;
+  if (locationCount > 1) {
+    baseValue *= (1 + (locationCount - 1) * 0.3); // 30% increase per additional location
+  }
+
+  return Math.round(baseValue);
+}
+
+/**
+ * Register handler in task planner
+ * 
+ * Usage in IntentClassifier:
+ * - When new lead created: Plan 'company.enrich' task
+ * - When email updated: Re-run enrichment if domain changed
+ */
+export const companyEnrichmentHandlerConfig = {
+  type: 'company.enrich' as const,
+  handler: companyEnrichmentHandler,
+  description: 'Scrape company website and enrich lead data',
+  priority: 'low' as const, // Run after critical tasks
+  requiresFirecrawl: true
+};
+

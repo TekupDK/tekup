@@ -1,0 +1,9 @@
+{
+  "restaurant_name": "Test Restaurant",
+  "contact_name": "John Doe",
+  "email": "john@testrestaurant.dk",
+  "phone": "+45 12345678",
+  "city": "København",
+  "interest_level": "high",
+  "notes": "Interesseret i AI-løsninger"
+}

@@ -1,0 +1,8 @@
+{
+  "assets": [
+    "node_modules/@prisma/**/*",
+    "prisma/schema.prisma"
+  ],
+  "scripts": [],
+  "outputPath": "dist"
+}

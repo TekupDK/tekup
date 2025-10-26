@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  gmail-automation:
+    build: ./apps/gmail-automation
+    container_name: gmail-automation
+    environment:
+      - GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID}
+      - GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET}
+      - GMAIL_PROJECT_ID=${GMAIL_PROJECT_ID}
+      - GMAIL_USER_EMAIL=${GMAIL_USER_EMAIL}
+      - ECONOMIC_RECEIPT_EMAIL=${ECONOMIC_RECEIPT_EMAIL}
+      - ECONOMIC_API_KEY=${ECONOMIC_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - DAYS_BACK=${DAYS_BACK:-180}
+      - MAX_EMAILS=${MAX_EMAILS:-100}
+    volumes:
+      - ./config/google-credentials:/app/config
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - tekup-gmail-network
+
+  gmail-mcp-server:
+    build: ./apps/gmail-mcp-server
+    container_name: gmail-mcp-server
+    ports:
+      - "3010:3010"
+    environment:
+      - GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID}
+      - GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET}
+      - GMAIL_PROJECT_ID=${GMAIL_PROJECT_ID}
+      - PORT=3010
+    volumes:
+      - ./config/google-credentials:/app/config
+    restart: unless-stopped
+    networks:
+      - tekup-gmail-network
+
+  renos-gmail-services:
+    build: ./apps/renos-gmail-services
+    container_name: renos-gmail-services
+    ports:
+      - "3011:3011"
+    environment:
+      - PORT=3011
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_KEY=${GEMINI_KEY}
+      - GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID}
+      - GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET}
+      - GMAIL_PROJECT_ID=${GMAIL_PROJECT_ID}
+      - GMAIL_USER_EMAIL=${GMAIL_USER_EMAIL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
+      - GOOGLE_CLIENT_EMAIL=${GOOGLE_CLIENT_EMAIL}
+      - GOOGLE_PRIVATE_KEY=${GOOGLE_PRIVATE_KEY}
+      - DEFAULT_EMAIL_FROM=${DEFAULT_EMAIL_FROM}
+      - RUN_MODE=${RUN_MODE:-dry-run}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - ./config/google-credentials:/app/config
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - tekup-gmail-network
+
+networks:
+  tekup-gmail-network:
+    driver: bridge
+

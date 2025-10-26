@@ -1,0 +1,122 @@
+#!/bin/bash
+# TekUp Port Management Pre-commit Hook
+# Validates port configurations before commits
+
+set -e
+
+echo "🔍 Running TekUp Port Validation..."
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_status() {
+    echo -e "${2}[TekUp Port]${NC} $1"
+}
+
+# Check if port registry exists
+if [ ! -f "config/ports/registry.yaml" ]; then
+    print_status "⚠️ Port registry not found. Skipping port validation." $YELLOW
+    exit 0
+fi
+
+# Check for changes to port-related files
+port_related_files=$(git diff --cached --name-only | grep -E "(docker-compose|package\.json|\.env|ports/registry\.yaml)" || true)
+
+if [ -z "$port_related_files" ]; then
+    print_status "ℹ️ No port-related files changed. Skipping validation." $BLUE
+    exit 0
+fi
+
+print_status "📋 Port-related files detected:" $BLUE
+echo "$port_related_files" | sed 's/^/  - /'
+
+# Validate port registry syntax
+print_status "🔍 Validating port registry syntax..." $BLUE
+if command -v python3 &> /dev/null; then
+    python3 -c "
+import yaml
+import sys
+
+try:
+    with open('config/ports/registry.yaml', 'r') as f:
+        yaml.safe_load(f)
+    print('✅ Port registry YAML syntax is valid')
+except yaml.YAMLError as e:
+    print(f'❌ Invalid YAML syntax in port registry: {e}')
+    sys.exit(1)
+except Exception as e:
+    print(f'❌ Error reading port registry: {e}')
+    sys.exit(1)
+"
+else
+    print_status "⚠️ Python not available. Skipping YAML syntax validation." $YELLOW
+fi
+
+# Run PowerShell port validation if available
+if command -v powershell &> /dev/null; then
+    print_status "🔍 Running port conflict detection..." $BLUE
+    if powershell -ExecutionPolicy Bypass -File "scripts/port-manager.ps1" conflicts > /tmp/port-conflicts.log 2>&1; then
+        if grep -q "No port conflicts found" /tmp/port-conflicts.log; then
+            print_status "✅ No port conflicts detected" $GREEN
+        else
+            print_status "⚠️ Port conflicts detected:" $YELLOW
+            cat /tmp/port-conflicts.log
+        fi
+    else
+        print_status "⚠️ Could not run port conflict detection" $YELLOW
+    fi
+    rm -f /tmp/port-conflicts.log
+fi
+
+# Check for hardcoded ports in Docker Compose files
+print_status "🔍 Scanning for hardcoded ports in Docker Compose files..." $BLUE
+hardcoded_ports_found=false
+
+for file in $port_related_files; do
+    if [[ $file == docker-compose* ]]; then
+        # Look for port patterns like "3000:3000" but allow variables like "${PORT}:3000"
+        hardcoded_patterns=$(git show ":$file" | grep -E '^\s*-\s*"[0-9]+:[0-9]+"' | grep -v '\$' || true)
+        
+        if [ ! -z "$hardcoded_patterns" ]; then
+            hardcoded_ports_found=true
+            print_status "⚠️ Hardcoded ports found in $file:" $YELLOW
+            echo "$hardcoded_patterns" | sed 's/^/    /'
+        fi
+    fi
+done
+
+if [ "$hardcoded_ports_found" = false ]; then
+    print_status "✅ No hardcoded ports found in Docker Compose files" $GREEN
+fi
+
+# Check package.json files for port configurations
+print_status "🔍 Checking package.json files for port references..." $BLUE
+for file in $port_related_files; do
+    if [[ $file == *package.json ]]; then
+        port_refs=$(git show ":$file" | grep -i port || true)
+        if [ ! -z "$port_refs" ]; then
+            print_status "ℹ️ Port references in $file:" $BLUE
+            echo "$port_refs" | sed 's/^/    /'
+        fi
+    fi
+done
+
+# Generate port allocation report for the commit
+if [ -f "scripts/port-manager.ps1" ]; then
+    print_status "📊 Current port allocation status:" $BLUE
+    if powershell -ExecutionPolicy Bypass -File "scripts/port-manager.ps1" status 2>/dev/null | tail -n 10; then
+        true
+    else
+        print_status "⚠️ Could not generate port status report" $YELLOW
+    fi
+fi
+
+print_status "✅ Port validation completed successfully!" $GREEN
+print_status "💡 Remember to update port registry if adding new services" $BLUE
+
+exit 0

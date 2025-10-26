@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 15 15% 8%;
+  --foreground: 0 0% 98%;
+  --brand-color: #7c3aed;
+}
+
+body {
+  @apply bg-neutral-950 text-neutral-100;
+}
+
+.brand-text { color: var(--brand-color); }
+.brand-bg { background-color: color-mix(in oklab, var(--brand-color) 20%, transparent); }
+
+.glass-card {
+  @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl;
+}
+
+.ecosystem-hover:hover {
+  @apply border-blue-400/30;
+}

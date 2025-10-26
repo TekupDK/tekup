@@ -1,0 +1,605 @@
+// Prisma Schema for Danish Cleaning Industry Job Scheduling System
+// TekUp.org CRM - Multi-tenant SaaS platform for rengøringsbranchen
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// CORE TENANT MANAGEMENT
+// ============================================================================
+
+model Tenant {
+  id          String   @id @default(cuid())
+  name        String
+  domain      String?  @unique
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Danish business fields
+  cvrNumber   String?  @unique
+  address     String?
+  city        String?
+  postalCode  String?
+  phone       String?
+  email       String?
+  
+  // Subscription and billing
+  subscriptionTier String @default("basic") // basic, professional, enterprise
+  maxUsers    Int      @default(5)
+  maxJobs     Int      @default(100)
+  
+  // Relations
+  users       User[]
+  customers   Customer[]
+  jobs        CleaningJob[]
+  teamMembers TeamMember[]
+  routes      Route[]
+  equipment   Equipment[]
+  supplies    Supply[]
+  
+  @@map("tenants")
+}
+
+// ============================================================================
+// USER MANAGEMENT & AUTHENTICATION
+// ============================================================================
+
+model User {
+  id        String   @id @default(cuid())
+  tenantId  String
+  email     String
+  name      String
+  role      UserRole @default(CLEANER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@unique([tenantId, email])
+  @@map("users")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  TENANT_ADMIN
+  TEAM_LEADER
+  CLEANER
+  CUSTOMER
+}
+
+// ============================================================================
+// CUSTOMER MANAGEMENT
+// ============================================================================
+
+model Customer {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  segment     CustomerSegment
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Contact information
+  email       String?
+  phone       String?
+  website     String?
+  
+  // Danish address fields
+  address     String?
+  city        String?
+  postalCode  String?
+  coordinates Json? // {lat: number, lng: number}
+  
+  // Business information
+  cvrNumber   String?
+  annualContractValue Decimal? @db.Decimal(10,2)
+  contractStart Date?
+  contractEnd   Date?
+  serviceLevel ServiceLevel @default(STANDARD)
+  
+  // Customer preferences
+  cleaningPreferences Json? // CleaningPreferences interface
+  accessInstructions  String?
+  specialRequirements String[]
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  locations   CustomerLocation[]
+  jobs        CleaningJob[]
+  feedback    CustomerFeedback[]
+  
+  @@map("customers")
+}
+
+model CustomerLocation {
+  id          String   @id @default(cuid())
+  customerId  String
+  name        String
+  address     String
+  city        String
+  postalCode  String
+  squareMeters Int?
+  cleaningType CleaningType
+  visitFrequency VisitFrequency
+  specialRequirements String[]
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  jobs        CleaningJob[]
+  
+  @@map("customer_locations")
+}
+
+enum CustomerSegment {
+  COMMERCIAL
+  RESIDENTIAL
+  PUBLIC
+  HOSPITALITY
+}
+
+enum ServiceLevel {
+  STANDARD
+  PREMIUM
+  ENTERPRISE
+}
+
+enum CleaningType {
+  OFFICE
+  INDUSTRIAL
+  HOSPITALITY
+  RESIDENTIAL
+}
+
+enum VisitFrequency {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+}
+
+// ============================================================================
+// TEAM MANAGEMENT
+// ============================================================================
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  role        TeamRole
+  phone       String
+  email       String?
+  hourlyRate  Decimal  @db.Decimal(8,2)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Skills and certifications
+  skills      CleaningSkill[]
+  certifications String[]
+  
+  // Availability (stored as JSON for flexibility)
+  availability Json // TeamAvailability interface
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  jobAssignments JobTeamMember[]
+  routes      Route[]
+  
+  @@map("team_members")
+}
+
+model JobTeamMember {
+  id          String   @id @default(cuid())
+  jobId       String
+  teamMemberId String
+  role        String? // specific role for this job
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  job         CleaningJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  teamMember  TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  
+  @@unique([jobId, teamMemberId])
+  @@map("job_team_members")
+}
+
+enum TeamRole {
+  TEAM_LEADER
+  CLEANER
+  SPECIALIST
+  TRAINEE
+}
+
+enum CleaningSkill {
+  BASIC_CLEANING
+  WINDOW_CLEANING
+  CARPET_CLEANING
+  PRESSURE_WASHING
+  FLOOR_MAINTENANCE
+  SPECIALIZED_EQUIPMENT
+  CHEMICAL_HANDLING
+  QUALITY_CONTROL
+}
+
+// ============================================================================
+// JOB SCHEDULING & MANAGEMENT
+// ============================================================================
+
+model CleaningJob {
+  id          String   @id @default(cuid())
+  tenantId    String
+  customerId  String
+  locationId  String?
+  title       String
+  description String?
+  jobType     CleaningJobType
+  status      JobStatus @default(SCHEDULED)
+  priority    JobPriority @default(NORMAL)
+  
+  // Scheduling
+  scheduledDate DateTime
+  scheduledTime String // "09:00" format
+  estimatedDuration Int // minutes
+  actualDuration    Int? // minutes
+  completedAt       DateTime?
+  
+  // Location details
+  locationDetails Json? // JobLocation interface
+  
+  // Recurring configuration
+  recurringConfig Json? // RecurringConfig interface
+  
+  // Equipment and supplies
+  equipmentRequirements Json? // EquipmentRequirement[]
+  supplyRequirements   Json? // SupplyRequirement[]
+  specialRequirements  String[]
+  
+  // Quality and feedback
+  qualityCheck Json? // QualityCheck interface
+  customerSignature String?
+  
+  // Cost information
+  costDetails Json // JobCost interface
+  
+  // Metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  location    CustomerLocation? @relation(fields: [locationId], references: [id])
+  teamMembers JobTeamMember[]
+  photos      JobPhoto[]
+  notes       JobNote[]
+  calendarEvent CalendarEvent?
+  
+  @@map("cleaning_jobs")
+}
+
+enum CleaningJobType {
+  KONTORRENHOLD
+  PRIVATRENHOLD
+  FLYTTERENHOLD
+  BYGGERENHOLD
+  VINDUESPUDSNING
+  TÆPPERENS
+  SPECIALRENGØRING
+  VEDLIGEHOLDELSE
+  DYBRENGØRING
+  AKUTRENGØRING
+}
+
+enum JobStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  RESCHEDULED
+}
+
+enum JobPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+// ============================================================================
+// QUALITY CONTROL & DOCUMENTATION
+// ============================================================================
+
+model JobPhoto {
+  id          String   @id @default(cuid())
+  jobId       String
+  url         String
+  caption     String?
+  type        PhotoType
+  uploadedAt  DateTime @default(now())
+  uploadedBy  String
+  
+  // Relations
+  job         CleaningJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  @@map("job_photos")
+}
+
+model JobNote {
+  id          String   @id @default(cuid())
+  jobId       String
+  text        String
+  type        NoteType
+  createdAt   DateTime @default(now())
+  createdBy   String
+  
+  // Relations
+  job         CleaningJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  @@map("job_notes")
+}
+
+model CustomerFeedback {
+  id          String   @id @default(cuid())
+  customerId  String
+  jobId       String?
+  rating      Int      // 1-5
+  comment     String?
+  themes      String[] // feedback themes
+  sentiment   Sentiment
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  @@map("customer_feedback")
+}
+
+enum PhotoType {
+  BEFORE
+  DURING
+  AFTER
+  ISSUE
+  COMPLETED
+}
+
+enum NoteType {
+  GENERAL
+  ISSUE
+  CUSTOMER
+  INTERNAL
+}
+
+enum Sentiment {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+}
+
+// ============================================================================
+// ROUTE OPTIMIZATION
+// ============================================================================
+
+model Route {
+  id          String   @id @default(cuid())
+  tenantId    String
+  teamMemberId String
+  date        DateTime
+  status      RouteStatus @default(PLANNED)
+  
+  // Route details
+  estimatedDuration Int // total minutes
+  estimatedDistance Decimal @db.Decimal(8,2) // km
+  estimatedCost     Decimal @db.Decimal(10,2) // DKK
+  
+  // Location data
+  startLocation Json? // JobLocation
+  endLocation   Json? // JobLocation
+  
+  // Optimization data
+  optimizationData Json? // RouteOptimization interface
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  teamMember  TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  routeJobs   RouteJob[]
+  
+  @@map("routes")
+}
+
+model RouteJob {
+  id          String   @id @default(cuid())
+  routeId     String
+  jobId       String
+  order       Int      // sequence in route
+  estimatedArrival DateTime?
+  actualArrival    DateTime?
+  estimatedDeparture DateTime?
+  actualDeparture    DateTime?
+  
+  // Relations
+  route       Route @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  job         CleaningJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  @@unique([routeId, jobId])
+  @@map("route_jobs")
+}
+
+enum RouteStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+}
+
+// ============================================================================
+// CALENDAR & SCHEDULING
+// ============================================================================
+
+model CalendarEvent {
+  id          String   @id @default(cuid())
+  jobId       String?  @unique
+  title       String
+  start       DateTime
+  end         DateTime
+  allDay      Boolean  @default(false)
+  type        EventType
+  color       String?
+  editable    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  job         CleaningJob? @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  @@map("calendar_events")
+}
+
+enum EventType {
+  JOB
+  BREAK
+  TRAVEL
+  MEETING
+  VACATION
+}
+
+// ============================================================================
+// INVENTORY MANAGEMENT
+// ============================================================================
+
+model Equipment {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  category    String
+  description String?
+  isAvailable Boolean @default(true)
+  maintenanceSchedule Json? // maintenance intervals
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@map("equipment")
+}
+
+model Supply {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  category    String
+  unit        String // 'stk', 'liter', 'kg'
+  currentStock Int    @default(0)
+  minStock    Int     @default(0)
+  maxStock    Int?
+  costPerUnit Decimal @db.Decimal(8,2)
+  supplier    String?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@map("supplies")
+}
+
+// ============================================================================
+// ANALYTICS & REPORTING
+// ============================================================================
+
+model SchedulingMetrics {
+  id          String   @id @default(cuid())
+  tenantId    String
+  periodStart DateTime
+  periodEnd   DateTime
+  
+  // Job metrics
+  totalJobs       Int
+  completedJobs   Int
+  cancelledJobs   Int
+  averageJobDuration Decimal @db.Decimal(8,2) // minutes
+  
+  // Financial metrics
+  totalRevenue    Decimal @db.Decimal(12,2)
+  averageJobValue Decimal @db.Decimal(10,2)
+  
+  // Quality metrics
+  customerSatisfaction Decimal @db.Decimal(3,2) // 0-5 scale
+  teamUtilization  Decimal @db.Decimal(3,2) // 0-1 scale
+  routeEfficiency  Decimal @db.Decimal(3,2) // 0-1 scale
+  
+  // Performance metrics
+  onTimeCompletion Decimal @db.Decimal(3,2) // 0-1 scale
+  customerRetention Decimal @db.Decimal(3,2) // 0-1 scale
+  
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@unique([tenantId, periodStart, periodEnd])
+  @@map("scheduling_metrics")
+}
+
+// ============================================================================
+// SYSTEM CONFIGURATION
+// ============================================================================
+
+model SystemConfig {
+  id          String   @id @default(cuid())
+  tenantId    String
+  key         String
+  value       Json
+  description String?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@unique([tenantId, key])
+  @@map("system_config")
+}
+
+// ============================================================================
+// AUDIT LOG
+// ============================================================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  tenantId    String
+  userId      String?
+  action      String
+  entityType  String
+  entityId    String
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@map("audit_logs")
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "TekUp Platform API Documentation",
+  "entryPoints": ["packages/*/src/index.ts"],
+  "tsconfig": "tsconfig.base.json",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "excludeNotDocumented": false,
+  "skipErrorChecking": true,
+  "out": "docs/site/static/api-docs",
+  "theme": "default",
+  "includeVersion": true,
+  "sort": ["source-order"],
+  "readme": "README.md",
+  "gitRevision": "main",
+  "gitRemote": "origin",
+  "sourceLinkTemplate": "https://github.com/TekUp-org/tekup-org/blob/{gitRevision}/{path}#L{line}",
+  "validation": {
+    "notExported": false,
+    "invalidLink": false,
+    "notDocumented": false
+  },
+  "treatWarningsAsErrors": false,
+  "logLevel": "Warn",
+  "cleanOutputDir": true,
+  "titleLink": "https://docs.tekup.org"
+}

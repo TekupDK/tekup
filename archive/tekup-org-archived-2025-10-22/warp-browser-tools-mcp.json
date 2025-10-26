@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "browser-tools": {
+      "command": "npx",
+      "args": ["mcp-browser-tools"],
+      "cwd": "C:\\Users\\empir\\Tekup-org",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}

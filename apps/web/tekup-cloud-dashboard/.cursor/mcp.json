@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": ["-y", "supabase-mcp@latest", "supabase-mcp-claude"],
+      "env": {
+        "SUPABASE_URL": "${TEKUP_CLOUD_SUPABASE_URL}",
+        "SUPABASE_ANON_KEY": "${TEKUP_CLOUD_SUPABASE_ANON_KEY}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${TEKUP_CLOUD_SUPABASE_SERVICE_ROLE_KEY}",
+        "MCP_API_KEY": "${TEKUP_MCP_API_KEY}"
+      }
+    }
+  }
+}

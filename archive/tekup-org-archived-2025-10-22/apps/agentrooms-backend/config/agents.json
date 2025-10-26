@@ -1,0 +1,290 @@
+{
+  "agents": {
+    "orchestrator": {
+      "name": "Orchestrator Agent",
+      "role": "orchestrator",
+      "description": "Coordinates multi-agent workflows, makes architecture decisions, and manages cross-cutting concerns across the entire Tekup monorepo",
+      "capabilities": [
+        "workflow-coordination",
+        "architecture-decisions",
+        "cross-app-integration",
+        "task-delegation",
+        "conflict-resolution",
+        "monorepo-management"
+      ],
+      "workspaces": [
+        "**/*"
+      ],
+      "file_allowlist": [
+        "*.ts",
+        "*.tsx",
+        "*.js",
+        "*.jsx",
+        "*.json",
+        "*.md",
+        "*.yml",
+        "*.yaml"
+      ],
+      "restricted_paths": [
+        ".env",
+        "**/.env",
+        "node_modules/**/*",
+        ".git/**/*",
+        "**/dist/**/*"
+      ],
+      "isOrchestrator": true
+    },
+    "frontend-specialist": {
+      "name": "Frontend Specialist",
+      "role": "frontend-specialist",
+      "description": "Specializes in React/Next.js frontend development, UI/UX implementation, and modern web technologies across all Tekup frontend applications",
+      "capabilities": [
+        "react-development",
+        "nextjs-development",
+        "typescript-frontend",
+        "ui-ux-design",
+        "responsive-design",
+        "component-libraries",
+        "state-management"
+      ],
+      "workspaces": [
+        "apps/flow-web/**/*",
+        "apps/tekup-crm-web/**/*",
+        "apps/tekup-lead-platform-web/**/*",
+        "apps/voice-agent/**/*",
+        "apps/website/**/*",
+        "packages/ui/**/*"
+      ],
+      "file_allowlist": [
+        "*.tsx",
+        "*.ts",
+        "*.jsx",
+        "*.js",
+        "*.css",
+        "*.scss",
+        "*.json",
+        "*.md",
+        "*.html",
+        "tailwind.config.*",
+        "next.config.*",
+        "vite.config.*",
+        "package.json",
+        "tsconfig.json"
+      ],
+      "restricted_paths": [
+        "apps/*-api/**/*",
+        "apps/agentrooms-*/**/*",
+        "apps/secure-platform/**/*",
+        ".env",
+        "**/.env",
+        "node_modules/**/*",
+        ".git/**/*",
+        "**/dist/**/*"
+      ]
+    },
+    "backend-specialist": {
+      "name": "Backend API Specialist",
+      "role": "backend-specialist",
+      "description": "Specializes in NestJS backend development, Prisma ORM, API design, database schemas, and server-side logic across all Tekup backend services",
+      "capabilities": [
+        "nestjs-development",
+        "prisma-orm",
+        "postgresql-optimization",
+        "api-design",
+        "database-migrations",
+        "authentication-security",
+        "microservices-architecture"
+      ],
+      "workspaces": [
+        "apps/flow-api/**/*",
+        "apps/tekup-crm-api/**/*",
+        "apps/tekup-lead-platform/**/*",
+        "apps/secure-platform/**/*",
+        "packages/api-client/**/*",
+        "packages/auth/**/*",
+        "packages/config/**/*",
+        "packages/shared/**/*"
+      ],
+      "file_allowlist": [
+        "*.ts",
+        "*.js",
+        "*.json",
+        "*.md",
+        "*.yml",
+        "*.yaml",
+        "*.sql",
+        "schema.prisma",
+        "nest-cli.json",
+        "package.json",
+        "tsconfig.json",
+        "jest.config.*",
+        ".env.example*"
+      ],
+      "restricted_paths": [
+        "apps/*-web/**/*",
+        "apps/agentrooms-*/**/*",
+        "apps/website/**/*",
+        "packages/ui/**/*",
+        ".env",
+        "**/.env",
+        "node_modules/**/*",
+        ".git/**/*",
+        "**/dist/**/*"
+      ]
+    },
+    "mobile-specialist": {
+      "name": "Mobile Development Specialist",
+      "role": "mobile-specialist",
+      "description": "Specializes in React Native mobile development, cross-platform solutions, and mobile-specific features",
+      "capabilities": [
+        "react-native-development",
+        "cross-platform-mobile",
+        "mobile-ui-design",
+        "native-integrations",
+        "mobile-performance",
+        "app-store-deployment"
+      ],
+      "workspaces": [
+        "apps/tekup-mobile/**/*",
+        "apps/inbox-ai/**/*"
+      ],
+      "file_allowlist": [
+        "*.tsx",
+        "*.ts",
+        "*.jsx",
+        "*.js",
+        "*.java",
+        "*.kt",
+        "*.swift",
+        "*.m",
+        "*.h",
+        "*.xml",
+        "*.gradle",
+        "*.plist",
+        "*.json",
+        "*.md",
+        "package.json",
+        "tsconfig.json",
+        "metro.config.js",
+        "babel.config.js"
+      ],
+      "restricted_paths": [
+        "apps/flow-*/**/*",
+        "apps/tekup-crm-*/**/*",
+        "apps/agentrooms-*/**/*",
+        "packages/**/*",
+        ".env",
+        "**/.env",
+        "node_modules/**/*",
+        ".git/**/*",
+        "**/dist/**/*"
+      ]
+    },
+    "devops-specialist": {
+      "name": "DevOps & Infrastructure Specialist",
+      "role": "devops-specialist",
+      "description": "Specializes in CI/CD, Docker, deployment configurations, monitoring, infrastructure as code, and monorepo tooling",
+      "capabilities": [
+        "ci-cd-pipelines",
+        "docker-containerization",
+        "deployment-automation",
+        "monitoring-setup",
+        "security-hardening",
+        "performance-optimization",
+        "nx-workspace-management"
+      ],
+      "workspaces": [
+        ".github/**/*",
+        "scripts/**/*",
+        "Dockerfile*",
+        "docker-compose.*",
+        "nx.json",
+        "package.json",
+        "pnpm-workspace.yaml",
+        ".npmrc",
+        "renovate.json"
+      ],
+      "file_allowlist": [
+        "*.yml",
+        "*.yaml",
+        "*.json",
+        "*.js",
+        "*.ts",
+        "*.sh",
+        "*.ps1",
+        "*.py",
+        "Dockerfile*",
+        "docker-compose.*",
+        "*.md"
+      ],
+      "restricted_paths": [
+        "apps/**/src/**/*",
+        "packages/**/src/**/*",
+        ".env",
+        "**/.env",
+        "node_modules/**/*",
+        ".git/**/*",
+        "**/dist/**/*"
+      ]
+    },
+    "docs-specialist": {
+      "name": "Documentation Specialist",
+      "role": "docs-specialist",
+      "description": "Specializes in technical documentation, API references, architecture documentation, and developer guides across the entire Tekup ecosystem",
+      "capabilities": [
+        "technical-writing",
+        "api-documentation",
+        "architecture-diagrams",
+        "developer-guides",
+        "markdown-expertise",
+        "documentation-systems"
+      ],
+      "workspaces": [
+        "docs/**/*",
+        "**/README.md",
+        "**/CHANGELOG.md",
+        "**/CONTRIBUTING.md",
+        "**/*.md",
+        "typedoc.json"
+      ],
+      "file_allowlist": [
+        "*.md",
+        "*.mdx",
+        "*.json",
+        "*.yml",
+        "*.yaml",
+        "*.txt",
+        "typedoc.json"
+      ],
+      "restricted_paths": [
+        "apps/**/src/**/*",
+        "packages/**/src/**/*",
+        ".env",
+        "**/.env",
+        "node_modules/**/*",
+        ".git/**/*",
+        "**/dist/**/*"
+      ]
+    }
+  },
+  "team_settings": {
+    "max_concurrent_agents": 3,
+    "collaboration_mode": "structured",
+    "code_review_required": true,
+    "auto_merge_threshold": 0.85,
+    "conflict_resolution": "human-escalation"
+  },
+  "security_rules": {
+    "require_pr_approval": true,
+    "branch_protection": true,
+    "secrets_scanning": true,
+    "dependency_scanning": true,
+    "file_size_limit_mb": 10,
+    "forbidden_extensions": [
+      ".exe",
+      ".dll", 
+      ".bin",
+      ".so"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "mcpServers": {
+    "zapier": {
+      "command": "node",
+      "args": ["mcp-server"],
+      "env": {
+        "MCP_SERVER_URL": "https://mcp.zapier.com/api/mcp/mcp",
+        "MCP_AUTH_TOKEN": "Bearer ZDNiNzU4YzQtNzk3OC00OTA5LTlhYjgtYzdkNTI0YTE2NjQyOmZjY2JiMzZlLTgwZDQtNGZmMi05ZjJlLTEyYjFjMjljYWFhMw=="
+      },
+      "tools": [
+        "gmail_read",
+        "gmail_send", 
+        "gmail_search",
+        "calendar_create_event",
+        "calendar_list_events",
+        "calendar_update_event",
+        "calendar_delete_event",
+        "zapier_trigger_zap"
+      ]
+    },
+    "gmail": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-gmail"],
+      "env": {
+        "GMAIL_CLIENT_ID": "${GMAIL_CLIENT_ID}",
+        "GMAIL_CLIENT_SECRET": "${GMAIL_CLIENT_SECRET}",
+        "GMAIL_REDIRECT_URI": "http://localhost:3005/auth/callback"
+      }
+    },
+    "google-calendar": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-google-calendar"],
+      "env": {
+        "GOOGLE_CALENDAR_CLIENT_ID": "${GOOGLE_CALENDAR_CLIENT_ID}",
+        "GOOGLE_CALENDAR_CLIENT_SECRET": "${GOOGLE_CALENDAR_CLIENT_SECRET}",
+        "GOOGLE_CALENDAR_REDIRECT_URI": "http://localhost:3005/auth/calendar/callback"
+      }
+    }
+  }
+}

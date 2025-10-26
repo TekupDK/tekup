@@ -1,0 +1,67 @@
+```mermaid
+graph TD
+    %% User Interface Layer
+    User[👤 Jonas - TekUp Owner] -->|Natural Language| Interface[🖥️ Interface Layer]
+    
+    Interface --> JanAI[Jan AI Desktop]
+    Interface --> Cursor[Cursor IDE]
+    Interface --> Terminal[PowerShell Terminal]
+    
+    %% AI Engine Layer
+    JanAI -->|MCP Protocol| Ollama[🤖 Ollama Server<br/>localhost:11434]
+    Cursor -->|MCP Protocol| Ollama
+    Terminal -->|REST API| Ollama
+    
+    %% AI Models
+    Ollama --> Qwen[Qwen2.5-Coder 14B<br/>Coding & Debugging]
+    Ollama --> Llama[Llama 3.3 8B<br/>General Tasks]
+    Ollama --> Mistral[Mistral 7B<br/>Quick Responses]
+    
+    %% GPU Acceleration
+    Qwen -.->|CUDA| GPU[🎮 RTX 5070 8GB]
+    Llama -.->|CUDA| GPU
+    Mistral -.->|CUDA| GPU
+    
+    %% MCP Integration Layer
+    Qwen --> MCPLayer[🔌 MCP Integration Layer]
+    Llama --> MCPLayer
+    Mistral --> MCPLayer
+    
+    %% MCP Servers
+    MCPLayer --> BillyMCP[Tekup-Billy MCP]
+    MCPLayer --> RenosMCP[RenOS MCP]
+    MCPLayer --> SystemMCP[System MCP]
+    MCPLayer --> VaultMCP[TekupVault MCP<br/>Coming Soon]
+    
+    %% External Systems - Billy
+    BillyMCP -->|HTTP API| TekupBilly[Tekup-Billy Server<br/>Node.js]
+    TekupBilly -->|Billy.dk API| BillyDK[💰 Billy.dk<br/>Invoicing Platform]
+    
+    %% External Systems - RenOS
+    RenosMCP -->|HTTP API| RenosBackend[RenOS Backend<br/>Express + Prisma]
+    RenosBackend -->|SQL| PostgreSQL[(🗄️ PostgreSQL<br/>Database)]
+    RenosBackend -->|OAuth2| GoogleWorkspace[📧 Google Workspace<br/>Calendar + Gmail]
+    
+    %% External Systems - System Monitoring
+    SystemMCP -->|WMI/PowerShell| Windows[🪟 Windows 11<br/>System Monitoring]
+    
+    %% External Systems - TekupVault
+    VaultMCP -.->|Future| Supabase[(☁️ Supabase<br/>Vector DB)]
+    
+    %% Styling
+    classDef userStyle fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
+    classDef interfaceStyle fill:#2196F3,stroke:#333,stroke-width:2px,color:#fff
+    classDef aiStyle fill:#9C27B0,stroke:#333,stroke-width:2px,color:#fff
+    classDef mcpStyle fill:#FF9800,stroke:#333,stroke-width:2px,color:#fff
+    classDef externalStyle fill:#607D8B,stroke:#333,stroke-width:2px,color:#fff
+    classDef hardwareStyle fill:#F44336,stroke:#333,stroke-width:2px,color:#fff
+    
+    class User userStyle
+    class JanAI,Cursor,Terminal interfaceStyle
+    class Ollama,Qwen,Llama,Mistral aiStyle
+    class BillyMCP,RenosMCP,SystemMCP,VaultMCP mcpStyle
+    class TekupBilly,RenosBackend,BillyDK,GoogleWorkspace,Windows,Supabase externalStyle
+    class GPU hardwareStyle
+```
+
+

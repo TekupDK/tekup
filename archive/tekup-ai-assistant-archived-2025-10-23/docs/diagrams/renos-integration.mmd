@@ -1,0 +1,57 @@
+```mermaid
+graph TD
+    %% User Request
+    User[👤 User:<br/>"Hvad har jeg i morgen?"] --> JanAI[Jan AI]
+    
+    %% AI Processing
+    JanAI --> ParseDate[🧠 Parse Date<br/>"i morgen" = 2025-01-16]
+    ParseDate --> MCPCall[🔌 MCP: search_bookings]
+    
+    %% Query RenOS
+    MCPCall --> RenosAPI[RenOS Backend API]
+    RenosAPI --> QueryDB[📊 Query Database]
+    
+    %% Database Query
+    QueryDB --> Prisma[Prisma ORM]
+    Prisma --> PostgreSQL[(PostgreSQL)]
+    
+    %% SQL Query
+    PostgreSQL --> |SELECT * FROM bookings<br/>WHERE date = '2025-01-16'<br/>ORDER BY start_time| Results[Query Results]
+    
+    %% Join Customer Data
+    Results --> JoinCustomer[🔗 Join Customer Info]
+    JoinCustomer --> EnrichData[📍 Enrich with:<br/>- Address<br/>- Access Code<br/>- Phone<br/>- Notes]
+    
+    %% Check Calendar
+    EnrichData --> CalendarCheck{Also Check<br/>Google Calendar?}
+    CalendarCheck -->|Yes| GoogleAPI[Google Calendar API]
+    GoogleAPI --> MergeResults[Merge Results]
+    CalendarCheck -->|No| FormatResults[Format Results]
+    MergeResults --> FormatResults
+    
+    %% Format Response
+    FormatResults --> CheckConflicts{Conflicts<br/>Found?}
+    CheckConflicts -->|Yes| AddWarning[⚠️ Add Warning]
+    CheckConflicts -->|No| FormatNormal[Format Normal]
+    AddWarning --> FinalResponse[📋 Final Response]
+    FormatNormal --> FinalResponse
+    
+    %% Return to User
+    FinalResponse --> Ollama[🤖 Ollama:<br/>Generate Danish Response]
+    Ollama --> DisplayUser[✅ Display to User:<br/>📅 I MORGEN - 16/1<br/>08:00-10:00: Mette Nielsen<br/>10:30-12:00: Jørn Haagensen]
+    
+    %% Styling
+    classDef userStyle fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
+    classDef aiStyle fill:#9C27B0,stroke:#333,stroke-width:2px,color:#fff
+    classDef dataStyle fill:#2196F3,stroke:#333,stroke-width:2px,color:#fff
+    classDef dbStyle fill:#607D8B,stroke:#333,stroke-width:2px,color:#fff
+    classDef warningStyle fill:#FF9800,stroke:#333,stroke-width:2px,color:#000
+    
+    class User,DisplayUser userStyle
+    class JanAI,ParseDate,Ollama aiStyle
+    class RenosAPI,MCPCall,EnrichData,FormatResults,FinalResponse dataStyle
+    class Prisma,PostgreSQL,QueryDB,Results dbStyle
+    class CheckConflicts,AddWarning warningStyle
+```
+
+

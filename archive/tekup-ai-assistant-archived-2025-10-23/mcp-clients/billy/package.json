@@ -1,0 +1,45 @@
+{
+  "name": "@tekup/billy-mcp-client",
+  "version": "1.0.0",
+  "description": "TypeScript client for Tekup-Billy MCP Server - Production-ready with TekUp unified standards",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "billy",
+    "mcp",
+    "accounting",
+    "api",
+    "tekup",
+    "typescript"
+  ],
+  "author": "TekUp Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "winston": "^3.18.3",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.21",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.56.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0",
+    "vitest": "^2.1.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+

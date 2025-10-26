@@ -1,0 +1,68 @@
+# Backend deployment - exclude frontend
+client/
+client/**
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs (will be regenerated)
+dist/
+
+# Tests
+tests/
+*.test.ts
+*.test.js
+coverage/
+
+# Development
+.env
+.env.local
+.env.development
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+tmp/
+temp/
+
+# Frontend specific
+client/node_modules/
+client/dist/
+client/.vite/
+client/src/
+client/public/
+client/index.html
+client/vite.config.ts
+client/tsconfig.json
+client/package.json
+client/package-lock.json
+
+# Playwright tests
+playwright-report/
+test-results/

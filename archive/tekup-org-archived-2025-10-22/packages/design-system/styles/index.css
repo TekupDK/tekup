@@ -1,0 +1,388 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TekUp Futuristic Design System 
+Glassmorphism theme with neon blue accents and P3 wide gamut colors
+Compatible with Tailwind CSS 4.1+
+All colors MUST be HSL for wide gamut support.
+*/
+
+@layer base {
+  :root {
+    /* Core ecosystem dark theme */
+    --background: 220 20% 8%;
+    --foreground: 200 20% 95%;
+
+    /* Glassmorphism cards with enhanced transparency */
+    --card: 220 15% 12%;
+    --card-foreground: 200 15% 90%;
+    --card-glass: 220 20% 15%;
+
+    --popover: 220 15% 12%;
+    --popover-foreground: 200 15% 90%;
+
+    /* Neon blue primary system with P3 wide gamut support */
+    --primary: 195 100% 50%;
+    --primary-foreground: 220 20% 8%;
+    --primary-glow: 195 100% 65%;
+    --primary-dark: 195 100% 35%;
+
+    /* Glass secondary elements */
+    --secondary: 220 15% 18%;
+    --secondary-foreground: 200 15% 85%;
+
+    --muted: 220 12% 15%;
+    --muted-foreground: 215 10% 60%;
+
+    --accent: 195 100% 50%;
+    --accent-foreground: 220 20% 8%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 200 15% 90%;
+
+    /* Glass borders and inputs with enhanced contrast */
+    --border: 220 15% 20%;
+    --input: 220 15% 18%;
+    --ring: 195 100% 50%;
+
+    --radius: 0.75rem;
+    
+    /* Custom ecosystem colors with P3 support */
+    --neon-blue: 195 100% 50%;
+    --neon-cyan: 180 100% 50%;
+    --glass-border: 220 20% 25%;
+    --ecosystem-dark: 220 25% 6%;
+    --dashboard-surface: 220 15% 14%;
+    
+    /* Enhanced gradients for futuristic look */
+    --gradient-ecosystem: linear-gradient(135deg, hsl(220 25% 6%), hsl(220 20% 12%));
+    --gradient-neon: linear-gradient(135deg, hsl(195 100% 50%), hsl(180 100% 50%));
+    --gradient-glass: linear-gradient(135deg, hsl(220 20% 15% / 0.8), hsl(220 15% 18% / 0.6));
+    --gradient-glow: radial-gradient(circle, hsl(195 100% 50% / 0.3), transparent 70%);
+    --gradient-mesh: radial-gradient(at 40% 20%, hsl(195 100% 50% / 0.1) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsl(180 100% 50% / 0.1) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsl(220 100% 50% / 0.1) 0px, transparent 50%);
+    
+    /* Advanced shadows and effects */
+    --shadow-neon: 0 0 20px hsl(195 100% 50% / 0.3), 0 0 40px hsl(195 100% 50% / 0.1);
+    --shadow-glass: 0 8px 32px hsl(220 25% 4% / 0.3), inset 0 1px 0 hsl(220 20% 25% / 0.3);
+    --shadow-ecosystem: 0 25px 50px hsl(220 25% 4% / 0.5);
+    --shadow-floating: 0 20px 40px hsl(220 25% 4% / 0.4), 0 8px 16px hsl(220 25% 4% / 0.2);
+    
+    /* Animation variables with easing functions */
+    --transition-ecosystem: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glow: all 0.3s ease-out;
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Sidebar theme variables */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Enhanced dark mode with better contrast ratios */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    
+    /* Dark sidebar adjustments */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* Font setup for futuristic design */
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  /* Enhanced selection styling */
+  ::selection {
+    background-color: hsl(var(--neon-blue) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--neon-blue) / 0.3);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--neon-blue) / 0.5);
+  }
+}
+
+@layer components {
+  /* Enhanced glassmorphism effects */
+  .glass {
+    backdrop-filter: blur(24px) saturate(1.8);
+    background-color: hsl(var(--glass-border) / 0.1);
+    border-width: 1px;
+    border-color: hsl(var(--glass-border) / 0.2);
+    box-shadow: var(--shadow-glass);
+    position: relative;
+  }
+  
+  .glass-card {
+    backdrop-filter: blur(24px) saturate(1.8);
+    background-color: hsl(var(--glass-border) / 0.1);
+    border-width: 1px;
+    border-color: hsl(var(--glass-border) / 0.2);
+    box-shadow: var(--shadow-glass);
+    border-radius: var(--radius);
+    background: var(--gradient-glass);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-mesh);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  
+  /* Advanced neon glow effects */
+  .neon-glow {
+    transition: var(--transition-glow);
+    box-shadow: var(--shadow-neon);
+  }
+  
+  .neon-glow:hover {
+    box-shadow: 0 0 30px hsl(195 100% 50% / 0.5), 0 0 60px hsl(195 100% 50% / 0.2);
+    transform: translateY(-2px);
+  }
+
+  .neon-glow-intense {
+    box-shadow: 0 0 40px hsl(195 100% 50% / 0.6), 0 0 80px hsl(195 100% 50% / 0.3);
+  }
+  
+  /* Ecosystem hover effects with 3D transforms */
+  .ecosystem-hover {
+    transition: var(--transition-ecosystem);
+    transform-style: preserve-3d;
+  }
+  
+  .ecosystem-hover:hover {
+    transform: translateY(-8px) rotateX(5deg) rotateY(5deg) scale(1.02);
+    box-shadow: var(--shadow-floating);
+  }
+
+  .ecosystem-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-10px) rotate(1deg); }
+    66% { transform: translateY(-5px) rotate(-1deg); }
+  }
+  
+  /* Enhanced ripple effect */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ripple::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      45deg, 
+      transparent 30%, 
+      hsl(var(--neon-blue) / 0.1) 50%, 
+      transparent 70%
+    );
+    transform: translateX(-100%) translateY(-100%);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .ripple:hover::before {
+    transform: translateX(100%) translateY(100%);
+  }
+
+  /* Button variants */
+  .btn-futuristic {
+    @apply relative px-6 py-3 bg-neon-blue/90 text-ecosystem-dark font-semibold rounded-lg;
+    @apply transition-all duration-300 hover:bg-neon-blue hover:shadow-neon;
+    @apply border border-neon-blue/30 backdrop-blur-sm;
+  }
+
+  .btn-ghost-futuristic {
+    @apply relative px-6 py-3 bg-transparent text-neon-blue font-semibold rounded-lg;
+    @apply border border-neon-blue/30 backdrop-blur-sm glass;
+    @apply hover:bg-neon-blue/10 hover:border-neon-blue/60 transition-all duration-300;
+  }
+
+  /* Navigation components */
+  .nav-futuristic {
+    @apply glass-card border-b border-glass-border/30 backdrop-blur-xl;
+    @apply sticky top-0 z-50;
+  }
+
+  /* Form elements */
+  .input-futuristic {
+    @apply bg-glass-border/10 border border-glass-border/30 rounded-lg px-4 py-3;
+    @apply text-foreground placeholder:text-muted-foreground;
+    @apply focus:outline-none focus:ring-2 focus:ring-neon-blue/50 focus:border-neon-blue/50;
+    @apply transition-all duration-300;
+  }
+
+  /* Dashboard specific components */
+  .dashboard-card {
+    @apply glass-card p-6 ecosystem-hover;
+  }
+
+  .dashboard-stat {
+    @apply text-center space-y-2;
+  }
+
+  .dashboard-stat-value {
+    @apply text-3xl font-orbitron font-bold text-neon-blue;
+  }
+
+  .dashboard-stat-label {
+    @apply text-sm text-muted-foreground uppercase tracking-wide;
+  }
+}
+
+@layer utilities {
+  /* Typography utilities */
+  .font-orbitron {
+    font-family: 'Orbitron', monospace;
+  }
+  
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Background utilities */
+  .bg-ecosystem {
+    background: var(--gradient-ecosystem);
+  }
+  
+  .bg-neon-gradient {
+    background: var(--gradient-neon);
+  }
+
+  .bg-mesh {
+    background: var(--gradient-mesh);
+  }
+  
+  /* Color utilities */
+  .text-neon {
+    color: hsl(var(--neon-blue));
+  }
+
+  .text-neon-glow {
+    color: hsl(var(--neon-blue));
+    text-shadow: 0 0 10px hsl(var(--neon-blue) / 0.5);
+  }
+  
+  .border-glass {
+    border-color: hsl(var(--glass-border) / 0.3);
+  }
+
+  /* Container queries support for Tailwind 4.1+ */
+  @container (min-width: 768px) {
+    .container-md\:text-xl { font-size: 1.25rem; }
+    .container-md\:p-6 { padding: 1.5rem; }
+  }
+
+  @container (min-width: 1024px) {
+    .container-lg\:text-2xl { font-size: 1.5rem; }
+    .container-lg\:p-8 { padding: 2rem; }
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  :root {
+    --glass-border: 220 20% 40%;
+    --border: 220 15% 30%;
+  }
+}
+
+/* Print styles */
+@media print {
+  .glass, .glass-card {
+    backdrop-filter: none;
+    background-color: white !important;
+    border-color: #ccc !important;
+    box-shadow: none !important;
+  }
+}

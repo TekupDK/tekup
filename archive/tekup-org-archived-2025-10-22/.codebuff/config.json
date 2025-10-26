@@ -1,0 +1,124 @@
+{
+  "name": "Tekup Unified Platform - CodebuffAI Integration",
+  "version": "1.0.0",
+  "description": "Complete CodebuffAI agent configuration for the Tekup monorepo ecosystem",
+  "created": "2025-09-11T22:19:00Z",
+  
+  "workspace": {
+    "root": "C:\\Users\\empir\\Tekup-org",
+    "type": "pnpm_monorepo",
+    "node_version": ">=20.10.0",
+    "package_manager": "pnpm@10.15.1"
+  },
+
+  "configuration_files": {
+    "agent_config": ".codebuff/agent-config.json",
+    "environment": ".codebuff/environment.env", 
+    "database": ".codebuff/database-config.json",
+    "agentscope": ".codebuff/agentscope-integration.json",
+    "frontend_patterns": ".codebuff/jarvis-frontend-patterns.json",
+    "git_hooks": ".codebuff/git-hooks-config.json"
+  },
+
+  "agents": {
+    "lead_platform_agent": {
+      "status": "configured",
+      "purpose": "Lead Platform Module implementation following CRM patterns",
+      "config_file": ".codebuff/agent-config.json"
+    },
+    "legacy_migration_agent": {
+      "status": "configured", 
+      "purpose": "Legacy services migration to unified platform",
+      "config_file": ".codebuff/agent-config.json"
+    },
+    "monorepo_consistency_agent": {
+      "status": "configured",
+      "purpose": "Maintain consistency across 37+ apps",
+      "config_file": ".codebuff/agent-config.json"
+    }
+  },
+
+  "integrations": {
+    "database": {
+      "type": "sqlite",
+      "status": "connected",
+      "url": "file:./dev.db",
+      "orm": "prisma"
+    },
+    "agentscope": {
+      "status": "configured",
+      "url": "http://localhost:8001",
+      "model": "jarvis-foundation-1.0"
+    },
+    "frontend": {
+      "status": "configured",
+      "framework": "next.js",
+      "styling": "tailwindcss@4.1",
+      "design_system": "futuristic_glassmorphism"
+    }
+  },
+
+  "git_hooks": {
+    "pre_commit": {
+      "enabled": true,
+      "script": ".codebuff/hooks/pre-commit.sh"
+    },
+    "pre_push": {
+      "enabled": true,
+      "script": ".codebuff/hooks/pre-push.sh"
+    },
+    "commit_msg": {
+      "enabled": true,
+      "script": ".codebuff/hooks/commit-msg.sh"
+    }
+  },
+
+  "commands": {
+    "setup": "codebuff setup --config=.codebuff/config.json",
+    "test_agents": "codebuff test --config=.codebuff/agent-config.json",
+    "validate_all": "codebuff validate --all --config=.codebuff/config.json",
+    "consistency_check": "codebuff run monorepo-consistency-agent --task=audit",
+    "install_hooks": "husky install && codebuff install-hooks --config=.codebuff/git-hooks-config.json"
+  },
+
+  "development": {
+    "auto_format": true,
+    "auto_lint": true,
+    "watch_mode": false,
+    "debug": true
+  },
+
+  "features": {
+    "multi_tenant": true,
+    "real_time": true,
+    "ai_features": false,
+    "danish_support": true,
+    "p3_colors": true,
+    "glassmorphism": true,
+    "3d_transforms": true
+  },
+
+  "health_checks": [
+    {
+      "name": "agent_availability",
+      "endpoint": "codebuff --version",
+      "expected": "1.0.480"
+    },
+    {
+      "name": "database_connection", 
+      "endpoint": "file:./dev.db",
+      "type": "sqlite"
+    },
+    {
+      "name": "agentscope_backend",
+      "endpoint": "http://localhost:8001/health",
+      "optional": true
+    }
+  ],
+
+  "documentation": {
+    "setup_guide": "README-CodebuffAI.md",
+    "agent_reference": ".codebuff/docs/agents.md",
+    "troubleshooting": ".codebuff/docs/troubleshooting.md"
+  }
+}

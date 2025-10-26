@@ -1,0 +1,32 @@
+# Development Dockerfile for Web service
+FROM node:20-slim
+
+# Install system dependencies  
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install pnpm globally
+RUN npm i -g pnpm@9
+
+# Copy package files for dependency installation
+COPY package.json pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml ./
+COPY apps/flow-web/package.json ./apps/flow-web/
+
+# Install all dependencies (including dev dependencies)
+RUN pnpm install
+
+# Copy source files
+COPY apps/flow-web ./apps/flow-web
+
+# Set working directory to Web
+WORKDIR /app/apps/flow-web
+
+EXPOSE 3000
+
+# Use development command with hot reload
+CMD ["pnpm", "dev"]

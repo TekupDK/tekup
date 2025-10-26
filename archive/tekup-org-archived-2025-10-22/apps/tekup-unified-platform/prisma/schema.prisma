@@ -1,0 +1,310 @@
+// Tekup Unified Platform - Database Schema
+// This schema consolidates all models from flow-api, tekup-crm-api, and tekup-lead-platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// CORE MODELS - Multi-tenancy and Authentication
+// ============================================================================
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  domain    String   @unique
+  settings  String   @default("{}")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users     User[]
+  flows     Flow[]
+  customers Customer[]
+  leads     Lead[]
+  calls     Call[]
+
+  @@map("tenants")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  roles     String     @default("[]")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Multi-tenancy
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  // Relations
+  auditLogs   AuditLog[]
+  flowRuns    FlowRun[]
+  createdFlows Flow[] @relation("FlowCreator")
+
+  @@map("users")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  resource  String
+  details   String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+// ============================================================================
+// FLOW MODULE - Automation and Workflows
+// ============================================================================
+
+model Flow {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  definition  String     // Flow configuration/steps
+  active      Boolean  @default(true)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Multi-tenancy
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  // Relations
+  createdBy String
+  creator   User      @relation("FlowCreator", fields: [createdBy], references: [id])
+  runs      FlowRun[]
+
+  @@map("flows")
+}
+
+model FlowRun {
+  id         String    @id @default(cuid())
+  status     String    // running, completed, failed, cancelled
+  input      String?
+  output     String?
+  error      String?
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  // Relations
+  flowId String
+  flow   Flow   @relation(fields: [flowId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("flow_runs")
+}
+
+// ============================================================================
+// CRM MODULE - Customer Relationship Management
+// ============================================================================
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  email       String?
+  phone       String?
+  company     String?
+  address     String?
+  tags        String     @default("[]")
+  customData  String     @default("{}")
+  status      String   @default("active") // active, inactive, blocked
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Multi-tenancy
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  // Relations
+  deals       Deal[]
+  activities  Activity[]
+  calls       Call[]
+
+  @@unique([email, tenantId])
+  @@map("customers")
+}
+
+model Deal {
+  id          String   @id @default(cuid())
+  title       String
+  value       Float?
+  currency    String   @default("DKK")
+  stage       String   // prospect, qualified, proposal, negotiation, closed-won, closed-lost
+  probability Float?   // 0-100
+  expectedCloseDate DateTime?
+  actualCloseDate   DateTime?
+  description String?
+  customData  String     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  activities Activity[]
+
+  @@map("deals")
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String   // call, email, meeting, note, task
+  title       String
+  description String?
+  status      String   @default("pending") // pending, completed, cancelled
+  scheduledAt DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  dealId String?
+  deal   Deal?   @relation(fields: [dealId], references: [id])
+
+  @@map("activities")
+}
+
+// ============================================================================
+// LEADS MODULE - Lead Qualification and Management
+// ============================================================================
+
+model Lead {
+  id             String   @id @default(cuid())
+  name           String
+  email          String?
+  phone          String?
+  company        String?
+  source         String?  // website, social, referral, etc.
+  status         String   @default("new") // new, contacted, qualified, unqualified, converted
+  score          Int?     // Lead scoring 0-100
+  qualifiedAt    DateTime?
+  convertedAt    DateTime?
+  conversionType String?  // customer, opportunity, etc.
+  notes          String?
+  customData     String     @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Multi-tenancy
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  // Relations
+  qualifications LeadQualification[]
+
+  @@unique([email, tenantId])
+  @@map("leads")
+}
+
+model LeadQualification {
+  id        String   @id @default(cuid())
+  criteria  String   // What was evaluated
+  result    String   // Result of evaluation
+  score     Int?     // Individual score for this criteria
+  notes     String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id])
+
+  @@map("lead_qualifications")
+}
+
+// ============================================================================
+// VOICE MODULE - Voice Communication
+// ============================================================================
+
+model Call {
+  id           String    @id @default(cuid())
+  direction    String    // inbound, outbound
+  fromNumber   String?
+  toNumber     String?
+  status       String    // initiated, ringing, answered, completed, failed
+  duration     Int?      // in seconds
+  recordingUrl String?
+  transcript   String?
+  cost         Float?
+  currency     String    @default("DKK")
+  startedAt    DateTime?
+  endedAt      DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Multi-tenancy
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  // Relations
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  @@map("calls")
+}
+
+model Recording {
+  id        String   @id @default(cuid())
+  url       String
+  duration  Int?     // in seconds
+  size      Int?     // in bytes
+  format    String?  // mp3, wav, etc.
+  createdAt DateTime @default(now())
+
+  @@map("recordings")
+}
+
+// ============================================================================
+// SHARED MODELS - Used across multiple modules
+// ============================================================================
+
+model Attachment {
+  id          String   @id @default(cuid())
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  url         String
+  createdAt   DateTime @default(now())
+
+  @@map("attachments")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // email, sms, push, webhook
+  recipient String
+  subject   String?
+  content   String
+  status    String   @default("pending") // pending, sent, failed
+  sentAt    DateTime?
+  error     String?
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}

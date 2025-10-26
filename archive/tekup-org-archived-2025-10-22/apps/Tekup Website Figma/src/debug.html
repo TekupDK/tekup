@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tekup Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .demo-login { background: #e7f3ff; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Tekup Platform Debug & Login Guide</h1>
+    
+    <div class="step demo-login">
+        <h2>🔐 Demo Login Credentials</h2>
+        <p><strong>Dette er en demo-version</strong> - du kan logge ind med enhver email og adgangskode!</p>
+        
+        <h3>📋 Quick Start:</h3>
+        <ol>
+            <li>Gå til: <code>http://localhost:3000</code></li>
+            <li>Klik på <strong>"Log ind"</strong> knappen</li>
+            <li>Brug test credentials:
+                <br><code>Email: demo@tekup.dk</code>
+                <br><code>Password: demo123</code>
+            </li>
+            <li>Klik <strong>"Log ind"</strong></li>
+            <li>Du redirectes automatisk til <code>/dashboard</code></li>
+        </ol>
+    </div>
+
+    <div class="step success">
+        <h2>✅ Test Routes</h2>
+        <p>Disse routes skulle fungere nu:</p>
+        <ul>
+            <li><a href="http://localhost:3000/">http://localhost:3000/</a> - Hjemmeside</li>
+            <li><a href="http://localhost:3000/dashboard">http://localhost:3000/dashboard</a> - Dashboard (nye Figma design)</li>
+            <li><a href="http://localhost:3000/admin">http://localhost:3000/admin</a> - Admin panel</li>
+            <li><a href="http://localhost:3000/pricing">http://localhost:3000/pricing</a> - Pricing</li>
+            <li><a href="http://localhost:3000/solutions">http://localhost:3000/solutions</a> - Solutions</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2>🎯 Hvad skulle du se efter login:</h2>
+        <ul>
+            <li><strong>Dashboard metrics</strong>: 12 Nye leads, 89% Konvertering, 95 AI Score, OK Live Status</li>
+            <li><strong>Top leads liste</strong>: TechStart ApS (95%), Digital Solutions (87%)</li>
+            <li><strong>Live indicators</strong>: Pulse animationer, floating notifications</li>
+            <li><strong>Real-time updates</strong>: Data opdateres hver 30 sekunder</li>
+            <li><strong>Interactive elements</strong>: Hover effekter, clickable leads</li>
+        </ul>
+    </div>
+
+    <div class="step error">
+        <h2>🐛 Fejlfinding</h2>
+        <p><strong>Hvis du stadig får "Not Found":</strong></p>
+        <ol>
+            <li>Tjek browser console for fejl (F12 → Console)</li>
+            <li>Prøv at refresh siden (Ctrl+F5)</li>
+            <li>Tjek at development server kører på port 3000</li>
+            <li>Tjek at alle komponenter er importeret korrekt</li>
+        </ol>
+        
+        <p><strong>Hvis login ikke virker:</strong></p>
+        <ol>
+            <li>Tjek localStorage i browser (F12 → Application → Local Storage)</li>
+            <li>Clear browser cache og cookies</li>
+            <li>Prøv incognito/private browsing mode</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>🔄 Hvad blev fikset:</h2>
+        <ul>
+            <li>✅ <strong>DialogContent warning</strong>: Tilføjet aria-describedby for accessibility</li>
+            <li>✅ <strong>Router problem</strong>: Ændret fra EnhancedDashboard til Dashboard komponent</li>
+            <li>✅ <strong>Missing admin route</strong>: Tilføjet AdminDashboard tilbage til router</li>
+            <li>✅ <strong>Import fejl</strong>: Rettet alle komponent imports</li>
+            <li>✅ <strong>Clock import fejl</strong>: Tilføjet manglende Clock import i AIAssistant</li>
+            <li>✅ <strong>Timeout problemer</strong>: Reduceret AI response timeouts fra 1500ms+1000ms til 800ms+500ms</li>
+            <li>✅ <strong>Voice recognition timeout</strong>: Reduceret fra 3000ms til 2000ms</li>
+            <li>✅ <strong>Error handling</strong>: Tilføjet try-catch blokke for bedre fejlhåndtering</li>
+        </ul>
+    </div>
+
+    <script>
+        // Simple client-side route tester
+        function testRoute(path) {
+            fetch(path)
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`✅ ${path} - OK`);
+                    } else {
+                        console.log(`❌ ${path} - ${response.status}`);
+                    }
+                })
+                .catch(error => {
+                    console.log(`❌ ${path} - Error:`, error);
+                });
+        }
+
+        // Test all routes
+        const routes = ['/', '/dashboard', '/admin', '/pricing', '/solutions'];
+        routes.forEach(route => testRoute(`http://localhost:3000${route}`));
+    </script>
+</body>
+</html>

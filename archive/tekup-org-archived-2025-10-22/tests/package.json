@@ -1,0 +1,44 @@
+{
+  "name": "@tekup/testing",
+  "version": "1.0.0",
+  "description": "Comprehensive testing suite for TekUp Phase 2 applications",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:api": "jest --testPathPattern=api",
+    "test:all": "npm run test && npm run test:e2e",
+    "test:ci": "npm run test:coverage && npm run test:e2e",
+    "setup:test-db": "node scripts/setup-test-database.js",
+    "cleanup:test-db": "node scripts/cleanup-test-database.js"
+  },
+  "dependencies": {
+    "@tekup/shared": "workspace:*",
+    "@tekup/sso": "workspace:*",
+    "@tekup/config": "workspace:*"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^6.1.0",
+    "@testing-library/user-event": "^14.5.0",
+    "@playwright/test": "^1.38.0",
+    "supertest": "^6.3.0",
+    "@nestjs/testing": "^10.0.0",
+    "typescript": "^5.0.0",
+    "@types/jest": "^29.5.0",
+    "@types/supertest": "^2.0.0",
+    "prisma": "^5.0.0",
+    "@prisma/client": "^5.0.0",
+    "postgres": "^3.3.0",
+    "testcontainers": "^10.1.0",
+    "msw": "^1.3.0",
+    "axios-mock-adapter": "^1.21.0"
+  }
+}

@@ -1,0 +1,50 @@
+# Multi-stage Docker build for flow-api
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@9.9.0 --activate
+WORKDIR /app
+
+# Dependencies stage - cached separately
+FROM base AS deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/config/package.json ./packages/config/
+COPY apps/flow-api/package.json ./apps/flow-api/
+RUN pnpm install --frozen-lockfile --filter @tekup/flow-api...
+
+# Build stage
+FROM base AS builder
+COPY . .
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=deps /app/packages/config/node_modules ./packages/config/node_modules
+COPY --from=deps /app/apps/flow-api/node_modules ./apps/flow-api/node_modules
+
+# Build shared packages first
+RUN pnpm --filter @tekup/shared build
+RUN pnpm --filter @tekup/config build
+# Build the API
+RUN pnpm --filter @tekup/flow-api build
+
+# Production stage
+FROM node:20-alpine AS runner
+RUN addgroup --system --gid 1001 tekup
+RUN adduser --system --uid 1001 api
+WORKDIR /app
+USER api
+
+# Copy built application
+COPY --from=builder --chown=api:tekup /app/apps/flow-api/dist ./dist
+COPY --from=builder --chown=api:tekup /app/apps/flow-api/package.json ./
+COPY --from=builder --chown=api:tekup /app/packages/config/dist ./packages/config/dist
+COPY --from=builder --chown=api:tekup /app/packages/shared/dist ./packages/shared/dist
+
+# Install production dependencies only
+RUN corepack enable && corepack prepare pnpm@9.9.0 --activate
+COPY --from=builder /app/pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
+EXPOSE 4000
+ENV NODE_ENV=production
+ENV PORT=4000
+
+CMD ["node", "dist/main.js"]

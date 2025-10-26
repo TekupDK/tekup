@@ -1,0 +1,36 @@
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Dependency directories
+node_modules/
+.pnpm-store/
+
+# Build outputs
+build/
+dist/
+.next/
+out/
+coverage/
+
+# Docs build
+/docs/build/
+/docs/.docusaurus/
+
+# Lockfiles
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Tool caches
+.vite/
+.eslintcache
+*.tsbuildinfo
+
+# Generated outputs
+packages/**/dist/
+apps/**/.next/
+apps/**/dist/

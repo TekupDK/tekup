@@ -1,0 +1,165 @@
+# RenOS Deployment Guide\n\n\n\n## 📋 Indholdsfortegnelse\n\n\n\n- [Før Deployment](#før-deployment)\n\n- [Lokal Test](#lokal-test)\n\n- [Docker Deployment](#docker-deployment)\n\n- [Cloud Deployment](#cloud-deployment)\n\n- [Sikkerhed](#sikkerhed)\n\n- [Monitoring](#monitoring)\n\n- [Troubleshooting](#troubleshooting)\n\n
+---
+\n\n## 🔍 Før Deployment\n\n\n\n### 1. Verificer Systemkrav\n\n\n\n```bash\n\n# Node.js version (minimum 18.x)\n\nnode --version\n\n\n\n# npm version\n\nnpm --version\n\n\n\n# Docker (hvis du bruger Docker)\n\ndocker --version\n\ndocker-compose --version
+\n\n# PostgreSQL (hvis lokal database)\n\npsql --version\n\n```\n\n\n\n### 2. Environment Variables\n\n\n\nKopier `.env.example` til `.env` og udfyld alle værdier:
+\n\n```bash
+cp .env.example .env\n\n```
+
+**Kritiske variabler:**
+\n\n- `GEMINI_KEY`: Din Google AI API-nøgle\n\n- `GOOGLE_PROJECT_ID`: Google Cloud projekt ID\n\n- `GOOGLE_CLIENT_EMAIL`: Service account email\n\n- `GOOGLE_PRIVATE_KEY`: Service account private key\n\n- `GMAIL_CLIENT_ID`: OAuth2 client ID\n\n- `GMAIL_CLIENT_SECRET`: OAuth2 client secret\n\n- `DATABASE_URL`: PostgreSQL connection string\n\n\n\n### 3. Kør Tests\n\n\n\n```bash\n\n# Backend tests\n\nnpm test\n\n\n\n# Forventet output: ✓ 33 tests passed\n\n```\n\n\n\n### 4. Database Setup\n\n\n\n```bash\n\n# Generer Prisma client\n\nnpm run db:generate\n\n\n\n# Kør migrations\n\nnpm run db:migrate\n\n\n\n# (Valgfrit) Seed testdata\n\nnpm run db:seed\n\n```\n\n
+---
+\n\n## 🧪 Lokal Test\n\n\n\n### Backend + Frontend Development\n\n\n\n```bash\n\n# Terminal 1: Start backend\n\nnpm run dev\n\n\n\n# Terminal 2: Start frontend\n\ncd client\n\nnpm run dev\n\n```
+
+**Verificer:**
+\n\n- Backend: <http://localhost:3000/health> → `{"status":"ok"}`\n\n- Frontend: <http://localhost:5173> → Dashboard vises\n\n- Dashboard API: <http://localhost:3000/api/dashboard/stats/overview> → JSON data\n\n\n\n### Production Build Test\n\n\n\n```bash\n\n# Build backend\n\nnpm run build\n\n\n\n# Build frontend\n\nnpm run build:client\n\n\n\n# Test production backend\n\nnpm run start:prod\n\n\n\n# Test frontend build (med serve)\n\ncd client\n\nnpx serve dist -p 5173\n\n```
+
+---
+\n\n## 🐳 Docker Deployment\n\n\n\n### Forudsætninger\n\n\n\n- Docker Desktop installeret og kørende\n\n- `.env` fil konfigureret i rod-mappen\n\n- PostgreSQL password sat i `.env` som `DB_PASSWORD`\n\n\n\n### 1. Build og Start Containers\n\n\n\n```bash\n\n# Build alle images\n\ndocker-compose build\n\n\n\n# Start alle services\n\ndocker-compose up -d\n\n\n\n# Se logs\n\ndocker-compose logs -f\n\n```\n\n\n\n### 2. Verificer Services\n\n\n\n```bash\n\n# Tjek container status\n\ndocker-compose ps\n\n\n\n# Forventet output:\n\n# renos-postgres   Up (healthy)\n\n# renos-backend    Up (healthy)\n\n# renos-frontend   Up (healthy)\n\n\n\n# Test endpoints\n\ncurl http://localhost/health          # Frontend health\n\ncurl http://localhost:3000/health     # Backend health\n\ncurl http://localhost:3000/api/dashboard/stats/overview\n\n```\n\n\n\n### 3. Database Management\n\n\n\n```bash\n\n# Kør migrations i container\n\ndocker-compose exec backend npx prisma migrate deploy\n\n\n\n# Åbn Prisma Studio\n\ndocker-compose exec backend npx prisma studio\n\n\n\n# Backup database\n\ndocker exec renos-db pg_dump -U renos_user renos_db > backup.sql\n\n\n\n# Restore database\n\ndocker exec -i renos-db psql -U renos_user renos_db < backup.sql\n\n```\n\n\n\n### 4. Logs og Debugging\n\n\n\n```bash\n\n# Se alle logs\n\ndocker-compose logs\n\n\n\n# Se kun backend logs\n\ndocker-compose logs backend\n\n\n\n# Follow logs real-time\n\ndocker-compose logs -f backend\n\n\n\n# Gå ind i container\n\ndocker-compose exec backend sh\n\n```\n\n\n\n### 5. Stop og Cleanup\n\n\n\n```bash\n\n# Stop containers (bevarer data)\n\ndocker-compose down\n\n\n\n# Stop og slet volumes (ADVARSEL: sletter database!)\n\ndocker-compose down -v\n\n\n\n# Genstart en specifik service\n\ndocker-compose restart backend\n\n```\n\n
+---
+\n\n## ☁️ Cloud Deployment\n\n\n\n### Option A: Render.com (Anbefalet til Gratis Tier)\n\n\n\n#### Backend (Web Service)\n\n\n\n1. Opret ny **Web Service** på Render.com\n\n2. Connect GitHub repository\n\n3. Konfigurer:
+   - **Build Command**: `npm install && npm run build && npx prisma generate`\n\n   - **Start Command**: `npm run db:migrate && npm run start:prod`\n\n   - **Environment**: Node\n\n   - **Region**: Frankfurt (nærmeste EU)\n\n4. Tilføj Environment Variables:
+
+   ```
+   NODE_ENV=production
+   PORT=3000
+   DATABASE_URL=[din PostgreSQL URL fra Render]
+   GEMINI_KEY=[din API key]
+   GOOGLE_PROJECT_ID=[...]
+   GOOGLE_CLIENT_EMAIL=[...]
+   GOOGLE_PRIVATE_KEY=[...]
+   GMAIL_CLIENT_ID=[...]
+   GMAIL_CLIENT_SECRET=[...]
+   FRONTEND_URL=https://[din-frontend].onrender.com
+   ```
+\n\n5. Deploy!
+\n\n#### Database (PostgreSQL)\n\n\n\n1. Opret **PostgreSQL** database på Render\n\n2. Kopier **Internal Database URL** til backend's `DATABASE_URL`\n\n\n\n#### Frontend (Static Site)\n\n\n\n1. Opret ny **Static Site** på Render.com\n\n2. Connect samme GitHub repository\n\n3. Konfigurer:
+   - **Build Command**: `cd client && npm install && npm run build`\n\n   - **Publish Directory**: `client/dist`\n\n4. Tilføj Environment Variable:
+
+   ```
+   VITE_API_URL=https://[din-backend].onrender.com
+   ```
+\n\n5. Deploy!
+\n\n#### Opdater Frontend API Base URL\n\n\n\nI `client/src/components/Dashboard.tsx`:
+\n\n```typescript
+const API_BASE = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api/dashboard`
+  : 'http://localhost:3000/api/dashboard';\n\n```
+
+---
+\n\n### Option B: Vercel + Railway\n\n\n\n#### Frontend på Vercel\n\n\n\n```bash\n\n# Installer Vercel CLI\n\nnpm install -g vercel\n\n\n\n# Deploy fra client/ folder\n\ncd client\n\nvercel
+\n\n# Sæt environment variable\n\nvercel env add VITE_API_URL production\n\n# Value: https://[din-railway-backend].up.railway.app\n\n```\n\n\n\n#### Backend på Railway\n\n\n\n1. Gå til [Railway.app](https://railway.app)\n\n2. **New Project** → **Deploy from GitHub**\n\n3. Vælg repository og branch\n\n4. Tilføj **PostgreSQL** plugin\n\n5. Konfigurer environment variables (samme som Render)\n\n6. Railway auto-detecter Node.js og deployer
+
+---
+\n\n### Option C: Google Cloud Platform\n\n\n\n#### App Engine Setup\n\n\n\n```bash\n\n# Installer gcloud CLI\n\ngcloud init\n\n\n\n# Opret app.yaml\n\ncat > app.yaml <<EOF\n\nruntime: nodejs20
+env: standard
+instance_class: F1
+
+env_variables:
+  NODE_ENV: production
+  # Tilføj alle .env variabler her\n\n\n\nautomatic_scaling:
+  min_instances: 1
+  max_instances: 3
+EOF
+\n\n# Deploy\n\ngcloud app deploy\n\n```\n\n\n\n#### Cloud SQL (PostgreSQL)\n\n\n\n```bash\n\n# Opret database instance\n\ngcloud sql instances create renos-db \\n\n  --database-version=POSTGRES_15 \
+  --tier=db-f1-micro \
+  --region=europe-west1
+\n\n# Opdater DATABASE_URL i app.yaml\n\n```\n\n
+---
+\n\n## 🔒 Sikkerhed\n\n\n\n### Production Checklist\n\n\n\n#### Backend Sikkerhed\n\n\n\n- [ ] `NODE_ENV=production` sat\n\n- [ ] CORS begrænset til kun production frontend URL\n\n- [ ] API rate limiting implementeret (anbefalet: `express-rate-limit`)\n\n- [ ] HTTPS kun (ingen HTTP)\n\n- [ ] Environment variables ikke committed til Git\n\n- [ ] Private keys roteret regelmæssigt\n\n- [ ] Database credentials sikret\n\n- [ ] Input validation på alle endpoints\n\n- [ ] SQL injection beskyttelse (Prisma håndterer dette)\n\n- [ ] XSS beskyttelse (sanitize user input)\n\n\n\n#### Frontend Sikkerhed\n\n\n\n```bash\n\n# Opdater dependencies\n\nnpm audit\n\nnpm audit fix
+
+cd client
+npm audit
+npm audit fix\n\n```
+\n\n#### HTTPS Setup (Nginx)\n\n\n\nHvis du bruger egen server med Nginx:
+\n\n```nginx
+server {
+    listen 443 ssl http2;
+    server_name yourdomain.com;
+
+    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
+
+    # Moderne SSL konfiguration\n\n    ssl_protocols TLSv1.2 TLSv1.3;\n\n    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+
+    location / {
+        proxy_pass http://localhost:80;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /api {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+\n\n# Redirect HTTP til HTTPS\n\nserver {\n\n    listen 80;
+    server_name yourdomain.com;
+    return 301 https://$server_name$request_uri;
+}\n\n```
+\n\n#### Secrets Management\n\n\n\n**ALDRIG commit `.env` til Git!**
+\n\n```bash\n\n# Tilføj til .gitignore (allerede gjort)\n\necho ".env" >> .gitignore\n\n\n\n# For team: Brug secret manager\n\n# Google Cloud: Secret Manager\n\n# AWS: Secrets Manager\n\n# Azure: Key Vault\n\n```\n\n
+---
+\n\n## 📊 Monitoring\n\n\n\n### Application Monitoring\n\n\n\n#### Logs\n\n\n\n```bash\n\n# Docker logs\n\ndocker-compose logs -f backend\n\n\n\n# PM2 (hvis brugt på VPS)\n\npm2 logs renos-backend\n\n\n\n# Cloud logs\n\n# Render: Check Logs tab\n\n# Railway: Check Build & Deploy logs\n\n# Google Cloud: Logs Explorer\n\n```\n\n\n\n#### Health Checks\n\n\n\n```bash\n\n# Backend health\n\ncurl https://your-api.com/health\n\n\n\n# Dashboard API\n\ncurl https://your-api.com/api/dashboard/system/health\n\n```\n\n\n\n#### Performance Metrics\n\n\n\nRenOS Dashboard viser:
+\n\n- Cache hit rate (skal være >90%)\n\n- Response times\n\n- Database performance\n\n- Active connections\n\n\n\n### Alerts Setup\n\n\n\n#### Uptime Monitoring (Gratis)\n\n\n\n1. **UptimeRobot**: <https://uptimerobot.com>
+   - Overvåg `/health` endpoint hvert 5. minut\n\n   - Email alerts ved downtime\n\n\n\n2. **Better Uptime**: <https://betteruptime.com>
+   - Advanced monitoring\n\n   - Incident management\n\n\n\n#### Application Performance Monitoring\n\n\n\n- **Sentry.io**: Error tracking\n\n- **LogRocket**: Session replay\n\n- **DataDog**: Full observability (paid)\n\n
+---
+\n\n## 🔧 Troubleshooting\n\n\n\n### Common Issues\n\n\n\n#### 1. "Database connection failed"\n\n\n\n```bash\n\n# Tjek DATABASE_URL format\n\necho $DATABASE_URL\n\n\n\n# Korrekt format:\n\n# postgresql://user:password@host:port/database\n\n\n\n# Test connection\n\nnpx prisma db pull\n\n\n\n# Kør migrations\n\nnpx prisma migrate deploy\n\n```\n\n\n\n#### 2. "CORS error" i browser\n\n\n\n**Symptom**: `Access-Control-Allow-Origin` error i browser console
+
+**Fix**:
+\n\n```typescript
+// src/server.ts - Verificer FRONTEND_URL er sat korrekt\n\nconst frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";\n\n```
+\n\n#### 3. "Gmail API 401 Unauthorized"\n\n\n\n**Symptom**: Gmail/Calendar calls fejler
+
+**Fix**:
+\n\n```bash\n\n# Verificer service account credentials\n\necho $GOOGLE_CLIENT_EMAIL\n\necho $GOOGLE_IMPERSONATED_USER
+\n\n# Tjek at domain-wide delegation er aktiveret i Google Workspace Admin\n\n# https://admin.google.com → Security → API Controls → Domain-wide Delegation\n\n```\n\n\n\n#### 4. "Module not found" errors\n\n\n\n```bash\n\n# Geninstaller dependencies\n\nrm -rf node_modules package-lock.json\n\nnpm install
+\n\n# Frontend\n\ncd client\n\nrm -rf node_modules package-lock.json
+npm install\n\n```
+\n\n#### 5. Docker build failures\n\n\n\n```bash\n\n# Clear Docker cache\n\ndocker-compose down\n\ndocker system prune -a
+\n\n# Rebuild uden cache\n\ndocker-compose build --no-cache\n\n\n\n# Tjek disk space\n\ndocker system df\n\n```\n\n\n\n#### 6. "Port already in use"\n\n\n\n```bash\n\n# Find process på port 3000\n\n# Windows\n\nnetstat -ano | findstr :3000\n\ntaskkill /PID <PID> /F
+\n\n# Mac/Linux\n\nlsof -ti:3000 | xargs kill -9\n\n\n\n# Eller ændre port i .env\n\nPORT=3001\n\n```\n\n\n\n#### 7. Frontend ikke kan forbinde til backend\n\n\n\n**Symptom**: Dashboard viser "Indlæser..." permanent
+
+**Debug:**
+\n\n```bash\n\n# Tjek backend kører\n\ncurl http://localhost:3000/health\n\n\n\n# Tjek API endpoint\n\ncurl http://localhost:3000/api/dashboard/stats/overview\n\n\n\n# Åbn browser DevTools Network tab\n\n# Se om requests fejler\n\n\n\n# Verificer API_BASE i Dashboard.tsx\n\n# Skal matche backend URL\n\n```\n\n\n\n#### 8. Prisma migration failures\n\n\n\n```bash\n\n# Reset database (ADVARSEL: sletter data!)\n\nnpx prisma migrate reset\n\n\n\n# Eller push schema direkte (development kun)\n\nnpx prisma db push\n\n\n\n# Production: Brug migrations\n\nnpx prisma migrate deploy\n\n```\n\n
+---
+\n\n## 📈 Performance Optimization\n\n\n\n### Backend Optimizations\n\n\n\n```typescript\n\n// src/services/cacheService.ts allerede implementeret
+// Cache TTL kan justeres:
+const DEFAULT_TTL = 5 * 60 * 1000; // 5 minutter\n\n```
+\n\n### Frontend Optimizations\n\n\n\n```bash\n\n# Build med optimizations\n\ncd client\n\nnpm run build
+\n\n# Analyze bundle size\n\nnpx vite-bundle-visualizer\n\n\n\n# Lazy load komponenter\n\n# Se vite.config.ts manualChunks for optimeret splitting\n\n```\n\n\n\n### Database Optimizations\n\n\n\n```sql
+-- Tilføj indices for ofte-brugte queries
+-- Prisma schema:\n\nmodel Lead {
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerId])
+}\n\n```
+
+---
+\n\n## 🎯 Post-Deployment Checklist\n\n\n\n### Umiddelbart Efter Deployment\n\n\n\n- [ ] Test health endpoints\n\n- [ ] Verificer dashboard loader data\n\n- [ ] Test email sending (dry-run mode først!)\n\n- [ ] Test calendar booking system\n\n- [ ] Verificer cache fungerer (check hit rate)\n\n- [ ] Test AI email generation\n\n- [ ] Verificer alle 33 tests består i production environment\n\n\n\n### Første 24 Timer\n\n\n\n- [ ] Overvåg logs for fejl\n\n- [ ] Tjek performance metrics\n\n- [ ] Verificer database backups\n\n- [ ] Test recovery procedures\n\n- [ ] Verificer uptime monitoring alerts virker\n\n\n\n### Første Uge\n\n\n\n- [ ] Analyser cache hit rate (skal være >90%)\n\n- [ ] Overvåg API response times\n\n- [ ] Tjek database query performance\n\n- [ ] Verificer auto-response emails sendes korrekt\n\n- [ ] Test calendar sync mellem Google og database\n\n\n\n### Månedligt\n\n\n\n- [ ] Opdater dependencies: `npm outdated`\n\n- [ ] Kør sikkerhedsaudit: `npm audit`\n\n- [ ] Gennemgå logs for patterns\n\n- [ ] Optimer database queries om nødvendigt\n\n- [ ] Backup check og restore test\n\n
+---
+\n\n## 🆘 Support & Hjælp\n\n\n\n### Dokumentation\n\n\n\n- **Backend API**: Se `DASHBOARD.md`\n\n- **Database Schema**: Se `prisma/schema.prisma`\n\n- **Tests**: Se `tests/` folder\n\n\n\n### Logs Location\n\n\n\n```bash\n\n# Docker\n\ndocker-compose logs backend > backend-logs.txt\n\n\n\n# Systemd (Linux VPS)\n\njournalctl -u renos-backend -n 100\n\n\n\n# PM2\n\npm2 logs renos-backend --lines 100\n\n```\n\n\n\n### Debug Mode\n\n\n\n```bash\n\n# Enable debug logging\n\nLOG_LEVEL=debug npm run dev\n\n```\n\n
+---
+\n\n## 📝 Changelog & Updates\n\n\n\n### Hvordan Opdatere Production\n\n\n\n#### 1. Test Lokalt Først\n\n\n\n```bash\n\ngit pull origin main
+npm install
+npm test
+npm run build\n\n```
+\n\n#### 2. Docker Deployment\n\n\n\n```bash\n\ndocker-compose pull
+docker-compose up -d --build
+docker-compose logs -f\n\n```
+\n\n#### 3. Cloud Deployment\n\n\n\n```bash\n\n# Render/Railway: Push til main branch → auto-deploy\n\n\n\n# Vercel\n\ncd client\n\nvercel --prod
+\n\n# Manual VPS\n\ngit pull\n\nnpm install
+npm run build
+pm2 restart renos-backend\n\n```
+
+---
+\n\n## 🎉 Du er klar\n\n\n\nRenOS er nu deployed og klar til produktion!
+
+**Næste skridt:**
+\n\n1. Overvåg systemet de første timer\n\n2. Test alle funktioner grundigt\n\n3. Konfigurer uptime monitoring\n\n4. Setup backup rutiner\n\n5. Dokumenter din specifikke deployment setup
+
+**Husk:**
+\n\n- Hold `.env` sikker (aldrig commit!)\n\n- Opdater dependencies regelmæssigt\n\n- Overvåg logs for fejl\n\n- Backup database regelmæssigt\n\n- Test recovery procedures\n\n
+🚀 **Happy Deploying!**

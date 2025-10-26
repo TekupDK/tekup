@@ -1,0 +1,64 @@
+node_modules/
+dist/
+coverage/
+reports/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Google Cloud credentials
+*.json
+!package.json
+!package-lock.json
+!tsconfig*.json
+!vitest.config.json
+credentials.json
+renos-*.json
+client_secret_*.json
+
+# Render API keys and setup files
+JONAS_RENDER_SETUP.md
+RENDER_API_TEST_SUCCESS.md
+*_RENDER_SETUP.md
+*_API_TEST*.md
+.cursor/mcp.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Prisma
+prisma/*.db
+prisma/migrations/**/migration.sql
+
+# Build output
+build/
+out/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

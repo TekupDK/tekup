@@ -1,0 +1,32 @@
+﻿# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ollama models (too large)
+*.gguf
+
+# Temp
+tmp/
+temp/
+
+# MkDocs
+site/
+.cache/

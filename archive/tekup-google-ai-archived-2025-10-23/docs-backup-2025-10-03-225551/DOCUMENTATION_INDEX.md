@@ -1,0 +1,27 @@
+# 📚 RenOS Documentation Index\n\n\n\nKomplet oversigt over alle guides og dokumenter.
+
+---
+\n\n## 🎯 Start Her (Nye Brugere)\n\n\n\n1. **[README.md](README.md)** - Projekt overview\n\n2. **[docs/USER_GUIDE.md](docs/USER_GUIDE.md)** - Komplet brugervejledning (10.5K linjer)\n\n3. **[STATUS_OVERSIGT.md](STATUS_OVERSIGT.md)** - Nuværende status (0/6 todos)\n\n
+---
+\n\n## 👥 For Brugere (Team)\n\n\n\n- **[docs/USER_GUIDE.md](docs/USER_GUIDE.md)** - Daglig brug, features, best practices, FAQ\n\n- **[KPI_DEFINITIONS.md](KPI_DEFINITIONS.md)** - Metrics definitions\n\n
+---
+\n\n## 💻 For Udviklere\n\n\n\n### Setup\n\n- **[README.md](README.md)** - Installation & dependencies\n\n- **[docs/SETUP_CHECKLIST.md](docs/SETUP_CHECKLIST.md)** - Environment setup\n\n\n\n### Arkitektur\n\n- **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - Codebase architecture (150 linjer)\n\n\n\n### Implementation\n\n- **[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)** - Email approval, booking UI, quote UI (1.1K linjer)\n\n- **[GAP_ANALYSIS_REPORT.md](GAP_ANALYSIS_REPORT.md)** - Feature gaps & priorities (481 linjer)\n\n- **[STATUS_OVERSIGT.md](STATUS_OVERSIGT.md)** - Current status & todos (650 linjer)\n\n
+---
+\n\n## 🔧 For Administrators\n\n\n\n### Deployment\n\n- **[RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)** - Render setup\n\n- **[PRODUCTION_CHECKLIST.md](PRODUCTION_CHECKLIST.md)** - Pre-deploy checklist\n\n- **[GOOGLE_CALENDAR_SETUP.md](GOOGLE_CALENDAR_SETUP.md)** - Calendar config (378 linjer)\n\n\n\n### Troubleshooting\n\n- **[BAD_GATEWAY_FIX_REPORT.md](BAD_GATEWAY_FIX_REPORT.md)** - 502 errors fix (450 linjer)\n\n- **[CUSTOMER_360_FIX_GUIDE.md](CUSTOMER_360_FIX_GUIDE.md)** - Email threads fix (380 linjer)\n\n- **[docs/DEPLOYMENT_FIX_2025-10-02.md](docs/DEPLOYMENT_FIX_2025-10-02.md)** - Prisma & TS fix (330 linjer)\n\n
+---
+\n\n## 📊 Features\n\n\n\n### Email & Gmail\n\n- **[docs/EMAIL_AUTO_RESPONSE.md](docs/EMAIL_AUTO_RESPONSE.md)** - Auto-response system\n\n- **[GMAIL_INTEGRATION_TEST_GUIDE.md](GMAIL_INTEGRATION_TEST_GUIDE.md)** - Testing\n\n\n\n### Calendar & Booking\n\n- **[GOOGLE_CALENDAR_SETUP.md](GOOGLE_CALENDAR_SETUP.md)** - Setup guide\n\n- **[docs/CALENDAR_BOOKING.md](docs/CALENDAR_BOOKING.md)** - Booking system\n\n\n\n### Database\n\n- **[docs/CUSTOMER_DATABASE.md](docs/CUSTOMER_DATABASE.md)** - Schema\n\n- **[docs/DATA_FETCHING.md](docs/DATA_FETCHING.md)** - Data fetching\n\n
+---
+\n\n## 🔐 Security\n\n\n\n- **[SECURITY.md](SECURITY.md)** - Security policy\n\n- **[SECURITY_ANALYSIS.md](SECURITY_ANALYSIS.md)** - Audit\n\n
+---
+\n\n## 📝 Quick Reference\n\n\n\n| Dokument | Formål | Prioritet |
+|----------|--------|-----------|
+| docs/USER_GUIDE.md | Daglig brug | 🔥 HIGH |
+| STATUS_OVERSIGT.md | Status & todos | 🔥 HIGH |
+| IMPLEMENTATION_PLAN.md | Næste features | 🔥 HIGH |
+| GAP_ANALYSIS_REPORT.md | Feature gaps | 🟡 MED |
+| GOOGLE_CALENDAR_SETUP.md | Calendar | 🟡 MED |
+
+**Total:** 60+ dokumenter, ~25,000+ linjer\n\n
+---
+
+**Sidst opdateret:** 2. oktober 2025

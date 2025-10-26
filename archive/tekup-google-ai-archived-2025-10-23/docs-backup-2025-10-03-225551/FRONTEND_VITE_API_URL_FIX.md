@@ -1,0 +1,88 @@
+# 🔧 Frontend VITE_API_URL Fix Required\n\n\n\n**Time:** 2025-10-03 01:52 AM  
+**Status:** ⚠️ **NEEDS REBUILD**\n\n
+---
+\n\n## ❌ Problem Detected\n\n\n\n**Symptom:**
+\n\n```
+/api/email-approval/pending:1  Failed to load resource: 404
+Failed to fetch pending emails: SyntaxError: Unexpected token 'N', "Not Found"\n\n```
+
+**Root Cause:**
+Frontend is calling **`tekup-renos-1.onrender.com/api/...`** (itself) instead of **`tekup-renos.onrender.com/api/...`** (backend).\n\n
+This means `VITE_API_URL` was **NOT used during build**.
+
+---
+\n\n## 🔍 Why Did This Happen?\n\n\n\n### Possible Causes\n\n\n\n1. **Environment variable added AFTER build started**
+   - Render started build before env var was saved\n\n   - Build used fallback URL instead\n\n\n\n2. **Vite build cache**
+   - Old build cached without VITE_API_URL\n\n   - Need to clear cache and rebuild\n\n\n\n3. **Environment variable not visible to build**
+   - Typo in variable name?\n\n   - Should be exactly: `VITE_API_URL` (case-sensitive)\n\n
+---
+\n\n## ✅ Solution\n\n\n\n### Step 1: Verify Environment Variable\n\n\n\n1. Go to: <https://dashboard.render.com/static/srv-d3e057nfte5s73f2naqg/env>\n\n2. Verify exists:
+
+   ```
+   Key:   VITE_API_URL
+   Value: https://tekup-renos.onrender.com
+   ```
+\n\n3. **Important:** No typos, no extra spaces, exact URL\n\n\n\n### Step 2: Clear Build Cache & Redeploy\n\n\n\n**CRITICAL:** Must use "Clear build cache" option!\n\n\n\n1. Go to: <https://dashboard.render.com/static/srv-d3e057nfte5s73f2naqg>\n\n2. Click: **"Manual Deploy"** button\n\n3. **Select:** "Clear build cache & deploy" (NOT "Deploy latest commit")\n\n4. Wait: 3-5 minutes
+
+**Why clear cache?**
+\n\n- Vite caches environment variables from previous builds\n\n- Without clearing, it reuses old build without `VITE_API_URL`\n\n
+---
+\n\n## 🧪 Verification After Rebuild\n\n\n\n### Check 1: Build Logs\n\n\n\nLook for in Render logs:
+\n\n```
+==> Running build command 'npm run build'...
+vite v5.4.20 building for production...\n\n```
+
+**Should NOT see any warnings about missing env vars**
+\n\n### Check 2: Browser Console\n\n\n\nOpen <https://tekup-renos-1.onrender.com> and check Network tab:
+
+**Before Fix:**
+\n\n```
+GET https://tekup-renos-1.onrender.com/api/dashboard/customers 404\n\n```
+
+**After Fix:**
+\n\n```
+GET https://tekup-renos.onrender.com/api/dashboard/customers 200 OK\n\n```
+\n\n### Check 3: Dashboard Loads\n\n\n\n- ✅ Dashboard shows customer count\n\n- ✅ Leads page shows lead list\n\n- ✅ No 404 errors in console\n\n
+---
+\n\n## 📊 Current Status\n\n\n\n| Component | Status | Issue |
+|-----------|--------|-------|
+| Backend API | ✅ Live | Working perfectly |
+| VITE_API_URL | ✅ Set | Environment variable exists |
+| Frontend Build | ❌ Wrong | Built without env var |
+| API Calls | ❌ Failed | Calling wrong URL (404s) |
+
+---
+\n\n## 🎯 Expected Timeline\n\n\n\n1. **Verify env var** (1 min) → Confirm VITE_API_URL is set\n\n2. **Clear cache & deploy** (1 min) → Trigger rebuild\n\n3. **Wait for build** (3-5 min) → Render builds frontend\n\n4. **Test dashboard** (1 min) → Verify no 404s\n\n
+**Total:** ~7-8 minutes\n\n
+---
+\n\n## 🔧 Alternative Fix (if still fails)\n\n\n\nIf clearing cache doesn't work, try adding **build command override**:
+\n\n### In Render Dashboard\n\n\n\n1. Go to: Settings → Build & Deploy\n\n2. Update Build Command to:
+
+   ```bash
+   cd client && VITE_API_URL=https://tekup-renos.onrender.com npm run build
+   ```
+\n\n3. Save and redeploy
+
+This **hardcodes** the URL into build command (ensures it's always set).\n\n
+---
+\n\n## 📝 Debugging Steps\n\n\n\nIf rebuild still shows 404s:
+\n\n### 1. Check Browser Network Tab\n\n\n\n```javascript\n\n// Open Console and run:
+console.log(import.meta.env.VITE_API_URL);
+// Should print: https://tekup-renos.onrender.com
+// If undefined: Env var not injected into build\n\n```
+\n\n### 2. Check Actual API Call URLs\n\n\n\nIn Network tab, filter for "XHR" and see:
+\n\n- ❌ Bad: `https://tekup-renos-1.onrender.com/api/...`\n\n- ✅ Good: `https://tekup-renos.onrender.com/api/...`\n\n\n\n### 3. Check Component Code\n\n\n\nVerify components use environment variable:
+\n\n```typescript
+// Should be this (from Leads.tsx line 22):
+const API_URL = import.meta.env.VITE_API_URL || 'https://tekup-renos.onrender.com';
+
+// NOT hardcoded:
+const API_URL = 'https://tekup-renos-1.onrender.com';\n\n```
+
+---
+\n\n## 🎉 Success Criteria\n\n\n\nAfter successful rebuild:
+\n\n- ✅ Dashboard loads without errors\n\n- ✅ Customer count displays correctly\n\n- ✅ Leads list shows data\n\n- ✅ AI Process button (⚡) works\n\n- ✅ No 404 errors in console\n\n- ✅ All API calls go to `tekup-renos.onrender.com`\n\n
+---
+
+**Action Required:** Clear build cache and redeploy frontend NOW! 🚀\n\n
+**Timeline:** 7-8 minutes to full operational status

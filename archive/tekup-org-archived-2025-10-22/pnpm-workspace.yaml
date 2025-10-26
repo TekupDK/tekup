@@ -1,0 +1,10 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - "libs/*"
+  # Strategic Initiative Applications
+  - 'apps/mcp-studio-enterprise'
+  - 'apps/danish-enterprise'  
+  - 'apps/rendetalje-os'
+  - 'apps/foodtruck-os'
+  - 'apps/essenza-pro'

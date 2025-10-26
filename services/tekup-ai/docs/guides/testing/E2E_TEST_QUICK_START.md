@@ -1,0 +1,40 @@
+# 🚀 E2E Test Quick Start\n\n\n\n**START HER!** 👇\n\n\n\n## 📋 Test Checklist (Print & følg)\n\n\n\n### ✅ Pre-Test (2 min)\n\n\n\n- [ ] Frontend åben: <https://tekup-renos-1.onrender.com>\n\n- [ ] Logged ind via Clerk\n\n- [ ] Console åben (F12)\n\n- [ ] Ingen errors i console\n\n\n\n### ✅ Step 1: Opret Lead (1 min)\n\n\n\n- [ ] Click "Leads" → "Ny Lead"\n\n- [ ] Udfyld:\n\n\n\n  ```
+  Navn: E2E Test Kunde
+  Email: e2e.test@example.com
+  Telefon: +45 12 34 56 78
+  Adresse: E2E Testvej 1, 2000 Frederiksberg
+  Type: Privatrengøring
+  Kvm: 85
+  Værelser: 3
+  ```
+\n\n- [ ] Click "Opret Lead"\n\n- [ ] Lead vises i tabel ✅\n\n\n\n### ✅ Step 2: AI Process (30 sek)\n\n\n\n- [ ] Find lead i tabel\n\n- [ ] Click ⚡ "AI Process" button\n\n- [ ] AIQuoteModal åbner\n\n- [ ] Quote genereret (pris, tekst)\n\n- [ ] **SCREENSHOT** af quote preview! 📸\n\n\n\n### ✅ Step 3: Send Tilbud (30 sek)\n\n\n\n- [ ] Review quote i modal\n\n- [ ] Click "Send Tilbud"\n\n- [ ] Success message vises\n\n- [ ] Lead status → "quoted" eller "contacted"\n\n\n\n### ✅ Step 4: Verificer Email (2 min)\n\n\n\n**Åbn Gmail:**
+\n\n```powershell
+start https://mail.google.com\n\n# Log ind som info@rendetalje.dk\n\n```\n\n\n\n- [ ] Email synlig i Sent folder\n\n- [ ] Email til <e2e.test@example.com>\n\n- [ ] Quote tekst matcher modal\n\n- [ ] **SCREENSHOT** af email! 📸\n\n\n\n### ✅ Step 5: Opret Booking (1 min)\n\n\n\n- [ ] Click "Bookings" → "Ny Booking"\n\n- [ ] Vælg lead: "E2E Test Kunde"\n\n- [ ] Dato: 20. oktober 2025, kl. 10:00\n\n- [ ] Varighed: 120 min\n\n- [ ] Service: Privatrengøring\n\n- [ ] Click "Opret"\n\n- [ ] Booking vises i tabel\n\n\n\n### ✅ Step 6: Verificer Calendar (2 min)\n\n\n\n**Åbn Google Calendar:**
+\n\n```powershell
+start https://calendar.google.com\n\n# Log ind som info@rendetalje.dk\n\n# Naviger til 20. oktober 2025\n\n```\n\n\n\n- [ ] Event synlig kl. 10:00-12:00\n\n- [ ] Location: "E2E Testvej 1, 2000 Frederiksberg"\n\n- [ ] Summary: "Rengøring - Privatrengøring"\n\n- [ ] **SCREENSHOT** af calendar event! 📸\n\n\n\n### ✅ Step 7: Test Booking Update (1 min)\n\n\n\n- [ ] I RenOS Bookings → Click "Edit"\n\n- [ ] Ændre tid til 14:00\n\n- [ ] Varighed til 180 min\n\n- [ ] Click "Gem"\n\n- [ ] Refresh Google Calendar\n\n- [ ] Event opdateret til 14:00-17:00 ✅\n\n\n\n### ✅ Mobile Test (Optional - 3 min)\n\n\n\n- [ ] Åbn frontend på smartphone\n\n- [ ] Log ind\n\n- [ ] Check Dashboard layout\n\n- [ ] Check Leads tabel (scrollbar)\n\n- [ ] Check navigation menu\n\n- [ ] **SCREENSHOT** mobile view! 📸\n\n
+---
+\n\n## ⏱️ Total Tid: ~8-10 minutter\n\n\n\n## ✅ Success Criteria\n\n\n\n**TEST PASSED hvis:**
+\n\n- ✅ Alle 7 steps completed uden errors\n\n- ✅ Email sendes korrekt\n\n- ✅ Calendar sync virker (create + update)\n\n- ✅ Ingen console errors\n\n- ✅ Workflow smooth og intuitiv\n\n
+**TEST FAILED hvis:**
+\n\n- ❌ Critical error i workflow\n\n- ❌ Email ikke sendes\n\n- ❌ Calendar sync fejler\n\n- ❌ Data loss\n\n
+---
+\n\n## 📸 Screenshots at tage\n\n\n\n1. **Quote Preview** (AIQuoteModal med pris + tekst)\n\n2. **Gmail Email** (Sendt email til kunde)\n\n3. **Google Calendar Event** (Booking synced)\n\n4. **Mobile View** (Optional - Dashboard på phone)\n\n
+---
+\n\n## 🐛 Hvis noget fejler\n\n\n\n1. **Check Console** (F12) for error messages\n\n2. **Check Network Tab** for failed API calls\n\n3. **Noter error** i TEST_END_TO_END_PRODUCTION.md under "Issues Found"\n\n4. **Screenshot error** hvis muligt\n\n5. **Fortsæt test** hvis ikke critical\n\n
+---
+\n\n## ✅ After Test\n\n\n\n**Hvis PASSED:**
+\n\n```markdown
+✅ E2E TEST PASSED!\n\n- RenOS er 100% production ready\n\n- Klar til go-live med kunde\n\n- Ingen blockers fundet\n\n```
+
+**Hvis FAILED:**
+\n\n```markdown
+❌ Issues fundet:\n\n1. [Beskriv issue]\n\n2. [Beskriv issue]
+
+Action required:\n\n- Fix issues\n\n- Re-run test\n\n```
+
+---
+\n\n## 🚀 GOOD LUCK\n\n\n\n**Du har:** TEST_END_TO_END_PRODUCTION.md (fuld guide)  
+**Du har:** Denne quick checklist  
+**Du har:** Frontend åben  
+**Du er:** Klar til at teste! 🎯\n\n
+**START NU!** ⬇️

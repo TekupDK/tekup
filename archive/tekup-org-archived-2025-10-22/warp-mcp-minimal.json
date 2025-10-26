@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "test": {
+      "command": "node",
+      "args": ["-e", "console.error('MCP Server started'); process.stdin.on('data', d => console.log(JSON.stringify({result: {protocolVersion: '2025-03-26', capabilities: {tools: {}}, serverInfo: {name: 'test', version: '1.0.0'}}, jsonrpc: '2.0', id: JSON.parse(d).id})))"]
+    }
+  }
+}

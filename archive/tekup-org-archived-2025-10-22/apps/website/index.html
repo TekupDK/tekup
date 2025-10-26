@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="rgb(13, 20, 31)" />
+    <meta name="msapplication-navbutton-color" content="rgb(13, 20, 31)" />
+    <!-- PWA manifest - only active in production -->
+    <script>
+      // Only register manifest in production
+      if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
+        const manifest = document.createElement('link');
+        manifest.rel = 'manifest';
+        manifest.href = '/manifest.json';
+        document.head.appendChild(manifest);
+      }
+    </script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>TekUp.dk - AI-drevne IT-løsninger | Neural Interface 2025</title>
+    <meta name="description" content="TekUp udvikler et helt økosystem af AI-drevne IT-løsninger. Fra BusinessOS til JARVIS AI - vi er din partner i digital transformation." />
+    <meta name="author" content="TekUp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tekup.dk/" />
+    <meta property="og:title" content="TekUp.dk - AI-drevne IT-løsninger | Neural Interface 2025" />
+    <meta property="og:description" content="TekUp udvikler et helt økosystem af AI-drevne IT-løsninger. Fra BusinessOS til JARVIS AI - vi er din partner i digital transformation." />
+    <meta property="og:image" content="https://tekup.dk/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="TekUp.dk" />
+    <meta property="og:locale" content="da_DK" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://tekup.dk/" />
+    <meta name="twitter:title" content="TekUp.dk - AI-drevne IT-løsninger" />
+    <meta name="twitter:description" content="Neurale netværk møder enterprise IT. Vi transformerer din digitale infrastruktur med kunstig intelligens og quantum-ready teknologier." />
+    <meta name="twitter:image" content="https://tekup.dk/twitter-image.png" />
+    <meta name="twitter:creator" content="@tekup_dk" />
+
+    <!-- Additional SEO meta tags -->
+    <meta name="keywords" content="AI, kunstig intelligens, IT-løsninger, neurale netværk, quantum computing, JARVIS AI, BusinessOS, digital transformation, enterprise IT, TekUp" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <link rel="canonical" href="https://tekup.dk/" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "TekUp",
+      "legalName": "TekUp ApS",
+      "url": "https://tekup.dk",
+      "logo": "https://tekup.dk/logo.svg",
+      "foundingDate": "2024",
+      "description": "TekUp udvikler et helt økosystem af AI-drevne IT-løsninger fra neurale netværk til quantum computing.",
+      "slogan": "Neurale netværk møder enterprise IT",
+      "sameAs": [
+        "https://linkedin.com/company/tekup-dk",
+        "https://github.com/tekup-org",
+        "https://twitter.com/tekup_dk"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "email": "contact@tekup.dk",
+        "availableLanguage": ["Danish", "English"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "DK",
+        "addressLocality": "Denmark"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "TekUp Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "JARVIS AI Assistant",
+              "description": "AI-drevet virtuel assistent til enterprise automation",
+              "serviceType": "Artificial Intelligence"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "BusinessOS",
+              "description": "Komplet forretningssystem med AI-integration",
+              "serviceType": "Enterprise Software"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Neurale netværksløsninger",
+              "description": "Tilpasset udvikling og implementering af neurale netværk",
+              "serviceType": "Machine Learning"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Quantum computing services",
+              "description": "Quantum-klar infrastruktur og udviklingsservices",
+              "serviceType": "Quantum Computing"
+            }
+          }
+        ]
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "TekUp.dk",
+      "url": "https://tekup.dk",
+      "description": "AI-drevne IT-løsninger | Neural Interface 2025",
+      "inLanguage": "da-DK",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://tekup.dk/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

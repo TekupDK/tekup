@@ -1,0 +1,180 @@
+{
+  "name": "tekup-secure-platform",
+  "version": "1.0.0",
+  "description": "Compliance og AI-sikkerhed for SMV'er (NIS2 + Copilot Ready)",
+  "main": "dist/main/index.js",
+  "homepage": "./",
+  "scripts": {
+    "dev": "pnpm --filter @tekup/config build && concurrently \"npm run dev:main\" \"npm run dev:renderer\"",
+    "dev:main": "pnpm --filter @tekup/config build && tsc -p tsconfig.main.json && electron dist/main/index.js --inspect=5858",
+    "dev:renderer": "vite",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "pnpm --filter @tekup/config build && tsc -p tsconfig.main.json",
+    "build:renderer": "vite build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:win64": "npm run build && electron-builder --win --x64",
+    "dist:win-portable": "npm run build && electron-builder --win portable",
+    "dist:all": "npm run build && electron-builder -mwl",
+    "pack": "npm run build && electron-builder --dir",
+    "pack:win": "npm run build && electron-builder --win --dir",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js",
+    "db:reset": "node scripts/reset.js"
+  },
+  "keywords": [
+    "compliance",
+    "nis2",
+    "security",
+    "copilot",
+    "microsoft365",
+    "backup",
+    "electron",
+    "sme"
+  ],
+  "author": "TekUp.dk",
+  "license": "MIT",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^29.5.5",
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^8.2.2",
+    "electron": "^37.3.1",
+    "electron-builder": "^24.6.4",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.0.3",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.6.3",
+    "vite": "^7.1.5",
+    "vite-plugin-electron": "^0.14.1"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.6.0",
+    "@azure/identity": "^4.0.0",
+    "@azure/msal-node": "^2.0.0",
+    "@heroicons/react": "^2.2.0",
+    "@microsoft/microsoft-graph-client": "^3.0.0",
+    "@tekup/config": "workspace:*",
+    "@types/better-sqlite3": "^7.6.13",
+    "autoprefixer": "^10.4.15",
+    "axios": "^1.6.0",
+    "better-sqlite3": "^12.2.0",
+    "date-fns": "^4.1.0",
+    "html2canvas": "^1.4.0",
+    "jspdf": "^3.0.2",
+    "node-cron": "^3.0.3",
+    "openai": "^4.8.0",
+    "postcss": "^8.4.29",
+    "puppeteer": "^24.17.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "sqlite3": "^5.1.6",
+    "tailwindcss": "^4.1.1",
+    "zod": "^3.22.2"
+  },
+  "build": {
+    "appId": "com.tekup.secureplatform",
+    "productName": "TekUp Secure Platform",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "target": {
+        "target": "dmg",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "publisherName": "TekUp.dk",
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "TekUp Secure Platform",
+      "include": "build/installer.nsh",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "runAfterFinish": true,
+      "menuCategory": "Security"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "category": "Security"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "tekup-dk",
+      "repo": "tekup-secure-platform"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+
+/* Lead Platform specific overrides */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    height: 100%;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background: #f9fafb;
+  }
+}
+
+@layer components {
+  /* Lead Platform specific components */
+  .lead-card {
+    @apply bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg shadow-xl;
+  }
+
+  .lead-header {
+    @apply bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6 mb-8;
+  }
+
+  .lead-stats {
+    @apply bg-white rounded-lg shadow p-6;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold;
+    @apply backdrop-blur-sm border transition-all duration-300;
+  }
+
+  .status-hot {
+    @apply bg-red-500/20 text-red-800 border-red-500/30;
+    box-shadow: 0 0 10px hsl(0 75% 55% / 0.3);
+  }
+
+  .status-warm {
+    @apply bg-yellow-500/20 text-yellow-800 border-yellow-500/30;
+    box-shadow: 0 0 10px hsl(45 93% 47% / 0.3);
+  }
+
+  .status-cold {
+    @apply bg-blue-500/20 text-blue-800 border-blue-500/30;
+    box-shadow: 0 0 10px hsl(210 100% 50% / 0.3);
+  }
+
+  .status-unqualified {
+    @apply bg-gray-500/20 text-gray-800 border-gray-500/30;
+  }
+}

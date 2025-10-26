@@ -1,0 +1,34 @@
+{
+  "name": "@tekup/agentscope-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AgentScope Enhanced Backend - Python AI Agent Management System",
+  "type": "module",
+  "scripts": {
+    "dev": "python -m venv venv && .\\venv\\Scripts\\activate && pip install -r requirements.txt && python app.py",
+    "build": "echo 'Python backend - build step completed'",
+    "start": ".\\venv\\Scripts\\activate && python app.py",
+    "install": "python -m venv venv && .\\venv\\Scripts\\activate && pip install -r requirements.txt",
+    "freeze": ".\\venv\\Scripts\\activate && pip freeze > requirements.txt",
+    "clean": "Remove-Item -Recurse -Force venv -ErrorAction SilentlyContinue",
+    "setup": "python -m venv venv && .\\venv\\Scripts\\activate && pip install agentscope flask fastapi uvicorn",
+    "status": "echo 'AgentScope Backend - Python Virtual Environment Status' && .\\venv\\Scripts\\python --version 2>NUL || echo 'Virtual environment not activated'"
+  },
+  "keywords": [
+    "python",
+    "agentscope",
+    "ai",
+    "agent",
+    "backend",
+    "flask",
+    "fastapi"
+  ],
+  "engines": {
+    "python": ">=3.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tekup-org/Tekup-org.git",
+    "directory": "apps/agentscope-backend"
+  }
+}

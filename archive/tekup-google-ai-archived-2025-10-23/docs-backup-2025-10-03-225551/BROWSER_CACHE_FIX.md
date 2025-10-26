@@ -1,0 +1,114 @@
+# 🔧 LØSNING: Browser Cache Problem\n\n\n\n**Date**: October 1, 2025, 23:12 CET  
+**Status**: Frontend deployed ✅ men browser viser gammel cached version!
+
+---
+\n\n## 🎯 Problemet\n\n\n\n**Frontend er deployet korrekt**:
+\n\n- ✅ Build succeeded på Render\n\n- ✅ Commit `78fadc4` deployed\n\n- ✅ "Your site is live 🎉" i logs\n\n- ✅ VITE_API_URL sat korrekt i Render\n\n
+**MEN dashboard viser stadig**:
+\n\n- 127 Kunder (mock) ← Gammel cached version!\n\n- 43 Leads (mock)\n\n- 89 Bookinger (mock)\n\n- 284.5k kr (mock)\n\n
+---
+\n\n## ✅ LØSNING: Clear Browser Cache\n\n\n\n### Metode 1: Hard Refresh (QUICKEST)\n\n\n\n**I Simple Browser / Chrome / Edge**:
+\n\n```
+Windows: Ctrl + Shift + R\n\nMac: Cmd + Shift + R\n\n```
+
+Dette tvinger browseren til at hente den nye version uden at bruge cache.
+
+---
+\n\n### Metode 2: Empty Cache and Hard Reload\n\n\n\n1. **Åbn Developer Tools**: Tryk `F12`\n\n2. **Right-click på refresh button** (ved siden af URL bar)\n\n3. **Vælg**: "Empty Cache and Hard Reload"
+
+Dette sletter al cache og genindlæser siden.
+
+---
+\n\n### Metode 3: Clear All Browser Data\n\n\n\n**Chrome/Edge**:
+\n\n1. Tryk `Ctrl + Shift + Delete`\n\n2. Vælg "Cached images and files"\n\n3. Tidsperiode: "Last 24 hours"\n\n4. Klik "Clear data"\n\n5. Reload siden
+
+---
+\n\n### Metode 4: Åbn i Incognito Mode\n\n\n\n**Chrome/Edge**:
+\n\n```
+Ctrl + Shift + N (Windows)\n\nCmd + Shift + N (Mac)\n\n```
+
+Gå til: `https://tekup-renos-1.onrender.com`
+
+Incognito mode har ingen cache, så du ser den nye version med det samme!
+
+---
+\n\n## 🧪 Verificer at det Virker\n\n\n\nEfter du har clearet cache, tjek at du ser:
+\n\n### ✅ RIGTIGE DATA (Ny version)\n\n\n\n- **6 Kunder** (ikke 127)\n\n- **4 Leads** (ikke 43)\n\n- **9 Bookinger** (ikke 89)\n\n- **12,300 kr Omsætning** (ikke 284,500 kr)\n\n\n\n### Browser Console Check (F12)\n\n\n\nÅbn console og kør:
+\n\n```javascript
+console.log(import.meta.env.VITE_API_URL)\n\n```
+
+Skulle vise: `https://tekup-renos.onrender.com`
+
+---
+\n\n## 🔍 Debug: Check Network Tab\n\n\n\n1. Åbn DevTools (`F12`)\n\n2. Gå til **Network** tab\n\n3. Reload siden\n\n4. Find request til `/api/dashboard/stats/overview`\n\n5. Check **Response**:
+
+**Forventet response**:
+\n\n```json
+{
+  "customers": 6,
+  "leads": 4,
+  "bookings": 9,
+  "quotes": 4,
+  "conversations": 0,
+  "revenue": 12300
+}\n\n```
+
+Hvis du ser denne response, men dashboard stadig viser 127, så er det React state issue.
+
+---
+\n\n## 🚨 Hvis det STADIG ikke virker\n\n\n\n### Problem: API request fails\n\n\n\n**Check console for errors**:
+\n\n- CORS error? Backend needs to allow frontend domain\n\n- 404 error? Check API_BASE URL\n\n- Network error? Backend might be down\n\n\n\n### Problem: API returns correct data but UI shows wrong numbers\n\n\n\n**Possible causes**:
+\n\n1. React state not updating (check useEffect dependencies)\n\n2. Loading state stuck (stats is null)\n\n3. Fallback values used (stats?.customers || 0 shows 0)
+\n\n### Solution: Check logs and verify data flow\n\n\n\n```javascript\n\n// Add this in browser console:
+fetch('https://tekup-renos.onrender.com/api/dashboard/stats/overview')
+  .then(r => r.json())
+  .then(d => console.log('API Response:', d))\n\n```
+
+---
+\n\n## 📝 Why This Happens\n\n\n\n**Browser caching strategy**:
+\n\n- Browsers cache static assets (JS, CSS) aggressively\n\n- When Render deploys new version, files have same names\n\n- Browser thinks "I already have index-aaqLvqt5.js, no need to download"\n\n- Result: Old JavaScript runs with old hardcoded values\n\n
+**Solution**: Hard refresh bypasses cache
+
+---
+\n\n## ✅ Verification Checklist\n\n\n\nOnce cache is cleared:
+\n\n- [ ] Hard refreshed browser (Ctrl+Shift+R)\n\n- [ ] Dashboard shows 6 customers (not 127)\n\n- [ ] Dashboard shows 4 leads (not 43)  \n\n- [ ] Dashboard shows 9 bookings (not 89)\n\n- [ ] Dashboard shows 12.3k kr revenue (not 284.5k)\n\n- [ ] No console errors in DevTools\n\n- [ ] Network tab shows successful API calls\n\n- [ ] API response matches UI display\n\n
+---
+\n\n## 🎉 Expected Result\n\n\n\nAfter clearing cache, you should see:
+\n\n```
+Dashboard
+Overblik over RenOS aktiviteter og performance
+
+Kunder: 6        ← Real data!
+Leads: 4         ← Real data!
+Bookinger: 9     ← Real data!
+Tilbud: 4        ← Real data!
+Omsætning: 12.3k kr  ← Real data!\n\n```
+
+**Success indicator**: Numbers match the API response we tested earlier! ✅
+
+---
+\n\n## 🔧 Quick Command to Test\n\n\n\nRun this in PowerShell to verify backend returns correct data:
+\n\n```powershell
+Invoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/dashboard/stats/overview"\n\n```
+
+Expected output:
+\n\n```
+customers     : 6
+leads         : 4
+bookings      : 9
+quotes        : 4
+conversations : 0
+revenue       : 12300\n\n```
+
+If backend returns this but frontend shows different numbers = **cache issue confirmed!**
+
+---
+
+**Next Action**:
+\n\n1. Open <https://tekup-renos-1.onrender.com> in **Incognito window**\n\n2. Or do **Ctrl+Shift+R** in existing window\n\n3. Verify numbers changed to real data (6, 4, 9, 12300)
+
+---
+
+*Generated: October 1, 2025, 23:12 CET*  
+*Issue: Browser cache showing old frontend version*  
+*Solution: Hard refresh or incognito mode*

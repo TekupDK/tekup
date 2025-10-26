@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "simple-browser": {
+      "command": "node",
+      "args": ["mcp-browser-server-simple.cjs"],
+      "cwd": "C:\\Users\\empir\\Tekup-org",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}

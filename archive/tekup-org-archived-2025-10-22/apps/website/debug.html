@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TekUp Website Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .debug-info {
+            background: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .error { color: #ff6b6b; }
+        .success { color: #51cf66; }
+        .warning { color: #ffd93d; }
+    </style>
+</head>
+<body>
+    <h1>TekUp Website Debug Information</h1>
+
+    <div class="debug-info">
+        <h3>🌐 Server Status</h3>
+        <p id="server-status">Tjekker server status...</p>
+    </div>
+
+    <div class="debug-info">
+        <h3>📱 Viewport Information</h3>
+        <p>Window Width: <span id="window-width"></span>px</p>
+        <p>Window Height: <span id="window-height"></span>px</p>
+        <p>Device Pixel Ratio: <span id="pixel-ratio"></span></p>
+    </div>
+
+    <div class="debug-info">
+        <h3>🎨 CSS Variables Test</h3>
+        <div id="css-test" style="width: 100px; height: 100px; background: var(--surface-base, #ff0000); border: 2px solid var(--ai-primary, #00ff00);"></div>
+        <p>Hvis denne box er rød, mangler CSS variables. Hvis den er mørk blå/grå, virker CSS variables korrekt.</p>
+    </div>
+
+    <div class="debug-info">
+        <h3>🔗 Navigation Test</h3>
+        <button onclick="testMainSite()" style="padding: 10px 20px; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Test Hovedhjemmeside
+        </button>
+        <p id="nav-result"></p>
+    </div>
+
+    <script>
+        // Update viewport info
+        document.getElementById('window-width').textContent = window.innerWidth;
+        document.getElementById('window-height').textContent = window.innerHeight;
+        document.getElementById('pixel-ratio').textContent = window.devicePixelRatio;
+
+        // Test server status
+        async function testServer() {
+            try {
+                const response = await fetch('/');
+                if (response.ok) {
+                    document.getElementById('server-status').innerHTML =
+                        '<span class="success">✅ Server kører korrekt på http://localhost:8081</span>';
+                } else {
+                    document.getElementById('server-status').innerHTML =
+                        '<span class="error">❌ Server problem: ' + response.status + '</span>';
+                }
+            } catch (error) {
+                document.getElementById('server-status').innerHTML =
+                    '<span class="error">❌ Kan ikke forbinde til server: ' + error.message + '</span>';
+            }
+        }
+
+        // Test main site navigation
+        function testMainSite() {
+            const result = document.getElementById('nav-result');
+            result.innerHTML = '<span class="warning">⏳ Åbner hovedhjemmeside...</span>';
+
+            try {
+                window.open('/', '_blank');
+                result.innerHTML = '<span class="success">✅ Hovedhjemmeside åbnet i nyt faneblad</span>';
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Kunne ikke åbne hovedhjemmeside: ' + error.message + '</span>';
+            }
+        }
+
+        // Run tests on load
+        testServer();
+
+        // Auto-refresh every 30 seconds
+        setInterval(testServer, 30000);
+    </script>
+</body>
+</html>

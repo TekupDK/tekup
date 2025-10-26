@@ -1,0 +1,12 @@
+{
+  "name": "@tekup/tekup-mobile",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'tekup-mobile app not configured yet'",
+    "build": "echo 'no-op'",
+    "start": "echo 'no-op'"
+  }
+}
+
+

@@ -1,0 +1,566 @@
+/**
+ * Email Management Toolset
+ * 
+ * Tools for Gmail operations and email automation:
+ * - Compose and send emails with thread awareness
+ * - Reply to threads with context preservation
+ * - Generate follow-up emails
+ * - Handle complaint resolution
+ * - Search and organize email threads
+ * 
+ * ADK Pattern: Specialized toolset for email-related operations
+ * Migrated from handlers for consistency with CalendarToolset and LeadToolset
+ */
+
+import { BaseToolset, BaseTool } from "../baseToolset";
+import { ToolContext } from "../toolContext";
+import { logger } from "../../logger";
+import { prisma } from "../../services/databaseService";
+import { isLiveMode, isAutoResponseEnabled } from "../../config";
+import * as gmailService from "../../services/gmailService";
+import type { LeadInformation, PricingEstimate } from "../../types";
+
+export class EmailToolset extends BaseToolset {
+    name = "email_management";
+
+    async getTools(_context?: ToolContext): Promise<BaseTool[]> {
+        return [
+            {
+                name: "compose_email",
+                description: `Compose a new email or reply to existing thread.
+                
+                Features:
+                - Thread-aware: Searches for existing conversations to avoid duplicates
+                - Auto-personalization: Includes customer name, property details, pricing
+                - Template-based: Uses professional Danish templates for quotes
+                - Draft mode: Creates draft for approval unless auto-send is enabled
+                
+                Use when: New lead arrives or customer request needs response.
+                
+                Safety: Respects RUN_MODE=dry-run and isAutoResponseEnabled() flag.`,
+
+                parameters: {
+                    to: {
+                        type: "string",
+                        description: "Recipient email address",
+                        required: true,
+                    },
+                    subject: {
+                        type: "string",
+                        description: "Email subject line",
+                        required: true,
+                    },
+                    body: {
+                        type: "string",
+                        description: "Email body content (HTML supported)",
+                        required: true,
+                    },
+                    lead: {
+                        type: "object",
+                        description: "Lead information for personalization",
+                        required: false,
+                    },
+                    pricing: {
+                        type: "object",
+                        description: "Pricing estimate for quote emails",
+                        required: false,
+                    },
+                    threadId: {
+                        type: "string",
+                        description: "Existing Gmail thread ID (for replies)",
+                        required: false,
+                    },
+                    autoSend: {
+                        type: "boolean",
+                        description: "Send immediately (true) or create draft (false, default)",
+                        required: false,
+                    },
+                },
+
+                handler: async (params, context) => {
+                    try {
+                        // Safety checks
+                        if (!isLiveMode()) {
+                            logger.warn("Email compose blocked: RUN_MODE=dry-run");
+                            return {
+                                status: "success",
+                                message: "DRY-RUN: Email would be sent",
+                                dryRun: true,
+                                preview: {
+                                    to: params.to,
+                                    subject: params.subject,
+                                    bodyPreview: (params.body as string).substring(0, 200) + "...",
+                                },
+                            };
+                        }
+
+                        if (!isAutoResponseEnabled() && params.autoSend) {
+                            logger.warn("Auto-send blocked: AUTO_RESPONSE_ENABLED=false");
+                            params.autoSend = false;
+                        }
+
+                        // Thread awareness: Search for existing conversation
+                        let threadId = params.threadId as string | undefined;
+                        
+                        if (!threadId && params.lead) {
+                            const lead = params.lead as LeadInformation;
+                            const existingThread = await gmailService.searchThreadBySubject(
+                                params.to as string,
+                                params.subject as string
+                            );
+                            
+                            if (existingThread) {
+                                threadId = existingThread.id;
+                                logger.info(
+                                    { threadId, subject: params.subject },
+                                    "Found existing thread for reply"
+                                );
+                            }
+                        }
+
+                        // Compose email
+                        const emailOptions = {
+                            to: params.to as string,
+                            subject: params.subject as string,
+                            body: params.body as string,
+                            threadId,
+                        };
+
+                        let result;
+
+                        if (params.autoSend) {
+                            // Send immediately
+                            result = await gmailService.sendEmail(emailOptions);
+                            
+                            logger.info(
+                                { messageId: result.id, threadId: result.threadId },
+                                "Email sent successfully"
+                            );
+
+                            // Store in database
+                            await prisma.emailResponse.create({
+                                data: {
+                                    to: [params.to as string],
+                                    subject: params.subject as string,
+                                    body: params.body as string,
+                                    status: "sent",
+                                    sentAt: new Date(),
+                                    threadId: result.threadId,
+                                },
+                            });
+
+                            return {
+                                status: "success",
+                                messageId: result.id,
+                                threadId: result.threadId,
+                                message: "Email sent successfully",
+                            };
+                        } else {
+                            // Create draft for approval
+                            result = await gmailService.createDraft(emailOptions);
+
+                            logger.info(
+                                { draftId: result.id },
+                                "Email draft created for approval"
+                            );
+
+                            // Store draft in database
+                            const draft = await prisma.emailResponse.create({
+                                data: {
+                                    to: [params.to as string],
+                                    subject: params.subject as string,
+                                    body: params.body as string,
+                                    status: "pending",
+                                    threadId,
+                                },
+                            });
+
+                            return {
+                                status: "success",
+                                draftId: result.id,
+                                dbId: draft.id,
+                                message: "Draft created for approval",
+                                approvalUrl: `/api/email/approve/${draft.id}`,
+                            };
+                        }
+                    } catch (error) {
+                        logger.error({ error, params }, "Failed to compose email");
+                        return {
+                            status: "error",
+                            error_message: error instanceof Error ? error.message : "Unknown error",
+                        };
+                    }
+                },
+
+                category: "email_operations",
+            },
+
+            {
+                name: "reply_to_thread",
+                description: `Reply to existing email thread with context awareness.
+                
+                Features:
+                - Preserves conversation history
+                - References previous messages
+                - Maintains professional tone
+                - Thread-safe: Ensures reply goes to correct thread
+                
+                Use when: Customer responds to quote or has follow-up questions.`,
+
+                parameters: {
+                    threadId: {
+                        type: "string",
+                        description: "Gmail thread ID to reply to",
+                        required: true,
+                    },
+                    body: {
+                        type: "string",
+                        description: "Reply message body",
+                        required: true,
+                    },
+                    includeQuote: {
+                        type: "boolean",
+                        description: "Include previous message in reply (default: false)",
+                        required: false,
+                    },
+                },
+
+                handler: async (params, context) => {
+                    try {
+                        if (!isLiveMode()) {
+                            return {
+                                status: "success",
+                                message: "DRY-RUN: Reply would be sent",
+                                dryRun: true,
+                            };
+                        }
+
+                        const thread = await gmailService.getThread(params.threadId as string);
+                        
+                        if (!thread || !thread.messages || thread.messages.length === 0) {
+                            return {
+                                status: "error",
+                                error_message: "Thread not found or empty",
+                            };
+                        }
+
+                        const lastMessage = thread.messages[thread.messages.length - 1];
+                        const to = gmailService.extractEmailFromHeader(lastMessage, "From");
+                        const subject = gmailService.extractEmailFromHeader(lastMessage, "Subject");
+
+                        const result = await gmailService.sendEmail({
+                            to,
+                            subject: subject.startsWith("Re:") ? subject : `Re: ${subject}`,
+                            body: params.body as string,
+                            threadId: params.threadId as string,
+                        });
+
+                        return {
+                            status: "success",
+                            messageId: result.id,
+                            threadId: result.threadId,
+                            message: "Reply sent successfully",
+                        };
+                    } catch (error) {
+                        logger.error({ error, params }, "Failed to send reply");
+                        return {
+                            status: "error",
+                            error_message: error instanceof Error ? error.message : "Unknown error",
+                        };
+                    }
+                },
+
+                category: "email_operations",
+            },
+
+            {
+                name: "generate_followup",
+                description: `Generate follow-up email for leads that haven't responded.
+                
+                Features:
+                - Polite reminder tone
+                - References previous conversation
+                - Adds urgency without being pushy
+                - Suggests next steps (booking, questions, etc.)
+                
+                Use when: Lead hasn't responded within 7-10 days of initial quote.`,
+
+                parameters: {
+                    leadId: {
+                        type: "string",
+                        description: "Lead database ID",
+                        required: true,
+                    },
+                    daysSinceLastContact: {
+                        type: "number",
+                        description: "Days since last email (helps tone selection)",
+                        required: false,
+                    },
+                },
+
+                handler: async (params, context) => {
+                    try {
+                        const lead = await prisma.lead.findUnique({
+                            where: { id: params.leadId as string },
+                            include: {
+                                quotes: { orderBy: { createdAt: "desc" }, take: 1 },
+                            },
+                        });
+
+                        if (!lead) {
+                            return {
+                                status: "error",
+                                error_message: "Lead not found",
+                            };
+                        }
+
+                        const daysSince = params.daysSinceLastContact as number || 7;
+                        const quote = lead.quotes[0];
+
+                        // Generate personalized follow-up
+                        const body = `
+Hej ${lead.name || ""},
+
+Jeg følger op på vores tidligere tilbud på ${lead.taskType || "rengøring"}.
+
+${quote ? `Tilbuddet på ${quote.total} DKK er stadig gyldigt.` : ""}
+
+Har du spørgsmål eller ønsker du at booke et tidspunkt?
+
+Jeg er klar til at hjælpe!
+
+Med venlig hilsen,
+Rendetalje.dk
+                        `.trim();
+
+                        // Create draft for approval
+                        const draft = await prisma.emailResponse.create({
+                            data: {
+                                leadId: lead.id,
+                                to: [lead.email || ""],
+                                subject: `Opfølgning: ${lead.taskType || "Rengøring"}`,
+                                body,
+                                status: "pending",
+                                threadId: lead.emailThreadId,
+                            },
+                        });
+
+                        return {
+                            status: "success",
+                            draftId: draft.id,
+                            message: "Follow-up draft created",
+                            preview: body,
+                        };
+                    } catch (error) {
+                        logger.error({ error, params }, "Failed to generate follow-up");
+                        return {
+                            status: "error",
+                            error_message: error instanceof Error ? error.message : "Unknown error",
+                        };
+                    }
+                },
+
+                category: "email_automation",
+            },
+
+            {
+                name: "resolve_complaint",
+                description: `Handle customer complaint with empathy and solutions.
+                
+                Features:
+                - Acknowledges issue immediately
+                - Proposes compensation or solution
+                - Escalates to management if needed
+                - Follows Danish customer service standards
+                
+                Use when: Customer expresses dissatisfaction or reports problem.`,
+
+                parameters: {
+                    complaintText: {
+                        type: "string",
+                        description: "Customer complaint message",
+                        required: true,
+                    },
+                    customerId: {
+                        type: "string",
+                        description: "Customer database ID",
+                        required: false,
+                    },
+                    severity: {
+                        type: "string",
+                        description: "low, medium, high (affects response strategy)",
+                        required: false,
+                    },
+                },
+
+                handler: async (params, context) => {
+                    try {
+                        const severity = (params.severity as string) || "medium";
+
+                        // Generate empathetic response based on severity
+                        let response = `
+Kære kunde,
+
+Tak for at kontakte os. Jeg beklager meget, at du ikke har haft en god oplevelse.
+                        `.trim();
+
+                        if (severity === "high") {
+                            response += `\n\nDette er meget alvorligt for os. Jeg vil eskalere sagen til vores manager med det samme.`;
+                        }
+
+                        response += `\n\nVi vil gerne finde en løsning. Kan vi tilbyde:\n- Ny gratis rengøring\n- Delvis refundering\n- Eller hvad ville du foreslå?`;
+
+                        response += `\n\nMed venlig hilsen,\nRendetalje.dk`;
+
+                        // Store complaint for tracking
+                        if (params.customerId) {
+                            await prisma.escalation.create({
+                                data: {
+                                    type: "complaint",
+                                    severity,
+                                    description: params.complaintText as string,
+                                    customerId: params.customerId as string,
+                                    status: "open",
+                                },
+                            });
+                        }
+
+                        return {
+                            status: "success",
+                            response,
+                            escalated: severity === "high",
+                            message: "Complaint response generated",
+                        };
+                    } catch (error) {
+                        logger.error({ error, params }, "Failed to resolve complaint");
+                        return {
+                            status: "error",
+                            error_message: error instanceof Error ? error.message : "Unknown error",
+                        };
+                    }
+                },
+
+                category: "customer_service",
+            },
+
+            {
+                name: "search_email_threads",
+                description: `Search Gmail threads by various criteria.
+                
+                Filters:
+                - By email address (customer)
+                - By subject keywords
+                - By date range
+                - By label (lead, quote, booking, etc.)
+                
+                Use when: Need to find conversation history or check if customer exists.`,
+
+                parameters: {
+                    email: {
+                        type: "string",
+                        description: "Filter by customer email",
+                        required: false,
+                    },
+                    subject: {
+                        type: "string",
+                        description: "Filter by subject keywords",
+                        required: false,
+                    },
+                    afterDate: {
+                        type: "string",
+                        description: "ISO date string (e.g., '2025-01-01')",
+                        required: false,
+                    },
+                    maxResults: {
+                        type: "number",
+                        description: "Maximum threads to return (default: 10)",
+                        required: false,
+                    },
+                },
+
+                handler: async (params, context) => {
+                    try {
+                        const threads = await gmailService.searchThreads({
+                            from: params.email as string | undefined,
+                            subject: params.subject as string | undefined,
+                            after: params.afterDate as string | undefined,
+                            maxResults: (params.maxResults as number) || 10,
+                        });
+
+                        return {
+                            status: "success",
+                            threads: threads.map((t) => ({
+                                id: t.id,
+                                subject: t.subject,
+                                from: t.from,
+                                date: t.date,
+                                snippet: t.snippet,
+                            })),
+                            count: threads.length,
+                        };
+                    } catch (error) {
+                        logger.error({ error, params }, "Failed to search email threads");
+                        return {
+                            status: "error",
+                            error_message: error instanceof Error ? error.message : "Unknown error",
+                        };
+                    }
+                },
+
+                category: "email_operations",
+            },
+
+            {
+                name: "apply_email_label",
+                description: `Apply Gmail label to email thread for organization.
+                
+                Labels: lead, quote_sent, booking_confirmed, follow_up, complaint
+                
+                Use when: Categorizing emails for better organization and tracking.`,
+
+                parameters: {
+                    threadId: {
+                        type: "string",
+                        description: "Gmail thread ID",
+                        required: true,
+                    },
+                    label: {
+                        type: "string",
+                        description: "Label name (e.g., 'lead', 'quote_sent')",
+                        required: true,
+                    },
+                },
+
+                handler: async (params, context) => {
+                    try {
+                        if (!isLiveMode()) {
+                            return {
+                                status: "success",
+                                message: "DRY-RUN: Label would be applied",
+                                dryRun: true,
+                            };
+                        }
+
+                        await gmailService.applyLabel(
+                            params.threadId as string,
+                            params.label as string
+                        );
+
+                        return {
+                            status: "success",
+                            message: `Label '${params.label}' applied successfully`,
+                        };
+                    } catch (error) {
+                        logger.error({ error, params }, "Failed to apply email label");
+                        return {
+                            status: "error",
+                            error_message: error instanceof Error ? error.message : "Unknown error",
+                        };
+                    }
+                },
+
+                category: "email_operations",
+            },
+        ];
+    }
+}

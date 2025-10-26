@@ -1,0 +1,135 @@
+{
+  "name": "TekUp - AI-Powered IT Solutions",
+  "short_name": "TekUp",
+  "description": "TekUp udvikler et helt økosystem af IT-løsninger. Fra BusinessOS til JARVIS AI - vi er din partner i digital transformation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d141f",
+  "theme_color": "#0d141f",
+  "orientation": "portrait-primary",
+  "categories": ["business", "productivity", "technology"],
+  "lang": "da",
+  "dir": "ltr",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.svg",
+      "sizes": "72x72",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.svg",
+      "sizes": "96x96",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.svg",
+      "sizes": "144x144",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.svg",
+      "sizes": "152x152",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.svg",
+      "sizes": "384x384",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Neural Dashboard",
+      "short_name": "Dashboard",
+      "description": "Access AI-powered dashboard and analytics",
+      "url": "/?page=dashboard",
+      "icons": [
+        {
+          "src": "/icons/icon-96x96.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "JARVIS AI",
+      "short_name": "JARVIS",
+      "description": "Chat with JARVIS AI Assistant",
+      "url": "/?feature=jarvis",
+      "icons": [
+        {
+          "src": "/icons/icon-128x128.svg",
+          "sizes": "128x128",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Quantum Computing",
+      "short_name": "Quantum",
+      "description": "Explore quantum computing capabilities",
+      "url": "/?feature=quantum",
+      "icons": [
+        {
+          "src": "/icons/icon-144x144.svg",
+          "sizes": "144x144",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Neural Networks",
+      "short_name": "Neural",
+      "description": "Monitor and configure neural networks",
+      "url": "/?feature=neural",
+      "icons": [
+        {
+          "src": "/icons/icon-152x152.svg",
+          "sizes": "152x152",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "TekUp Homepage - Desktop"
+    },
+    {
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "TekUp Homepage - Mobile"
+    }
+  ],
+  "prefer_related_applications": false
+}

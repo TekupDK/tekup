@@ -1,0 +1,103 @@
+/.env
+/.env.*
+/.env.local*
+apps/**/.env
+apps/**/.env.*
+packages/**/.env
+packages/**/.env.*
+
+# Keep example env files tracked
+!.env.example
+!.env.example.*
+!**/.env.example
+!**/.env.example.*
+node_modules
+
+# Build outputs for Vite apps
+apps/**/dist
+apps/**/.vite
+apps/**/coverage
+
+# Next.js build outputs og cache (forhindrer Windsurf cascade errors)
+apps/**/.next/
+apps/**/out/
+*.pack.gz
+*.woff2
+*.mp3
+
+# Build artifacts og temporary files
+apps/**/logs/
+apps/**/.turbo/
+apps/**/coverage/
+apps/**/.nyc_output/
+apps/**/.vscode/
+
+# IDE og system filer
+.idea/
+nul
+*.log
+*.tmp
+*.swp
+
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
+
+# Ignore build outputs for event-bus
+packages/event-bus/dist/
+
+# ============================================
+# Additional build & runtime artefacts (added by cleanup task)
+# ============================================
+
+# Generic dist outputs for all packages (TypeScript builds)
+packages/**/dist
+apps/**/dist
+
+# Next.js specific (catch any missing nested patterns)
+**/.next/
+**/out/
+
+# Local SQLite / development DBs
+**/dev.db
+**/dev.db-journal
+
+# Logs (app + custom build logs)
+**/*.log
+logs/
+**/logs/
+
+# OS / Editor miscellanous
+*.DS_Store
+Thumbs.db
+
+# Generated coverage (safety even if not currently tracked)
+coverage/
+**/coverage/
+
+# Turbo / Nx / build caches (defensive)
+.turbo/
+**/.turbo/
+.nx/cache
+.nx/workspace-data
+
+# Local virtual envs / Python build artefacts
+.venv/
+**/.venv/
+**/__pycache__/
+*.pyc
+
+# Environment overrides (already partially handled – add catch-alls)
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# MCP / experimental runtime temp files
+**/*.tsbuildinfo
+
+# Ignore editor specific project settings except root curated ones
+**/.vscode/
+!.vscode/settings.json
+

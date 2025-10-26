@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MCPProject {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String
+  language    String   // typescript, python, javascript
+  framework   String   // nodejs, fastapi, express
+  scaffolding Json     // Generated project files and structure
+  status      String   @default("ACTIVE") // ACTIVE, ARCHIVED, DELETED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  tools       MCPTool[]
+  resources   MCPResource[]
+  deployments MCPDeployment[]
+  validations ValidationResult[]
+
+  @@map("mcp_projects")
+}
+
+model MCPTool {
+  id          String   @id @default(cuid())
+  projectId   String
+  name        String
+  description String
+  inputSchema Json     // JSON Schema for tool input
+  handler     String   // Code for tool handler
+  category    String?  // FILE_SYSTEM, API, DATABASE, etc.
+  version     String   @default("1.0.0")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  project     MCPProject @relation(fields: [projectId], references: [id])
+
+  @@map("mcp_tools")
+}
+
+model MCPResource {
+  id          String   @id @default(cuid())
+  projectId   String
+  name        String
+  description String
+  uri         String   // Resource URI pattern
+  mimeType    String?
+  handler     String   // Code for resource handler
+  category    String?  // DOCUMENT, IMAGE, DATA, etc.
+  version     String   @default("1.0.0")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  project     MCPProject @relation(fields: [projectId], references: [id])
+
+  @@map("mcp_resources")
+}
+
+model MCPDeployment {
+  id            String   @id @default(cuid())
+  projectId     String
+  version       String
+  status        String   @default("DEPLOYED") // DEPLOYED, FAILED, ARCHIVED
+  marketplaceUrl String?
+  downloadCount Int      @default(0)
+  rating        Float?
+  deployedAt    DateTime @default(now())
+  archivedAt    DateTime?
+
+  // Relations
+  project       MCPProject @relation(fields: [projectId], references: [id])
+
+  @@map("mcp_deployments")
+}
+
+model ValidationResult {
+  id          String   @id @default(cuid())
+  projectId   String
+  version     String
+  valid       Boolean
+  results     Json     // Array of validation checks
+  recommendations String[]
+  runAt       DateTime @default(now())
+
+  // Relations
+  project     MCPProject @relation(fields: [projectId], references: [id])
+
+  @@map("validation_results")
+}
+
+model MCPMarketplace {
+  id            String   @id @default(cuid())
+  projectId     String
+  title         String
+  shortDescription String
+  longDescription String?
+  category      String
+  tags          String[]
+  screenshots   String[] // URLs to screenshots
+  documentation String?  // URL or markdown content
+  license       String   @default("MIT")
+  isPublic      Boolean  @default(false)
+  isFeatured    Boolean  @default(false)
+  publishedAt   DateTime?
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+
+  @@unique([projectId])
+  @@map("mcp_marketplace")
+}
+
+model MCPTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  language    String
+  framework   String
+  category    String   // UTILITY, INTEGRATION, AI_AGENT, etc.
+  template    Json     // Template files and structure
+  popularity  Int      @default(0)
+  isOfficial  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("mcp_templates")
+}
+
+model MCPServerInstance {
+  id          String   @id @default(cuid())
+  projectId   String
+  name        String
+  description String?
+  endpoint    String   // WebSocket or HTTP endpoint
+  apiKey      String?
+  status      String   @default("RUNNING") // RUNNING, STOPPED, ERROR
+  lastPing    DateTime?
+  metrics     Json?    // Performance and usage metrics
+  config      Json?    // Server configuration
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("mcp_server_instances")
+}
+
+model MCPUsageAnalytics {
+  id              String   @id @default(cuid())
+  projectId       String?
+  date            DateTime
+  toolCalls       Int      @default(0)
+  resourceRequests Int     @default(0)
+  activeUsers     Int      @default(0)
+  responseTime    Float?   // Average response time in ms
+  errorRate       Float?   // Error rate percentage
+  popularTools    Json?    // Most used tools
+  userAgents      Json?    // Client applications using the server
+
+  @@unique([projectId, date])
+  @@map("mcp_usage_analytics")
+}
+
+model MCPFeedback {
+  id          String   @id @default(cuid())
+  projectId   String
+  userId      String
+  rating      Int      // 1-5 stars
+  title       String?
+  comment     String?
+  category    String?  // BUG, FEATURE_REQUEST, GENERAL
+  status      String   @default("OPEN") // OPEN, ACKNOWLEDGED, RESOLVED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("mcp_feedback")
+}

@@ -1,0 +1,16 @@
+﻿{
+  "economic_receipt_email": "1714566@e-conomic.dk",
+  "credentials_file": "credentials.json",
+  "processed_label": "Videresendt_econ",
+  "days_back": 180,
+  "max_emails": 100,
+  "search_keywords": [
+    "faktura",
+    "invoice",
+    "kvittering",
+    "receipt",
+    "bilag",
+    "moms"
+  ],
+  "allowed_senders": []
+}

@@ -1,0 +1,163 @@
+{
+  "design_system": {
+    "name": "TekUp Futuristic Design System",
+    "version": "4.1",
+    "framework": "tailwindcss",
+    "theme": "glassmorphism_futuristic"
+  },
+  "color_palette": {
+    "primary": {
+      "neon_blue": "hsl(195 100% 50%)",
+      "neon_cyan": "hsl(180 100% 50%)",
+      "primary_glow": "hsl(195 100% 65%)",
+      "primary_dark": "hsl(195 100% 35%)"
+    },
+    "background": {
+      "ecosystem_dark": "hsl(220 25% 6%)",
+      "dashboard_surface": "hsl(220 15% 14%)",
+      "card": "hsl(220 15% 12%)",
+      "card_glass": "hsl(220 20% 15%)"
+    },
+    "glass": {
+      "border": "hsl(220 20% 25%)",
+      "surface": "hsl(220 20% 15% / 0.8)"
+    },
+    "p3_support": true,
+    "wide_gamut": true
+  },
+  "typography": {
+    "heading_font": "Orbitron",
+    "body_font": "Inter",
+    "font_features": ["cv02", "cv03", "cv04", "cv11"],
+    "letter_spacing": {
+      "headings": "-0.02em",
+      "body": "-0.01em"
+    }
+  },
+  "components": {
+    "glass_card": {
+      "classes": "glass-card p-6",
+      "structure": "<div class=\"glass-card p-6\"><h2 class=\"font-orbitron font-bold text-neon-blue\">Title</h2><p class=\"text-muted-foreground\">Content</p></div>",
+      "effects": ["backdrop-blur", "glassmorphism", "mesh-gradient"]
+    },
+    "buttons": {
+      "primary": {
+        "classes": "btn-futuristic",
+        "structure": "<button class=\"btn-futuristic\">Primary Action</button>",
+        "effects": ["neon-glow", "hover-transform"]
+      },
+      "secondary": {
+        "classes": "btn-ghost-futuristic",
+        "structure": "<button class=\"btn-ghost-futuristic\">Secondary Action</button>",
+        "effects": ["glass-background", "border-glow"]
+      }
+    },
+    "navigation": {
+      "classes": "nav-futuristic",
+      "structure": "<nav class=\"nav-futuristic\"><!-- Navigation content --></nav>",
+      "effects": ["backdrop-blur-xl", "glass-border", "sticky-positioning"]
+    },
+    "forms": {
+      "input": {
+        "classes": "input-futuristic",
+        "structure": "<input class=\"input-futuristic\" placeholder=\"Enter text...\" />",
+        "effects": ["glass-background", "focus-ring-neon"]
+      }
+    },
+    "dashboard": {
+      "stat_card": {
+        "classes": "dashboard-card",
+        "structure": "<div class=\"dashboard-card\"><div class=\"dashboard-stat\"><div class=\"dashboard-stat-value\">1.2K+</div><div class=\"dashboard-stat-label\">Leads</div></div></div>",
+        "effects": ["ecosystem-hover", "3d-transform"]
+      }
+    }
+  },
+  "animations": {
+    "available": [
+      "animate-float",
+      "animate-pulse-neon", 
+      "animate-data-flow",
+      "animate-glow-pulse",
+      "animate-gradient-x",
+      "animate-fade-in-up",
+      "animate-slide-in",
+      "animate-scale-in",
+      "animate-bounce-subtle"
+    ],
+    "hover_effects": [
+      "ecosystem-hover",
+      "neon-glow",
+      "ripple"
+    ],
+    "3d_transforms": true,
+    "container_queries": true
+  },
+  "patterns": {
+    "layout": {
+      "container": "container mx-auto px-4 sm:px-6 lg:px-8",
+      "grid": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+      "flex": "flex items-center justify-between"
+    },
+    "spacing": {
+      "section_padding": "py-12 lg:py-20",
+      "card_padding": "p-6 lg:p-8",
+      "button_padding": "px-6 py-3"
+    },
+    "responsive": {
+      "mobile_first": true,
+      "breakpoints": ["sm", "md", "lg", "xl", "2xl"],
+      "container_queries": true
+    }
+  },
+  "effects": {
+    "glassmorphism": {
+      "backdrop_filter": "blur(24px) saturate(1.8)",
+      "background": "hsl(var(--glass-border) / 0.1)",
+      "border": "1px solid hsl(var(--glass-border) / 0.2)",
+      "box_shadow": "var(--shadow-glass)"
+    },
+    "neon_glow": {
+      "default": "0 0 20px hsl(195 100% 50% / 0.3), 0 0 40px hsl(195 100% 50% / 0.1)",
+      "hover": "0 0 30px hsl(195 100% 50% / 0.5), 0 0 60px hsl(195 100% 50% / 0.2)",
+      "intense": "0 0 40px hsl(195 100% 50% / 0.6), 0 0 80px hsl(195 100% 50% / 0.3)"
+    },
+    "3d_transforms": {
+      "hover_lift": "translateY(-8px) rotateX(5deg) rotateY(5deg) scale(1.02)",
+      "perspective": "1000px",
+      "transform_style": "preserve-3d"
+    }
+  },
+  "accessibility": {
+    "respect_reduced_motion": true,
+    "high_contrast_support": true,
+    "focus_indicators": "neon-blue",
+    "color_contrast_ratio": "4.5:1"
+  },
+  "agent_guidelines": {
+    "component_naming": "kebab-case",
+    "class_naming": "utility-first",
+    "responsive_approach": "mobile-first",
+    "animation_usage": "performance-optimized",
+    "color_usage": "hsl-only",
+    "glass_effects": "consistent-blur-values",
+    "neon_effects": "controlled-intensity",
+    "3d_transforms": "subtle-enhancement"
+  },
+  "code_generation_patterns": {
+    "react_component": {
+      "imports": ["'use client';", "import React from 'react';", "import { cn } from '@/lib/utils';"],
+      "export_pattern": "export default function ComponentName() { ... }",
+      "class_merging": "className={cn('base-classes', conditionalClasses)}"
+    },
+    "css_classes": {
+      "combination_order": ["layout", "spacing", "typography", "colors", "effects", "animations"],
+      "responsive_prefix": "sm:", "md:", "lg:", "xl:", "2xl:",
+      "state_prefixes": ["hover:", "focus:", "active:", "disabled:"]
+    }
+  },
+  "brand_colors": {
+    "tekup": "#7c3aed",
+    "rendetalje": "#059669", 
+    "foodtruck": "#dc2626"
+  }
+}

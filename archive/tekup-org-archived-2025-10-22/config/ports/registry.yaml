@@ -1,0 +1,317 @@
+# Tekup Port Registry
+# Central port allocation system for all services across environments
+# Version: 1.0.0
+
+metadata:
+  version: "1.0.0"
+  last_updated: "2025-01-13"
+  managed_by: "tekup-port-manager"
+  environments: ["development", "staging", "production", "testing"]
+
+# Port Range Definitions
+port_ranges:
+  frontend_apps:
+    range: "3000-3999"
+    description: "Frontend applications (React, Vue, Angular, etc.)"
+    offset_per_env:
+      development: 0
+      staging: 10000     # 13000-13999
+      production: 20000  # 23000-23999
+      testing: 30000     # 33000-33999
+
+  backend_apis:
+    range: "8000-8999"
+    description: "Backend API services (NestJS, Express, FastAPI, etc.)"
+    offset_per_env:
+      development: 0
+      staging: 10000     # 18000-18999
+      production: 20000  # 28000-28999
+      testing: 30000     # 38000-38999
+
+  databases:
+    postgresql:
+      range: "5432-5499"
+      description: "PostgreSQL database instances"
+    mysql:
+      range: "3306-3399"
+      description: "MySQL database instances"
+    redis:
+      range: "6379-6399"
+      description: "Redis cache instances"
+    mongodb:
+      range: "27017-27099"
+      description: "MongoDB instances"
+
+  monitoring:
+    range: "9000-9999"
+    description: "Monitoring and observability tools"
+    services:
+      prometheus: 9090
+      grafana: 9091
+      jaeger: 9092
+      elasticsearch: 9200
+      kibana: 9300
+
+  dev_tools:
+    range: "4000-4999"
+    description: "Development tools and utilities"
+    services:
+      pgadmin: 4080
+      redis_commander: 4081
+      mailhog_web: 4025
+      mailhog_smtp: 4024
+
+  mcp_services:
+    range: "13000-13999"
+    description: "MCP (Model Context Protocol) services - isolated range"
+    services:
+      gateway: 13000
+      browser: 13001
+      filesystem: 13002
+      search: 13003
+
+# Service Registry
+services:
+  # Core Platform Services
+  tekup-unified-platform:
+    category: "backend_apis"
+    base_port: 8000
+    protocol: "http"
+    health_endpoint: "/health"
+    dependencies: ["postgres", "redis"]
+    environments:
+      development: 8000
+      staging: 18000
+      production: 28000
+      testing: 38000
+
+  tekup-crm-web:
+    category: "frontend_apps"
+    base_port: 3005
+    protocol: "http"
+    dependencies: ["tekup-unified-platform"]
+    environments:
+      development: 3005
+      staging: 13005
+      production: 23005
+      testing: 33005
+
+  flow-api:
+    category: "backend_apis"
+    base_port: 8001
+    protocol: "http"
+    health_endpoint: "/api/health"
+    dependencies: ["postgres", "redis"]
+    environments:
+      development: 8001
+      staging: 18001
+      production: 28001
+      testing: 38001
+
+  flow-web:
+    category: "frontend_apps"
+    base_port: 3001
+    protocol: "http"
+    dependencies: ["flow-api"]
+    environments:
+      development: 3001
+      staging: 13001
+      production: 23001
+      testing: 33001
+
+  voice-agent:
+    category: "backend_apis"
+    base_port: 8002
+    protocol: "http"
+    health_endpoint: "/health"
+    dependencies: ["tekup-unified-platform"]
+    environments:
+      development: 8002
+      staging: 18002
+      production: 28002
+      testing: 38002
+
+  lead-platform:
+    category: "backend_apis"
+    base_port: 8003
+    protocol: "http"
+    health_endpoint: "/health"
+    dependencies: ["sqlite"]
+    environments:
+      development: 8003
+      staging: 18003
+      production: 28003
+      testing: 38003
+
+  agentscope-enhanced:
+    category: "backend_apis"
+    base_port: 8001  # Python FastAPI service
+    protocol: "http"
+    health_endpoint: "/health"
+    runtime: "python"
+    environments:
+      development: 8001
+      staging: 18001
+      production: 28001
+      testing: 38001
+
+  website:
+    category: "frontend_apps"
+    base_port: 3080
+    protocol: "http"
+    description: "Marketing website (Vite)"
+    environments:
+      development: 3080
+      staging: 13080
+      production: 23080
+      testing: 33080
+
+  rendetalje-os-api:
+    category: "backend_apis"
+    base_port: 8006
+    protocol: "http"
+    health_endpoint: "/health"
+    dependencies: ["postgres", "redis"]
+    environments:
+      development: 8006
+      staging: 18006
+      production: 28006
+      testing: 38006
+
+  rendetalje-os-web:
+    category: "frontend_apps"
+    base_port: 3051
+    protocol: "http"
+    dependencies: ["rendetalje-os-api"]
+    environments:
+      development: 3051
+      staging: 13051
+      production: 23051
+      testing: 33051
+
+  # Infrastructure Services
+  postgres:
+    category: "databases"
+    base_port: 5432
+    protocol: "tcp"
+    environments:
+      development: 5432
+      staging: 5433
+      production: 5434
+      testing: 5435
+
+  redis:
+    category: "databases"
+    base_port: 6379
+    protocol: "tcp"
+    environments:
+      development: 6379
+      staging: 6380
+      production: 6381
+      testing: 6382
+
+  # Monitoring Stack
+  prometheus:
+    category: "monitoring"
+    base_port: 9090
+    protocol: "http"
+    health_endpoint: "/-/healthy"
+
+  grafana:
+    category: "monitoring"
+    base_port: 9091
+    protocol: "http"
+    health_endpoint: "/api/health"
+
+  elasticsearch:
+    category: "monitoring"
+    base_port: 9200
+    protocol: "http"
+    health_endpoint: "/_health"
+
+  kibana:
+    category: "monitoring"
+    base_port: 9300
+    protocol: "http"
+    health_endpoint: "/api/status"
+
+  # MCP Services
+  mcp-gateway:
+    category: "mcp_services"
+    base_port: 13000
+    protocol: "http"
+    health_endpoint: "/health"
+
+  mcp-browser:
+    category: "mcp_services"
+    base_port: 13001
+    protocol: "http"
+    health_endpoint: "/health"
+
+  mcp-filesystem:
+    category: "mcp_services"
+    base_port: 13002
+    protocol: "http"
+    health_endpoint: "/health"
+
+  mcp-search:
+    category: "mcp_services"
+    base_port: 13003
+    protocol: "http"
+    health_endpoint: "/health"
+
+# Reserved Ports (System and Well-known)
+reserved_ports:
+  - port: 80
+    description: "HTTP"
+    system: true
+  - port: 443
+    description: "HTTPS"
+    system: true
+  - port: 22
+    description: "SSH"
+    system: true
+  - port: 3389
+    description: "RDP (Windows)"
+    system: true
+  - port: 1025
+    description: "Mailhog SMTP"
+    service: "mailhog"
+  - port: 8025
+    description: "Mailhog Web UI"
+    service: "mailhog"
+
+# Allocation Rules
+allocation_rules:
+  auto_assign:
+    enabled: true
+    strategy: "sequential" # or "random"
+    respect_categories: true
+    
+  conflict_resolution:
+    strategy: "error" # or "auto_reassign"
+    notification: true
+    
+  lease_management:
+    default_lease_duration: "7d"
+    max_lease_duration: "30d"
+    auto_renewal: false
+    
+  validation:
+    check_conflicts: true
+    check_system_ports: true
+    require_health_endpoint: true
+    require_category: true
+
+# Future Expansion Planning
+expansion:
+  reserved_ranges:
+    ai_services: "7000-7999"      # For AI/ML microservices
+    external_apis: "6000-6999"   # For external API gateways
+    worker_services: "5000-5999" # For background workers
+    websocket_services: "4500-4599" # For WebSocket connections
+  
+  capacity_planning:
+    max_services_per_category: 100
+    growth_projection: "50% per year"
+    emergency_buffer: "10% of total range"

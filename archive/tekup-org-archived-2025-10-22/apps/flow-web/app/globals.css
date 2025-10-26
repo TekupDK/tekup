@@ -1,0 +1,37 @@
+@import '@tekup/design-system/styles';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Flow-web specific overrides */
+@layer base {
+  body { 
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* Enhanced ecosystem background for dashboard */
+    background: var(--gradient-ecosystem);
+  }
+}
+
+@layer components {
+  /* Flow-web specific dashboard components */
+  .flow-dashboard {
+    @apply min-h-screen bg-ecosystem;
+  }
+  
+  .flow-sidebar {
+    @apply glass-card border-r border-glass-border/30;
+  }
+  
+  .flow-main-content {
+    @apply p-6 space-y-6;
+  }
+  
+  .flow-metric-card {
+    @apply dashboard-card neon-glow;
+  }
+  
+  .flow-chart-container {
+    @apply glass-card p-4 ecosystem-hover;
+  }
+}

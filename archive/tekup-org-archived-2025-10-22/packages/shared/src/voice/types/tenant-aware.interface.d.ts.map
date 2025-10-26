@@ -1,0 +1,1 @@
+{"version":3,"file":"tenant-aware.interface.d.ts","sourceRoot":"","sources":["tenant-aware.interface.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,aAAa;IAC5B,gBAAgB,CAAC,MAAM,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC,CAAC;IAChD,YAAY,CAAC,SAAS,EAAE,MAAM,EAAE,MAAM,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC,CAAC;IAC/D,gBAAgB,IAAI,MAAM,CAAC;IAC3B,iBAAiB,IAAI,GAAG,CAAC;CAC1B"}

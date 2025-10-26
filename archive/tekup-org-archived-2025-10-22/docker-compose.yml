@@ -1,0 +1,77 @@
+services:
+  flow-api:
+    build:
+      context: .
+      dockerfile: apps/flow-api/Dockerfile
+    command: pnpm start
+    env_file:
+      - ./apps/flow-api/.env
+    ports:
+      - "4000:4000"
+  secure-platform:
+    build:
+      context: .
+      dockerfile: apps/secure-platform/Dockerfile
+    command: pnpm start:prod
+    environment:
+      - PORT=4010
+    ports:
+      - "4010:4010"
+  flow-web:
+    build:
+      context: .
+      dockerfile: apps/flow-web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://flow-api:4000
+    command: pnpm start
+    environment:
+      - NEXT_PUBLIC_API_URL=http://flow-api:4000
+      - NEXT_PUBLIC_TENANT_API_KEY=dev-key
+    ports:
+      - "3000:3000"
+  voice-agent:
+    build:
+      context: ./apps/voice-agent
+      dockerfile: Dockerfile
+    command: pnpm start
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    ports:
+      - "3001:3000"
+    depends_on:
+      - flow-api
+  agents-hub:
+    build:
+      context: ./apps/agents-hub
+      dockerfile: Dockerfile
+    command: pnpm start
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://flow-api:4000
+      - NEXT_PUBLIC_TENANT_API_KEY=dev-key
+    ports:
+      - "3002:3000"
+    depends_on:
+      - flow-api
+  # inbox-ai:
+  #   build:
+  #     context: ./apps/inbox-ai
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5005:5005"
+  # NOTE: Disabled until a proper Dockerfile/strategy exists for Electron app.
+  tekup-website-figma:
+    build:
+      context: "./apps/Tekup Website Figma"
+      dockerfile: Dockerfile
+    command: >-
+      sh -c "if [ ! -d node_modules ]; then npm install --include=optional; fi && npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "5173:5173"
+    volumes:
+      - "./apps/Tekup Website Figma:/app"
+      - /app/node_modules
+

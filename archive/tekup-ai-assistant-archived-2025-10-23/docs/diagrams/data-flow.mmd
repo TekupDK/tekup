@@ -1,0 +1,63 @@
+```mermaid
+sequenceDiagram
+    participant User as 👤 Jonas
+    participant Jan as Jan AI
+    participant Ollama as 🤖 Ollama
+    participant MCP as MCP Layer
+    participant Billy as Tekup-Billy
+    participant BillyAPI as Billy.dk API
+    
+    %% User initiates request
+    User->>Jan: "Opret faktura til Michael Roach for 4 timer moving clean"
+    
+    %% Jan AI processes
+    Jan->>Ollama: Parse natural language intent
+    activate Ollama
+    Note over Ollama: Qwen2.5-Coder analyzes:<br/>- Customer: "Michael Roach"<br/>- Hours: 4<br/>- Service: "moving_clean"
+    Ollama->>Jan: Structured data<br/>{customer, hours, service}
+    deactivate Ollama
+    
+    %% Look up customer
+    Jan->>MCP: list_customers(search: "Michael Roach")
+    activate MCP
+    MCP->>Billy: GET /billy/customers?search=Michael+Roach
+    activate Billy
+    Billy->>BillyAPI: API request
+    activate BillyAPI
+    BillyAPI->>Billy: Customer data
+    deactivate BillyAPI
+    Billy->>MCP: {id: "c123", name: "Michael Roach"}
+    deactivate Billy
+    MCP->>Jan: Customer found ✓
+    deactivate MCP
+    
+    %% Create invoice
+    Jan->>MCP: create_invoice({customer_id: "c123", hours: 4})
+    activate MCP
+    MCP->>Billy: POST /billy/invoices
+    activate Billy
+    Note over Billy: Calculate:<br/>4 × 349 DKK = 1,396 DKK
+    Billy->>BillyAPI: Create invoice request
+    activate BillyAPI
+    BillyAPI->>Billy: Invoice created<br/>INV-2025-042
+    deactivate BillyAPI
+    Billy->>MCP: {invoice_id, amount, status}
+    deactivate Billy
+    MCP->>Jan: Success ✓
+    deactivate MCP
+    
+    %% Format response
+    Jan->>Ollama: Format Danish response
+    activate Ollama
+    Note over Ollama: Generate user-friendly<br/>Danish response
+    Ollama->>Jan: Formatted text
+    deactivate Ollama
+    
+    %% Display to user
+    Jan->>User: ✅ Faktura INV-2025-042 oprettet:<br/>1,745 DKK (inkl. moms)
+    
+    %% Timeline
+    Note over User,BillyAPI: Total time: ~5 seconds
+```
+
+

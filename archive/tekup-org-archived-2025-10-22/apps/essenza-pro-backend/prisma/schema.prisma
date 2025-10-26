@@ -1,0 +1,277 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Salon {
+  id             String   @id @default(cuid())
+  name           String
+  address        String
+  phone          String
+  email          String
+  cvr            String?  // Danish business registration
+  operatingHours Json
+  timeZone       String   @default("Europe/Copenhagen")
+  status         String   @default("ACTIVE")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  staff          Staff[]
+  services       BeautyService[]
+  clients        Client[]
+  bookings       Booking[]
+
+  @@map("salons")
+}
+
+model Staff {
+  id          String   @id @default(cuid())
+  salonId     String
+  firstName   String
+  lastName    String
+  email       String   @unique
+  phone       String
+  position    String
+  specializations String[]
+  workingHours Json
+  hourlyRate  Float?
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  salon       Salon @relation(fields: [salonId], references: [id])
+  bookings    Booking[]
+  schedules   StaffSchedule[]
+  staffServices StaffService[]
+
+  @@map("staff")
+}
+
+model Client {
+  id          String   @id @default(cuid())
+  salonId     String
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String
+  dateOfBirth DateTime?
+  address     String?
+  preferences Json?    // Allergies, preferences, etc.
+  notes       String?
+  loyaltyPoints Int    @default(0)
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  salon       Salon @relation(fields: [salonId], references: [id])
+  bookings    Booking[]
+  loyaltyTransactions LoyaltyTransaction[]
+
+  @@map("clients")
+}
+
+model BeautyService {
+  id          String   @id @default(cuid())
+  salonId     String
+  name        String
+  description String?
+  category    String   // HAIR, NAILS, SKINCARE, MASSAGE, etc.
+  duration    Int      // minutes
+  price       Float
+  currency    String   @default("DKK")
+  requiresConsultation Boolean @default(false)
+  bookable    Boolean  @default(true)
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  salon       Salon @relation(fields: [salonId], references: [id])
+  bookings    Booking[]
+  staffServices StaffService[]
+
+  @@map("beauty_services")
+}
+
+model StaffService {
+  id        String @id @default(cuid())
+  staffId   String
+  serviceId String
+
+  // Relations
+  staff     Staff @relation(fields: [staffId], references: [id])
+  service   BeautyService @relation(fields: [serviceId], references: [id])
+
+  @@unique([staffId, serviceId])
+  @@map("staff_services")
+}
+
+model Booking {
+  id             String   @id @default(cuid())
+  clientId       String
+  serviceId      String
+  staffId        String
+  salonId        String
+  scheduledDate  DateTime
+  scheduledEnd   DateTime
+  duration       Int      // minutes
+  status         String   @default("CONFIRMED") // CONFIRMED, COMPLETED, CANCELLED, NO_SHOW
+  price          Float
+  notes          String?
+  
+  // Danish consumer protection fields
+  cancellationPolicy String
+  consumerRights String
+  termsAcceptedAt DateTime
+  
+  // GDPR compliance
+  dataProcessingConsent Boolean @default(true)
+  marketingConsent Boolean @default(false)
+  
+  // Cancellation/refund info
+  cancellationReason String?
+  cancelledAt    DateTime?
+  refundAmount   Float?
+  cancellationFees Float?
+  
+  // Modification tracking
+  modificationFees Float?
+  lastModified   DateTime?
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  client         Client @relation(fields: [clientId], references: [id])
+  service        BeautyService @relation(fields: [serviceId], references: [id])
+  staff          Staff @relation(fields: [staffId], references: [id])
+  salon          Salon @relation(fields: [salonId], references: [id])
+  payments       Payment[]
+
+  @@map("bookings")
+}
+
+model StaffSchedule {
+  id        String   @id @default(cuid())
+  staffId   String
+  bookingId String?
+  startTime DateTime
+  endTime   DateTime
+  type      String   // BOOKING, BREAK, TRAINING, VACATION
+
+  // Relations
+  staff     Staff @relation(fields: [staffId], references: [id])
+
+  @@map("staff_schedules")
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  bookingId     String
+  amount        Float
+  currency      String   @default("DKK")
+  paymentMethod String   // CARD, MOBILEPAY, CASH, INVOICE
+  status        String   @default("PENDING") // PENDING, COMPLETED, FAILED, REFUNDED
+  transactionId String?
+  paidAt        DateTime?
+  refundedAt    DateTime?
+  refundAmount  Float?
+  createdAt     DateTime @default(now())
+
+  // Relations
+  booking       Booking @relation(fields: [bookingId], references: [id])
+
+  @@map("payments")
+}
+
+model LoyaltyProgram {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  pointsPerDKK  Float    @default(1.0)
+  rewardTiers   Json     // Array of tier objects
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  transactions  LoyaltyTransaction[]
+
+  @@map("loyalty_programs")
+}
+
+model LoyaltyTransaction {
+  id              String   @id @default(cuid())
+  clientId        String
+  loyaltyProgramId String
+  type            String   // EARNED, REDEEMED, EXPIRED
+  points          Int
+  description     String
+  referenceId     String?  // booking ID, reward ID, etc.
+  createdAt       DateTime @default(now())
+
+  // Relations
+  client          Client @relation(fields: [clientId], references: [id])
+  loyaltyProgram  LoyaltyProgram @relation(fields: [loyaltyProgramId], references: [id])
+
+  @@map("loyalty_transactions")
+}
+
+model MarketingCampaign {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // EMAIL, SMS, PUSH_NOTIFICATION
+  subject     String?
+  content     String
+  targetAudience Json  // Filters for client selection
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  status      String   @default("DRAFT") // DRAFT, SCHEDULED, SENT, PAUSED
+  metrics     Json?    // Open rates, click rates, etc.
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("marketing_campaigns")
+}
+
+model BusinessAnalytics {
+  id             String   @id @default(cuid())
+  date           DateTime
+  salonId        String?  // Null for aggregated data
+  totalBookings  Int
+  totalRevenue   Float
+  averageBookingValue Float
+  newClients     Int
+  returningClients Int
+  cancellationRate Float
+  noShowRate     Float
+  staffUtilization Json // Staff utilization percentages
+  servicePopularity Json // Most popular services
+  peakHours      Json // Busiest time slots
+  clientSatisfaction Float?
+  createdAt      DateTime @default(now())
+
+  @@unique([date, salonId])
+  @@map("business_analytics")
+}
+
+model DanishHoliday {
+  id      String   @id @default(cuid())
+  name    String
+  date    DateTime
+  type    String   @default("PUBLIC") // PUBLIC, BANK, REGIONAL
+  year    Int
+
+  @@unique([date, name])
+  @@map("danish_holidays")
+}

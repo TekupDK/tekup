@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: open-webui
+    restart: unless-stopped
+    
+    ports:
+      - "3000:8080"
+    
+    environment:
+      # Connect to Ollama on host machine
+      OLLAMA_BASE_URL: "http://host.docker.internal:11434"
+      
+      # Optional: API key if needed
+      # OPENAI_API_KEY: ""
+    
+    # Mount volumes for persistence
+    volumes:
+      - open-webui-data:/app/backend/data
+    
+    # Network settings
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  open-webui-data:
+    driver: local

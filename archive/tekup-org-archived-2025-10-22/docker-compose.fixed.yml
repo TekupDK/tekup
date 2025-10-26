@@ -1,0 +1,107 @@
+# Fixed Docker Compose for Tekup with proper monorepo support
+# This version properly handles @tekup/shared package dependencies
+
+services:
+  # PostgreSQL - Primary database
+  postgres:
+    image: postgres:15-alpine
+    container_name: tekup-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tekup_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tekup_dev_2024
+      POSTGRES_MULTIPLE_DATABASES: "tekup_unified,tekup_crm,tekup_flow,tekup_leads"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    command: postgres -c 'max_connections=200' -c 'shared_buffers=256MB'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-dev
+
+  # Redis - Caching and session storage
+  redis:
+    image: redis:7-alpine
+    container_name: tekup-redis-dev
+    restart: unless-stopped
+    command: redis-server --requirepass tekup_redis_2024 --appendonly yes
+    volumes:
+      - redis_dev_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-dev
+
+  # Marketing Website - Fixed with proper shared package support
+  website:
+    build:
+      context: .  # Build from root to access packages
+      dockerfile: apps/website/Dockerfile.fixed
+    container_name: tekup-website-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/website:/app/apps/website
+      - ./packages:/app/packages
+      - website_node_modules:/app/apps/website/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+      - PORT=8080
+    ports:
+      - "8080:8080"
+    command: sh -c "cd /app/apps/website && pnpm dev --host 0.0.0.0"
+    networks:
+      - tekup-dev
+
+  # Lead Platform Backend - NestJS API
+  tekup-lead-platform:
+    build:
+      context: .  # Build from root to access packages
+      dockerfile: apps/tekup-lead-platform/Dockerfile.fixed
+    container_name: tekup-lead-platform-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/tekup-lead-platform:/app/apps/tekup-lead-platform
+      - ./packages:/app/packages
+      - lead_platform_node_modules:/app/apps/tekup-lead-platform/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=file:./dev.db
+      - PORT=3003
+      - CORS_ORIGIN=http://localhost:3002,http://localhost:8080
+    ports:
+      - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: sh -c "cd /app/apps/tekup-lead-platform && pnpm dev"
+    networks:
+      - tekup-dev
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+  website_node_modules:
+    driver: local
+  lead_platform_node_modules:
+    driver: local
+
+networks:
+  tekup-dev:
+    driver: bridge
+    name: tekup-development-network

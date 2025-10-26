@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "browser": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-browser"
+      ],
+      "env": {
+        "BROWSER_MCP_PORT": "3030"
+      }
+    }
+  },
+  "tools": [
+    "browser_click",
+    "browser_navigate",
+    "browser_screenshot", 
+    "browser_get_page_content",
+    "browser_type_text",
+    "browser_scroll",
+    "browser_wait"
+  ]
+}

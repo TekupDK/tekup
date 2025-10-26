@@ -1,0 +1,17 @@
+dry-run: null
+language: nodejs
+server: ${API_BASE_URL}
+init: false
+hookfiles: []
+reporter: ['cli', 'junit']
+output: [null, 'reports/dredd/junit.xml']
+color: true
+level: info
+silent: false
+sorted: true
+only: []
+path:
+  # Point to your generated/committed OpenAPI specs per service
+  - apps/flow-api/openapi.yaml
+  - apps/tekup-crm-api/openapi.yaml
+  - apps/voicedk-api/openapi.yaml

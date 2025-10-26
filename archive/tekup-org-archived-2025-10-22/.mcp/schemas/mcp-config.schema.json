@@ -1,0 +1,537 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tekup.org/schemas/mcp-config.schema.json",
+  "title": "TekUp MCP Configuration Schema",
+  "description": "JSON Schema for validating TekUp MCP configuration files",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "extends": {
+      "type": "string",
+      "description": "Base configuration to extend from"
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["development", "staging", "production"]
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "author": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "additionalProperties": true
+    },
+    "mcpServers": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z][a-zA-Z0-9_-]*$": {
+          "$ref": "#/definitions/mcpServer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "global": {
+      "type": "object",
+      "properties": {
+        "logging": {
+          "$ref": "#/definitions/logging"
+        },
+        "security": {
+          "$ref": "#/definitions/security"
+        },
+        "performance": {
+          "$ref": "#/definitions/performance"
+        },
+        "monitoring": {
+          "$ref": "#/definitions/monitoring"
+        }
+      },
+      "additionalProperties": true
+    },
+    "environments": {
+      "type": "object",
+      "properties": {
+        "supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "default": {
+          "type": "string"
+        },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "editors": {
+      "type": "object",
+      "properties": {
+        "supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "adapters": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/editorAdapter"
+          }
+        }
+      }
+    }
+  },
+  "required": ["version", "mcpServers"],
+  "additionalProperties": true,
+  "definitions": {
+    "mcpServer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "transport": {
+          "$ref": "#/definitions/transport"
+        },
+        "capabilities": {
+          "$ref": "#/definitions/capabilities"
+        },
+        "config": {
+          "$ref": "#/definitions/serverConfig"
+        }
+      },
+      "required": ["transport"],
+      "additionalProperties": true
+    },
+    "transport": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["stdio", "sse", "websocket", "http"]
+        },
+        "config": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string"
+            },
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "env": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "timeout": {
+              "type": "integer",
+              "minimum": 1000
+            },
+            "retryAttempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retryDelay": {
+              "type": "integer",
+              "minimum": 100
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": ["type", "config"],
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "object",
+      "properties": {
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tool"
+          }
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/resource"
+          }
+        },
+        "prompts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/prompt"
+          }
+        },
+        "sampling": {
+          "type": "boolean"
+        },
+        "logging": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["debug", "info", "notice", "warning", "error", "critical", "alert", "emergency"]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "inputSchema": {
+          "type": "object"
+        },
+        "outputSchema": {
+          "type": "object"
+        }
+      },
+      "required": ["name"],
+      "additionalProperties": false
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        }
+      },
+      "required": ["uri"],
+      "additionalProperties": false
+    },
+    "prompt": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/promptArgument"
+          }
+        }
+      },
+      "required": ["name"],
+      "additionalProperties": false
+    },
+    "promptArgument": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "object", "array"]
+        }
+      },
+      "required": ["name", "type"],
+      "additionalProperties": false
+    },
+    "serverConfig": {
+      "type": "object",
+      "properties": {
+        "autoStart": {
+          "type": "boolean"
+        },
+        "retryAttempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retryDelay": {
+          "type": "integer",
+          "minimum": 100
+        },
+        "healthCheckInterval": {
+          "type": "integer",
+          "minimum": 1000
+        },
+        "requestTimeout": {
+          "type": "integer",
+          "minimum": 1000
+        },
+        "maxConcurrentRequests": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["debug", "info", "notice", "warning", "error", "critical", "alert", "emergency"]
+        },
+        "file": {
+          "type": "string"
+        },
+        "maxSize": {
+          "type": "string"
+        },
+        "maxFiles": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timestamp": {
+          "type": "boolean"
+        },
+        "json": {
+          "type": "boolean"
+        },
+        "console": {
+          "type": "boolean"
+        },
+        "structured": {
+          "type": "boolean"
+        },
+        "rotation": {
+          "type": "string",
+          "enum": ["hourly", "daily", "weekly", "monthly"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "allowUnsignedPlugins": {
+          "type": "boolean"
+        },
+        "trustedAuthors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blockedPlugins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sandboxMode": {
+          "type": "boolean"
+        },
+        "requireHttps": {
+          "type": "boolean"
+        },
+        "encryptionRequired": {
+          "type": "boolean"
+        },
+        "auditLogging": {
+          "type": "boolean"
+        },
+        "rateLimiting": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "maxRequestsPerMinute": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxRequestsPerHour": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "performance": {
+      "type": "object",
+      "properties": {
+        "maxConcurrentServers": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "defaultTimeout": {
+          "type": "integer",
+          "minimum": 1000
+        },
+        "connectionPoolSize": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "requestQueueLimit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "memoryLimit": {
+          "type": "string"
+        },
+        "cpuLimit": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "monitoring": {
+      "type": "object",
+      "properties": {
+        "healthChecks": {
+          "type": "boolean"
+        },
+        "metricsCollection": {
+          "type": "boolean"
+        },
+        "errorReporting": {
+          "type": "boolean"
+        },
+        "performanceTracking": {
+          "type": "boolean"
+        },
+        "debugMode": {
+          "type": "boolean"
+        },
+        "testMode": {
+          "type": "boolean"
+        },
+        "alerting": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "errorThreshold": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "responseTimeThreshold": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "notificationChannels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["email", "slack", "discord", "webhook"]
+              }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "editorAdapter": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "adapter": {
+          "type": "string"
+        },
+        "configPath": {
+          "type": "string"
+        }
+      },
+      "required": ["format", "adapter", "configPath"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FoodTruck {
+  id            String   @id @default(cuid())
+  businessName  String
+  ownerCVR      String
+  licenseNumber String   @unique
+  baseAddress   String
+  contactPhone  String
+  contactEmail  String
+  operatingHours Json
+  status        String   @default("ACTIVE")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  owner         BusinessOwner @relation(fields: [ownerCVR], references: [cvr])
+  menuItems     MenuItem[]
+  inventory     InventoryItem[]
+  sales         Sale[]
+  complianceRecords ComplianceRecord[]
+  temperatureLogs   TemperatureLog[]
+
+  @@map("food_trucks")
+}
+
+model BusinessOwner {
+  cvr          String   @id
+  companyName  String
+  contactName  String
+  email        String
+  phone        String
+  address      String
+  createdAt    DateTime @default(now())
+
+  // Relations  
+  foodTrucks   FoodTruck[]
+
+  @@map("business_owners")
+}
+
+model MenuItem {
+  id           String   @id @default(cuid())
+  truckId      String
+  name         String
+  description  String?
+  price        Float
+  category     String
+  allergens    String[]
+  ingredients  String[]
+  available    Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  truck        FoodTruck @relation(fields: [truckId], references: [id])
+  saleItems    SaleItem[]
+
+  @@map("menu_items")
+}
+
+model InventoryItem {
+  id           String   @id @default(cuid())
+  truckId      String
+  name         String
+  category     String
+  currentStock Float
+  minStock     Float
+  unit         String
+  supplier     String?
+  lastRestocked DateTime?
+  expiryDate   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  truck        FoodTruck @relation(fields: [truckId], references: [id])
+
+  @@map("inventory_items")
+}
+
+model Sale {
+  id            String   @id @default(cuid())
+  truckId       String
+  receiptNumber String   @unique
+  subtotal      Float
+  vatAmount     Float
+  totalAmount   Float
+  paymentMethod String
+  customerId    String?
+  saleDate      DateTime @default(now())
+  status        String   @default("COMPLETED")
+  items         Json
+
+  // Relations
+  truck         FoodTruck @relation(fields: [truckId], references: [id])
+  saleItems     SaleItem[]
+  refunds       Refund[]
+
+  @@map("sales")
+}
+
+model SaleItem {
+  id         String @id @default(cuid())
+  saleId     String
+  menuItemId String
+  quantity   Int
+  unitPrice  Float
+  subtotal   Float
+  vatAmount  Float
+
+  // Relations
+  sale       Sale @relation(fields: [saleId], references: [id])
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@map("sale_items")
+}
+
+model Refund {
+  id              String   @id @default(cuid())
+  originalSaleId  String
+  refundAmount    Float
+  vatRefund       Float
+  reason          String
+  refundDate      DateTime @default(now())
+  status          String   @default("PROCESSED")
+
+  // Relations
+  originalSale    Sale @relation(fields: [originalSaleId], references: [id])
+
+  @@map("refunds")
+}
+
+model ComplianceRecord {
+  id          String   @id @default(cuid())
+  truckId     String
+  type        String   // HACCP_PLAN, DAILY_REPORT, INSPECTION
+  status      String
+  data        Json
+  notes       String?
+  recordDate  DateTime @default(now())
+  nextDue     DateTime?
+
+  // Relations
+  truck       FoodTruck @relation(fields: [truckId], references: [id])
+
+  @@map("compliance_records")
+}
+
+model TemperatureLog {
+  id          String   @id @default(cuid())
+  truckId     String
+  location    String   // FRIDGE, FREEZER, COOKING_AREA
+  temperature Float
+  timestamp   DateTime @default(now())
+  withinRange Boolean
+  notes       String?
+
+  // Relations
+  truck       FoodTruck @relation(fields: [truckId], references: [id])
+
+  @@map("temperature_logs")
+}
+
+model DailySalesReport {
+  id             String   @id @default(cuid())
+  truckId        String
+  reportDate     DateTime
+  totalSales     Int
+  totalRevenue   Float
+  totalVAT       Float
+  netRevenue     Float
+  paymentBreakdown Json
+  vatBreakdown   Json
+  hourlyBreakdown Json
+  topItems       Json
+  averageTransactionValue Float
+  generatedAt    DateTime @default(now())
+
+  @@unique([truckId, reportDate])
+  @@map("daily_sales_reports")
+}

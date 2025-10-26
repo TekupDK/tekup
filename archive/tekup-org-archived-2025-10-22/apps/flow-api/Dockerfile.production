@@ -1,0 +1,72 @@
+# Multi-stage production Dockerfile for TekUp Flow API
+FROM node:20-alpine AS base
+
+# Install system dependencies
+RUN apk add --no-cache \
+    dumb-init \
+    curl \
+    postgresql-client \
+    redis
+
+# Create app directory and user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S tekup -u 1001
+WORKDIR /app
+RUN chown tekup:nodejs /app
+
+# Copy package files
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
+# Install pnpm
+RUN npm install -g pnpm@9.12.0
+
+# Development stage
+FROM base AS development
+RUN pnpm install --frozen-lockfile
+COPY . .
+RUN chown -R tekup:nodejs /app
+USER tekup
+EXPOSE 4000
+CMD ["pnpm", "dev"]
+
+# Build stage
+FROM base AS build
+RUN pnpm install --frozen-lockfile --prod=false
+COPY . .
+RUN pnpm build && \
+    pnpm prune --prod
+
+# Production stage
+FROM base AS production
+
+# Copy built application and production dependencies
+COPY --from=build --chown=tekup:nodejs /app/dist ./dist
+COPY --from=build --chown=tekup:nodejs /app/node_modules ./node_modules
+COPY --from=build --chown=tekup:nodejs /app/package.json ./package.json
+COPY --from=build --chown=tekup:nodejs /app/prisma ./prisma
+
+# Copy production configuration
+COPY --chown=tekup:nodejs .env.production ./.env
+
+# Create logs directory
+RUN mkdir -p logs && chown tekup:nodejs logs
+
+# Switch to non-root user
+USER tekup
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:${PX_API_PORT:-4000}/health || exit 1
+
+# Resource limits (can be overridden in docker-compose or k8s)
+ENV NODE_OPTIONS="--max-old-space-size=512"
+
+# Expose port
+EXPOSE 4000
+
+# Use dumb-init for proper signal handling
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application
+CMD ["node", "dist/main.js"]

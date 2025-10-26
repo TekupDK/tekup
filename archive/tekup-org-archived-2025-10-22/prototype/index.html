@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tekup Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              tekup: '#7c3aed',
+              rendetalje: '#059669',
+              foodtruck: '#dc2626'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="font-sans text-white overflow-hidden">
+  <div class="gradient-bg"></div>
+  <header class="absolute top-0 left-0 w-full flex justify-between items-center p-6 z-10">
+    <h1 class="text-2xl font-bold tracking-wider">Tekup</h1>
+    <nav class="space-x-6 hidden md:block">
+      <a href="#" class="hover:text-brand-tekup transition-colors">Product</a>
+      <a href="#" class="hover:text-brand-tekup transition-colors">Pricing</a>
+      <a href="#" class="hover:text-brand-tekup transition-colors">Contact</a>
+    </nav>
+  </header>
+  <main class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
+    <h2 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg animate-fade-in">
+      Build the future of <span class="text-brand-tekup">automation</span>
+    </h2>
+    <p class="text-lg md:text-2xl text-white/80 max-w-2xl mb-10 animate-fade-in delay-200">
+      Tekup merges human creativity with AI precision to unlock next‑level workflows.
+    </p>
+    <button class="px-8 py-4 rounded-full bg-white text-brand-tekup font-semibold text-lg shadow-lg hover:scale-105 transition-transform">
+      Get Started
+    </button>
+  </main>
+  <canvas id="orbs" class="absolute inset-0"></canvas>
+  <script src="script.js"></script>
+</body>
+</html>

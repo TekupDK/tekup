@@ -1,0 +1,43 @@
+# Fixed Dockerfile for Website app with proper monorepo support
+FROM node:20-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y curl wget git && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install pnpm globally
+RUN npm install -g pnpm@latest
+
+# Copy workspace configuration files
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+
+# Copy packages directory (shared dependencies)
+COPY packages/ ./packages/
+
+# Copy website app
+COPY apps/website/ ./apps/website/
+
+# Install all workspace dependencies
+RUN pnpm install --no-frozen-lockfile
+
+# Build shared packages first
+RUN cd packages/shared && pnpm build
+
+# Update website components to use proper @tekup/shared imports
+RUN cd apps/website && \
+    sed -i "s|import { createLogger } from '../utils/logger'|import { createLogger } from '@tekup/shared'|g" src/components/ContactSection.tsx || true && \
+    sed -i "s|import { createLogger } from '../utils/logger'|import { createLogger } from '@tekup/shared'|g" src/pages/NotFound.tsx || true
+
+# Set working directory to website
+WORKDIR /app/apps/website
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080 || exit 1
+
+# Start the website
+CMD ["pnpm", "dev", "--host", "0.0.0.0"]

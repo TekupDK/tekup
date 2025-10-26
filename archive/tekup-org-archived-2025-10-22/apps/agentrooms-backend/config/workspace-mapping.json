@@ -1,0 +1,111 @@
+{
+  "workspace_mapping": {
+    "tekup-org": {
+      "root": "c:/Users/empir/Tekup-org",
+      "type": "pnpm-monorepo",
+      "package_manager": "pnpm",
+      "architecture": "multi-tenant-saas",
+      "security_level": "enterprise"
+    }
+  },
+  "project_zones": {
+    "core-apis": {
+      "description": "Core backend APIs and services",
+      "paths": [
+        "apps/flow-api/**/*",
+        "apps/secure-platform/**/*",
+        "apps/tekup-*/**/*"
+      ],
+      "agents": ["flow-api-agent"],
+      "risk_level": "high",
+      "requires_review": true
+    },
+    "frontend-apps": {
+      "description": "Frontend applications and user interfaces", 
+      "paths": [
+        "apps/flow-web/**/*",
+        "apps/*-frontend/**/*"
+      ],
+      "agents": ["flow-web-agent"],
+      "risk_level": "medium",
+      "requires_review": true
+    },
+    "shared-packages": {
+      "description": "Shared utilities and configurations",
+      "paths": [
+        "packages/**/*"
+      ],
+      "agents": ["flow-api-agent", "flow-web-agent"],
+      "risk_level": "medium",
+      "requires_review": true
+    },
+    "documentation": {
+      "description": "Documentation and guides",
+      "paths": [
+        "docs/**/*",
+        "*.md",
+        "README.md"
+      ],
+      "agents": ["documentation-agent"],
+      "risk_level": "low", 
+      "requires_review": false
+    },
+    "infrastructure": {
+      "description": "Infrastructure and deployment configs",
+      "paths": [
+        "docker-compose.yml",
+        ".github/**/*",
+        "scripts/**/*",
+        "*.config.*"
+      ],
+      "agents": ["infrastructure-agent"],
+      "risk_level": "high",
+      "requires_review": true
+    },
+    "protected": {
+      "description": "Protected areas - no agent access",
+      "paths": [
+        ".git/**/*",
+        "node_modules/**/*",
+        ".env*",
+        "*.key",
+        "*.pem",
+        "*.p12"
+      ],
+      "agents": [],
+      "risk_level": "critical",
+      "access_denied": true
+    }
+  },
+  "file_permissions": {
+    "read_only": [
+      "package.json",
+      "pnpm-lock.yaml", 
+      "tsconfig.base.json",
+      "nx.json",
+      ".npmrc"
+    ],
+    "agent_modifiable": [
+      "apps/**/src/**/*",
+      "packages/**/src/**/*", 
+      "docs/**/*.md",
+      "apps/**/README.md",
+      "packages/**/README.md"
+    ],
+    "requires_approval": [
+      "apps/**/package.json",
+      "packages/**/package.json",
+      "apps/**/prisma/**/*",
+      "docker-compose.yml",
+      ".github/**/*"
+    ]
+  },
+  "collaboration_rules": {
+    "max_files_per_pr": 20,
+    "max_changes_per_file": 100,
+    "require_tests": true,
+    "require_documentation": true,
+    "auto_format": true,
+    "auto_lint": true
+  }
+}

@@ -1,0 +1,431 @@
+{
+  "$schema": "../schemas/mcp-config.schema.json",
+  "version": "1.0.0",
+  "name": "TekUp Unified Browser MCP Server",
+  "description": "Consolidated browser automation server combining all 4 existing browser MCP implementations",
+  "metadata": {
+    "created": "2025-01-12T13:15:00Z",
+    "lastModified": "2025-01-12T13:15:00Z",
+    "author": "TekUp.org Development Team",
+    "consolidatedFrom": [
+      "browser-mcp-config.json",
+      "warp-agent-infra-mcp.json", 
+      "warp-browser-tools-mcp.json",
+      "warp-mcp-config.json (custom WebSocket server)"
+    ]
+  },
+  "servers": {
+    "primary": {
+      "id": "tekup-browser-primary",
+      "name": "TekUp Primary Browser Server",
+      "description": "Main browser automation server with standard MCP protocol support",
+      "type": "@modelcontextprotocol/server-browser",
+      "version": "1.0.0",
+      "enabled": true,
+      "priority": 1,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "npx",
+          "args": ["@modelcontextprotocol/server-browser"],
+          "env": {
+            "BROWSER_MCP_PORT": "${MCP_BROWSER_PRIMARY_PORT}",
+            "NODE_ENV": "${NODE_ENV}",
+            "BROWSER_EXECUTABLE_PATH": "${MCP_BROWSER_EXECUTABLE_PATH}",
+            "BROWSER_HEADLESS": "${MCP_BROWSER_HEADLESS}",
+            "BROWSER_TIMEOUT": "${MCP_BROWSER_TIMEOUT}"
+          },
+          "timeout": 30000,
+          "retryAttempts": 3,
+          "retryDelay": 2000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "browser_navigate",
+            "description": "Navigate browser to a specific URL",
+            "source": "standard-mcp"
+          },
+          {
+            "name": "browser_click", 
+            "description": "Click on elements in the browser",
+            "source": "standard-mcp"
+          },
+          {
+            "name": "browser_screenshot",
+            "description": "Take screenshots of the current page or elements",
+            "source": "standard-mcp"
+          },
+          {
+            "name": "browser_get_page_content",
+            "description": "Extract content from the current page",
+            "source": "standard-mcp"
+          },
+          {
+            "name": "browser_type_text",
+            "description": "Type text into input fields",
+            "source": "standard-mcp"
+          },
+          {
+            "name": "browser_scroll",
+            "description": "Scroll the page in various directions",
+            "source": "standard-mcp"
+          },
+          {
+            "name": "browser_wait",
+            "description": "Wait for elements or conditions",
+            "source": "standard-mcp"
+          }
+        ],
+        "resources": [],
+        "prompts": [],
+        "sampling": false,
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "autoStart": true,
+        "retryAttempts": 3,
+        "retryDelay": 2000,
+        "healthCheckInterval": 30000,
+        "requestTimeout": 60000,
+        "maxConcurrentRequests": 5
+      }
+    },
+    "agent-infra": {
+      "id": "tekup-browser-agent-infra",
+      "name": "TekUp Agent Infrastructure Browser",
+      "description": "Enhanced browser server with agent infrastructure capabilities",
+      "type": "@agent-infra/mcp-server-browser", 
+      "version": "1.0.0",
+      "enabled": "${MCP_BROWSER_AGENT_INFRA_ENABLED}",
+      "priority": 2,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "npx",
+          "args": ["@agent-infra/mcp-server-browser"],
+          "cwd": "${MCP_WORKSPACE_ROOT}",
+          "env": {
+            "NODE_ENV": "${NODE_ENV}",
+            "BROWSER_MCP_PORT": "${MCP_BROWSER_AGENT_INFRA_PORT}",
+            "AGENT_INFRA_DEBUG": "${MCP_AGENT_INFRA_DEBUG}"
+          },
+          "timeout": 45000,
+          "retryAttempts": 2,
+          "retryDelay": 3000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "agent_browser_navigate",
+            "description": "Agent-enhanced browser navigation with context awareness",
+            "source": "agent-infra"
+          },
+          {
+            "name": "agent_browser_interact",
+            "description": "Advanced browser interaction with AI assistance",
+            "source": "agent-infra"
+          },
+          {
+            "name": "agent_browser_analyze",
+            "description": "Analyze page structure and content for automation",
+            "source": "agent-infra"
+          }
+        ],
+        "logging": ["warning", "error"]
+      },
+      "config": {
+        "autoStart": false,
+        "retryAttempts": 2,
+        "retryDelay": 3000,
+        "healthCheckInterval": 60000,
+        "requestTimeout": 90000,
+        "maxConcurrentRequests": 3
+      }
+    },
+    "browser-tools": {
+      "id": "tekup-browser-tools",
+      "name": "TekUp Browser Tools Integration",
+      "description": "Specialized browser tools with extended functionality",
+      "type": "mcp-browser-tools",
+      "version": "1.0.0", 
+      "enabled": "${MCP_BROWSER_TOOLS_ENABLED}",
+      "priority": 3,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "npx",
+          "args": ["mcp-browser-tools"],
+          "cwd": "${MCP_WORKSPACE_ROOT}",
+          "env": {
+            "NODE_ENV": "${NODE_ENV}",
+            "BROWSER_TOOLS_PORT": "${MCP_BROWSER_TOOLS_PORT}",
+            "BROWSER_TOOLS_CONFIG": "${MCP_BROWSER_TOOLS_CONFIG_PATH}"
+          },
+          "timeout": 30000,
+          "retryAttempts": 3,
+          "retryDelay": 2000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "browser_tools_extract",
+            "description": "Extract structured data from web pages",
+            "source": "browser-tools"
+          },
+          {
+            "name": "browser_tools_form_fill",
+            "description": "Advanced form filling capabilities",
+            "source": "browser-tools"
+          },
+          {
+            "name": "browser_tools_monitor",
+            "description": "Monitor page changes and events",
+            "source": "browser-tools"
+          }
+        ],
+        "logging": ["info", "error"]
+      },
+      "config": {
+        "autoStart": false,
+        "retryAttempts": 3,
+        "retryDelay": 2000,
+        "healthCheckInterval": 45000,
+        "requestTimeout": 60000,
+        "maxConcurrentRequests": 4
+      }
+    },
+    "custom-websocket": {
+      "id": "tekup-browser-custom",
+      "name": "TekUp Custom WebSocket Browser Server",
+      "description": "Custom WebSocket-based browser server with real-time capabilities",
+      "type": "custom",
+      "version": "1.0.0",
+      "enabled": "${MCP_BROWSER_CUSTOM_ENABLED}",
+      "priority": 4,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "node",
+          "args": ["${MCP_BROWSER_CUSTOM_SERVER_PATH}"],
+          "cwd": "${MCP_WORKSPACE_ROOT}",
+          "env": {
+            "NODE_ENV": "${NODE_ENV}",
+            "BROWSER_WEBSOCKET_PORT": "${MCP_BROWSER_WEBSOCKET_PORT}",
+            "BROWSER_EXTENSION_WS_URL": "${MCP_BROWSER_EXTENSION_WS_URL}"
+          },
+          "timeout": 30000,
+          "retryAttempts": 2,
+          "retryDelay": 5000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "browser_navigate",
+            "description": "WebSocket-based browser navigation",
+            "source": "custom-websocket"
+          },
+          {
+            "name": "browser_click",
+            "description": "Real-time element clicking via WebSocket",
+            "source": "custom-websocket" 
+          },
+          {
+            "name": "browser_screenshot",
+            "description": "WebSocket screenshot capture",
+            "source": "custom-websocket"
+          },
+          {
+            "name": "browser_get_content",
+            "description": "Real-time content extraction",
+            "source": "custom-websocket"
+          },
+          {
+            "name": "browser_type",
+            "description": "Real-time text input via WebSocket",
+            "source": "custom-websocket"
+          },
+          {
+            "name": "browser_wait",
+            "description": "WebSocket-based element waiting",
+            "source": "custom-websocket"
+          }
+        ],
+        "realtime": true,
+        "websocket": true,
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "autoStart": false,
+        "retryAttempts": 2,
+        "retryDelay": 5000,
+        "healthCheckInterval": 30000,
+        "requestTimeout": 60000,
+        "maxConcurrentRequests": 2,
+        "websocket": {
+          "enabled": true,
+          "port": "${MCP_BROWSER_WEBSOCKET_PORT}",
+          "reconnectInterval": 5000,
+          "maxReconnectAttempts": 10
+        }
+      }
+    }
+  },
+  "loadBalancing": {
+    "enabled": true,
+    "strategy": "priority",
+    "fallbackChain": ["primary", "agent-infra", "browser-tools", "custom-websocket"],
+    "healthCheckInterval": 30000,
+    "failoverTimeout": 5000,
+    "circuitBreaker": {
+      "enabled": true,
+      "failureThreshold": 5,
+      "recoveryTimeout": 60000
+    }
+  },
+  "routing": {
+    "rules": [
+      {
+        "pattern": "browser_navigate|browser_click|browser_screenshot|browser_get_page_content|browser_type_text|browser_scroll|browser_wait",
+        "preferredServer": "primary",
+        "fallback": true
+      },
+      {
+        "pattern": "agent_.*",
+        "preferredServer": "agent-infra",
+        "fallback": false
+      },
+      {
+        "pattern": "browser_tools_.*",
+        "preferredServer": "browser-tools",
+        "fallback": false
+      },
+      {
+        "pattern": ".*",
+        "preferredServer": "primary",
+        "fallback": true
+      }
+    ]
+  },
+  "environments": {
+    "development": {
+      "servers": {
+        "primary": {
+          "enabled": true,
+          "config": {
+            "retryAttempts": 5,
+            "healthCheckInterval": 15000
+          }
+        },
+        "agent-infra": {
+          "enabled": false
+        },
+        "browser-tools": {
+          "enabled": false
+        },
+        "custom-websocket": {
+          "enabled": true
+        }
+      },
+      "loadBalancing": {
+        "strategy": "round-robin",
+        "healthCheckInterval": 15000
+      }
+    },
+    "staging": {
+      "servers": {
+        "primary": {
+          "enabled": true
+        },
+        "agent-infra": {
+          "enabled": true
+        },
+        "browser-tools": {
+          "enabled": true
+        },
+        "custom-websocket": {
+          "enabled": false
+        }
+      },
+      "loadBalancing": {
+        "strategy": "priority",
+        "healthCheckInterval": 30000
+      }
+    },
+    "production": {
+      "servers": {
+        "primary": {
+          "enabled": true,
+          "config": {
+            "retryAttempts": 2,
+            "healthCheckInterval": 60000,
+            "maxConcurrentRequests": 10
+          }
+        },
+        "agent-infra": {
+          "enabled": true,
+          "config": {
+            "retryAttempts": 1,
+            "healthCheckInterval": 90000
+          }
+        },
+        "browser-tools": {
+          "enabled": true
+        },
+        "custom-websocket": {
+          "enabled": false
+        }
+      },
+      "loadBalancing": {
+        "strategy": "least-connections",
+        "healthCheckInterval": 60000,
+        "circuitBreaker": {
+          "failureThreshold": 3,
+          "recoveryTimeout": 300000
+        }
+      }
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics": {
+      "requestCount": true,
+      "responseTime": true,
+      "errorRate": true,
+      "serverHealth": true
+    },
+    "alerts": {
+      "serverDown": {
+        "enabled": true,
+        "threshold": 3,
+        "cooldown": 300000
+      },
+      "highErrorRate": {
+        "enabled": true,
+        "threshold": 0.1,
+        "window": 300000
+      },
+      "slowResponse": {
+        "enabled": true,
+        "threshold": 10000,
+        "window": 300000
+      }
+    }
+  },
+  "security": {
+    "allowedOrigins": ["${MCP_ALLOWED_ORIGINS}"],
+    "rateLimit": {
+      "enabled": true,
+      "requestsPerMinute": 60,
+      "burstSize": 10
+    },
+    "sanitization": {
+      "enabled": true,
+      "allowedDomains": ["${MCP_ALLOWED_DOMAINS}"]
+    }
+  }
+}

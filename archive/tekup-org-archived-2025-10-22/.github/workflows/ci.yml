@@ -1,0 +1,233 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '22.18.x'
+  PNPM_VERSION: '9.9.0'
+
+jobs:
+  # Job 1: Install dependencies and cache
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Generate cache key
+        id: cache-key
+        run: |
+          echo "key=pnpm-${{ hashFiles('pnpm-lock.yaml') }}" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ steps.cache-key.outputs.key }}
+          restore-keys: |
+            pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+  # Job 2: Lint and format check
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Check Prettier formatting
+        run: pnpm prettier --check .
+
+      - name: Type check
+        run: pnpm typecheck
+
+  # Job 3: Test affected projects
+  test:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, test]
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        
+      - name: Build packages and apps
+        run: |
+          if [ "${{ needs.setup.outputs.affected }}" = "all" ]; then
+            pnpm build
+          else
+            npx nx affected --target=build --base=origin/main --head=HEAD
+          fi
+          
+      - name: Build Docker images (on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker build -f apps/flow-api/Dockerfile.optimized -t tekup/flow-api:latest .
+          docker build -f apps/tekup-crm-api/Dockerfile.optimized -t tekup/crm-api:latest .
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Build applications
+        run: pnpm build:apps
+
+  # Job 5: Security and dependency checks
+  security:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run security audit
+        run: pnpm audit --audit-level moderate
+
+      - name: Check for outdated dependencies
+        run: pnpm outdated || true
+
+  # Job 6: Agent configuration validation
+  agent-validation:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: contains(github.event.head_commit.modified, 'apps/agentrooms-backend/config/agents.json') || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Validate agent configuration
+        run: |
+          # Check if agents.json is valid JSON
+          if ! jq empty apps/agentrooms-backend/config/agents.json; then
+            echo "❌ Invalid JSON in agents.json"
+            exit 1
+          fi
+          
+          # Check required fields for each agent
+          jq -r '.agents | to_entries[] | select(.value.workspaces == null or .value.file_allowlist == null or .value.restricted_paths == null) | .key' apps/agentrooms-backend/config/agents.json > missing_fields.txt
+          
+          if [ -s missing_fields.txt ]; then
+            echo "❌ Agents missing required fields:"
+            cat missing_fields.txt
+            exit 1
+          fi
+          
+          echo "✅ Agent configuration is valid"
+
+  # Job 7: Final status check
+  ci-success:
+    runs-on: ubuntu-latest
+    needs: [lint, test, build, security, agent-validation]
+    if: always()
+    steps:
+      - name: Check all jobs status
+        run: |
+          if [[ "${{ needs.lint.result }}" != "success" || 
+                "${{ needs.test.result }}" != "success" || 
+                "${{ needs.build.result }}" != "success" || 
+                "${{ needs.security.result }}" != "success" || 
+                ("${{ needs.agent-validation.result }}" != "success" && "${{ needs.agent-validation.result }}" != "skipped") ]]; then
+            echo "❌ CI pipeline failed"
+            exit 1
+          fi
+          echo "✅ All CI checks passed"

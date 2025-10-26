@@ -1,0 +1,53 @@
+# Fixed Dockerfile for Lead Platform Backend (NestJS)
+FROM node:20-slim
+
+# Install system dependencies including SQLite
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    sqlite3 \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install pnpm globally
+RUN npm install -g pnpm@latest
+
+# Copy workspace configuration files
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+
+# Copy packages directory (shared dependencies)
+COPY packages/ ./packages/
+
+# Copy lead platform app
+COPY apps/tekup-lead-platform/ ./apps/tekup-lead-platform/
+
+# Install all workspace dependencies
+RUN pnpm install --no-frozen-lockfile
+
+# Build shared packages first
+RUN cd packages/shared && pnpm build
+RUN cd packages/config && pnpm build
+
+# Set working directory to lead platform
+WORKDIR /app/apps/tekup-lead-platform
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Run migrations (create SQLite database)
+RUN npx prisma migrate dev --name init || npx prisma db push
+
+# Expose port
+EXPOSE 3003
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3003/health || exit 1
+
+# Start the backend
+CMD ["pnpm", "dev"]

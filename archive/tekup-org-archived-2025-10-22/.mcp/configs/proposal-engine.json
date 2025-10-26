@@ -1,0 +1,458 @@
+{
+  "$schema": "../schemas/mcp-config.schema.json",
+  "version": "1.0.0",
+  "name": "TekUp AI Proposal Engine MCP Server",
+  "description": "Autonomous proposal generation system with MCP agent architecture",
+  "metadata": {
+    "created": "2025-01-12T14:30:00Z",
+    "lastModified": "2025-01-12T14:30:00Z",
+    "author": "TekUp.org Development Team",
+    "category": "ai-automation",
+    "tags": ["proposal", "ai", "automation", "sales", "mcp"]
+  },
+  "servers": {
+    "proposal-engine": {
+      "id": "tekup-proposal-engine",
+      "name": "AI Proposal Engine Server",
+      "description": "Autonomous proposal generation with transcript intelligence and live research",
+      "type": "@tekup/proposal-engine-mcp-server",
+      "version": "1.0.0",
+      "enabled": true,
+      "priority": 1,
+      "transport": {
+        "type": "stdio",
+        "config": {
+          "command": "node",
+          "args": ["${MCP_PROPOSAL_ENGINE_SERVER_PATH}"],
+          "cwd": "${MCP_WORKSPACE_ROOT}",
+          "env": {
+            "NODE_ENV": "${NODE_ENV}",
+            "TENANT_ID": "${MCP_TENANT_ID}",
+            "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+            "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}",
+            "GOOGLE_API_KEY": "${GOOGLE_API_KEY}",
+            "AIRTABLE_API_KEY": "${AIRTABLE_API_KEY}",
+            "AIRTABLE_BASE_ID": "${AIRTABLE_BASE_ID}",
+            "AIRTABLE_TRANSCRIPTS_TABLE": "${AIRTABLE_TRANSCRIPTS_TABLE}",
+            "DATABASE_URL": "${DATABASE_URL}",
+            "REDIS_URL": "${REDIS_URL}"
+          },
+          "timeout": 300000,
+          "retryAttempts": 3,
+          "retryDelay": 5000
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "generate_proposal",
+            "description": "Generate AI-powered proposal from call transcript",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "transcriptId": {
+                  "type": "string",
+                  "description": "Airtable transcript record ID"
+                },
+                "clientName": {
+                  "type": "string",
+                  "description": "Client company name"
+                },
+                "projectType": {
+                  "type": "string",
+                  "description": "Type of project or solution"
+                },
+                "estimatedValue": {
+                  "type": "number",
+                  "description": "Estimated project value"
+                },
+                "tone": {
+                  "type": "string",
+                  "enum": ["professional", "friendly", "urgent", "consultative"],
+                  "description": "Proposal tone and style"
+                },
+                "urgency": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"],
+                  "description": "Project urgency level"
+                },
+                "customInstructions": {
+                  "type": "object",
+                  "description": "Custom generation instructions"
+                }
+              },
+              "required": ["transcriptId"]
+            }
+          },
+          {
+            "name": "extract_buying_signals",
+            "description": "Extract buying signals from transcript text",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "transcript": {
+                  "type": "string",
+                  "description": "Raw transcript text"
+                }
+              },
+              "required": ["transcript"]
+            }
+          },
+          {
+            "name": "perform_research",
+            "description": "Perform live research using Perplexity AI",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "buyingSignals": {
+                  "type": "array",
+                  "description": "Extracted buying signals"
+                },
+                "clientName": {
+                  "type": "string",
+                  "description": "Client company name"
+                },
+                "projectType": {
+                  "type": "string",
+                  "description": "Project type for research focus"
+                }
+              },
+              "required": ["buyingSignals"]
+            }
+          },
+          {
+            "name": "generate_narrative",
+            "description": "Generate proposal narrative sections",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "buyingSignals": {
+                  "type": "array",
+                  "description": "Extracted buying signals"
+                },
+                "researchContexts": {
+                  "type": "array",
+                  "description": "Research insights and context"
+                },
+                "options": {
+                  "type": "object",
+                  "description": "Generation options and preferences"
+                }
+              },
+              "required": ["buyingSignals", "researchContexts", "options"]
+            }
+          },
+          {
+            "name": "assemble_document",
+            "description": "Assemble final proposal document",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "sections": {
+                  "type": "array",
+                  "description": "Generated narrative sections"
+                },
+                "options": {
+                  "type": "object",
+                  "description": "Document assembly options"
+                }
+              },
+              "required": ["sections", "options"]
+            }
+          },
+          {
+            "name": "get_proposal_status",
+            "description": "Get proposal generation status and progress",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "proposalId": {
+                  "type": "string",
+                  "description": "Proposal ID"
+                }
+              },
+              "required": ["proposalId"]
+            }
+          },
+          {
+            "name": "list_proposals",
+            "description": "List proposals with filtering and pagination",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "number",
+                  "description": "Page number for pagination"
+                },
+                "limit": {
+                  "type": "number",
+                  "description": "Items per page"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["pending", "processing", "completed", "failed"],
+                  "description": "Filter by status"
+                },
+                "clientName": {
+                  "type": "string",
+                  "description": "Filter by client name"
+                }
+              }
+            }
+          },
+          {
+            "name": "retry_proposal",
+            "description": "Retry failed proposal generation",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "proposalId": {
+                  "type": "string",
+                  "description": "Proposal ID to retry"
+                }
+              },
+              "required": ["proposalId"]
+            }
+          },
+          {
+            "name": "export_proposal",
+            "description": "Export proposal to different formats",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "proposalId": {
+                  "type": "string",
+                  "description": "Proposal ID"
+                },
+                "format": {
+                  "type": "string",
+                  "enum": ["pdf", "docx", "html"],
+                  "description": "Export format"
+                }
+              },
+              "required": ["proposalId", "format"]
+            }
+          },
+          {
+            "name": "get_agent_status",
+            "description": "Get MCP agent execution status",
+            "source": "proposal-engine",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "proposalId": {
+                  "type": "string",
+                  "description": "Proposal ID"
+                }
+              },
+              "required": ["proposalId"]
+            }
+          }
+        ],
+        "resources": [
+          {
+            "uri": "proposal://templates",
+            "name": "Proposal Templates",
+            "description": "Available proposal templates and configurations",
+            "mimeType": "application/json"
+          },
+          {
+            "uri": "proposal://analytics",
+            "name": "Proposal Analytics",
+            "description": "Proposal generation metrics and insights",
+            "mimeType": "application/json"
+          },
+          {
+            "uri": "proposal://transcripts",
+            "name": "Call Transcripts",
+            "description": "Available call transcripts from Airtable",
+            "mimeType": "application/json"
+          }
+        ],
+        "prompts": [
+          {
+            "name": "generate_proposal_prompt",
+            "description": "Generate a comprehensive proposal from call transcript",
+            "arguments": [
+              {
+                "name": "transcriptId",
+                "description": "Airtable transcript record ID",
+                "required": true
+              },
+              {
+                "name": "clientName",
+                "description": "Client company name",
+                "required": false
+              },
+              {
+                "name": "projectType",
+                "description": "Type of project or solution",
+                "required": false
+              }
+            ]
+          },
+          {
+            "name": "analyze_transcript_prompt",
+            "description": "Analyze call transcript for buying signals and insights",
+            "arguments": [
+              {
+                "name": "transcript",
+                "description": "Raw transcript text",
+                "required": true
+              }
+            ]
+          },
+          {
+            "name": "research_context_prompt",
+            "description": "Research relevant context for proposal",
+            "arguments": [
+              {
+                "name": "buyingSignals",
+                "description": "Extracted buying signals",
+                "required": true
+              },
+              {
+                "name": "projectType",
+                "description": "Project type for research focus",
+                "required": false
+              }
+            ]
+          }
+        ],
+        "sampling": false,
+        "logging": ["info", "warning", "error"]
+      },
+      "config": {
+        "autoStart": true,
+        "retryAttempts": 3,
+        "retryDelay": 5000,
+        "healthCheckInterval": 30000,
+        "requestTimeout": 300000,
+        "maxConcurrentRequests": 5,
+        "rateLimit": {
+          "enabled": true,
+          "requestsPerMinute": 10,
+          "burstSize": 3
+        }
+      }
+    }
+  },
+  "loadBalancing": {
+    "enabled": false,
+    "strategy": "single",
+    "healthCheckInterval": 30000
+  },
+  "routing": {
+    "rules": [
+      {
+        "pattern": "generate_proposal|extract_buying_signals|perform_research|generate_narrative|assemble_document",
+        "preferredServer": "proposal-engine",
+        "fallback": false
+      },
+      {
+        "pattern": "get_proposal_status|list_proposals|retry_proposal|export_proposal|get_agent_status",
+        "preferredServer": "proposal-engine",
+        "fallback": false
+      }
+    ]
+  },
+  "environments": {
+    "development": {
+      "servers": {
+        "proposal-engine": {
+          "enabled": true,
+          "config": {
+            "retryAttempts": 5,
+            "healthCheckInterval": 15000,
+            "requestTimeout": 600000,
+            "maxConcurrentRequests": 3
+          }
+        }
+      }
+    },
+    "staging": {
+      "servers": {
+        "proposal-engine": {
+          "enabled": true,
+          "config": {
+            "retryAttempts": 3,
+            "healthCheckInterval": 30000,
+            "requestTimeout": 300000,
+            "maxConcurrentRequests": 5
+          }
+        }
+      }
+    },
+    "production": {
+      "servers": {
+        "proposal-engine": {
+          "enabled": true,
+          "config": {
+            "retryAttempts": 2,
+            "healthCheckInterval": 60000,
+            "requestTimeout": 300000,
+            "maxConcurrentRequests": 10
+          }
+        }
+      }
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics": {
+      "requestCount": true,
+      "responseTime": true,
+      "errorRate": true,
+      "serverHealth": true,
+      "proposalGenerationTime": true,
+      "successRate": true
+    },
+    "alerts": {
+      "serverDown": {
+        "enabled": true,
+        "threshold": 3,
+        "cooldown": 300000
+      },
+      "highErrorRate": {
+        "enabled": true,
+        "threshold": 0.1,
+        "window": 300000
+      },
+      "slowProposalGeneration": {
+        "enabled": true,
+        "threshold": 600000,
+        "window": 300000
+      },
+      "lowSuccessRate": {
+        "enabled": true,
+        "threshold": 0.8,
+        "window": 600000
+      }
+    }
+  },
+  "security": {
+    "allowedOrigins": ["${MCP_ALLOWED_ORIGINS}"],
+    "rateLimit": {
+      "enabled": true,
+      "requestsPerMinute": 10,
+      "burstSize": 3
+    },
+    "sanitization": {
+      "enabled": true,
+      "allowedDomains": ["${MCP_ALLOWED_DOMAINS}"]
+    },
+    "apiKeyValidation": {
+      "enabled": true,
+      "requiredKeys": ["OPENAI_API_KEY", "PERPLEXITY_API_KEY", "AIRTABLE_API_KEY"]
+    }
+  }
+}

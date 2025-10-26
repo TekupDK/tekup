@@ -1,0 +1,156 @@
+.features {
+  display: flex;
+  align-items: center;
+  padding: 4rem 0;
+  width: 100%;
+  background: linear-gradient(180deg, var(--ifm-color-emphasis-100) 0%, transparent 100%);
+}
+
+.featuresTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--ifm-color-content);
+}
+
+.featuresSubtitle {
+  font-size: 1.25rem;
+  color: var(--ifm-color-content-secondary);
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.featureSvg {
+  height: 200px;
+  width: 200px;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.featureSvg:hover {
+  transform: scale(1.05);
+}
+
+.featureTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--ifm-color-primary);
+}
+
+.featureDescription {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ifm-color-content-secondary);
+  margin-bottom: 2rem;
+}
+
+.ctaTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--ifm-color-content);
+}
+
+.ctaDescription {
+  font-size: 1.125rem;
+  color: var(--ifm-color-content-secondary);
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+
+.ctaButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ctaButtons .button {
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ctaButtons .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .features {
+  background: linear-gradient(180deg, var(--ifm-color-emphasis-100) 0%, transparent 100%);
+}
+
+[data-theme='dark'] .featuresTitle {
+  color: var(--ifm-color-content);
+}
+
+[data-theme='dark'] .featureTitle {
+  color: var(--ifm-color-primary-light);
+}
+
+/* Responsive design */
+@media screen and (max-width: 996px) {
+  .features {
+    padding: 2rem 0;
+  }
+  
+  .featuresTitle {
+    font-size: 2rem;
+  }
+  
+  .featuresSubtitle {
+    font-size: 1.125rem;
+  }
+  
+  .featureSvg {
+    height: 150px;
+    width: 150px;
+  }
+  
+  .featureTitle {
+    font-size: 1.25rem;
+  }
+  
+  .featureDescription {
+    font-size: 0.9rem;
+  }
+  
+  .ctaTitle {
+    font-size: 1.75rem;
+  }
+  
+  .ctaDescription {
+    font-size: 1rem;
+  }
+  
+  .ctaButtons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .ctaButtons .button {
+    margin: 0.25rem 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .featureSvg {
+    height: 120px;
+    width: 120px;
+  }
+  
+  .featuresTitle {
+    font-size: 1.75rem;
+  }
+  
+  .ctaTitle {
+    font-size: 1.5rem;
+  }
+}

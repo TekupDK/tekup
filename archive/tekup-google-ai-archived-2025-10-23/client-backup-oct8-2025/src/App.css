@@ -1,0 +1,880 @@
+/* ========================================
+   RenOS V4.0 - MODERN PROFESSIONAL DESIGN
+   Inspired by: Cursor, Airtable, Pentagram
+   ======================================== */
+
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/preflight" layer(base);
+@import "tailwindcss/utilities" layer(utilities);
+
+@import "./styles/modern-design-system.css";
+@import "./styles/dashboard-enhancements.css";
+
+/* ========================================
+   DESIGN TOKENS - Semantic & Scalable
+   ======================================== */
+
+:root {
+  /* Core Design System */
+  --renos-radius: 0.75rem;
+  --renos-font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Professional Color Palette - WCAG AAA Compliant */
+  --renos-primary: #0ea5e9;
+  /* Sky Blue - Better contrast */
+  --renos-primary-dark: #0284c7;
+  /* Darker variant */
+  --renos-success: #10b981;
+  /* Emerald Green */
+  --renos-warning: #f59e0b;
+  /* Amber */
+  --renos-danger: #ef4444;
+  /* Red */
+  --renos-info: #8b5cf6;
+  /* Violet */
+
+  /* Neutral Palette */
+  --renos-white: #ffffff;
+  --renos-gray-50: #f9fafb;
+  --renos-gray-100: #f3f4f6;
+  --renos-gray-200: #e5e7eb;
+  --renos-gray-300: #d1d5db;
+  --renos-gray-400: #9ca3af;
+  --renos-gray-500: #6b7280;
+  --renos-gray-600: #4b5563;
+  --renos-gray-700: #374151;
+  --renos-gray-800: #1f2937;
+  --renos-gray-900: #111827;
+  --renos-gray-950: #030712;
+
+  /* Background System */
+  --renos-bg-primary: #0f172a;
+  /* Slate 900 */
+  --renos-bg-secondary: #1e293b;
+  /* Slate 800 */
+  --renos-bg-tertiary: #334155;
+  /* Slate 700 */
+
+  /* Glass System - Optimized Performance */
+  --renos-glass-bg: rgba(255, 255, 255, 0.05);
+  --renos-glass-border: rgba(255, 255, 255, 0.1);
+  --renos-glass-hover: rgba(255, 255, 255, 0.08);
+  --renos-glass-active: rgba(255, 255, 255, 0.12);
+
+  /* Typography Scale - Modular Scale 1.25 */
+  --renos-text-xs: 0.75rem;
+  /* 12px */
+  --renos-text-sm: 0.875rem;
+  /* 14px */
+  --renos-text-base: 1rem;
+  /* 16px */
+  --renos-text-lg: 1.125rem;
+  /* 18px */
+  --renos-text-xl: 1.25rem;
+  /* 20px */
+  --renos-text-2xl: 1.5rem;
+  /* 24px */
+  --renos-text-3xl: 1.875rem;
+  /* 30px */
+  --renos-text-4xl: 2.25rem;
+  /* 36px */
+
+  /* Spacing System - 4px Base Unit */
+  --renos-space-1: 0.25rem;
+  /* 4px */
+  --renos-space-2: 0.5rem;
+  /* 8px */
+  --renos-space-3: 0.75rem;
+  /* 12px */
+  --renos-space-4: 1rem;
+  /* 16px */
+  --renos-space-5: 1.25rem;
+  /* 20px */
+  --renos-space-6: 1.5rem;
+  /* 24px */
+  --renos-space-8: 2rem;
+  /* 32px */
+  --renos-space-10: 2.5rem;
+  /* 40px */
+  --renos-space-12: 3rem;
+  /* 48px */
+  --renos-space-16: 4rem;
+  /* 64px */
+
+  /* Shadow System - Layered Depth */
+  --renos-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --renos-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --renos-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --renos-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --renos-shadow-glass:
+    0 4px 16px rgba(0, 0, 0, 0.12),
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /* Animation Timing */
+  --renos-duration-fast: 150ms;
+  --renos-duration-normal: 250ms;
+  --renos-duration-slow: 350ms;
+  --renos-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-Index Scale */
+  --renos-z-dropdown: 1000;
+  --renos-z-sticky: 1020;
+  --renos-z-fixed: 1030;
+  --renos-z-modal-backdrop: 1040;
+  --renos-z-modal: 1050;
+  --renos-z-popover: 1060;
+  --renos-z-tooltip: 1070;
+  --renos-z-toast: 1080;
+
+  /* Tailwind Integration */
+  --background: var(--renos-bg-primary);
+  --foreground: var(--renos-white);
+  --card: var(--renos-glass-bg);
+  --card-foreground: var(--renos-white);
+  --popover: var(--renos-glass-bg);
+  --popover-foreground: var(--renos-white);
+  --primary: var(--renos-primary);
+  --primary-foreground: var(--renos-white);
+  --secondary: var(--renos-glass-bg);
+  --secondary-foreground: var(--renos-white);
+  --muted: var(--renos-glass-bg);
+  --muted-foreground: var(--renos-gray-400);
+  --accent: var(--renos-success);
+  --accent-foreground: var(--renos-white);
+  --destructive: var(--renos-danger);
+  --border: var(--renos-glass-border);
+  --input: var(--renos-glass-bg);
+  --ring: var(--renos-primary);
+  --radius: var(--renos-radius);
+}
+
+/* ========================================
+   MODERN CSS RESET
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--renos-font-family);
+  font-size: var(--renos-text-base);
+  line-height: 1.6;
+  color: var(--renos-white);
+  background: linear-gradient(135deg,
+      var(--renos-bg-primary) 0%,
+      var(--renos-bg-secondary) 50%,
+      var(--renos-bg-tertiary) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ========================================
+   PROFESSIONAL GLASSMORPHISM SYSTEM
+   ======================================== */
+
+.glass {
+  background: var(--renos-glass-bg);
+  border: 1px solid var(--renos-glass-border);
+  border-radius: var(--renos-radius);
+  box-shadow: var(--renos-shadow-glass);
+  transition: all var(--renos-duration-normal) var(--renos-ease);
+}
+
+/* Optimized backdrop-filter with fallback */
+@supports (backdrop-filter: blur(12px)) {
+  .glass {
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+  }
+}
+
+@supports not (backdrop-filter: blur(12px)) {
+  .glass {
+    background: rgba(31, 41, 55, 0.85);
+    /* Fallback for older browsers */
+  }
+}
+
+.glass:hover {
+  background: var(--renos-glass-hover);
+  border-color: var(--renos-primary);
+  box-shadow:
+    var(--renos-shadow-xl),
+    0 0 0 1px var(--renos-primary),
+    0 0 20px rgba(14, 165, 233, 0.15);
+  transform: translateY(-1px);
+}
+
+.glass-card {
+  background: var(--renos-glass-bg);
+  border: 1px solid var(--renos-glass-border);
+  border-radius: var(--renos-radius);
+  box-shadow: var(--renos-shadow-glass);
+  transition: all var(--renos-duration-normal) var(--renos-ease);
+  padding: var(--renos-space-6);
+}
+
+@supports (backdrop-filter: blur(12px)) {
+  .glass-card {
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+  }
+}
+
+/* ========================================
+   ENHANCED GRID SYSTEM
+   ======================================== */
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--renos-space-4);
+  padding-right: var(--renos-space-4);
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+    padding-left: var(--renos-space-6);
+    padding-right: var(--renos-space-6);
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+    padding-left: var(--renos-space-8);
+    padding-right: var(--renos-space-8);
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+}
+
+/* Dashboard Specific Grids */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--renos-space-4);
+  grid-auto-rows: 1fr;
+  /* Equal height cards */
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--renos-space-6);
+  grid-auto-rows: minmax(350px, auto);
+}
+
+/* ========================================
+   PROFESSIONAL COMPONENTS
+   ======================================== */
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--renos-space-2);
+  padding: var(--renos-space-3) var(--renos-space-4);
+  font-size: var(--renos-text-sm);
+  font-weight: 500;
+  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: var(--renos-radius);
+  cursor: pointer;
+  transition: all var(--renos-duration-normal) var(--renos-ease);
+  text-decoration: none;
+  min-height: 44px;
+  /* Touch-friendly */
+}
+
+.btn-primary {
+  background: var(--renos-primary);
+  color: var(--renos-white);
+  border-color: var(--renos-primary);
+}
+
+.btn-primary:hover {
+  background: var(--renos-primary-dark);
+  border-color: var(--renos-primary-dark);
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+}
+
+.btn-glass {
+  background: var(--renos-glass-bg);
+  border: 1px solid var(--renos-glass-border);
+  color: var(--renos-white);
+}
+
+/* Form Elements */
+.form-input {
+  width: 100%;
+  padding: var(--renos-space-3) var(--renos-space-4);
+  font-size: var(--renos-text-base);
+  line-height: 1.5;
+  color: var(--renos-white);
+  background: var(--renos-glass-bg);
+  border: 1px solid var(--renos-glass-border);
+  border-radius: var(--renos-radius);
+  transition: all var(--renos-duration-normal) var(--renos-ease);
+  min-height: 44px;
+}
+
+.form-input::placeholder {
+  color: var(--renos-gray-400);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--renos-primary);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  background: var(--renos-glass-hover);
+}
+
+/* ========================================
+   OPTIMIZED ANIMATIONS
+   ======================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s var(--renos-ease);
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ========================================
+   LAYOUT SYSTEM
+   ======================================== */
+
+.main-content {
+  width: 100%;
+  min-height: 100vh;
+  padding: var(--renos-space-4);
+  transition: margin-left var(--renos-duration-normal) var(--renos-ease);
+}
+
+@media (min-width: 1024px) {
+  .main-content {
+    margin-left: 256px;
+    /* Sidebar width */
+    padding: var(--renos-space-6);
+  }
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 256px;
+  height: 100vh;
+  background: var(--renos-glass-bg);
+  border-right: 1px solid var(--renos-glass-border);
+  z-index: var(--renos-z-fixed);
+  overflow-y: auto;
+}
+
+@supports (backdrop-filter: blur(12px)) {
+  .sidebar {
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+  }
+}
+
+/* ========================================
+   PROFESSIONAL SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--renos-glass-bg);
+  border-radius: var(--renos-radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--renos-primary);
+  border-radius: var(--renos-radius);
+  transition: background var(--renos-duration-normal) var(--renos-ease);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--renos-primary-dark);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--renos-primary) var(--renos-glass-bg);
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* Focus Management */
+:focus {
+  outline: 2px solid var(--renos-primary);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--renos-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.2);
+}
+
+/* Skip Links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: var(--renos-space-4);
+  background: var(--renos-primary);
+  color: var(--renos-white);
+  padding: var(--renos-space-2) var(--renos-space-4);
+  text-decoration: none;
+  border-radius: var(--renos-radius);
+  font-weight: 600;
+  z-index: var(--renos-z-tooltip);
+  transition: top var(--renos-duration-fast) var(--renos-ease);
+}
+
+.skip-link:focus {
+  top: var(--renos-space-4);
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--renos-space-3);
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: var(--renos-space-4);
+  }
+
+  .main-content {
+    padding: var(--renos-space-4);
+  }
+
+  /* Touch-friendly sizing */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Tablet Optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
+/* Desktop Optimizations */
+@media (min-width: 1025px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .charts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1400px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .charts-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1800px) {
+  .stats-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+
+  .glass,
+  .glass-card {
+    background: var(--renos-white);
+    color: var(--renos-gray-900);
+    border: 1px solid var(--renos-gray-300);
+    box-shadow: none;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* ========================================
+   HIGH CONTRAST MODE
+   ======================================== */
+
+@media (prefers-contrast: high) {
+  :root {
+    --renos-glass-border: rgba(255, 255, 255, 0.3);
+    --renos-primary: #60a5fa;
+    /* Higher contrast blue */
+  }
+
+  .glass {
+    border-width: 2px;
+  }
+}
+
+
+/* ========================================
+   GLASSMORPHISM ENHANCEMENT - Professional Grade
+   ======================================== */
+
+/* Enhanced Glass Variables */
+:root {
+  --renos-glass-subtle: rgba(255, 255, 255, 0.06);
+  --renos-glass: rgba(255, 255, 255, 0.08);
+  --renos-glass-hover: rgba(255, 255, 255, 0.12);
+  --renos-glass-active: rgba(255, 255, 255, 0.16);
+  --renos-glass-border: rgba(255, 255, 255, 0.2);
+  --renos-glass-border-strong: rgba(255, 255, 255, 0.3);
+
+  /* Enhanced Shadows */
+  --shadow-glass:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Professional Glass Components */
+.glass {
+  background: var(--renos-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--renos-glass-border);
+  box-shadow: var(--shadow-glass);
+  border-radius: var(--renos-radius);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass:hover {
+  background: var(--renos-glass-hover);
+  border-color: var(--renos-glass-border-strong);
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.glass-card {
+  background: var(--renos-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--renos-glass-border);
+  border-radius: var(--renos-radius);
+  box-shadow: var(--shadow-glass);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  background: var(--renos-glass-hover);
+  border-color: var(--renos-glass-border-strong);
+  transform: translateY(-1px);
+}
+
+/* Stats Cards Enhancement */
+.stats-grid .glass-card {
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Navigation Enhancement */
+.sidebar-nav .glass {
+  margin-bottom: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.sidebar-nav .glass:hover {
+  background: var(--renos-glass-hover);
+  border-color: var(--renos-primary);
+  box-shadow:
+    0 0 20px rgba(14, 165, 233, 0.3),
+    var(--shadow-glass);
+}
+
+/* Chart Containers */
+.chart-container {
+  background: var(--renos-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--renos-glass-border);
+  border-radius: var(--renos-radius);
+  padding: 1.5rem;
+  min-height: 300px;
+}
+
+/* Fallbacks for older browsers */
+@supports not (backdrop-filter: blur(20px)) {
+
+  .glass,
+  .glass-card,
+  .chart-container {
+    background: rgba(30, 41, 59, 0.9);
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+
+  .glass,
+  .glass-card {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
+
+/* ========================================
+   CRITICAL FIX - Prevent Global Background Pollution
+   Ensures only intentional elements get backgrounds
+   ======================================== */
+
+/* Remove this aggressive rule - it breaks everything */
+/* Instead, ensure our CSS doesn't have wild card selectors */
+
+/* ========================================
+   Badge/Chip Component Styles
+   Only apply to explicitly classed elements
+   ======================================== */
+
+.badge,
+.chip,
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--renos-primary);
+  color: white;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  transition: all var(--renos-duration-fast) var(--renos-ease);
+}
+
+.badge:hover,
+.chip:hover,
+.tag:hover {
+  background: var(--renos-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--renos-shadow-md);
+}
+
+/* Badge variants */
+.badge-success {
+  background: var(--renos-success);
+}
+
+.badge-warning {
+  background: var(--renos-warning);
+}
+
+.badge-danger {
+  background: var(--renos-danger);
+}
+
+.badge-info {
+  background: var(--renos-info);
+}
+
+/* ========================================
+   ACCESSIBILITY - Prefers Reduced Motion
+   Disable animations for users with motion sensitivity
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Specifically disable RenOS animations */
+  .animate-pulse-glow,
+  .animate-spin-slow,
+  .animate-bounce-gentle,
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-scale-in {
+    animation: none !important;
+  }
+
+  /* Disable backdrop blur (can cause motion issues) - !important needed for accessibility */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg,
+  .backdrop-blur-md {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Keep opacity transitions but make instant */
+  .transition-opacity {
+    transition: opacity 0.01ms !important;
+  }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATION
+   Hardware acceleration for smooth animations
+   ======================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Only apply hardware acceleration if animations are enabled */
+  .animate-spin-slow,
+  .animate-pulse-glow,
+  .animate-bounce-gentle {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* Optimize glassmorphism for performance */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg {
+    will-change: backdrop-filter;
+    transform: translate3d(0, 0, 0);
+  }
+}

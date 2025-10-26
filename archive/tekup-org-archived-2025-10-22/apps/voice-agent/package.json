@@ -1,0 +1,37 @@
+{
+  "name": "@tekup/voice-agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "dev:jarvis:mock": "cross-env NEXT_PUBLIC_VOICE_AGENT_JARVIS_MODE=mock next dev",
+    "dev:jarvis:real": "cross-env NEXT_PUBLIC_VOICE_AGENT_JARVIS_MODE=real next dev",
+    "dev:jarvis:off": "cross-env NEXT_PUBLIC_VOICE_AGENT_JARVIS_MODE=off next dev"
+  },
+  "dependencies": {
+    "next": "15.5.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "socket.io-client": "^4.8.1",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.3.1",
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "autoprefixer": "^10.4.21",
+    "jsdom": "^24.1.3",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.1",
+    "typescript": "^5.6.3",
+    "vitest": "^1.6.0"
+  }
+}

@@ -1,0 +1,34 @@
+# Customer 360 Email Threads - Quick Fix Guide\n\n\n\n## 🚨 Problem\n\nCustomer 360 viser ingen email tråde fordi email ingest endnu ikke er kørt.\n\n\n\n## ✅ Status\n\n- ✅ Database tabeller oprettet i Neon (email_threads, email_messages, email_ingest_runs)\n\n- ✅ Backend deployet til Render.com\n\n- ✅ Trust proxy og favicon handler tilføjet\n\n\n\n## 🔧 Løsning (2 Steps)\n\n\n\n### Step 1: Warm Up Server\n\nÅbn i browser (warm up cold-start):\n\n```\n\nhttps://tekup-renos.onrender.com/health\n\n```
+
+**Forventet resultat:** \n\n```json
+{"status":"ok","timestamp":"..."}\n\n```
+\n\n### Step 2: Kør Email Ingest\n\n\n\n#### ⚠️ VIGTIGT: Brug den KORREKTE URL\n\n```\n\nhttps://tekup-renos.onrender.com/api/dashboard/email-ingest/stats\n\n```
+
+**ELLER hvis du bruger det andet service:**\n\n```
+https://tekup-renos-1.onrender.com/api/dashboard/email-ingest/stats\n\n```
+
+**Forventet resultat:**\n\n```json
+{
+  "latestRun": { "status": "completed", "totalEmails": 150, ... },
+  "totalThreads": 150,
+  "matchedThreads": 120,
+  "unmatchedThreads": 30
+}\n\n```
+\n\n### Step 3: Verificer i UI\n\n1. Gå til Customer 360\n\n2. Vælg en kunde\n\n3. Du skulle nu se deres email tråde! 🎉
+\n\n## 🔍 Hvis Ingen Tråde Vises\n\n\n\n### Check 1: RUN_MODE Environment Variable\n\nEmail ingest kører kun i `production` mode, ikke `dry-run`.\n\n
+**Fix i Render Dashboard:**\n\n1. Gå til https://dashboard.render.com\n\n2. Find "tekup-renos" service\n\n3. Klik "Environment" tab\n\n4. Find `RUN_MODE` variabel\n\n5. Sæt værdi til: `production`\n\n6. Klik "Save Changes"\n\n7. Tjen vil auto-redeploy
+\n\n### Check 2: Gmail Credentials\n\nVerify at disse environment variables er sat i Render:\n\n- `GOOGLE_PROJECT_ID`\n\n- `GOOGLE_CLIENT_EMAIL`\n\n- `GOOGLE_PRIVATE_KEY` (korrekt formateret med `\n` for newlines)\n\n- `GOOGLE_IMPERSONATED_USER` (fx `info@rendetalje.dk`)\n\n\n\n### Check 3: Database Connection\n\nKør i Neon SQL Editor:\n\n```sql
+-- Check om data blev indlæst\n\nSELECT COUNT(*) FROM email_threads;
+SELECT COUNT(*) FROM email_messages;
+
+-- Se seneste ingest runs\n\nSELECT * FROM email_ingest_runs ORDER BY "startedAt" DESC LIMIT 5;\n\n
+-- Se seneste tråde\n\nSELECT "subject", "lastMessageAt", "messageCount" 
+FROM email_threads 
+ORDER BY "lastMessageAt" DESC 
+LIMIT 10;\n\n```
+\n\n## 🎯 Forventede Resultater\n\n\n\nEfter vellykket ingest:\n\n- ✅ 100+ email threads i database\n\n- ✅ Customer 360 viser tråde for kunder\n\n- ✅ Klik på tråd viser beskeder\n\n- ✅ Reply funktion virker\n\n- ✅ Smart matching har linket tråde til kunder\n\n\n\n## 🐛 Troubleshooting\n\n\n\n### Error: "Property 'emailThread' does not exist on type 'PrismaClient'"\n\n**Løsning:** Kør `npx prisma generate` lokalt og redeploy.\n\n\n\n### Error: "Bad Gateway" eller 502\n\n**Løsning:** \n\n1. Server er i cold-start, prøv igen efter 30 sekunder\n\n2. Hit `/health` endpoint først\n\n3. Check Render logs for errors
+\n\n### Error: "X-Forwarded-For header is set but 'trust proxy' is false"\n\n**Løsning:** Allerede fixet med `app.set('trust proxy', 1)` i denne commit.\n\n\n\n### Ingen Gmail data hentes\n\n**Løsning:** \n\n1. Verify `RUN_MODE=production` (ikke `dry-run`)\n\n2. Check Gmail credentials er korrekte\n\n3. Verify service account har domain-wide delegation
+\n\n## 📊 Success Metrics\n\n\n\nNår alt virker:\n\n- Backend health check: 200 OK\n\n- Email ingest stats: `{"totalThreads": 100+}`\n\n- Customer 360 UI: Viser tråde for kunder\n\n- Database: `email_threads` og `email_messages` tabeller har data\n\n\n\n## 🚀 Næste Gang\n\n\n\nFor at holde data synkroniseret, kør periodisk:\n\n```bash
+curl https://tekup-renos.onrender.com/api/dashboard/email-ingest/stats\n\n```
+
+Eller setup en cron job (fremtidigt feature).

@@ -1,0 +1,101 @@
+// Tekup Business Automation Schema Extensions
+// Add these models to your main schema.prisma file
+
+// Booking Proposals for automated booking system
+model BookingProposal {
+  id            String      @id @default(uuid())
+  leadId        String      @unique
+  customerName  String
+  serviceType   String
+  estimatedPrice Int
+  estimatedDuration Int
+  proposedSlots Json        // Array of available time slots
+  bookingUrl    String
+  expiresAt     DateTime
+  confirmedAt   DateTime?
+  selectedSlot  Json?       // Confirmed time slot
+  calendarEventId String?   // Google Calendar event ID
+  status        String      @default("PENDING") // PENDING, CONFIRMED, EXPIRED, CANCELLED
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  // Relations
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  @@index([leadId])
+  @@index([expiresAt])
+  @@index([status])
+}
+
+// Automation activity logging
+model AutomationLog {
+  id          String   @id @default(uuid())
+  leadId      String?
+  dealId      String?
+  action      String   // 'AI_SCORED', 'AUTO_RESPONSE_SENT', 'BOOKING_PROPOSED', 'INVOICE_CREATED', etc.
+  status      String   // 'SUCCESS', 'FAILED', 'PENDING', 'RETRY'
+  metadata    Json?    // Additional data about the action
+  error       String?  // Error message if failed
+  retryCount  Int      @default(0)
+  nextRetryAt DateTime?
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  lead Lead? @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  deal Deal? @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  
+  @@index([leadId])
+  @@index([dealId])
+  @@index([action])
+  @@index([status])
+  @@index([createdAt])
+  @@index([nextRetryAt])
+}
+
+// Email templates for automation
+model EmailTemplate {
+  id          String   @id @default(uuid())
+  name        String   @unique // 'auto_response_hot', 'follow_up_warm', etc.
+  subject     String
+  htmlContent String
+  textContent String?
+  variables   Json?    // Available template variables
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([name])
+  @@index([isActive])
+}
+
+// Automation settings per tenant
+model AutomationSettings {
+  id                    String   @id @default(uuid())
+  tenantId              String   @unique
+  autoResponseEnabled   Boolean  @default(true)
+  aiScoringThreshold    Int      @default(85)
+  followUpDelayHours    Int      @default(48)
+  bookingExpiryDays     Int      @default(7)
+  emailFromAddress      String?
+  emailFromName         String?
+  customSettings        Json?    // Additional tenant-specific settings
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  // Relations
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@index([tenantId])
+}
+
+// Add these relations to existing models:
+
+// Add to Lead model:
+// bookingProposal BookingProposal?
+// automationLogs  AutomationLog[]
+
+// Add to Deal model:
+// automationLogs AutomationLog[]
+
+// Add to Tenant model:
+// automationSettings AutomationSettings?

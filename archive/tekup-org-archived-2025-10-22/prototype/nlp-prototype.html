@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TekUp NLP - Natural Language Programming</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              tekup: '#7c3aed',
+              rendetalje: '#059669',
+              foodtruck: '#dc2626'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans bg-gray-900 text-white min-h-screen">
+  <div class="gradient-bg fixed inset-0 opacity-30"></div>
+  
+  <header class="relative z-10 p-6">
+    <h1 class="text-3xl font-bold tracking-wider text-center">TekUp NLP</h1>
+    <p class="text-center text-gray-400 mt-2">Natural Language Programming - Code-Free Development</p>
+  </header>
+
+  <main class="relative z-10 max-w-6xl mx-auto p-6">
+    <!-- Language Selection -->
+    <div class="flex justify-center mb-8">
+      <div class="bg-gray-800 rounded-lg p-1">
+        <button id="lang-en" class="px-4 py-2 rounded-md bg-brand-tekup text-white">English</button>
+        <button id="lang-da" class="px-4 py-2 rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600">Dansk</button>
+      </div>
+    </div>
+
+    <!-- Main Interface -->
+    <div class="grid lg:grid-cols-2 gap-8">
+      <!-- Input Section -->
+      <div class="space-y-6">
+        <div class="bg-gray-800 rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4" data-en="Describe Your Code" data-da="Beskriv Din Kode">Describe Your Code</h2>
+          <textarea 
+            id="nlp-input" 
+            class="w-full h-32 bg-gray-700 rounded-lg p-4 text-white placeholder-gray-400 resize-none"
+            placeholder="Example: Create user authentication that checks email, hashes passwords securely, and returns JWT tokens"
+            data-en-placeholder="Example: Create user authentication that checks email, hashes passwords securely, and returns JWT tokens"
+            data-da-placeholder="Eksempel: Opret brugerautentificering der tjekker email, hasher adgangskoder sikkert og returnerer JWT tokens"
+          ></textarea>
+          
+          <div class="flex gap-3 mt-4">
+            <button id="generate-btn" class="px-6 py-3 bg-brand-tekup text-white rounded-lg hover:bg-purple-700 transition-colors">
+              <span data-en="Generate Code" data-da="Generer Kode">Generate Code</span>
+            </button>
+            <button id="clear-btn" class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors">
+              <span data-en="Clear" data-da="Ryd">Clear</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Examples -->
+        <div class="bg-gray-800 rounded-lg p-6">
+          <h3 class="text-lg font-semibold mb-3" data-en="Quick Examples" data-da="Hurtige Eksempler">Quick Examples</h3>
+          <div class="space-y-2">
+            <button class="example-btn w-full text-left p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors text-sm">
+              <span data-en="User authentication with email/password and JWT" data-da="Brugerautentificering med email/adgangskode og JWT">User authentication with email/password and JWT</span>
+            </button>
+            <button class="example-btn w-full text-left p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors text-sm">
+              <span data-en="CRUD operations for user management" data-da="CRUD operationer til brugerstyring">CRUD operations for user management</span>
+            </button>
+            <button class="example-btn w-full text-left p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors text-sm">
+              <span data-en="API endpoint with validation and error handling" data-da="API endpoint med validering og fejlhåndtering">API endpoint with validation and error handling</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output Section -->
+      <div class="space-y-6">
+        <div class="bg-gray-800 rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4" data-en="Generated Code" data-da="Genereret Kode">Generated Code</h2>
+          <div class="bg-gray-900 rounded-lg p-4">
+            <pre id="code-output" class="text-green-400 text-sm overflow-x-auto">// Your generated code will appear here...</pre>
+          </div>
+          
+          <div class="flex gap-3 mt-4">
+            <button id="copy-btn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors">
+              <span data-en="Copy Code" data-da="Kopier Kode">Copy Code</span>
+            </button>
+            <button id="download-btn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors">
+              <span data-en="Download" data-da="Download">Download</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Code Analysis -->
+        <div class="bg-gray-800 rounded-lg p-6">
+          <h3 class="text-lg font-semibold mb-3" data-en="Code Analysis" data-da="Kodeanalyse">Code Analysis</h3>
+          <div id="analysis-output" class="space-y-2 text-sm">
+            <div class="text-gray-400" data-en="Code will be analyzed for security, performance, and best practices" data-da="Kode vil blive analyseret for sikkerhed, ydeevne og bedste praksis">Code will be analyzed for security, performance, and best practices</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Translation Layer Info -->
+    <div class="mt-12 bg-gradient-to-r from-brand-tekup/20 to-brand-rendetalje/20 rounded-lg p-6">
+      <h2 class="text-2xl font-bold mb-4 text-center" data-en="AI Translation Layer" data-da="AI Oversættelseslag">AI Translation Layer</h2>
+      <div class="grid md:grid-cols-3 gap-6 text-center">
+        <div class="space-y-2">
+          <div class="text-3xl">🔤</div>
+          <h3 class="font-semibold" data-en="Natural Language → AST" data-da="Naturligt Sprog → AST">Natural Language → AST</h3>
+          <p class="text-sm text-gray-300" data-en="Converts human descriptions to Abstract Syntax Trees" data-da="Konverterer menneskelige beskrivelser til abstrakte syntakstræer">Converts human descriptions to Abstract Syntax Trees</p>
+        </div>
+        <div class="space-y-2">
+          <div class="text-3xl">⚡</div>
+          <h3 class="font-semibold" data-en="AST → Optimized Code" data-da="AST → Optimeret Kode">AST → Optimized Code</h3>
+          <p class="text-sm text-gray-300" data-en="Generates production-ready, optimized code" data-da="Genererer produktionsklar, optimeret kode">Generates production-ready, optimized code</p>
+        </div>
+        <div class="space-y-2">
+          <div class="text-3xl">🧪</div>
+          <h3 class="font-semibold" data-en="Auto Testing" data-da="Automatisk Testning">Auto Testing</h3>
+          <p class="text-sm text-gray-300" data-en="Automatic testing and validation" data-da="Automatisk testning og validering">Automatic testing and validation</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Language switching
+    const langEn = document.getElementById('lang-en');
+    const langDa = document.getElementById('lang-da');
+    
+    function switchLanguage(lang) {
+      const elements = document.querySelectorAll('[data-en], [data-da]');
+      elements.forEach(el => {
+        if (lang === 'da') {
+          el.textContent = el.getAttribute('data-da');
+          if (el.placeholder) {
+            el.placeholder = el.getAttribute('data-da-placeholder');
+          }
+        } else {
+          el.textContent = el.getAttribute('data-en');
+          if (el.placeholder) {
+            el.placeholder = el.getAttribute('data-en-placeholder');
+          }
+        }
+      });
+      
+      // Update button styles
+      if (lang === 'da') {
+        langDa.className = 'px-4 py-2 rounded-md bg-brand-tekup text-white';
+        langEn.className = 'px-4 py-2 rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600';
+      } else {
+        langEn.className = 'px-4 py-2 rounded-md bg-brand-tekup text-white';
+        langDa.className = 'px-4 py-2 rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600';
+      }
+    }
+    
+    langEn.addEventListener('click', () => switchLanguage('en'));
+    langDa.addEventListener('click', () => switchLanguage('en'));
+    
+    // Example buttons
+    document.querySelectorAll('.example-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('nlp-input').value = btn.querySelector('span').textContent;
+      });
+    });
+    
+    // Generate code button
+    document.getElementById('generate-btn').addEventListener('click', () => {
+      const input = document.getElementById('nlp-input').value;
+      if (!input.trim()) return;
+      
+      // Simulate AI code generation
+      const generatedCode = generateCodeFromNLP(input);
+      document.getElementById('code-output').textContent = generatedCode;
+      
+      // Generate analysis
+      const analysis = analyzeCode(generatedCode);
+      document.getElementById('analysis-output').innerHTML = analysis;
+    });
+    
+    // Clear button
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      document.getElementById('nlp-input').value = '';
+      document.getElementById('code-output').textContent = '// Your generated code will appear here...';
+      document.getElementById('analysis-output').innerHTML = '<div class="text-gray-400">Code will be analyzed for security, performance, and best practices</div>';
+    });
+    
+    // Copy button
+    document.getElementById('copy-btn').addEventListener('click', () => {
+      const code = document.getElementById('code-output').textContent;
+      navigator.clipboard.writeText(code);
+      const btn = document.getElementById('copy-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Copied!';
+      setTimeout(() => btn.innerHTML = originalText, 2000);
+    });
+    
+    // Download button
+    document.getElementById('download-btn').addEventListener('click', () => {
+      const code = document.getElementById('code-output').textContent;
+      const blob = new Blob([code], { type: 'text/javascript' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'generated-code.js';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    
+    // AI Code Generation Simulation
+    function generateCodeFromNLP(input) {
+      const lowerInput = input.toLowerCase();
+      
+      if (lowerInput.includes('authentication') || lowerInput.includes('autentificering')) {
+        return `// User Authentication Module
+// Generated from: "${input}"
+
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const userAuth = async (email, password) => {
+  try {
+    // Hash password securely
+    const hashedPassword = await bcrypt.hash(password, 12);
+    
+    // Find user by email
+    const user = await User.findOne({ email });
+    
+    if (!user || !bcrypt.compare(password, user.password)) {
+      throw new Error('Invalid credentials');
+    }
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    
+    return { token, user: { id: user.id, email: user.email } };
+  } catch (error) {
+    throw new Error(\`Authentication failed: \${error.message}\`);
+  }
+};
+
+module.exports = { userAuth };`;
+      }
+      
+      if (lowerInput.includes('crud') || lowerInput.includes('user management')) {
+        return `// CRUD Operations for User Management
+// Generated from: "${input}"
+
+class UserService {
+  async create(userData) {
+    const user = new User(userData);
+    return await user.save();
+  }
+  
+  async read(userId) {
+    return await User.findById(userId);
+  }
+  
+  async update(userId, updateData) {
+    return await User.findByIdAndUpdate(userId, updateData, { new: true });
+  }
+  
+  async delete(userId) {
+    return await User.findByIdAndDelete(userId);
+  }
+  
+  async list(filters = {}) {
+    return await User.find(filters);
+  }
+}
+
+module.exports = UserService;`;
+      }
+      
+      if (lowerInput.includes('api endpoint') || lowerInput.includes('validation')) {
+        return `// API Endpoint with Validation and Error Handling
+// Generated from: "${input}"
+
+const express = require('express');
+const { body, validationResult } = require('express-validator');
+
+const router = express.Router();
+
+// Validation middleware
+const validateUser = [
+  body('email').isEmail().normalizeEmail(),
+  body('password').isLength({ min: 8 }),
+  body('name').trim().isLength({ min: 2 })
+];
+
+// Error handling middleware
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ 
+      success: false, 
+      errors: errors.array() 
+    });
+  }
+  next();
+};
+
+// Protected route with validation
+router.post('/users', validateUser, handleValidationErrors, async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: 'Internal server error' 
+    });
+  }
+});
+
+module.exports = router;`;
+      }
+      
+      return `// Generated Code
+// Input: "${input}"
+
+// This is a placeholder for the AI-generated code.
+// The system would analyze your natural language description
+// and generate appropriate, production-ready code.
+
+// Features:
+// - Automatic dependency detection
+// - Security best practices
+// - Performance optimization
+// - Error handling
+// - Testing framework integration
+
+// Please provide more specific requirements for better code generation.`;
+    }
+    
+    // Code Analysis Simulation
+    function analyzeCode(code) {
+      const analysis = [];
+      
+      if (code.includes('bcrypt')) {
+        analysis.push('<div class="text-green-400">✅ Secure password hashing with bcrypt</div>');
+      }
+      
+      if (code.includes('jwt')) {
+        analysis.push('<div class="text-green-400">✅ JWT token implementation</div>');
+      }
+      
+      if (code.includes('try-catch')) {
+        analysis.push('<div class="text-green-400">✅ Proper error handling</div>');
+      }
+      
+      if (code.includes('validation')) {
+        analysis.push('<div class="text-green-400">✅ Input validation included</div>');
+      }
+      
+      if (code.includes('require(')) {
+        analysis.push('<div class="text-blue-400">📦 Dependencies detected</div>');
+      }
+      
+      if (code.includes('async')) {
+        analysis.push('<div class="text-blue-400">⚡ Async/await pattern used</div>');
+      }
+      
+      if (code.includes('module.exports')) {
+        analysis.push('<div class="text-blue-400">📤 Proper module exports</div>');
+      }
+      
+      if (analysis.length === 0) {
+        analysis.push('<div class="text-yellow-400">⚠️ Basic code structure detected</div>');
+      }
+      
+      return analysis.join('');
+    }
+    
+    // Initialize with English
+    switchLanguage('en');
+  </script>
+</body>
+</html>

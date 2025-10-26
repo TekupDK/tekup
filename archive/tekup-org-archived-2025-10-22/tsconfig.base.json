@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "CommonJS",
+    "lib": ["ES2021", "DOM"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "paths": {
+      "@tekup/shared": ["packages/shared/src/index.ts"],
+      "@tekup/api-client": ["packages/api-client/src/index.ts"],
+      "@tekup/ui": ["packages/ui/src/index.tsx"],
+      "@tekup/auth": ["packages/auth/src/index.ts"],
+      "@tekup/voice": ["packages/shared/src/voice/index.ts"]
+    }
+  }
+}

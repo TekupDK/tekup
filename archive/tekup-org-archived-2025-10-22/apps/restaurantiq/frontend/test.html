@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RestaurantIQ Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-blue-600 mb-6">RestaurantIQ Test Page</h1>
+        
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">API Test</h2>
+            <button id="testApiBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Test API Connection
+            </button>
+            <div id="apiResult" class="mt-4 p-4 bg-gray-50 rounded hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('testApiBtn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('apiResult');
+            
+            try {
+                const response = await fetch('http://localhost:4000/api/health');
+                const data = await response.json();
+                
+                resultDiv.className = 'mt-4 p-4 bg-green-50 rounded border border-green-200';
+                resultDiv.innerHTML = `
+                    <h3 class="text-green-800 font-semibold">✅ API Connected Successfully!</h3>
+                    <pre class="text-sm text-green-700 mt-2">${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.className = 'mt-4 p-4 bg-red-50 rounded border border-red-200';
+                resultDiv.innerHTML = `
+                    <h3 class="text-red-800 font-semibold">❌ API Connection Failed</h3>
+                    <p class="text-red-700 mt-2">Error: ${error.message}</p>
+                `;
+            }
+            
+            resultDiv.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>

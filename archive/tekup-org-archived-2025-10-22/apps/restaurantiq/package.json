@@ -1,0 +1,52 @@
+{
+  "name": "@tekup/restaurantiq",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-Powered Restaurant Intelligence SaaS for Danish Market",
+  "type": "module",
+  "scripts": {
+    "dev": "docker-compose up -d && echo 'RestaurantIQ development environment started'",
+    "build": "echo 'Building RestaurantIQ microservices...' && npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build 2>/dev/null || echo 'Backend build pending - package.json needed in backend/'",
+    "build:frontend": "cd frontend && npm run build 2>/dev/null || echo 'Frontend build pending - package.json needed in frontend/'",
+    "start": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "restart": "npm run stop && npm run start",
+    "status": "docker-compose ps",
+    "logs": "docker-compose logs -f",
+    "clean": "docker-compose down -v && docker system prune -f",
+    "setup": "docker-compose up -d && echo 'RestaurantIQ services started. Check README.md for next steps.'",
+    "check-status": "powershell -ExecutionPolicy Bypass -File check-status.ps1",
+    "dev-status": "powershell -ExecutionPolicy Bypass -File dev-status.ps1"
+  },
+  "workspaces": [
+    "backend",
+    "frontend",
+    "shared"
+  ],
+  "keywords": [
+    "restaurant",
+    "ai",
+    "saas",
+    "danish",
+    "inventory",
+    "scheduling",
+    "analytics",
+    "pos",
+    "mobilepay"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tekup-org/Tekup-org.git",
+    "directory": "apps/restaurantiq"
+  },
+  "bugs": {
+    "url": "https://github.com/Tekup-org/Tekup-org/issues"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

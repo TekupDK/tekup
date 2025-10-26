@@ -1,0 +1,437 @@
+version: '3.8'
+
+networks:
+  tekup-mcp-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  mcp-logs:
+    driver: local
+  mcp-cache:
+    driver: local
+  mcp-browser-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+services:
+  # =============================================================================
+  # MCP GATEWAY SERVICE
+  # =============================================================================
+  mcp-gateway:
+    image: tekup/mcp-gateway:dev
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+    container_name: tekup-mcp-gateway-dev
+    restart: unless-stopped
+    ports:
+      - "13000:3000"    # Mapped to avoid conflicts
+      - "19229:9229"    # Debug port mapped
+    environment:
+      # Environment
+      NODE_ENV: development
+      MCP_ENV: development
+      
+      # Gateway Configuration
+      MCP_GATEWAY_PORT: 3000
+      MCP_GATEWAY_HOST: 0.0.0.0
+      MCP_DEBUG_MODE: "true"
+      
+      # Service Discovery (Internal Docker network - no port conflicts)
+      MCP_SERVICES_BROWSER_URL: http://mcp-browser:3001
+      MCP_SERVICES_FILESYSTEM_URL: http://mcp-filesystem:3002
+      MCP_SERVICES_SEARCH_URL: http://mcp-search:3003
+      
+      # External Access (for documentation)
+      MCP_EXTERNAL_GATEWAY_URL: http://localhost:13000
+      MCP_EXTERNAL_BROWSER_URL: http://localhost:13001
+      MCP_EXTERNAL_FILESYSTEM_URL: http://localhost:13002
+      MCP_EXTERNAL_SEARCH_URL: http://localhost:13003
+      
+      # Logging
+      MCP_LOG_LEVEL: debug
+      MCP_LOG_FORMAT: pretty
+      
+      # Performance
+      MCP_REQUEST_TIMEOUT: 30000
+      MCP_MAX_CONCURRENT_REQUESTS: 100
+      
+      # Development specific
+      MCP_HOT_RELOAD: "true"
+      MCP_WATCH_CONFIG: "true"
+    volumes:
+      - ./gateway/src:/app/src:ro
+      - ../configs:/app/configs:ro
+      - mcp-logs:/app/logs
+      - mcp-cache:/app/cache
+    networks:
+      - tekup-mcp-network
+    depends_on:
+      - mcp-browser
+      - mcp-filesystem
+      - mcp-search
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+
+  # =============================================================================
+  # BROWSER MCP SERVICE
+  # =============================================================================
+  mcp-browser:
+    image: tekup/mcp-browser:dev
+    build:
+      context: ./browser
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+    container_name: tekup-mcp-browser-dev
+    restart: unless-stopped
+    ports:
+      - "13001:3001"   # Mapped to avoid conflicts  
+      - "19230:9229"   # Debug port mapped
+    environment:
+      # Environment
+      NODE_ENV: development
+      MCP_ENV: development
+      
+      # Service Configuration
+      MCP_SERVICE_PORT: 3001
+      MCP_SERVICE_HOST: 0.0.0.0
+      MCP_SERVICE_NAME: browser
+      
+      # Browser Configuration
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "false"
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
+      CHROME_BIN: /usr/bin/chromium-browser
+      
+      # Browser Options
+      MCP_BROWSER_HEADLESS: "true"
+      MCP_BROWSER_SANDBOX: "false"  # Disabled in dev for ease
+      MCP_BROWSER_TIMEOUT: 30000
+      MCP_BROWSER_MAX_PAGES: 5
+      
+      # Development Options
+      MCP_BROWSER_DEV_TOOLS: "true"
+      MCP_BROWSER_SLOW_MO: 100
+      MCP_BROWSER_DEBUG_SCREENSHOTS: "true"
+      
+      # Logging
+      MCP_LOG_LEVEL: debug
+      MCP_LOG_FORMAT: pretty
+      
+      # API Keys (development - loaded from .env)
+      BRAVE_API_KEY: ${BRAVE_API_KEY:-dev-placeholder}
+      SERP_API_KEY: ${SERP_API_KEY:-dev-placeholder}
+    volumes:
+      - ./browser/src:/app/src:ro
+      - mcp-browser-data:/app/data
+      - mcp-logs:/app/logs
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw  # For GUI debugging
+    networks:
+      - tekup-mcp-network
+    security_opt:
+      - seccomp:unconfined  # Required for Chrome in container
+    shm_size: 2gb  # Shared memory for Chrome
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.5'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+  # =============================================================================
+  # FILESYSTEM MCP SERVICE  
+  # =============================================================================
+  mcp-filesystem:
+    image: tekup/mcp-filesystem:dev
+    build:
+      context: ./filesystem
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+    container_name: tekup-mcp-filesystem-dev
+    restart: unless-stopped
+    ports:
+      - "13002:3002"   # Mapped to avoid conflicts
+      - "19231:9229"   # Debug port mapped
+    environment:
+      # Environment
+      NODE_ENV: development
+      MCP_ENV: development
+      
+      # Service Configuration
+      MCP_SERVICE_PORT: 3002
+      MCP_SERVICE_HOST: 0.0.0.0
+      MCP_SERVICE_NAME: filesystem
+      
+      # Filesystem Configuration
+      MCP_FS_ALLOWED_PATHS: "/workspace,/app/workspace,/tmp/mcp"
+      MCP_FS_MAX_FILE_SIZE: 104857600  # 100MB
+      MCP_FS_MAX_DIRECTORY_DEPTH: 10
+      MCP_FS_ENABLE_WATCH: "true"
+      
+      # Security
+      MCP_FS_SANDBOX_MODE: "false"  # Disabled in dev
+      MCP_FS_READ_ONLY_MODE: "false"
+      
+      # Logging
+      MCP_LOG_LEVEL: debug
+      MCP_LOG_FORMAT: pretty
+    volumes:
+      - ./filesystem/src:/app/src:ro
+      - ../../:/workspace:ro  # Mount entire project as read-only
+      - /tmp/mcp:/tmp/mcp:rw  # Temporary workspace
+      - mcp-logs:/app/logs
+    networks:
+      - tekup-mcp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # =============================================================================
+  # SEARCH MCP SERVICE
+  # =============================================================================
+  mcp-search:
+    image: tekup/mcp-search:dev
+    build:
+      context: ./search
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+    container_name: tekup-mcp-search-dev
+    restart: unless-stopped
+    ports:
+      - "13003:3003"   # Mapped to avoid conflicts
+      - "19232:9229"   # Debug port mapped
+    environment:
+      # Environment
+      NODE_ENV: development
+      MCP_ENV: development
+      
+      # Service Configuration
+      MCP_SERVICE_PORT: 3003
+      MCP_SERVICE_HOST: 0.0.0.0
+      MCP_SERVICE_NAME: search
+      
+      # Search Configuration
+      MCP_SEARCH_INDEX_PATH: /app/data/search-index
+      MCP_SEARCH_MAX_RESULTS: 100
+      MCP_SEARCH_TIMEOUT: 10000
+      MCP_SEARCH_ENABLE_FUZZY: "true"
+      
+      # Codebase Analysis
+      MCP_SEARCH_WORKSPACE_PATH: /workspace
+      MCP_SEARCH_IGNORE_PATTERNS: "node_modules,dist,build,.git"
+      MCP_SEARCH_FILE_EXTENSIONS: "ts,tsx,js,jsx,json,md,yml,yaml"
+      
+      # API Keys
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-dev-placeholder}
+      
+      # Logging
+      MCP_LOG_LEVEL: debug
+      MCP_LOG_FORMAT: pretty
+    volumes:
+      - ./search/src:/app/src:ro
+      - ../../:/workspace:ro  # Mount project for searching
+      - mcp-logs:/app/logs
+      - mcp-cache:/app/data
+    networks:
+      - tekup-mcp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.75'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+  # =============================================================================
+  # MONITORING & OBSERVABILITY
+  # =============================================================================
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: tekup-mcp-prometheus-dev
+    restart: unless-stopped
+    ports:
+      - "19090:9090"   # Mapped to avoid conflicts
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--log.level=info'
+    volumes:
+      - ./monitoring/prometheus.dev.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - tekup-mcp-network
+    depends_on:
+      - mcp-gateway
+      - mcp-browser
+      - mcp-filesystem
+      - mcp-search
+
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: tekup-mcp-grafana-dev
+    restart: unless-stopped
+    ports:
+      - "13100:3000"   # Mapped to avoid conflicts
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_LOG_LEVEL: info
+      GF_INSTALL_PLUGINS: grafana-piechart-panel,grafana-worldmap-panel
+    volumes:
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/dashboard-configs:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    networks:
+      - tekup-mcp-network
+    depends_on:
+      - prometheus
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.47
+    container_name: tekup-mcp-jaeger-dev
+    restart: unless-stopped
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14268:14268"  # jaeger.thrift HTTP
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+      LOG_LEVEL: info
+    networks:
+      - tekup-mcp-network
+
+  # =============================================================================
+  # DEVELOPMENT UTILITIES
+  # =============================================================================
+  redis:
+    image: redis:7.0-alpine
+    container_name: tekup-mcp-redis-dev
+    restart: unless-stopped
+    ports:
+      - "16379:6379"   # Mapped to avoid conflicts
+    command: redis-server --requirepass devpassword123
+    volumes:
+      - mcp-cache:/data
+    networks:
+      - tekup-mcp-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # Development proxy for testing external APIs
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: tekup-mcp-proxy-dev
+    restart: unless-stopped
+    ports:
+      - "18080:80"     # Mapped to avoid conflicts
+    volumes:
+      - ./proxy/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./proxy/ssl:/etc/nginx/ssl:ro
+    networks:
+      - tekup-mcp-network
+    depends_on:
+      - mcp-gateway
+
+  # =============================================================================
+  # LOG MANAGEMENT
+  # =============================================================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    container_name: tekup-mcp-elasticsearch-dev
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "19200:9200"   # Mapped to avoid conflicts
+    volumes:
+      - mcp-logs:/usr/share/elasticsearch/data
+    networks:
+      - tekup-mcp-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.8.0
+    container_name: tekup-mcp-kibana-dev
+    restart: unless-stopped
+    ports:
+      - "15601:5601"   # Mapped to avoid conflicts
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    networks:
+      - tekup-mcp-network
+    depends_on:
+      - elasticsearch
+
+# =============================================================================
+# DEVELOPMENT OVERRIDES
+# =============================================================================
+# This compose file is specifically for development and includes:
+# - Source code mounting for hot-reload
+# - Debug ports exposed
+# - Development-friendly logging
+# - Monitoring stack included
+# - Less restrictive security settings
+# - Additional development utilities

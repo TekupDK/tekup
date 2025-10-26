@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": ["C:\\Users\\empir\\AppData\\Roaming\\npm\\node_modules\\@playwright\\mcp\\index.js"],
+      "cwd": "C:\\Users\\empir\\Tekup-org",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}

@@ -1,0 +1,196 @@
+# 🎯 END-TO-END PRODUCTION TEST\n\n\n\n**Status:** 🔄 IN PROGRESS  
+**Prioritet:** 🔴 KRITISK (Sidste test før go-live)  
+**Estimeret tid:** 30-45 minutter  
+**Dato:** 3. oktober 2025, kl. 14:05\n\n
+---
+\n\n## 🎯 Test Formål\n\n\n\nVerificere at HELE RenOS workflow fungerer fra start til slut:
+\n\n1. ✅ Lead oprettes (manuelt eller via email)\n\n2. ✅ AI processerer lead → genererer tilbud\n\n3. ✅ Tilbud sendes til kunde via email\n\n4. ✅ Booking oprettes fra tilbud\n\n5. ✅ Calendar event synkroniseres til Google Calendar\n\n6. ✅ Hele flowet tager < 3 minutter
+
+---
+\n\n## 📋 Pre-Test Checklist\n\n\n\n**System Status:**
+\n\n- ✅ Backend: <https://tekup-renos.onrender.com> (LIVE)\n\n- ✅ Frontend: <https://tekup-renos-1.onrender.com> (LIVE)\n\n- ✅ Database: PostgreSQL (Neon) - Connected\n\n- ✅ Gmail API: Domain-wide delegation - Active\n\n- ✅ Calendar API: Booking sync - Verified\n\n- ✅ Gemini AI: Quote generation - Operational\n\n
+**RUN_MODE Check:**
+\n\n```powershell\n\n# Verify system is in LIVE mode (not dry-run)\n\ncurl https://tekup-renos.onrender.com/api/health\n\n# Should return: RUN_MODE: "live" or similar\n\n```\n\n
+**Test Data Ready:**
+\n\n- ✅ Test customer exists: "Updated Test Lead" (cmgajqygx0005axt0jty3ijoo)\n\n- ✅ Gmail access: <info@rendetalje.dk> configured\n\n- ✅ Calendar: Google Calendar available for booking\n\n
+---
+\n\n## 🧪 Test Procedure\n\n\n\n### Step 1: Åbn RenOS Dashboard\n\n\n\n**Action:**
+\n\n```powershell
+start https://tekup-renos-1.onrender.com\n\n```
+
+**Expected Result:**
+\n\n- ✅ Frontend loader uden errors\n\n- ✅ Login page vises (Clerk authentication)\n\n- ✅ Ingen console errors (F12)\n\n
+**Verification:**
+\n\n- [ ] Page loads successfully\n\n- [ ] No JavaScript errors in console\n\n- [ ] Clerk login form visible\n\n
+---
+\n\n### Step 2: Log Ind\n\n\n\n**Action:**
+\n\n1. Hvis ikke logged ind → Click "Log ind"\n\n2. Use Clerk test credentials:
+   - Email: [DIN TEST EMAIL]\n\n   - Password: [DIN PASSWORD]\n\n3. Efter login → Redirect til Dashboard
+
+**Expected Result:**
+\n\n- ✅ Successful authentication\n\n- ✅ Redirect to /dashboard\n\n- ✅ Dashboard loads with stats\n\n
+**Verification:**
+\n\n- [ ] Login successful\n\n- [ ] Dashboard visible\n\n- [ ] Navigation menu working\n\n- [ ] User profile shown in top-right\n\n
+---
+\n\n### Step 3: Opret Ny Lead (Manuelt)\n\n\n\n**Action:**
+\n\n1. Click "Leads" i sidebar navigation\n\n2. Click "Ny Lead" button (top-right)\n\n3. Udfyld form:
+
+   ```
+   Navn: Test Kunde E2E
+   Email: test.e2e@example.com
+   Telefon: +45 12 34 56 78
+   Adresse: Testvej 123, 2000 Frederiksberg
+   Type: Privatrengøring
+   Kvadratmeter: 85
+   Værelser: 3
+   Foretrukne datoer: [Vælg 2 fremtidige datoer]
+   Besked: "Test af end-to-end workflow i RenOS system"
+   ```
+\n\n4. Click "Opret Lead"
+
+**Expected Result:**
+\n\n- ✅ Form validates correctly\n\n- ✅ Lead oprettet i database\n\n- ✅ Success notification vises\n\n- ✅ Lead fremgår i lead table\n\n
+**Verification:**
+\n\n- [ ] Lead form submitted successfully\n\n- [ ] Lead visible in leads table\n\n- [ ] Status: "new" or "uncontacted"\n\n- [ ] All data saved correctly\n\n
+---
+\n\n### Step 4: AI Process Lead → Generér Tilbud\n\n\n\n**Action:**
+\n\n1. Find den nye lead i lead table\n\n2. Click **"AI Process"** button (⚡ lyn-ikon)\n\n3. Vent på AIQuoteModal at åbne (2-5 sekunder)
+
+**Expected Result:**
+\n\n- ✅ Modal åbner automatisk\n\n- ✅ AI analyserer lead data\n\n- ✅ Quote Preview vises med:\n\n  - Customer info (navn, email, adresse)\n\n  - Estimeret pris (kr.)\n\n  - Tilbuds-tekst (dansk, professionel)\n\n  - Ledige tidspunkter fra kalender\n\n- ✅ "Send Tilbud" knap er enabled\n\n
+**Verification:**
+\n\n- [ ] AIQuoteModal opens\n\n- [ ] Customer data parsed correctly\n\n- [ ] Price estimate looks realistic (500-2000 kr for 85 m²)\n\n- [ ] Quote text is professional Danish\n\n- [ ] Calendar slots shown (if available)\n\n- [ ] No errors in console\n\n
+**Screenshot:** Tag screenshot af quote preview!\n\n
+---
+\n\n### Step 5: Send Tilbud til Kunde\n\n\n\n**Action:**
+\n\n1. Review quote i modal\n\n2. (Optional) Edit price eller text hvis nødvendigt\n\n3. Click **"Send Tilbud"** button\n\n4. Vent på confirmation (5-10 sekunder)
+
+**Expected Result:**
+\n\n- ✅ Loading indicator vises\n\n- ✅ Success message: "Tilbud sendt til <test.e2e@example.com>"\n\n- ✅ Modal lukker automatisk\n\n- ✅ Lead status opdateret til "quoted" eller "contacted"\n\n- ✅ Email sendt via Gmail API\n\n
+**Verification:**
+\n\n- [ ] Quote sent successfully\n\n- [ ] Success notification shown\n\n- [ ] Lead status updated in table\n\n- [ ] No errors in console\n\n
+**Gmail Verification:**
+\n\n```powershell\n\n# Check Gmail (info@rendetalje.dk) for sent email\n\n# 1. Open https://mail.google.com\n\n# 2. Log in as info@rendetalje.dk\n\n# 3. Find email to test.e2e@example.com\n\n# 4. Verify:\n\n#    - Subject contains "Tilbud"\n\n#    - Body matches quote text\n\n#    - Price included\n\n#    - Professional formatting\n\n```\n\n\n\n- [ ] Email visible in Gmail Sent folder\n\n- [ ] Email content matches quote\n\n- [ ] Email has proper from/to headers\n\n
+---
+\n\n### Step 6: Opret Booking fra Lead\n\n\n\n**Action:**
+\n\n1. I lead table → Find test lead\n\n2. Click "Opret Booking" eller gå til Bookings page\n\n3. Click "Ny Booking"\n\n4. Udfyld booking form:
+
+   ```
+   Lead: Test Kunde E2E (select fra dropdown)
+   Dato & Tid: [Vælg fremtidig dato, f.eks. 20. oktober 2025 kl. 10:00]
+   Varighed: 120 minutter
+   Service Type: Privatrengøring
+   Adresse: Testvej 123, 2000 Frederiksberg
+   Noter: E2E test booking - verificerer calendar sync\n\n   ```
+\n\n5. Click "Opret Booking"
+
+**Expected Result:**
+\n\n- ✅ Booking form validates\n\n- ✅ Availability check køres (Google Calendar)\n\n- ✅ Hvis available → Booking oprettes\n\n- ✅ Success message vises\n\n- ✅ Booking visible i bookings table\n\n- ✅ calendarEventId og calendarLink gemt i database\n\n
+**Verification:**
+\n\n- [ ] Booking created successfully\n\n- [ ] Booking visible in bookings table\n\n- [ ] Status: "scheduled"\n\n- [ ] calendarEventId present (not null)\n\n- [ ] calendarLink clickable\n\n
+---
+\n\n### Step 7: Verificer Google Calendar Sync\n\n\n\n**Action:**
+\n\n1. I booking table → Find test booking\n\n2. Click på calendarLink (åbner Google Calendar)
+
+   **ELLER**
+
+   Manually open Google Calendar:
+
+   ```powershell
+   start https://calendar.google.com
+   # Log in as info@rendetalje.dk\n\n   # Navigate to booking date (20. oktober 2025)\n\n   ```\n\n
+**Expected Result:**
+\n\n- ✅ Calendar event exists for booked time\n\n- ✅ Event details match booking:\n\n  - Summary: "Rengøring - Privatrengøring"\n\n  - Location: "Testvej 123, 2000 Frederiksberg"\n\n  - Start: 20. oktober 2025, 10:00\n\n  - End: 20. oktober 2025, 12:00 (10:00 + 120 min)\n\n  - Description: Includes booking notes\n\n- ✅ Event source: "Rendetalje.dk"\n\n
+**Verification:**
+\n\n- [ ] Event visible in Google Calendar\n\n- [ ] Event time matches booking\n\n- [ ] Event location matches address\n\n- [ ] Event description matches notes\n\n- [ ] No duplicate events\n\n
+**Screenshot:** Tag screenshot af calendar event!\n\n
+---
+\n\n### Step 8: Test Booking Update → Calendar Sync\n\n\n\n**Action:**
+\n\n1. Gå tilbage til RenOS Bookings page\n\n2. Find test booking\n\n3. Click "Edit" eller "Rediger"\n\n4. Ændre tid:
+
+   ```
+   Ny tid: 20. oktober 2025 kl. 14:00 (i stedet for 10:00)
+   Varighed: 180 minutter (i stedet for 120)
+   ```
+\n\n5. Click "Gem"
+
+**Expected Result:**
+\n\n- ✅ Booking opdateret i database\n\n- ✅ Success message vises\n\n- ✅ Calendar event opdateret automatisk\n\n- ✅ Ny tid: 14:00-17:00 (14:00 + 180 min)\n\n
+**Verification:**
+\n\n- [ ] Booking updated in RenOS\n\n- [ ] Refresh Google Calendar\n\n- [ ] Event time changed to 14:00-17:00\n\n- [ ] Event details still correct\n\n
+**Screenshot:** Tag screenshot af opdateret calendar event!\n\n
+---
+\n\n### Step 9: Test på Mobile Device (Optional men anbefalet)\n\n\n\n**Action:**
+\n\n1. Åbn <https://tekup-renos-1.onrender.com> på din smartphone\n\n2. Log ind via Clerk\n\n3. Navigér gennem:
+   - Dashboard → Check stats vises korrekt\n\n   - Leads → Scroll through table\n\n   - Customers → Check Customer360 layout\n\n   - Bookings → View calendar bookings\n\n
+**Expected Result:**
+\n\n- ✅ Responsive design fungerer\n\n- ✅ Navigation menu (burger icon) virker\n\n- ✅ Tables scrollable horizontally hvis nødvendigt\n\n- ✅ Forms brugbare på touch screen\n\n- ✅ No layout breaking\n\n
+**Verification:**
+\n\n- [ ] Mobile layout looks good\n\n- [ ] Navigation works on mobile\n\n- [ ] Touch interactions work\n\n- [ ] Forms easy to fill on mobile\n\n- [ ] No horizontal scroll (except tables)\n\n
+**Screenshot:** Tag mobile screenshots!\n\n
+---
+\n\n### Step 10: PWA Installation Test (Optional)\n\n\n\n**Action:**
+\n\n1. På mobile device eller desktop\n\n2. Når på <https://tekup-renos-1.onrender.com>\n\n3. Browser viser "Install app" prompt (Chrome/Safari)\n\n4. Click "Install" eller "Tilføj til startskærm"
+
+**Expected Result:**
+\n\n- ✅ PWA installeres som app\n\n- ✅ App icon vises på home screen/desktop\n\n- ✅ App åbner i standalone mode (uden browser chrome)\n\n- ✅ Offline support notification (hvis implementeret)\n\n
+**Verification:**
+\n\n- [ ] PWA install prompt appears\n\n- [ ] App installs successfully\n\n- [ ] App icon visible\n\n- [ ] App opens in standalone mode\n\n- [ ] Works like native app\n\n
+---
+\n\n## 📊 Test Results\n\n\n\n### Overall Workflow Performance\n\n\n\n| Step | Time | Status | Notes |
+|------|------|--------|-------|
+| Login | 5s | ⏳ | |
+| Create Lead | 30s | ⏳ | |
+| AI Process (Quote) | 15s | ⏳ | |
+| Send Quote | 10s | ⏳ | |
+| Create Booking | 30s | ⏳ | |
+| Calendar Sync | 5s | ⏳ | |
+| Update Booking | 20s | ⏳ | |
+| **TOTAL** | **~2 min** | ⏳ | |\n\n\n\n### Success Criteria\n\n\n\n**✅ TEST PASSED hvis:**
+\n\n- [ ] Hele workflow < 3 minutter\n\n- [ ] Ingen critical errors\n\n- [ ] Email sendes korrekt\n\n- [ ] Calendar sync virker både ways\n\n- [ ] Mobile layout acceptable\n\n- [ ] User experience smooth\n\n
+**❌ TEST FAILED hvis:**
+\n\n- [ ] Critical errors forhindrer workflow\n\n- [ ] Email ikke sendes\n\n- [ ] Calendar sync fejler\n\n- [ ] Data loss eller corruption\n\n- [ ] Security issues discovered\n\n
+---
+\n\n## 🐛 Issues Found During Test\n\n\n\n### Critical Issues (Blocker)\n\n\n\n*Ingen fundet endnu*
+\n\n### Major Issues (Skal fixes før go-live)\n\n\n\n*Ingen fundet endnu*
+\n\n### Minor Issues (Nice to fix)\n\n\n\n*Ingen fundet endnu*
+\n\n### Enhancement Ideas\n\n\n\n*Tilføj under test*
+
+---
+\n\n## 📝 Test Notes\n\n\n\n**Test Environment:**
+\n\n- Browser: [Chrome/Firefox/Safari]\n\n- OS: [Windows/Mac/Linux]\n\n- Mobile Device: [iPhone/Android eller N/A]\n\n- Network: [WiFi/4G/5G]\n\n- RUN_MODE: [live/dry-run]\n\n
+**Observations:**
+*Udfyld under test*
+
+**Performance:**
+*Udfyld under test*
+
+**User Experience:**
+*Udfyld under test*
+
+---
+\n\n## ✅ Sign-Off\n\n\n\n**Test udført af:** _______________  
+**Dato:** _______________  
+**Resultat:** [ ] PASSED  [ ] FAILED  [ ] PARTIAL  \n\n
+**Anbefaling:**
+\n\n- [ ] ✅ KLAR TIL GO-LIVE\n\n- [ ] ⚠️ Minor fixes nødvendige\n\n- [ ] 🔴 Major issues skal fixes først\n\n
+**Kommentarer:**
+_______________________________________________
+_______________________________________________
+_______________________________________________
+
+---
+\n\n## 🚀 Post-Test Actions\n\n\n\n**Hvis TEST PASSED:**
+\n\n1. ✅ Marker "End-to-End Production Test" som completed\n\n2. ✅ Upgrade Clerk til production keys (hvis ikke gjort)\n\n3. ✅ Informer kunde at systemet er klar\n\n4. 🎉 **GO LIVE!**
+
+**Hvis TEST FAILED:**
+\n\n1. 📋 Dokumenter alle issues i "Issues Found" section\n\n2. 🐛 Prioritér fixes (critical → major → minor)\n\n3. 🔧 Fix issues i development\n\n4. 🔄 Redeploy til production\n\n5. 🧪 Re-run this test
+
+---
+\n\n## 📚 Related Documentation\n\n\n\n- `TEST_BOOKING_CALENDAR_SYNC.md` - Calendar verification details\n\n- `TEST_CUSTOMER360_EMAIL_ENDPOINTS.md` - Email features verification\n\n- `COMPLETE_SYSTEM_AUDIT.md` - Full UI/UX audit results\n\n- `CLERK_PRODUCTION_UPGRADE_GUIDE.md` - Auth upgrade steps\n\n- `GO_LIVE_GUIDE.md` - Final go-live checklist\n\n
+---
+
+**Status:** 🔄 READY TO EXECUTE  
+**Next Action:** Start Step 1 (Åbn Dashboard)  
+**Expected Duration:** 30-45 minutes  
+**Go/No-Go Decision:** After completion

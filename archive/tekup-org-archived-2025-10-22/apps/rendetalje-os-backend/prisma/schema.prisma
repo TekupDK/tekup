@@ -1,0 +1,300 @@
+// Rendetalje OS - Professional Cleaning Service Management
+// Comprehensive database schema for Danish cleaning business
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTHENTICATION & USER MANAGEMENT
+// ============================================================================
+
+enum UserRole {
+  SUPER_ADMIN    // System administrator
+  ADMIN          // Business owner/manager
+  MANAGER        // Operations manager
+  EMPLOYEE       // Cleaning staff
+  CUSTOMER       // External customer
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  password      String     // Hashed password
+  role          UserRole   @default(EMPLOYEE)
+  status        UserStatus @default(PENDING)
+  
+  // Profile Information
+  firstName     String
+  lastName      String
+  phone         String?
+  avatar        String?
+  
+  // Authentication
+  emailVerified DateTime?
+  lastLogin     DateTime?
+  refreshToken  String?
+  
+  // Audit
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model CleaningTeam {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  baseLocation String
+  operatingHours Json
+  vehicleInfo Json
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  members     CleaningEmployee[]
+  equipment   Equipment[]
+  schedules   OptimizedRoute[]
+  jobs        ScheduledJob[]
+  complianceReports ComplianceReport[]
+  safetyTraining    SafetyTraining[]
+
+  @@map("cleaning_teams")
+}
+
+model CleaningEmployee {
+  id          String   @id @default(cuid())
+  teamId      String
+  name        String
+  cprNumber   String   @unique
+  position    String
+  startDate   DateTime
+  status      String   @default("ACTIVE")
+  specializations String[]
+  weeklySchedule Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  team        CleaningTeam @relation(fields: [teamId], references: [id])
+  contract    EmploymentContract?
+  workingTimeRecords WorkingTimeRecord[]
+  assignedJobs ScheduledJob[]
+
+  @@map("cleaning_employees")
+}
+
+model EmploymentContract {
+  id          String   @id @default(cuid())
+  employeeId  String   @unique
+  startDate   DateTime
+  endDate     DateTime?
+  monthlySalary Float
+  hourlyRate  Float
+  collectiveAgreement String
+  workingHours Int     @default(37) // Danish standard
+  status      String   @default("ACTIVE")
+
+  // Relations
+  employee    CleaningEmployee @relation(fields: [employeeId], references: [id])
+
+  @@map("employment_contracts")
+}
+
+model WorkingTimeRecord {
+  id          String   @id @default(cuid())
+  employeeId  String
+  teamId      String
+  date        DateTime
+  hoursWorked Float
+  overtimeHours Float @default(0)
+  breakMinutes Int
+  workType    String
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  employee    CleaningEmployee @relation(fields: [employeeId], references: [id])
+
+  @@map("working_time_records")
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  coordinates Json     // {lat, lon}
+  phone       String?
+  email       String?
+  municipality String
+  customerType String  // RESIDENTIAL, COMMERCIAL, OFFICE
+  contractType String  // ONE_TIME, RECURRING, SUBSCRIPTION
+  preferences Json?
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  jobs        CleaningJob[]
+  scheduledJobs ScheduledJob[]
+
+  @@map("customers")
+}
+
+model CleaningJob {
+  id          String   @id @default(cuid())
+  customerId  String
+  address     String
+  coordinates Json     // {lat, lon}
+  jobType     String   // REGULAR_CLEANING, DEEP_CLEANING, WINDOW_CLEANING
+  estimatedDuration Int // minutes
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH
+  requirements String[]
+  equipmentNeeded String[]
+  recurring   Json?    // recurring pattern if applicable
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  customer    Customer @relation(fields: [customerId], references: [id])
+  scheduledJobs ScheduledJob[]
+
+  @@map("cleaning_jobs")
+}
+
+model ScheduledJob {
+  id          String   @id @default(cuid())
+  jobId       String
+  customerId  String
+  teamId      String
+  assignedMemberId String?
+  scheduledDate DateTime
+  scheduledStart DateTime
+  scheduledEnd DateTime
+  actualStart DateTime?
+  actualEnd   DateTime?
+  status      String   @default("SCHEDULED") // SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED
+  progressNotes String?
+  qualityScore Int?
+  customerFeedback String?
+  complianceNotes String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  job         CleaningJob @relation(fields: [jobId], references: [id])
+  customer    Customer @relation(fields: [customerId], references: [id])
+  team        CleaningTeam @relation(fields: [teamId], references: [id])
+  assignedMember CleaningEmployee? @relation(fields: [assignedMemberId], references: [id])
+  progressLogs JobProgressLog[]
+
+  @@map("scheduled_jobs")
+}
+
+model JobProgressLog {
+  id          String   @id @default(cuid())
+  jobId       String
+  status      String
+  timestamp   DateTime @default(now())
+  location    Json?    // GPS coordinates
+  notes       String?
+  images      String[] // URLs to uploaded images
+
+  // Relations
+  scheduledJob ScheduledJob @relation(fields: [jobId], references: [id])
+
+  @@map("job_progress_logs")
+}
+
+model OptimizedRoute {
+  id          String   @id @default(cuid())
+  teamId      String
+  date        DateTime
+  routes      Json     // Array of route objects
+  optimization Json    // Optimization metrics
+  compliance  Json     // Compliance check results
+  generatedAt DateTime @default(now())
+
+  // Relations
+  team        CleaningTeam @relation(fields: [teamId], references: [id])
+
+  @@map("optimized_routes")
+}
+
+model StaffSchedule {
+  id          String   @id @default(cuid())
+  staffId     String
+  bookingId   String?
+  startTime   DateTime
+  endTime     DateTime
+  type        String   // BOOKING, BREAK, TRAINING, VACATION
+
+  @@map("staff_schedules")
+}
+
+model Equipment {
+  id          String   @id @default(cuid())
+  teamId      String
+  name        String
+  type        String   // VACUUM, CHEMICALS, PPE, VEHICLE
+  model       String?
+  serialNumber String?
+  purchaseDate DateTime?
+  lastInspection DateTime?
+  nextInspectionDue DateTime?
+  status      String   @default("ACTIVE")
+  notes       String?
+
+  // Relations
+  team        CleaningTeam @relation(fields: [teamId], references: [id])
+
+  @@map("equipment")
+}
+
+model ComplianceReport {
+  id          String   @id @default(cuid())
+  teamId      String
+  period      Json     // DateRange object
+  overallStatus String
+  memberCompliance Json
+  violations  Json
+  recommendations String[]
+  danishLawRequirements Json
+  generatedAt DateTime @default(now())
+
+  // Relations
+  team        CleaningTeam @relation(fields: [teamId], references: [id])
+
+  @@map("compliance_reports")
+}
+
+model SafetyTraining {
+  id          String   @id @default(cuid())
+  teamId      String
+  trainingType String
+  completedBy String[]
+  completionDate DateTime
+  expiryDate  DateTime?
+  certificationBody String?
+  notes       String?
+
+  // Relations
+  team        CleaningTeam @relation(fields: [teamId], references: [id])
+
+  @@map("safety_training")
+}

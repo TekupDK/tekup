@@ -1,0 +1,87 @@
+services:
+  # Backend API (Current)
+  - type: web
+    name: tekup-renos-backend
+    runtime: docker
+    plan: starter # $7/month - sufficient for now
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: RUN_MODE
+        value: live
+      - key: LOG_LEVEL
+        value: info
+      
+      # LLM Configuration - Start med Gemini
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: GEMINI_KEY
+        sync: false # Set manually in Render dashboard
+      - key: GEMINI_MODEL
+        value: gemini-2.0-flash-exp
+      
+      # OpenAI (optional fallback)
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      
+      # Ollama (for future use)
+      - key: OLLAMA_BASE_URL
+        value: http://tekup-renos-ollama:11434
+      - key: OLLAMA_MODEL
+        value: llama3.1:8b
+      
+      # Database
+      - key: DATABASE_URL
+        sync: false
+      
+      # Google Services
+      - key: GOOGLE_PROJECT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_EMAIL
+        sync: false
+      - key: GOOGLE_PRIVATE_KEY
+        sync: false
+      - key: GOOGLE_IMPERSONATED_USER
+        sync: false
+      - key: DEFAULT_EMAIL_FROM
+        sync: false
+      - key: GOOGLE_CALENDAR_ID
+        sync: false
+      - key: ORGANISATION_NAME
+        value: Rendetalje.dk
+      
+      # Gmail OAuth
+      - key: GMAIL_CLIENT_ID
+        sync: false
+      - key: GMAIL_CLIENT_SECRET
+        sync: false
+      - key: GMAIL_REDIRECT_URI
+        sync: false
+      
+      # Frontend
+      - key: FRONTEND_URL
+        value: https://tekup-renos.onrender.com
+      - key: CORS_ORIGIN
+        value: https://tekup-renos.onrender.com
+
+  # Ollama Service (FUTURE - Comment out for now)
+  # Uncomment when ready to deploy Ollama
+  # - type: pserv # Private service
+  #   name: tekup-renos-ollama
+  #   runtime: docker
+  #   plan: standard # $25/month - needs 8GB RAM
+  #   region: frankfurt
+  #   dockerfilePath: ./Dockerfile.ollama
+  #   dockerContext: .
+  #   envVars:
+  #     - key: OLLAMA_HOST
+  #       value: 0.0.0.0
+  #   # Health check via HTTP
+  #   healthCheckPath: /api/tags
