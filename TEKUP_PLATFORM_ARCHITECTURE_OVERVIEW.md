@@ -68,11 +68,11 @@ graph TB
 | ----------------------- | -------------- | ------- | -------------- | ------------------------------- |
 | **tekup-billy**         | ✅ Production  | v1.4.3  | Render.com     | TypeScript, Express, Redis      |
 | **tekup-vault**         | ✅ Production  | v0.1.0  | Render.com     | TypeScript, Turborepo, pgvector |
-| **tekup-database**      | ✅ Development | v1.1.0  | Local/Supabase | Prisma, PostgreSQL              |
+| **tekup-database**      | ✅ Production  | v1.1.0  | Supabase       | Prisma, PostgreSQL              |
 | **rendetalje-backend**  | ✅ Production  | v1.2.0  | Render.com     | NestJS, PostgreSQL, Redis       |
-| **rendetalje-frontend** | ✅ Development | v1.2.0  | Vercel         | Next.js, TypeScript             |
-| **rendetalje-mobile**   | ✅ Development | v1.0.0  | Local/Docker   | React Native, Expo              |
-| **calendar-mcp**        | ✅ Development | v1.0.0  | Local/Docker   | Node.js, TypeScript             |
+| **rendetalje-frontend** | ✅ Production  | v1.2.0  | Vercel         | Next.js, TypeScript             |
+| **rendetalje-mobile**   | ✅ Production  | v1.0.0  | Expo Cloud     | React Native, Expo, TypeScript  |
+| **calendar-mcp**        | ✅ Production  | v1.0.0  | Render.com     | Node.js, TypeScript             |
 
 ---
 
