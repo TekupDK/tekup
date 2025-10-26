@@ -505,7 +505,7 @@ Komplet dokumentation er organiseret i `docs/` mappen:
 **Status:** ✅ OPERATIONAL (Updated: 17. Oktober 2025)
 
 - **Repository:** <https://github.com/JonasAbde/TekupVault> (Private)
-- **API:** <https://tekupvault-api.onrender.com>
+- **API:** <https://tekupvault.onrender.com>
 - **Sync:** Hver 6. time (GitHub → TekupVault)
 - **Indexeret:** 188 filer fra Tekup-Billy + 875 fra andre Tekup repos
 - **Database:** Supabase PostgreSQL + pgvector
@@ -523,17 +523,17 @@ Komplet dokumentation er organiseret i `docs/` mappen:
 
 ```bash
 # Find invoice creation documentation
-curl -X POST https://tekupvault-api.onrender.com/api/search \
+curl -X POST https://tekupvault.onrender.com/api/search \
   -H "Content-Type: application/json" \
   -d '{"query": "How to create and approve an invoice?", "limit": 5}'
 
 # Search for MCP tool implementations
-curl -X POST https://tekupvault-api.onrender.com/api/search \
+curl -X POST https://tekupvault.onrender.com/api/search \
   -H "Content-Type: application/json" \
   -d '{"query": "customer management MCP tools", "limit": 10}'
 
 # Find analytics features
-curl -X POST https://tekupvault-api.onrender.com/api/search \
+curl -X POST https://tekupvault.onrender.com/api/search \
   -H "Content-Type: application/json" \
   -d '{"query": "analyze feedback and usage patterns", "limit": 5}'
 ```
@@ -541,7 +541,7 @@ curl -X POST https://tekupvault-api.onrender.com/api/search \
 **Sync Status:**
 
 ```bash
-curl https://tekupvault-api.onrender.com/api/sync-status
+curl https://tekupvault.onrender.com/api/sync-status
 ```
 
 **Related Projects:**

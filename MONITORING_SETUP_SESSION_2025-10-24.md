@@ -80,9 +80,9 @@ Get-Content "C:\Users\empir\Tekup\tekup-secrets\config\monitoring.env" | Select-
 **Services Identified:**
 
 1. **Tekup Billy MCP:** `https://tekup-billy.onrender.com/health`
-2. **TekupVault API:** `https://tekupvault-api.onrender.com/health`
+2. **TekupVault API:** `https://tekupvault.onrender.com/health`
 3. **Rendetalje Backend:** `https://renos-backend.onrender.com/health`
-4. **Calendar MCP:** `https://renos-calendar-mcp.onrender.com/health`
+4. **Calendar MCP:** `https://[SERVICE NOT DEPLOYED]/health`
 
 **Configuration:**
 
@@ -132,17 +132,65 @@ Get-Content "C:\Users\empir\Tekup\tekup-secrets\config\monitoring.env" | Select-
 
 ## 📊 Progress Summary
 
-| Task                  | Status           | Time   | Notes                        |
-| --------------------- | ---------------- | ------ | ---------------------------- |
-| 1. Store Sentry DSN   | ✅ DONE          | 2 min  | Already in monitoring.env    |
-| 2. Database Migration | ✅ DONE          | 5 min  | User executed in Supabase    |
-| 3. Render Config      | ✅ VERIFIED      | 0 min  | User confirmed already set   |
-| 4. UptimeRobot        | ✅ GUIDE CREATED | 10 min | User follows guide           |
-| 5. Frontend Sentry    | ✅ GUIDE CREATED | 15 min | User follows guide           |
+| Task                  | Status      | Time   | Notes                             |
+| --------------------- | ----------- | ------ | --------------------------------- |
+| 1. Store Sentry DSN   | ✅ DONE     | 2 min  | Already in monitoring.env         |
+| 2. Database Migration | ✅ DONE     | 5 min  | User executed in Supabase         |
+| 3. Render Config      | ✅ VERIFIED | 0 min  | User confirmed already set        |
+| 4. UptimeRobot        | ✅ DONE     | 15 min | 3 monitors setup (Oct 25)         |
+| 5. Frontend Sentry    | ✅ DONE     | 10 min | Wizard completed! (Oct 25)        |
 
-**Total Completed:** 80% (Autonomous + Database migration)  
-**Remaining User Actions:** 20% (UptimeRobot + Frontend Sentry)  
-**Estimated Remaining Time:** 25 minutes
+**Total Completed:** 100% 🎉  
+**All monitoring systems operational!**
+
+### 🔍 UptimeRobot Configuration (Oct 25, 2025)
+
+**Active Monitors (3/3 working):**
+- ✅ `tekup-billy.onrender.com/health` - 100% uptime
+- ✅ `renos-backend.onrender.com/health` - 100% uptime  
+- ✅ `tekupvault.onrender.com/health` - 100% uptime (URL corrected)
+
+**Removed Monitors:**
+- ❌ `tekupvault.onrender.com/health` - Incorrect URL (renamed)
+- ❌ `[SERVICE NOT DEPLOYED]/health` - Service not deployed yet
+- ❌ `renos-backend.onrender.com/health` - Unknown service
+
+### 🎯 Frontend Sentry Installation (Oct 25, 2025)
+
+**Completed:**
+- ✅ Sentry DSN added to .env.local
+- ✅ Ran `npx @sentry/wizard@latest -i nextjs`
+- ✅ Created fresh sentry.server.config.ts
+- ✅ Created fresh sentry.edge.config.ts
+- ✅ Added instrumentation.ts files
+- ✅ Updated next.config.js with Sentry
+- ✅ Created global-error.tsx
+- ✅ Test page: `/sentry-example-page`
+- ✅ Test API: `/api/sentry-example-api`
+- ✅ .env.sentry-build-plugin created
+- ✅ VS Code MCP configuration added
+
+**Auth Token for CI/CD:**
+
+```bash
+SENTRY_AUTH_TOKEN=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
+```
+
+⚠️ **DO NOT commit to repository!**
+
+**Deployment (Oct 25, 2025):**
+
+- ✅ **SENTRY_AUTH_TOKEN added to Render.com** (`renos-frontend` environment)
+- ✅ **Auto-redeploy triggered** by Render
+- ✅ **Source maps will upload** on next build
+- ✅ **Frontend deployed at:** https://renos-frontend.onrender.com
+
+**Test Error Tracking:**
+
+1. Visit: https://renos-frontend.onrender.com/sentry-example-page
+2. Click "Trigger Test Error" button
+3. Check Sentry dashboard at: https://sentry.io
+4. Verify error appears with source maps
 
 ---
 
