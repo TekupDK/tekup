@@ -21,7 +21,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useLocation } from '../../hooks/useLocation';
 import { jobsApi, locationApi } from '../../services/api';
 import { Button, Card, Badge, Avatar } from '../../components';
-import { colors, typography, spacing, borderRadius } from '../../theme';
+import { colors, typography, spacing, borderRadius, shadows } from '../../theme';
 import * as Haptics from 'expo-haptics';
 import { Job } from '../../components/JobCard';
 
