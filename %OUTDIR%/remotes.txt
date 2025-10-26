@@ -1,0 +1,2 @@
+origin	https://github.com/TekupDK/tekup.git (fetch)
+origin	https://github.com/TekupDK/tekup.git (push)

@@ -1,0 +1,17 @@
+* remote origin
+  Fetch URL: https://github.com/TekupDK/tekup.git
+  Push  URL: https://github.com/TekupDK/tekup.git
+  HEAD branch: master
+  Remote branches:
+    claude/analyze-repository-011CUR2uDMWUY1jAvHdRTMbX          tracked
+    claude/explore-teku-011CUSDhz3nPLBoFU5dh3JPs                tracked
+    claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx tracked
+    master                                                      tracked
+    pre-prisma-migration-backup-20251025                        tracked
+    release/stabilize-2025-10-26                                tracked
+  Local branches configured for 'git pull':
+    claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx merges with remote claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx
+    master                                                      merges with remote master
+  Local refs configured for 'git push':
+    claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx pushes to claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx (up to date)
+    master                                                      pushes to master                                                      (up to date)

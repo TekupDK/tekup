@@ -1,0 +1,2 @@
+%(refname:short)|%(objectname:short)|%(committerdate:iso8601)|%(authorname)|%(upstream:short)|%(upstream:track)|%(subject)
+%(refname:short)|%(objectname:short)|%(committerdate:iso8601)|%(authorname)|%(upstream:short)|%(upstream:track)|%(subject)

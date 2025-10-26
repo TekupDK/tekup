@@ -1,0 +1,7 @@
+%(refname:short)|%(objectname:short)|%(creatordate:iso8601)|%(subject)
+%(refname:short)|%(objectname:short)|%(creatordate:iso8601)|%(subject)
+%(refname:short)|%(objectname:short)|%(creatordate:iso8601)|%(subject)
+%(refname:short)|%(objectname:short)|%(creatordate:iso8601)|%(subject)
+%(refname:short)|%(objectname:short)|%(creatordate:iso8601)|%(subject)
+%(refname:short)|%(objectname:short)|%(creatordate:iso8601)|%(subject)
+%(refname:short)|%(objectname:short)|%(creatordate:iso8601)|%(subject)

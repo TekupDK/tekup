@@ -1,0 +1,167 @@
+* b54d5b0 (origin/release/stabilize-2025-10-26) Post-merge fix: mobile map screen imports shadows and style adjustments for Expo/TS compatibility
+*   637882e (origin/pre-prisma-migration-backup-20251025) Merge remote-tracking branch 'origin/master' into pre-prisma-migration-backup-20251025
+|\  
+| * 7f3b65e (origin/master, origin/HEAD, master) docs: Fix all incorrect URLs and deployment references
+| * e2dfa40 feat: add Sentry configuration to frontend
+| * f23a665 (tag: pc1-ready-post-merge-2025-10-25) chore: fix git-in-git problem and ignore old-data
+| * af444d6 docs: add git analysis and update monitoring guides post-PC2 merge
+* | 45e2d29 docs: add comprehensive business and technical documentation suite
+* | c38e77a docs: add comprehensive platform architecture overview and redundancy analysis
+|/  
+* fb4c080 feat: complete production deployment and monitoring setup
+* 0bf68a8 refactor(workspace): fix logical hierarchy and clean structure
+* baeca9a Phase 4: Migrate Tekup-Billy to Prisma - Initial migration setup
+* 27ad014 feat(vault-api): migrate from Supabase to Prisma client
+* 9be3b01 feat(calendar-mcp): complete Supabase to Prisma migration
+* 88f77fb docs: add migration instructions for Calendar MCP tables
+* 2e6ea72 feat(database): add Calendar MCP intelligence tables to renos schema
+*   294dfbb chore: merge master into pre-prisma-migration-backup
+|\  
+| * 8f0ba12 docs: Add comprehensive MOBILE_COMPLETE_GUIDE.md - Project 100% Complete!
+| * 4e9ca6c feat: Complete mobile app + backend API fixes - 100% ready!
+| * 70e1602 fix: Remove duplicate route prefixes + configure monitoring
+| * c771674 docs: Phase 2 Completion Report - 10 modules, 107 endpoints
+| * f9b8368 docs: Add comprehensive AI Friday setup guide
+| * 635cfa7 feat(database): Update RenosChatSession + RenosChatMessage for AI Friday
+| * 3f3e0f3 feat(backend): AiFridayModule - AI assistant with chat, voice I/O & analytics (Phase 2.10)
+| * e947bb6 feat(database): Add RenosAuditLog + RenosSecurityEvent models for SecurityModule
+| * 6105bb6 feat(backend): SecurityModule - Audit logging + security event tracking (Phase 2.9)
+| * 0db4665 fix(database): Resolve Prisma client type distribution issue + RealTimeModule build fixes
+| * 222738c feat(realtime): RealTimeModule with WebSocket + Notifications (PRISMA TYPE ISSUE BLOCKING)
+| * 8d0dfe6 feat: Add QualityModule with comprehensive quality control system
+| * 1cb61aa feat(prisma): Add GDPR compliance models to production schema
+| * b91e53a feat(gdpr): Complete GDPR compliance module with Prisma
+| * 1dba379 feat(time-tracking): Add TimeTrackingModule with time corrections & overtime reports
+| * c5ff0df  Phase 2.4: TeamModule - Prisma Migration Complete
+| * 474e91a  Phase 2.3: AuthModule - JWT + Prisma + bcrypt
+| * 8eb3c67 Phase 2.2: LeadsModule Complete - Renamed from JobsModule, Prisma Migration
+| * 32b3766 Phase 2: CustomersModule Complete - Prisma Migration Success
+| * 1a7c7b5 Phase 1 Complete: Minimal Backend Operational - Removed Supabase, Integrated Prisma
+| | * 915c1be (HEAD -> claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx, origin/claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx) Post-merge fix: mobile map screen imports shadows and style adjustments for Expo/TS compatibility
+| | * 40778a8 chore: add Kilocode configuration for multi-PC setup
+| |/  
+|/|   
+* | 2ea944a fix(workspace): remove non-existent monorepo path and fix .git visibility
+* | 79c529d feat: add VS Code configurations and workspace documentation
+* | de99399 chore: optimize knowledge index
+* | 68bb4f6 feat: add Docker parallel branch support and mobile scripts
+* | 0760427 chore: update workspace configuration
+* | c9ac3e8 docs: add branch status, feature analysis, and Docker helper script
+* | aa41611 chore: update .gitignore for test results, backups, and env files
+* | 037c6f8 chore: remove .next build artifacts from git tracking
+* | 90262dc fix: resolve high-priority TypeScript errors (Part 4)
+* | 8f1eed4 docs: add post-restart verification checklist
+* | 3df72ce feat(claude-code): Complete Claude Code optimization setup
+* | fd770b4 fix: resolve additional TypeScript compilation errors (Part 3)
+* | 4e4f7b2 fix: resolve TypeScript compilation errors (Part 2)
+* | 937cc19 fix: resolve critical TypeScript compilation errors (Part 1)
+* | d730b10 feat(docker): Optimize mobile Dockerfile + fix port conflicts
+* | c7aef12 refactor: Modernize test suite and refactor backend/frontend services
+* | 05b259b feat(mobile): Implement all core feature screens - Photo Capture, Time Tracking, GPS Map, Job Details, and Profile
+* | b294dbd docs: Add quick start guide for mobile development
+* | 284d408 feat(docker): Add complete Docker setup for mobile development
+* | 088061c docs(mobile): Add comprehensive documentation and update login screen
+* | 625f9a1 feat(mobile): Implement world-class UI/UX with modern design system
+|/  
+| * 0cbef09 (origin/claude/explore-teku-011CUSDhz3nPLBoFU5dh3JPs) docs: Add comprehensive Tekup Cloud Dashboard (RenOS) exploration overview
+|/  
+* 8e1a0d1 docs: Add startup guide and fix frontend config for v1.2.0
+* fde2cb9 test: Add comprehensive Playwright E2E tests for v1.2.0 with dashboard, jobs-v2, and customers-v2
+* 90c7961 test: Add comprehensive AI testing guide and quick test script for Comet
+* 64bfc64 docs(rendetalje): Add v1.2.0 release notes with testing guide
+* 6ec8088 feat(rendetalje): Add environment configuration - tekup-database .env and frontend .env.local
+* a8802ed feat(frontend): Update pages with new stores and error boundaries
+* 4ef1523 docs(workspace): Update CHANGELOG with full-stack integration v1.1.0
+* b449f10 feat(frontend): Add toast notifications and loading states
+* 1734c8e test(frontend): Add comprehensive API client integration tests
+* 978f8ff test(frontend): Add comprehensive API client integration tests
+* 5e97b50 feat(frontend): Add backend API integration with centralized API client
+* f46541e docs(workspace): Update root README and CHANGELOG with Rendetalje test infrastructure v1.0.0
+* 41b2937 docs(renos): Update CHANGELOG and README with UI components and state management
+* 573ddaf feat(renos): Add reusable UI component library and Zustand state management
+* f406ef4 feat(renos): Add initial UI components for authentication, dashboard, jobs, and customers
+* 145e5e9 feat(renos): Integrate Playwright E2E tests into GitHub Actions CI/CD pipeline
+* c840f9e feat(renos): Add Playwright E2E testing, Docker test database, and comprehensive documentation
+* 3870ba2 feat(renos): Add GitHub Actions CI/CD pipeline for automated testing
+* 3d43a22 feat(renos): Add comprehensive tests for @renos/shared library
+* 92100ae feat(renos): Add comprehensive test infrastructure for backend and frontend
+* dc30701 docs: complete monitoring implementation - UptimeRobot setup finished
+* 6b1c0a8 docs: update monitoring status - database migration completed
+* 28c9a93 docs: complete monitoring setup guides (UptimeRobot + Frontend Sentry)
+* 2ba3628 sync: update submodule and documentation for PC2
+* 5831ac7 docs: add monitoring implementation tracking
+* f1783bb docs: update CHANGELOG.md with October 24 submodule migration
+* 07380f1 Add PC2 Setup Quick Reference Card
+* 5ad8d71 Update tekup-secrets submodule to latest (734f1ab) and add final changelog
+* 1cb3a11 fix: complete .gitmodules with all submodule definitions
+* f12f351 Add new machine setup script and update README for submodule
+* a49e1ad Add comprehensive submodule migration documentation
+*   da5fcff Merge branch 'master' of https://github.com/TekupDK/tekup
+|\  
+| * 7c40c6d fix(pc2): fix PowerShell syntax in rename script - use here-string for commit message
+| * 58ae3f1 feat(pc2): add autonomous folder rename script
+* | 90a4b5a Update tekup-secrets submodule to unencrypted version (f12fd70)
+* | 6ac6986 Convert tekup-secrets to git submodule
+* | 78ef77e Remove tekup-secrets folder (preparing for submodule)
+|/  
+* 2eef964 docs(pc2): confirm folder rename plan - ready for weekend execution
+* a5d8fab docs(pc1): respond to PC2 folder naming analysis - plan weekend migration to 'tekup' lowercase
+* 0cd7559 docs: add visual workspace structure guide for clarity
+* 6e50c77 docs: auto-formatting and minor updates to docs
+| * ad74f8f (origin/claude/analyze-repository-011CUR2uDMWUY1jAvHdRTMbX) test(tekupvault): major test infrastructure improvements - 73% more tests passing
+|/  
+* 5580566 docs(pc2): complete Rendetalje/RenOS restructure plan with research and migration steps
+*   c579b38 Merge branch 'master' of https://github.com/TekupDK/tekup
+|\  
+| * abf47d2 chore: add cleanup script for node_modules removal
+* | 1673f7b docs(pc2): git-crypt successfully unlocked - all secrets accessible
+|/  
+* 8fd07d9 security: enable git-crypt and export key for PC2
+* 5597354 docs: add comprehensive workspace status and update README
+* 67334e9 feat: add monitoring configuration and deployment guides
+* 12994d8 chore: add git-crypt key for PC2 access
+* e638f9a docs: PC2 ready - waiting for git-crypt key from PC1
+* e302a2d feat: add Billy, Database, and Vault source code to monorepo
+* d0c62dd fix: correct PC1 path to /tekup (lowercase)
+* 33c66f3 docs: PC2 response - source code still missing from production folders
+* 5d700f4 docs: add PC2 sync instructions
+*   f33e6a2 Merge branch 'master' of https://github.com/TekupDK/tekup
+|\  
+| * e25b7f0 chore: cleanup and prepare for PC2 sync
+* | c390e7b chore: add node_modules and package-lock.json to .gitignore
+|/  
+* 3fb4021 feat: add comprehensive monitoring and logging infrastructure
+* fbdb38e  URGENT: PC2 blocked - waiting for git-crypt key and project code from PC1
+* 66951c7 clean: remove duplicate batch files and empty production directory
+* 6e4a787 organize: clean up scattered scripts and create organized structure
+* e6cd71e docs: improve tekup-secrets documentation formatting and structure
+* de571b7 docs: PC1 workspace verification complete - all checks passed
+* 2eb57d8 docs: request PC1 workspace verification - branch and repo check
+* 0e6b299 feat: PC2 successfully migrated to correct repo (github.com/TekupDK/tekup)
+*   6a75ecf Merge branch 'master' of https://github.com/TekupDK/tekup
+|\  
+| * 2cc1d98 docs: add PC2 pull instructions to fix repo connection
+| * cdaf395 docs: update tekup-secrets documentation - add DOC_INDEX and update README for TekupDK workspace
+| * 8a6c3b0 feat: Phase 1 complete - analysis and critical fixes done, 90pct ready for PC2
+| * 81214ee docs: complete Phase 1 analysis and fixes - 90pct ready
+| * e598a43 docs: fix all tekup-workspace-docs references to tekup
+| * 9d18f7c cleanup: moved old docs to archive and legacy scripts to services
+| * e646280 docs: add migration status and cleanup scripts
+| * c0ce0c8 docs: add complete workspace snapshot (19:21 CET)
+| * 00ae656 docs: update all documentation to reflect monorepo structure and new repo name (TekupDK/tekup)
+* | 81a02dd docs: update PC2 status - submodule issue discovered
+* | defb2e1 docs: Add PC2 missing files documentation for PC1
+|/  
+* c607f08 docs: update all documentation for monorepo structure
+* 9dfb51c cleanup: remove redundant workspace files - use Tekup-Portfolio only
+* afec0d1 feat: consolidate all projects into monorepo structure
+* 97b1199 feat: update workspace for monorepo structure
+* 11ee1fe feat: Add encrypted secrets with git-crypt
+* c2cf056 feat: add complete workspace structure with all projects
+* 01ee321 docs: Add git-crypt setup instructions for PC2
+* 1615deb docs: add PC2 session update - workspace cleanup and sync status
+* 3bbcab9 feat: Implement centralized secrets management system
+* 05b58ab feat: Add centralized secrets management system (tekup-secrets)
+* 9ad19dc docs: add daily work log for 23 October 2025
+* 9fb0a7e Major reorganization: Consolidate entire Rendetalje ecosystem
+* 13f6e24 docs: initialize Tekup workspace documentation

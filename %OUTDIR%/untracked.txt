@@ -1,0 +1,10 @@
+%OUTDIR%/describe.err.txt
+%OUTDIR%/describe.txt
+%OUTDIR%/revparse_is_work_tree.txt
+%OUTDIR%/revparse_toplevel.txt
+%OUTDIR%/status_porcelain_v2.txt
+%OUTDIR%/status_short.txt
+%OUTDIR%/untracked.txt
+GIT_ANALYSIS_PC1_2025-10-25.md
+QUICK_ACTION_PLAN_PC1.md
+archive/old-data/tekup-customers-2025-09-22.csv
