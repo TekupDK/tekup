@@ -53,3 +53,9 @@ playwright-report/
 *.env.local
 archive/old-data/
 apps/rendetalje/monorepo
+
+# Generated reports
+reports/
+GIT_HEALTH_REPORT_*.md
+GIT_ANALYSIS_*.md
+GIT_STATUS_REPORT.json
