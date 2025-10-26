@@ -184,7 +184,7 @@
 ✅ **Aktive servers:**
 1. memory (⚠️ bruger `.cursor\memory.json` - IKKE shared!)
 2. sequential-thinking
-3. github (⚠️ **HARDCODED PAT: REDACTED_GITHUB_TOKEN**)
+3. github (⚠️ **HARDCODED PAT: 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**)
 4. filesystem (scope: `C:\Users\empir\Tekup`)
 5. tekup-billy (⚠️ **HARDCODED credentials**)
 6. tekupvault (HTTP: tekupvault.onrender.com)
@@ -312,10 +312,10 @@ Fundet **9 gamle MCP configs:**
 
 🔴 **Exposed credentials:**
 ```json
-"GITHUB_PERSONAL_ACCESS_TOKEN": "REDACTED_GITHUB_TOKEN"
+"GITHUB_PERSONAL_ACCESS_TOKEN": "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"
 "SUPABASE_URL": "https://oaevagdgrasfppbrxbey.supabase.co"
 "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-"BILLY_API_KEY": "REDACTED_BILLY_API_KEY"
+"BILLY_API_KEY": "43e7439bccb58a8a96dd57dd06dae10add009111"
 "BILLY_ORGANIZATION_ID": "pmf9tU56RoyZdcX3k69z1g"
 ```
 
@@ -670,8 +670,8 @@ This analysis is part of the **Tekup MCP Servers Project**. See related document
 
 #### Found
 - **CRITICAL:** Hardcoded credentials in Cursor config
-  - GitHub PAT: REDACTED_GITHUB_TOKEN
-  - Billy API key: REDACTED_BILLY_API_KEY
+  - GitHub PAT: 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
+  - Billy API key: 43e7439bccb58a8a96dd57dd06dae10add009111
 - Memory file inconsistency (Cursor isolated)
 - Jan placeholder API keys (exa, serper)
 - Qoder empty configuration

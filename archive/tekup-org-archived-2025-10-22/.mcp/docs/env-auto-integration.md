@@ -126,7 +126,7 @@ Update the monorepo's `package.json` to include MCP scripts:
 ### Existing Variables (from inventory)
 ```bash
 BRAVE_API_KEY=BSA5503dX9kHsCxVoYAVub3VvWB1yxE
-BILLY_API_TOKEN=REDACTED_BILLY_API_KEY  
+BILLY_API_TOKEN=43e7439bccb58a8a96dd57dd06dae10add009111  
 ZAPIER_ENDPOINT=https://mcp.zapier.com/api/mcp/s/ZDNi...
 ```
 

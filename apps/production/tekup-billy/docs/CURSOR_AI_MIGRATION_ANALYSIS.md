@@ -111,7 +111,7 @@ npm install
 cp .env.example .env
 
 # Tilføj Billy.dk credentials (samme som du bruger nu)
-BILLY_API_KEY=REDACTED_BILLY_API_KEY
+BILLY_API_KEY=43e7439bccb58a8a96dd57dd06dae10add009111
 BILLY_ORGANIZATION_ID=pmf9tU56RoyZdcX3k69z1g
 BILLY_API_BASE=https://api.billysbilling.com/v2
 ```

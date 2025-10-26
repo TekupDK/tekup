@@ -39,14 +39,14 @@ Cursor IDE MCP konfiguration indeholder hardcoded credentials i plain text:
   "mcpServers": {
     "github": {
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "REDACTED_GITHUB_TOKEN"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
       }
     },
     "tekup-billy": {
       "env": {
         "SUPABASE_URL": "https://oaevagdgrasfppbrxbey.supabase.co",
         "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcyNjM5ODgsImV4cCI6MjA0MjgzOTk4OH0.1EiilYPIH4BWI_A2XWWZjEh-kI_K8aNcm_Ie5i0bPwA",
-        "BILLY_API_KEY": "REDACTED_BILLY_API_KEY",
+        "BILLY_API_KEY": "43e7439bccb58a8a96dd57dd06dae10add009111",
         "BILLY_ORGANIZATION_ID": "pmf9tU56RoyZdcX3k69z1g"
       }
     }
@@ -88,9 +88,9 @@ Cursor IDE MCP konfiguration indeholder hardcoded credentials i plain text:
 
 | Credential | Type | Scope | Risk Level |
 |------------|------|-------|------------|
-| `REDACTED_GITHUB_TOKEN` | GitHub PAT | Fuld account access | 🔴 CRITICAL |
+| `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` | GitHub PAT | Fuld account access | 🔴 CRITICAL |
 | `eyJhbGciOiJIUzI1NiIs...` | Supabase Anon Key | Database read/write | 🔴 CRITICAL |
-| `REDACTED_BILLY_API_KEY` | Billy API Key | Organization billing | 🔴 CRITICAL |
+| `43e7439bccb58a8a96dd57dd06dae10add009111` | Billy API Key | Organization billing | 🔴 CRITICAL |
 | `pmf9tU56RoyZdcX3k69z1g` | Billy Org ID | Organization identifier | 🟡 MEDIUM |
 
 ---
@@ -134,7 +134,7 @@ Cursor IDE MCP konfiguration indeholder hardcoded credentials i plain text:
   "mcpServers": {
     "github": {
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "REDACTED_GITHUB_TOKEN"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
       }
     }
   }
@@ -260,8 +260,8 @@ cd C:\Users\empir\Tekup
 git log --all --full-history -- "**/.cursor/mcp.json"
 
 # Search for exposed credentials in history
-git log --all --full-history -S "REDACTED_GITHUB_TOKEN"
-git log --all --full-history -S "REDACTED_BILLY_API_KEY"
+git log --all --full-history -S "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"
+git log --all --full-history -S "43e7439bccb58a8a96dd57dd06dae10add009111"
 ```
 
 #### 2.2 If Found in Git History (CRITICAL)
@@ -279,8 +279,8 @@ git clone --mirror . ../Tekup-backup.git
 java -jar bfg.jar --replace-text credentials.txt ../Tekup.git
 
 # credentials.txt contains:
-# REDACTED_GITHUB_TOKEN==>REDACTED
-# REDACTED_BILLY_API_KEY==>REDACTED
+# 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==>REDACTED
+# 43e7439bccb58a8a96dd57dd06dae10add009111==>REDACTED
 
 # Force push (coordinate with team!)
 cd C:\Users\empir\Tekup

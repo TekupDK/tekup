@@ -77,7 +77,7 @@
 
 ```bash
 # 1. Browser: https://github.com/settings/tokens
-# 2. Find token starting with REDACTED_GITHUB_TOKEN
+# 2. Find token starting with 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
 # 3. Click "Delete" or "Regenerate"
 # 4. Create new token:
 #    - Name: "Tekup MCP Development"
@@ -91,7 +91,7 @@
 ```bash
 # 1. Browser: https://billy.dk
 # 2. Login → Settings → API
-# 3. Revoke key: REDACTED_BILLY_API_KEY
+# 3. Revoke key: 43e7439bccb58a8a96dd57dd06dae10add009111
 # 4. Generate new API key
 # 5. Copy new key til clipboard
 ```
@@ -225,8 +225,8 @@ cd C:\Users\empir\Tekup
 git log --all --full-history -- "**/.cursor/mcp.json"
 
 # Search for exposed credentials
-git log --all --full-history -S "REDACTED_GITHUB_TOKEN"
-git log --all --full-history -S "REDACTED_BILLY_API_KEY"
+git log --all --full-history -S "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"
+git log --all --full-history -S "43e7439bccb58a8a96dd57dd06dae10add009111"
 ```
 
 **If credentials found in git history:**

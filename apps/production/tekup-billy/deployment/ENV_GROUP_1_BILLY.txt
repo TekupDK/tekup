@@ -11,7 +11,7 @@ Environment Group Name: Billy MCP Environment
 Variable 1:
 -----------
 Key:   BILLY_API_KEY
-Value: REDACTED_BILLY_API_KEY
+Value: 43e7439bccb58a8a96dd57dd06dae10add009111
 
 
 Variable 2:

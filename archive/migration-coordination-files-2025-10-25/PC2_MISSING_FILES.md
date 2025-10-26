@@ -262,7 +262,7 @@ PC2 kan IKKE læse disse før git-crypt unlock:
 ### Fra `tekup-secrets/config/apis.env`:
 ```bash
 # Billy.dk
-BILLY_API_KEY=REDACTED_BILLY_API_KEY
+BILLY_API_KEY=43e7439bccb58a8a96dd57dd06dae10add009111
 BILLY_ORGANIZATION_ID=pmf9tU56RoyZdcX3k69z1g
 
 # MCP HTTP Authentication

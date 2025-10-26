@@ -169,9 +169,9 @@ Tekup/
 ### 🔴 IMMEDIATE ACTION REQUIRED
 
 **Problem:** Cursor IDE MCP config indeholder hardcoded credentials i plain text:
-- GitHub Personal Access Token: `REDACTED_GITHUB_TOKEN`
+- GitHub Personal Access Token: `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`
 - Supabase credentials
-- Billy API key: `REDACTED_BILLY_API_KEY`
+- Billy API key: `43e7439bccb58a8a96dd57dd06dae10add009111`
 
 **Location:** `C:\Users\empir\.cursor\mcp.json`
 

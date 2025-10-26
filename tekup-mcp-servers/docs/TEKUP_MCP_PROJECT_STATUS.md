@@ -81,12 +81,12 @@
 
 #### Required Tasks
 - [ ] **Rotate GitHub Personal Access Token** (15 min)
-  - Current: `REDACTED_GITHUB_TOKEN` (EXPOSED)
+  - Current: `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` (EXPOSED)
   - Action: Delete old, generate new at github.com/settings/tokens
   - Store: tekup-secrets submodule
 
 - [ ] **Rotate Billy API Key** (10 min)
-  - Current: `REDACTED_BILLY_API_KEY` (EXPOSED)
+  - Current: `43e7439bccb58a8a96dd57dd06dae10add009111` (EXPOSED)
   - Action: Revoke at billy.dk, generate new
   - Store: tekup-secrets submodule
 
@@ -216,8 +216,8 @@
 
 **Details:**
 - Cursor config har exposed credentials
-- GitHub PAT: `REDACTED_GITHUB_TOKEN`
-- Billy API: `REDACTED_BILLY_API_KEY`
+- GitHub PAT: `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`
+- Billy API: `43e7439bccb58a8a96dd57dd06dae10add009111`
 
 **Action Required:**
 1. Rotate credentials IMMEDIATELY
@@ -318,8 +318,8 @@
 
 #### Identified
 - **CRITICAL BLOCKER:** Cursor security issue
-  - GitHub PAT exposed: REDACTED_GITHUB_TOKEN
-  - Billy API exposed: REDACTED_BILLY_API_KEY
+  - GitHub PAT exposed: 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
+  - Billy API exposed: 43e7439bccb58a8a96dd57dd06dae10add009111
   - Blocks all implementation work
 
 #### Completed

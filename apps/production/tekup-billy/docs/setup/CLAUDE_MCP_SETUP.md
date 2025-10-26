@@ -48,7 +48,7 @@ Hvis du bruger **Claude Desktop App** og vil køre MCP serveren lokalt:
         "C:\\Users\\empir\\Tekup-Billy\\dist\\index.js"
       ],
       "env": {
-        "BILLY_API_KEY": "REDACTED_BILLY_API_KEY",
+        "BILLY_API_KEY": "43e7439bccb58a8a96dd57dd06dae10add009111",
         "BILLY_ORGANIZATION_ID": "pmf9tU56RoyZdcX3k69z1g",
         "BILLY_TEST_MODE": "false",
         "BILLY_DRY_RUN": "false",

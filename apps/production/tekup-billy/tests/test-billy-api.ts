@@ -1,7 +1,7 @@
 // Quick test script for Billy API with real credentials
 import axios from 'axios';
 
-const BILLY_API_KEY = 'REDACTED_BILLY_API_KEY';
+const BILLY_API_KEY = '43e7439bccb58a8a96dd57dd06dae10add009111';
 const BILLY_ORG_ID = 'pmf9tU56RoyZdcX3k69z1g';
 
 async function testBillyAPI() {
