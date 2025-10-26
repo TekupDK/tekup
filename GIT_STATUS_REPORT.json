@@ -1,128 +1,84 @@
 {
-  "generatedAt": "2025-10-25T01:17:23.263498",
-  "currentBranch": "claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx",
-  "branches": {
-    "local": [
-      "claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx",
-      "+ master"
-    ],
-    "remote": [
-      "origin/claude/analyze-repository-011CUR2uDMWUY1jAvHdRTMbX",
-      "origin/claude/explore-teku-011CUSDhz3nPLBoFU5dh3JPs",
-      "origin/claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx",
-      "origin/master"
-    ],
-    "stale": [
-      "  origin/claude/analyze-repository-011CUR2uDMWUY1jAvHdRTMbX",
-      "  origin/claude/explore-teku-011CUSDhz3nPLBoFU5dh3JPs"
-    ]
+  "generated_at": "2025-10-26T12:23:34.225Z",
+  "repo": {
+    "is_work_tree": true,
+    "toplevel": "C:/Users/empir/Tekup",
+    "describe": { "value": "pc1-ready-post-merge-2025-10-25-2-g7f3b65e-dirty", "error": null }
   },
-  "commits": {
-    "ahead": 10,
-    "behind": 20,
-    "recent": [
-      {
-        "sha": "fd770b4",
-        "message": "fix: resolve additional TypeScript compilation errors (Part 3)"
-      },
-      {
-        "sha": "4e4f7b2",
-        "message": "fix: resolve TypeScript compilation errors (Part 2)"
-      },
-      {
-        "sha": "937cc19",
-        "message": "fix: resolve critical TypeScript compilation errors (Part 1)"
-      },
-      {
-        "sha": "d730b10",
-        "message": "feat(docker): Optimize mobile Dockerfile + fix port conflicts"
-      },
-      {
-        "sha": "c7aef12",
-        "message": "refactor: Modernize test suite and refactor backend/frontend services"
-      },
-      {
-        "sha": "05b259b",
-        "message": "feat(mobile): Implement all core feature screens - Photo Capture, Time Tracking, GPS Map, Job Details, and Profile"
-      },
-      {
-        "sha": "b294dbd",
-        "message": "docs: Add quick start guide for mobile development"
-      },
-      {
-        "sha": "284d408",
-        "message": "feat(docker): Add complete Docker setup for mobile development"
-      },
-      {
-        "sha": "088061c",
-        "message": "docs(mobile): Add comprehensive documentation and update login screen"
-      },
-      {
-        "sha": "625f9a1",
-        "message": "feat(mobile): Implement world-class UI/UX with modern design system"
-      }
-    ]
+  "head": {
+    "default_remote_branch": "origin/master",
+    "default_local_branch": "master"
   },
-  "submodules": [
+  "remotes": [
+    { "name": "origin", "fetch": "https://github.com/TekupDK/tekup.git", "push": "https://github.com/TekupDK/tekup.git" }
+  ],
+  "branches": [
     {
-      "sha": "6b1c0a827a74ef2a659935c8e8e4fca0cccff379",
-      "path": "apps/web/tekup-cloud-dashboard",
-      "status": "clean"
+      "name": "claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx",
+      "sha": "4e409e0",
+      "last_commit_date": "2025-10-26 12:43:08 +0100",
+      "author": "Jonas Abde",
+      "subject": "chore: checkpoint before syncing with master - save analysis docs and old-data archive",
+      "upstream": "origin/claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx",
+      "ahead": 1,
+      "behind": 0,
+      "is_current": false,
+      "is_default": false
     },
     {
-      "sha": "6b1c0a827a74ef2a659935c8e8e4fca0cccff379",
-      "path": "archive/tekup-ai-assistant-archived-2025-10-23",
-      "status": "clean"
+      "name": "feature/user-profile-security-cleanup-2025-10-26",
+      "sha": "7f3b65e",
+      "last_commit_date": "2025-10-26 05:58:23 +0100",
+      "author": "Jonas Abde",
+      "subject": "docs: Fix all incorrect URLs and deployment references",
+      "upstream": null,
+      "ahead": 0,
+      "behind": 0,
+      "is_current": true,
+      "is_default": false
     },
     {
-      "sha": "6b1c0a827a74ef2a659935c8e8e4fca0cccff379",
-      "path": "archive/tekup-chat-archived-2025-10-23",
-      "status": "clean"
-    },
-    {
-      "sha": "6b1c0a827a74ef2a659935c8e8e4fca0cccff379",
-      "path": "archive/tekup-gmail-automation-archived-2025-10-22/gmail-mcp-server",
-      "status": "clean"
-    },
-    {
-      "sha": "6b1c0a827a74ef2a659935c8e8e4fca0cccff379",
-      "path": "archive/tekup-google-ai-archived-2025-10-23",
-      "status": "clean"
-    },
-    {
-      "sha": "6b1c0a827a74ef2a659935c8e8e4fca0cccff379",
-      "path": "archive/tekup-org-archived-2025-10-22",
-      "status": "clean"
-    },
-    {
-      "sha": "6b1c0a827a74ef2a659935c8e8e4fca0cccff379",
-      "path": "services/tekup-ai",
-      "status": "clean"
-    },
-    {
-      "sha": "6b1c0a827a74ef2a659935c8e8e4fca0cccff379",
-      "path": "services/tekup-gmail-services",
-      "status": "clean"
-    },
-    {
-      "sha": "f8cf852a124b1a284dcc3948ffdbdceeac539d95",
-      "path": "tekup-secrets",
-      "status": "clean"
+      "name": "master",
+      "sha": "7f3b65e",
+      "last_commit_date": "2025-10-26 05:58:23 +0100",
+      "author": "Jonas Abde",
+      "subject": "docs: Fix all incorrect URLs and deployment references",
+      "upstream": "origin/master",
+      "ahead": 0,
+      "behind": 10,
+      "is_current": false,
+      "is_default": true
     }
   ],
-  "pullRequests": {
-    "open": 1,
-    "details": [
-      {
-        "number": 1,
-        "title": "Resolve Unclear Description Issue",
-        "branch": "claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx"
-      }
-    ]
+  "working_tree": {
+    "staged_count": 0,
+    "unstaged_count": 3,
+    "rename_count": 0,
+    "delete_count": 0,
+    "conflict_count": 0,
+    "untracked_count": 17,
+    "ignored_count": 67
   },
-  "issues": [],
-  "recommendations": [
-    "Delete stale branches:   origin/claude/analyze-repository-011CUR2uDMWUY1jAvHdRTMbX,   origin/claude/explore-teku-011CUSDhz3nPLBoFU5dh3JPs",
-    "Branch is 10 commits ahead - ready for PR/merge"
-  ]
+  "commit_graph": {
+    "lines_sampled": 349,
+    "most_recent_line": "*   79c4505 (origin/master, origin/HEAD) Merge branch 'claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx'"
+  },
+  "summary": {
+    "total_local_branches": 3,
+    "with_upstream": 2,
+    "diverged": 2,
+    "remote_count": 1
+  },
+  "comparison": {
+    "note": null,
+    "delta_branch_count": 3,
+    "delta_untracked_count": 17,
+    "delta_ignored_count": 67,
+    "changed_default_branch": true,
+    "changed_origin_url": true,
+    "branches_with_new_divergence": [
+      "claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx",
+      "master"
+    ]
+  }
 }
