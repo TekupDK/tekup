@@ -215,7 +215,7 @@ export default function CameraScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.permissionContainer}>
-          <Ionicons name="camera-off" size={64} color={colors.neutral[400]} />
+          <Ionicons name="camera-outline" size={64} color={colors.neutral[400]} />
           <Text style={styles.permissionTitle}>Kamera adgang nødvendig</Text>
           <Text style={styles.permissionText}>
             Giv app'en tilladelse til kameraet i indstillinger

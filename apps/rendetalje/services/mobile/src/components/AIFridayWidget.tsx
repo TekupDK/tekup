@@ -90,7 +90,7 @@ export const AIFridayWidget: React.FC<AIFridayWidgetProps> = ({ context = 'emplo
         activeOpacity={0.9}
       >
         <View style={styles.avatarGradient}>
-          <Ionicons name="sparkles" size={24} color="#ffffff" />
+          <Ionicons name="star" size={24} color="#ffffff" />
         </View>
         <View style={styles.pulseRing} />
       </TouchableOpacity>
@@ -112,7 +112,7 @@ export const AIFridayWidget: React.FC<AIFridayWidgetProps> = ({ context = 'emplo
               <View style={styles.header}>
                 <View style={styles.headerLeft}>
                   <View style={styles.fridayAvatar}>
-                    <Ionicons name="sparkles" size={20} color="#ffffff" />
+                    <Ionicons name="star" size={20} color="#ffffff" />
                   </View>
                   <View>
                     <Text style={styles.headerTitle}>AI Friday</Text>

@@ -12,7 +12,7 @@ export type BadgeVariant = 'primary' | 'success' | 'warning' | 'error' | 'neutra
 export type BadgeSize = 'sm' | 'md' | 'lg';
 
 interface BadgeProps {
-  children: string;
+  children: React.ReactNode;
   variant?: BadgeVariant;
   size?: BadgeSize;
   style?: ViewStyle;

@@ -83,12 +83,13 @@ axiosInstance.interceptors.response.use(
     }
 
     // Handle other errors
+    const data = error.response?.data as { message?: string; code?: string } | undefined;
     const errorMessage =
-      error.response?.data?.message || 'Der opstod en fejl. Prøv igen senere.';
+      data?.message || 'Der opstod en fejl. Prøv igen senere.';
 
     return Promise.reject({
       message: errorMessage,
-      code: error.response?.data?.code || 'UNKNOWN_ERROR',
+      code: data?.code || 'UNKNOWN_ERROR',
       status: error.response?.status,
     });
   }
