@@ -170,12 +170,6 @@ curl http://localhost:3001/test-sentry
    - Type: HTTP(s)
    - Interval: 5 minutes
 
-   **Monitor 3: Calendar MCP**
-   - Name: `RenOS Calendar MCP`
-   - URL: `https://renos-calendar-mcp.onrender.com/health`
-   - Type: HTTP(s)
-   - Interval: 5 minutes
-
 3. **Configure alerts:**
    - Notification: Email
    - Alert when: Down

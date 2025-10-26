@@ -269,7 +269,7 @@ psql -h localhost -U postgres -d tekupvault -f supabase/migrations/2025011400000
 1. **Connect Repository**: Link GitHub repo to Render
 2. **Configure Environment Variables**: Add all secrets from `.env.example`
 3. **Deploy**: Render will use `render.yaml` configuration
-   - API: `https://tekupvault-api.onrender.com`
+   - API: `https://tekupvault.onrender.com`
    - Worker: Background service (no public URL)
    - Database: PostgreSQL 15 with pgvector (Frankfurt region)
 

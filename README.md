@@ -61,7 +61,7 @@ Tekup/ (MONOREPO - everything in one repo!)
 
 - **Purpose:** AI-searchable knowledge base with semantic search
 - **Tech:** TypeScript, Turborepo, OpenAI embeddings, pgvector
-- **Status:** ✅ Production ready (https://tekupvault-api.onrender.com)
+- **Status:** ✅ Production ready (https://tekupvault.onrender.com)
 - **Features:** GitHub auto-sync, MCP server, vector search
 - **Quick Start:** `cd apps/production/tekup-vault && pnpm install && pnpm dev`
 
@@ -278,7 +278,9 @@ See individual project LICENSE files. Workspace-level coordination: MIT License.
 ## 🔗 Production Links
 
 - **Tekup-Billy MCP:** https://tekup-billy.onrender.com
-- **TekupVault API:** https://tekupvault-api.onrender.com
+- **TekupVault API:** https://tekupvault.onrender.com
+- **RenOS Backend:** https://renos-backend.onrender.com
+- **RenOS Frontend:** https://renos-frontend.onrender.com
 - **GitHub Repository:** https://github.com/TekupDK/tekup
 - **Organization:** https://github.com/TekupDK
 

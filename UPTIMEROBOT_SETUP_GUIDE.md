@@ -16,21 +16,19 @@
 
 ### 2. TekupVault API
 
-- **URL:** `https://tekupvault-api.onrender.com/health`
+- **URL:** `https://tekupvault.onrender.com/health`
 - **Expected Response:** 200 OK
 - **Critical:** Yes - Knowledge base for all projects
 
-### 3. Rendetalje Backend (if deployed)
+### 3. Rendetalje Backend
 
-- **URL:** `https://renos-backend.onrender.com/health` or `https://rendetalje-backend.onrender.com/health`
+- **URL:** `https://renos-backend.onrender.com/health`
 - **Expected Response:** 200 OK with services status
 - **Critical:** Yes - Main RenOS API
 
-### 4. Rendetalje Calendar MCP (if public)
+---
 
-- **URL:** `https://renos-calendar-mcp.onrender.com/health`
-- **Expected Response:** 200 OK
-- **Critical:** Medium - Calendar integration
+**Note:** Calendar MCP and other services are not yet deployed to production.
 
 ---
 
@@ -77,7 +75,7 @@ For each service above:
 
 ## 📊 Expected Configuration
 
-```
+```text
 Monitor 1: Tekup Billy MCP
 ├─ URL: https://tekup-billy.onrender.com/health
 ├─ Interval: 5 minutes
@@ -85,7 +83,7 @@ Monitor 1: Tekup Billy MCP
 └─ Alert: Email after 1 failure
 
 Monitor 2: TekupVault API
-├─ URL: https://tekupvault-api.onrender.com/health
+├─ URL: https://tekupvault.onrender.com/health
 ├─ Interval: 5 minutes
 ├─ Timeout: 30 seconds
 └─ Alert: Email after 1 failure
@@ -95,9 +93,7 @@ Monitor 3: Rendetalje Backend
 ├─ Interval: 5 minutes
 ├─ Timeout: 30 seconds
 └─ Alert: Email after 1 failure
-
-Monitor 4: Calendar MCP (optional)
-├─ URL: https://renos-calendar-mcp.onrender.com/health
+```
 ├─ Interval: 5 minutes
 ├─ Timeout: 30 seconds
 └─ Alert: Email after 1 failure
