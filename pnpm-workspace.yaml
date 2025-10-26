@@ -1,0 +1,6 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'services/*'
+  - 'tekup-mcp-servers/*'
+  - 'tekup-mcp-servers/packages/*'

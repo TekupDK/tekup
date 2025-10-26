@@ -1,3 +1,6 @@
 [submodule "tekup-secrets"]
 	path = tekup-secrets
 	url = https://github.com/TekupDK/tekup-secrets.git
+[submodule "Tekup/tekup-mcp-servers"]
+	path = Tekup/tekup-mcp-servers
+	url = https://github.com/TekupDK/tekup-mcp-servers.git
