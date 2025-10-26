@@ -1,12 +1,38 @@
 {
   "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_FILE_PATH": "C:\\Users\\empir\\.mcp-shared\\memory.json"
+      },
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "disabled": false,
+      "alwaysAllow": []
+    },
     "tekup-billy": {
       "command": "node",
       "args": [
-        "C:/Users/Jonas-dev/tekup/apps/production/tekup-billy/dist/index.js"
+        "C:/Users/empir/Tekup/apps/production/tekup-billy/dist/index.js"
       ],
       "env": {
-        "NODE_ENV": "development"
+        "BILLY_API_KEY": "${BILLY_API_KEY}",
+        "BILLY_ORGANIZATION_ID": "${BILLY_ORGANIZATION_ID}",
+        "SUPABASE_URL": "${SUPABASE_URL}",
+        "SUPABASE_ANON_KEY": "${SUPABASE_ANON_KEY}",
+        "NODE_ENV": "${NODE_ENV}",
+        "LOG_LEVEL": "${LOG_LEVEL}"
       },
       "disabled": false,
       "alwaysAllow": []
@@ -14,7 +40,7 @@
     "tekup-vault": {
       "command": "node",
       "args": [
-        "C:/Users/Jonas-dev/tekup/apps/production/tekup-vault/apps/mcp/dist/index.js"
+        "C:/Users/empir/Tekup/apps/production/tekup-vault/apps/mcp/dist/index.js"
       ],
       "env": {
         "NODE_ENV": "development"
@@ -25,7 +51,7 @@
     "calendar-mcp": {
       "command": "node",
       "args": [
-        "C:/Users/Jonas-dev/tekup/apps/rendetalje/services/calendar-mcp/dist/index.js"
+        "C:/Users/empir/Tekup/apps/rendetalje/services/calendar-mcp/dist/index.js"
       ],
       "disabled": false,
       "alwaysAllow": []
@@ -35,7 +61,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "C:/Users/Jonas-dev/tekup"
+        "C:/Users/empir/Tekup"
       ],
       "disabled": false,
       "alwaysAllow": ["read_file", "list_directory"]
@@ -47,10 +73,10 @@
         "@modelcontextprotocol/server-github"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
-      "disabled": true,
-      "note": "Enable when GITHUB_PERSONAL_ACCESS_TOKEN is set"
+      "disabled": false,
+      "alwaysAllow": []
     }
   },
   "globalShortcuts": {}
