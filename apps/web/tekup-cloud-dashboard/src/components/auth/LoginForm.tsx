@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
@@ -7,10 +8,25 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
+  const navigate = useNavigate();
+
+  // Auto-redirect to dashboard if Supabase is not configured (mock mode)
+  useEffect(() => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    
+    // If Supabase is not configured or has placeholder values, auto-redirect to demo mode
+    if (!supabaseUrl || !supabaseKey || 
+        supabaseUrl.includes('your-project') || 
+        supabaseKey.includes('your')) {
+      console.log('Supabase not configured, redirecting to demo mode...');
+      setTimeout(() => navigate('/dashboard'), 1500);
+    }
+  }, [navigate]);
 
   const handleDemoMode = () => {
     // Redirect to dashboard in demo/mock mode
-    window.location.href = '/dashboard';
+    navigate('/dashboard');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -105,22 +121,40 @@ export function LoginForm() {
               {loading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
               ) : (
-                'Sign in'
+                'Sign in with Supabase'
               )}
             </button>
           </div>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Demo credentials: admin@tekup.dk / demo123
-            </p>
+          {/* Demo Mode Button - Large and Visible */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400">
+                Or
+              </span>
+            </div>
+          </div>
+
+          <div>
             <button
               type="button"
               onClick={handleDemoMode}
-              className="mt-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300"
+              className="group relative w-full flex justify-center py-3 px-4 border-2 border-green-500 dark:border-green-400 text-sm font-bold rounded-md text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all"
             >
+              <svg className="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
               Continue in Demo Mode (No Login Required)
             </button>
+          </div>
+
+          <div className="text-center mt-4">
+            <p className="text-xs text-gray-500 dark:text-gray-500">
+              Demo mode uses mock data for testing • No authentication required
+            </p>
           </div>
         </form>
       </div>
