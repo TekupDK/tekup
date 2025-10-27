@@ -1,0 +1,20 @@
+{
+  "name": "@tekup/autonomous-browser-tester",
+  "version": "1.0.0",
+  "description": "Autonomous browser testing MCP server using Puppeteer for Tekup",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "node index.js",
+    "start": "node index.js",
+    "test": "echo \"No tests specified for autonomous-browser-tester\" && exit 0"
+  },
+  "keywords": ["mcp", "browser", "testing", "puppeteer", "tekup", "automation"],
+  "author": "Tekup",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "puppeteer": "^23.0.0",
+    "zod": "^3.22.4"
+  }
+}

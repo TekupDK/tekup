@@ -3,6 +3,7 @@
 ## 🐳 Local Docker Setup
 
 ### Prerequisites
+
 - Docker Desktop installed and running
 - Port 8080 available (or change in docker-compose.yml)
 - **Tekup Secrets** configured (see Configuration section below)
@@ -10,6 +11,7 @@
 ### Quick Start
 
 #### Option 1: Using docker-compose (Recommended)
+
 ```powershell
 # From apps/web/tekup-cloud-dashboard directory
 
@@ -31,6 +33,7 @@ docker-compose down
 ```
 
 #### Option 2: Using Docker directly
+
 ```powershell
 # Build image with build arguments
 docker build \
@@ -50,6 +53,7 @@ docker rm tekup-dashboard
 ```
 
 ### Access Dashboard
+
 - **URL:** http://localhost:8080
 - **Login:** Use Supabase credentials (synced from tekup-secrets)
 - **Demo Mode:** Click "Continue in Demo Mode" if you want to test without login
@@ -79,11 +83,13 @@ docker-compose up -d --build
 ```
 
 **What gets synced:**
+
 - ✅ Supabase URL and ANON key from `tekup-secrets/config/databases.env`
 - ✅ All shared configuration from `.env.shared`
 - ✅ Environment-specific secrets from `.env.development`
 
 **File structure after sync:**
+
 ```
 tekup-cloud-dashboard/
 ├── .env               # Complete environment (229 lines) - used by Docker build
@@ -106,6 +112,7 @@ VITE_ENVIRONMENT=production
 ```
 
 Then reference it in docker-compose.yml:
+
 ```yaml
 services:
   tekup-dashboard:
@@ -116,9 +123,10 @@ services:
 ### Custom Port
 
 Change port in `docker-compose.yml`:
+
 ```yaml
 ports:
-  - "3000:80"  # Use port 3000 instead of 8080
+  - "3000:80" # Use port 3000 instead of 8080
 ```
 
 ---
@@ -126,6 +134,7 @@ ports:
 ## 🔍 Troubleshooting
 
 ### Container won't start
+
 ```powershell
 # Check logs
 docker-compose logs
@@ -140,6 +149,7 @@ docker-compose up -d
 ```
 
 ### Build fails
+
 ```powershell
 # Check Docker is running
 docker info
@@ -152,6 +162,7 @@ docker system prune -a
 ```
 
 ### Can't access dashboard
+
 ```powershell
 # Check container is running
 docker ps
@@ -168,6 +179,7 @@ docker exec tekup-dashboard wget -O- http://localhost
 ## 🚀 Production Deployment
 
 ### Build for production
+
 ```powershell
 # Build optimized image
 docker build --target builder -t tekup-dashboard:latest .
@@ -180,8 +192,9 @@ docker push your-registry/tekup-dashboard:latest
 ```
 
 ### Docker Compose Production
+
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   tekup-dashboard:
     image: your-registry/tekup-dashboard:latest
@@ -198,6 +211,7 @@ services:
 ## 📊 Monitoring
 
 ### View logs
+
 ```powershell
 # Follow logs
 docker-compose logs -f tekup-dashboard
@@ -207,6 +221,7 @@ docker-compose logs --tail=100 tekup-dashboard
 ```
 
 ### Container stats
+
 ```powershell
 # Real-time stats
 docker stats tekup-dashboard
@@ -216,6 +231,7 @@ docker inspect tekup-dashboard
 ```
 
 ### Health check
+
 ```powershell
 # Manual health check
 docker exec tekup-dashboard wget --spider http://localhost/
@@ -229,15 +245,17 @@ docker inspect --format='{{json .State.Health}}' tekup-dashboard
 ## 🔧 Development with Docker
 
 ### Mount source code for development
+
 ```yaml
 services:
   tekup-dashboard:
     volumes:
-      - ./src:/app/src  # Mount source code
+      - ./src:/app/src # Mount source code
       - ./public:/app/public
 ```
 
 ### Run development server in Docker
+
 ```powershell
 # Override command
 docker-compose run --rm --service-ports tekup-dashboard npm run dev
@@ -248,6 +266,7 @@ docker-compose run --rm --service-ports tekup-dashboard npm run dev
 ## 📝 Multi-stage Build Explanation
 
 1. **Builder Stage**
+
    - Uses Node.js 18 Alpine (lightweight)
    - Installs dependencies
    - Builds production bundle
@@ -264,6 +283,7 @@ docker-compose run --rm --service-ports tekup-dashboard npm run dev
 ## 🌐 Integration with Other Tekup Services
 
 ### Connect to other containers
+
 ```yaml
 networks:
   tekup-network:
@@ -276,6 +296,7 @@ services:
 ```
 
 ### Link with Tekup Billy MCP
+
 ```yaml
 services:
   tekup-dashboard:
@@ -302,6 +323,7 @@ services:
 ## 🆘 Support
 
 For issues:
+
 1. Check container logs: `docker-compose logs`
 2. Verify environment variables
 3. Test build locally: `npm run build`

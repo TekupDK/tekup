@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   tekup-dashboard:
@@ -12,10 +12,11 @@ services:
     ports:
       - "8080:80"
     env_file:
-      - .env.docker  # Load from .env.docker file
+      - .env.docker # Load from .env.docker file
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      test:
+        ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
       interval: 30s
       timeout: 10s
       retries: 3
