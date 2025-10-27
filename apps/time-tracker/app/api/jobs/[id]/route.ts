@@ -224,7 +224,7 @@ export async function POST_INVOICE(
         invoice_id: billyInvoice.invoice.id,
         status: 'invoiced'
       })
-      .eq('id', params.id);
+      .eq('id', jobId);
 
     return NextResponse.json(
       {

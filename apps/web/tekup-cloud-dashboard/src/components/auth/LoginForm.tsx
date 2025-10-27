@@ -12,20 +12,22 @@ export function LoginForm() {
   useEffect(() => {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-    
+
     // If Supabase is not configured or has placeholder values, auto-redirect to demo mode
-    if (!supabaseUrl || !supabaseKey || 
-        supabaseUrl.includes('your-project') || 
+    if (!supabaseUrl || !supabaseKey ||
+        supabaseUrl.includes('your-project') ||
         supabaseKey.includes('your')) {
       console.log('Supabase not configured, redirecting to demo mode...');
       setTimeout(() => {
+        localStorage.setItem('tekup-demo-mode', 'true');
         window.location.href = '/dashboard';
       }, 1500);
     }
   }, []);
 
   const handleDemoMode = () => {
-    // Redirect to dashboard in demo/mock mode using window.location
+    // Set demo mode flag and redirect to dashboard
+    localStorage.setItem('tekup-demo-mode', 'true');
     window.location.href = '/dashboard';
   };
 

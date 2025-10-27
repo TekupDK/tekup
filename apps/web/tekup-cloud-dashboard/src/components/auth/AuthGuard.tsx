@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { LoginForm } from './LoginForm';
 
@@ -8,6 +8,13 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps) {
   const { user, loading } = useAuth();
+  const [isDemoMode, setIsDemoMode] = useState(false);
+
+  useEffect(() => {
+    // Check if demo mode is active
+    const demoMode = localStorage.getItem('tekup-demo-mode') === 'true';
+    setIsDemoMode(demoMode);
+  }, []);
 
   if (loading) {
     return (
@@ -20,7 +27,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
     );
   }
 
-  if (!user) {
+  // Allow access in demo mode or if user is authenticated
+  if (!user && !isDemoMode) {
     return <LoginForm />;
   }
 
