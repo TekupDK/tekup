@@ -348,3 +348,22 @@ docker ps  # Verify running
 **Next**: Revoke GitHub PAT & Docker Migration  
 **Owner**: Jonas (empir)  
 **Last Updated**: 2025-10-27 14:00
+
+## Docker‑baseret drift (nyt)
+
+For at undgå duplikerede lokale npx‑processer anbefales det at køre MCP‑services i Docker og bruge HTTP‑endpoints.
+
+Start/stop scripts:
+
+`powershell
+pwsh -File Tekup/scripts/mcp-up.ps1    # starter knowledge, code-intelligence, database (+ redis)
+pwsh -File Tekup/scripts/mcp-down.ps1  # stopper stacken
+` 
+
+HTTP endpoints (lokalt):
+- knowledge:        http://localhost:8051/mcp
+- code-intelligence: http://localhost:8052/mcp
+- database:         http://localhost:8053/mcp
+
+Opdater IDE‑configs (Claude Desktop, VS Code, Cursor) til at bruge disse URLs og slå lokale npx‑servers fra.
+

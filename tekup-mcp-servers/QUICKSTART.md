@@ -84,6 +84,26 @@ docker-compose up -d
 docker-compose up
 ```
 
+## Docker (anbefalet)
+
+Start MCP‑stacken via Docker for at undgå lokale npx‑processer og duplikater.
+
+1) Sørg for at Docker Desktop kører (Windows)
+2) Kør scripts fra repoets rod:
+
+```
+pwsh -File Tekup/scripts/mcp-up.ps1    # starter knowledge, code-intelligence, database
+# ... senere
+pwsh -File Tekup/scripts/mcp-down.ps1  # stopper stacken
+```
+
+HTTP endpoints (lokalt):
+- knowledge:        http://localhost:8051/mcp
+- code-intelligence: http://localhost:8052/mcp
+- database:         http://localhost:8053/mcp
+
+Konfigurer IDE’er til at bruge ovenstående URLs (Claude Desktop, VS Code, Cursor). Slå lokale npx‑servers fra for at undgå duplicates.
+
 ### Step 5: Verificer at alt kører
 
 ```bash
