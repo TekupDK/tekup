@@ -21,7 +21,7 @@ interface APIPerformanceChartProps {
   timeRange: '1h' | '6h' | '24h' | '7d';
 }
 
-export function APIPerformanceChart({ data, timeRange }: APIPerformanceChartProps) {
+export function APIPerformanceChart({ data }: APIPerformanceChartProps) {
   // Group data by endpoint for bar chart
   const endpointData = data.reduce((acc, metric) => {
     const existing = acc.find(item => item.endpoint === metric.endpoint);

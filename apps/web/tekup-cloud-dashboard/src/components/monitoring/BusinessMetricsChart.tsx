@@ -33,10 +33,11 @@ interface UserActivityData {
   sessionDuration: number;
 }
 
-interface ConversionData extends Record<string, any> {
+interface ConversionData {
   stage: string;
   value: number;
   color: string;
+  [key: string]: string | number;
 }
 
 interface BusinessMetricsChartProps {
@@ -254,9 +255,12 @@ export function BusinessMetricsChart({
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ stage, value }) => 
-                    `${stage}: ${((value / conversionData[0].value) * 100).toFixed(1)}%`
-                  }
+                  label={(props) => {
+                    const entry = props as unknown as ConversionData;
+                    return entry.stage && entry.value 
+                      ? `${entry.stage}: ${((entry.value / conversionData[0].value) * 100).toFixed(1)}%`
+                      : '';
+                  }}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"

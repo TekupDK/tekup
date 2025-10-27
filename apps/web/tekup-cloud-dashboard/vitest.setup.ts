@@ -24,3 +24,13 @@ if (typeof window !== "undefined" && !window.matchMedia) {
     dispatchEvent: () => false,
   });
 }
+
+// Polyfill ResizeObserver for tests (jsdom) - required by Recharts
+if (typeof window !== "undefined" && !window.ResizeObserver) {
+  // @ts-expect-error allow test polyfill
+  window.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}

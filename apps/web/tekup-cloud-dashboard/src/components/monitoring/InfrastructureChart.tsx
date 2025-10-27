@@ -20,7 +20,7 @@ interface InfrastructureChartProps {
   serviceId?: string;
 }
 
-export function InfrastructureChart({ data, timeRange, serviceId }: InfrastructureChartProps) {
+export function InfrastructureChart({ data }: InfrastructureChartProps) {
   // Process data for charts
   const chartData = data.map(metric => ({
     timestamp: new Date(metric.timestamp).toLocaleTimeString([], { 
