@@ -20,20 +20,62 @@ param(
   [string]$SupabaseUrl,
   [string]$SupabaseAnonKey,
   [string]$ServiceRoleKey,
-  [switch]$NonInteractive
+  [switch]$NonInteractive,
+  [switch]$FromTekupSecrets,
+  [switch]$IncludeBilly
 )
 
 function Set-UserEnv([string]$Name, [string]$Value) {
   [System.Environment]::SetEnvironmentVariable($Name, $Value, 'User')
 }
 
+function Load-EnvFile([string]$path) {
+  $map = @{}
+  if (-not (Test-Path $path)) { return $map }
+  $lines = Get-Content -Path $path -ErrorAction SilentlyContinue
+  foreach ($line in $lines) {
+    if ($line -match '^[#\s]') { continue }
+    $kv = $line -split '=', 2
+    if ($kv.Count -eq 2) {
+      $k = $kv[0].Trim()
+      $v = $kv[1]
+      if ($k) { $map[$k] = $v }
+    }
+  }
+  return $map
+}
+
 Write-Host "Tekup Supabase environment setup" -ForegroundColor Cyan
 
 # 1) Gather inputs
-if (-not $SupabaseUrl) {
+$repoRoot = Split-Path -Parent $PSScriptRoot
+
+if ($FromTekupSecrets.IsPresent) {
+  $secretsDir = Join-Path $repoRoot 'tekup-secrets/config'
+  $dbEnv = Load-EnvFile (Join-Path $secretsDir 'databases.env')
+  if (-not $SupabaseUrl -and $dbEnv.ContainsKey('SUPABASE_URL')) { $SupabaseUrl = $dbEnv['SUPABASE_URL'] }
+  if (-not $SupabaseAnonKey -and $dbEnv.ContainsKey('SUPABASE_ANON_KEY')) { $SupabaseAnonKey = $dbEnv['SUPABASE_ANON_KEY'] }
+  if (-not $ServiceRoleKey) {
+    if ($dbEnv.ContainsKey('SUPABASE_SERVICE_ROLE_KEY')) {
+      $ServiceRoleKey = $dbEnv['SUPABASE_SERVICE_ROLE_KEY']
+    } elseif ($dbEnv.ContainsKey('SUPABASE_SERVICE_KEY')) {
+      $ServiceRoleKey = $dbEnv['SUPABASE_SERVICE_KEY']
+    } elseif ($dbEnv.ContainsKey('SUPABASE_SERVICE_KEY_ALT')) {
+      $ServiceRoleKey = $dbEnv['SUPABASE_SERVICE_KEY_ALT']
+    }
+  }
+
+  if ($IncludeBilly.IsPresent) {
+    $apiEnv = Load-EnvFile (Join-Path $secretsDir 'apis.env')
+    $script:BillyApiKey = $apiEnv['BILLY_API_KEY']
+    $script:BillyOrgId  = $apiEnv['BILLY_ORGANIZATION_ID']
+  }
+}
+
+if (-not $SupabaseUrl -and -not $NonInteractive.IsPresent) {
   $SupabaseUrl = Read-Host -Prompt "Enter SUPABASE_URL (leave blank to keep current)"
 }
-if (-not $SupabaseAnonKey) {
+if (-not $SupabaseAnonKey -and -not $NonInteractive.IsPresent) {
   $SupabaseAnonKey = Read-Host -Prompt "Enter SUPABASE_ANON_KEY (leave blank to keep current)"
 }
 
@@ -69,7 +111,6 @@ if ($serviceRolePlain) {
 }
 
 # 3) Sync tekup-mcp-servers/.env
-$repoRoot = Split-Path -Parent $PSScriptRoot
 $envPath = Join-Path $repoRoot 'tekup-mcp-servers/.env'
 
 if (-not (Test-Path $envPath)) {
@@ -95,6 +136,12 @@ Upsert-EnvFile -map $envMap -k 'SUPABASE_URL' -v $SupabaseUrl
 Upsert-EnvFile -map $envMap -k 'SUPABASE_ANON_KEY' -v $SupabaseAnonKey
 if ($serviceRolePlain) {
   Upsert-EnvFile -map $envMap -k 'SUPABASE_SERVICE_ROLE_KEY' -v $serviceRolePlain
+}
+
+# Optionally update Billy keys
+if ($IncludeBilly.IsPresent) {
+  if ($script:BillyApiKey) { Upsert-EnvFile -map $envMap -k 'BILLY_API_KEY' -v $script:BillyApiKey }
+  if ($script:BillyOrgId)  { Upsert-EnvFile -map $envMap -k 'BILLY_ORGANIZATION_ID' -v $script:BillyOrgId }
 }
 
 # Ensure typical MCP roots exist if not set
