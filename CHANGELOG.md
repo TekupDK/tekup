@@ -24,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Recently Completed
 
+- **Security & MCP Hardening** (Oct 27, 2025)
+  - Added: `docs/SECURITY_REVOKE_GITHUB_PAT.md` (kritisk PAT-revocation guide)
+  - Added: `docs/MCP_PROBLEM_SOLVED_2025-10-27.md` (proces-rydning, konfig-scope og status)
+  - Added: `docs/TEKUP_MCP_UNIFIED_SOLUTION.md` (standardiseret MCP-setup og scope)
+  - Changed: IDE-konfigurationer anbefales at bruge miljøvariabler frem for hardcodede nøgler
+  - Fixed: `tekup-secrets` submodule resynkroniseret til seneste pointer
+  - Tooling: `scripts/setup-supabase-env.ps1` til User-env og .env sync
+
 - **Rendetalje Development System Analysis v1.0.0** (Oct 26, 2025)
   - ✅ Database services startup verification (PostgreSQL + Redis)
   - ✅ Complete system architecture analysis (backend, frontend, MCP services, database)
