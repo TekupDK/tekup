@@ -29,9 +29,11 @@ export function useAuthState() {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
+    supabase.auth.getSession().then(({ data }) => {
+      const sessionData = data as { session: Session | null };
+      setSession(sessionData.session);
+      const session = sessionData.session as Session | null;
+      setUser(session?.user ?? null);
       setLoading(false);
     }).catch((error: Error) => {
       console.warn('Auth session error:', error);

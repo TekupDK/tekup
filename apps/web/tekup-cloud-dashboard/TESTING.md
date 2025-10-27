@@ -26,11 +26,10 @@ Configuration
 Component Coverage (initial)
 
 - UI primitives: Button, Input, Select, Modal, Skeleton
-- Dashboard: ActivityFeed
+- Dashboard/Layout: ActivityFeed, Sidebar, TopNav
 
 Authoring Tips
 
 - Prefer role- or text-based queries from Testing Library
 - Avoid implementation details (classes) unless absolutely necessary
 - Use `user-event` for realistic interactions
-

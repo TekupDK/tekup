@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 import { Lead, Invoice, Activity, KPIMetric, AIAgent } from '../types';
 
 // Supabase client
@@ -87,7 +88,27 @@ class ApiService {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    const LeadSchema = z.object({
+      id: z.string(),
+      tenant_id: z.string(),
+      name: z.string(),
+      email: z.string(),
+      phone: z.string().optional(),
+      company: z.string().optional(),
+      status: z.enum(['new','contacted','qualified','proposal','negotiation','won','lost']),
+      source: z.enum(['gmail','calendar','website','manual','referral']),
+      value: z.number(),
+      assigned_to: z.string().optional(),
+      created_at: z.string(),
+      updated_at: z.string(),
+      notes: z.string().optional(),
+    });
+    const parsed = z.array(LeadSchema).safeParse(data ?? []);
+    if (!parsed.success) {
+      console.warn('Lead validation failed:', parsed.error.flatten());
+      return [];
+    }
+    return parsed.data as Lead[];
   }
 
   async createLead(lead: Omit<Lead, 'id' | 'created_at' | 'updated_at'>): Promise<Lead> {
@@ -115,7 +136,23 @@ class ApiService {
       .limit(limit);
 
     if (error) throw error;
-    return data || [];
+    const ActivitySchema = z.object({
+      id: z.string(),
+      tenant_id: z.string(),
+      user_id: z.string().optional(),
+      agent_id: z.string().optional(),
+      type: z.enum(['lead_created','invoice_sent','email_sent','meeting_scheduled','system_alert','agent_action']),
+      title: z.string(),
+      description: z.string(),
+      metadata: z.record(z.string(), z.unknown()).optional(),
+      created_at: z.string(),
+    });
+    const parsed = z.array(ActivitySchema).safeParse(data ?? []);
+    if (!parsed.success) {
+      console.warn('Activity validation failed:', parsed.error.flatten());
+      return [];
+    }
+    return parsed.data as Activity[];
   }
 
   async getRecentActivities(tenantId: string): Promise<Activity[]> {
@@ -134,7 +171,19 @@ class ApiService {
         .limit(10);
 
       if (error) throw error;
-      return data || this.getFallbackActivities();
+      const ActivitySchema = z.object({
+        id: z.string(),
+        tenant_id: z.string(),
+        user_id: z.string().optional(),
+        agent_id: z.string().optional(),
+        type: z.enum(['lead_created','invoice_sent','email_sent','meeting_scheduled','system_alert','agent_action']),
+        title: z.string(),
+        description: z.string(),
+        metadata: z.record(z.string(), z.unknown()).optional(),
+        created_at: z.string(),
+      });
+      const parsed = z.array(ActivitySchema).safeParse(data ?? []);
+      return parsed.success ? (parsed.data as Activity[]) : this.getFallbackActivities();
     } catch (error) {
       console.error('Error fetching recent activities:', error);
       return this.getFallbackActivities();
@@ -157,7 +206,18 @@ class ApiService {
         .order('name');
 
       if (error) throw error;
-      return data || this.getFallbackAgents();
+      const AgentSchema = z.object({
+        id: z.string(),
+        name: z.string(),
+        type: z.enum(['lead_capture','email_automation','calendar','invoicing','support','analytics','orchestrator']),
+        status: z.enum(['active','processing','error','idle']),
+        last_activity: z.string(),
+        tasks_processed: z.number(),
+        average_response_time: z.number(),
+        description: z.string(),
+      });
+      const parsed = z.array(AgentSchema).safeParse(data ?? []);
+      return parsed.success ? (parsed.data as AIAgent[]) : this.getFallbackAgents();
     } catch (error) {
       console.error('Error fetching agents:', error);
       return this.getFallbackAgents();
@@ -176,7 +236,20 @@ class ApiService {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      const InvoiceSchema = z.object({
+        id: z.string(),
+        tenant_id: z.string(),
+        lead_id: z.string().optional(),
+        invoice_number: z.string(),
+        customer_name: z.string(),
+        amount: z.number(),
+        status: z.enum(['draft','sent','paid','overdue','cancelled']),
+        due_date: z.string(),
+        created_at: z.string(),
+        paid_at: z.string().optional(),
+      });
+      const parsed = z.array(InvoiceSchema).safeParse(data ?? []);
+      return parsed.success ? (parsed.data as Invoice[]) : [];
     } catch (error) {
       console.error('Error fetching Billy invoices:', error);
       return [];
