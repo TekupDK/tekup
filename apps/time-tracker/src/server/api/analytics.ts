@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '../lib/supabase';
 import { generateMonthlyReport, calculateFBSettlement } from '../../shared/utils';
-import type { MonthlyStats, ApiResponse } from '../../shared/types';
+import type { MonthlyStats, ApiResponse, Job, FBSettlement } from '../../shared/types';
 
 // GET /api/analytics/monthly - Get monthly statistics
 export async function GET(request: NextRequest) {
@@ -60,8 +60,44 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Transform database jobs to match frontend types
+    const transformedJobs: Job[] = (jobs || []).map(job => ({
+      id: job.id,
+      calendarEventId: job.calendar_event_id,
+      date: job.date,
+      customerName: job.customer_name,
+      team: job.team as any,
+      hoursWorked: job.hours_worked,
+      revenue: job.revenue,
+      cost: job.cost,
+      profit: job.profit,
+      jobType: job.job_type as any,
+      status: job.status as any,
+      invoiceId: job.invoice_id || undefined,
+      notes: job.notes || undefined,
+      createdAt: job.created_at,
+      updatedAt: job.updated_at,
+    }));
+
+    // Transform FB settlement data
+    let transformedFBSettlement: FBSettlement | undefined;
+    if (fbSettlement) {
+      transformedFBSettlement = {
+        id: fbSettlement.id,
+        month: fbSettlement.month,
+        totalHours: fbSettlement.total_hours,
+        hourlyRate: fbSettlement.hourly_rate,
+        totalAmount: fbSettlement.total_amount,
+        paid: fbSettlement.paid,
+        paidAt: fbSettlement.paid_at || undefined,
+        jobs: transformedJobs.filter(job => job.team === 'FB'),
+        createdAt: fbSettlement.created_at,
+      };
+    }
+
     const result: MonthlyStats = {
       month,
+      totalJobs: report.totalJobs,
       totalHours: report.totalHours,
       fbHours: report.fbSettlement.totalHours,
       ownHours: report.totalHours - report.fbSettlement.totalHours,
@@ -69,8 +105,8 @@ export async function GET(request: NextRequest) {
       totalCost: report.totalCost,
       totalProfit: report.totalProfit,
       avgHourlyRate: report.avgHourlyRate,
-      jobs: jobs || [],
-      fbSettlement: fbSettlement || undefined,
+      jobs: transformedJobs,
+      fbSettlement: transformedFBSettlement,
     };
 
     return NextResponse.json(

@@ -1,18 +1,20 @@
 import { NextRequest } from 'next/server';
-import * as jobsApi from '../../../../server/api/jobs';
+import * as jobsApi from '@/server/api/jobs';
 
 // PUT /api/jobs/[id]
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  return jobsApi.PUT(request, { params });
+  const { id } = await params;
+  return jobsApi.PUT(request, { params: { id } });
 }
 
 // DELETE /api/jobs/[id]
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  return jobsApi.DELETE(request, { params });
+  const { id } = await params;
+  return jobsApi.DELETE(request, { params: { id } });
 }

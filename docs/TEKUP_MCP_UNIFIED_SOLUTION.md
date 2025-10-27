@@ -117,9 +117,9 @@ Placeret i: `%USERPROFILE%\Tekup\tekup-mcp-servers\`
 | **sequential-thinking** | ✅ | ❌ | Multi-step reasoning | Active |
 | **filesystem** | ✅ Tekup only | ✅ Full user | File access | Active |
 | **github** | ✅ | ✅ | GitHub integration | Active |
-| **knowledge-mcp** | ❌ | ✅ | Tekup docs search | Local Node |
-| **code-intelligence-mcp** | ❌ | ✅ | Code search | Local Node |
-| **database-mcp** | ❌ | ✅ | Supabase | Local Node |
+| **knowledge-mcp** | ✅ HTTP | ✅ HTTP | Tekup docs search | Local HTTP `http://localhost:8051/mcp` |
+| **code-intelligence-mcp** | ✅ HTTP | ✅ HTTP | Code search | Local HTTP `http://localhost:8052/mcp` |
+| **database-mcp** | ✅ HTTP | ✅ HTTP | Supabase | Local HTTP `http://localhost:8053/mcp` |
 | **web-scraper** | ❌ | ✅ | Web scraping | Python |
 | **tekup-billy** | ❌ | ❌ | Billy API | Legacy |
 | **tekupvault** | ❌ | ❌ | Password mgmt | HTTP (Render.com) |
@@ -217,7 +217,7 @@ services:
 ### Environment Variables
 **ALL** credentials nu i Windows Environment Variables:
 
-`````powershell
+```powershell
 # Already set:
 $env:GITHUB_PERSONAL_ACCESS_TOKEN
 $env:SUPABASE_URL  
@@ -313,7 +313,7 @@ $env:LOG_LEVEL
 ## 📝 Next Actions
 
 ### IMMEDIATE (Now)
-`````powershell
+```powershell
 # 1. Restart VS Code to apply discovery disable
 # 2. Verify only 4 MCP tools show in Copilot
 # 3. Revoke old GitHub PAT token
@@ -321,7 +321,7 @@ $env:LOG_LEVEL
 ```
 
 ### TODAY
-`````powershell
+```powershell
 # Update Claude Desktop config
 $claudeConfig = "%APPDATA%\Claude\claude_desktop_config.json"
 # Remove hardcoded: github_pat_11BDCB62Q0...
@@ -333,7 +333,7 @@ $claudeConfig = "%APPDATA%\Claude\claude_desktop_config.json"
 ```
 
 ### THIS WEEK
-`````powershell
+```powershell
 # Start Docker migration
 cd %USERPROFILE%\Tekup\tekup-mcp-servers
 # Create docker-compose.yml

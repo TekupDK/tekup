@@ -38,8 +38,27 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Transform database jobs to match frontend types
+    const transformedJobs: Job[] = (jobs || []).map(job => ({
+      id: job.id,
+      calendarEventId: job.calendar_event_id,
+      date: job.date,
+      customerName: job.customer_name,
+      team: job.team as any,
+      hoursWorked: job.hours_worked,
+      revenue: job.revenue,
+      cost: job.cost,
+      profit: job.profit,
+      jobType: job.job_type as any,
+      status: job.status as any,
+      invoiceId: job.invoice_id || undefined,
+      notes: job.notes || undefined,
+      createdAt: job.created_at,
+      updatedAt: job.updated_at,
+    }));
+
     return NextResponse.json(
-      { success: true, data: jobs } as ApiResponse<Job[]>
+      { success: true, data: transformedJobs } as ApiResponse<Job[]>
     );
   } catch (error) {
     return NextResponse.json(
@@ -80,8 +99,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Transform database job to match frontend type
+    const transformedJob: Job = {
+      id: job.id,
+      calendarEventId: job.calendar_event_id,
+      date: job.date,
+      customerName: job.customer_name,
+      team: job.team as any,
+      hoursWorked: job.hours_worked,
+      revenue: job.revenue,
+      cost: job.cost,
+      profit: job.profit,
+      jobType: job.job_type as any,
+      status: job.status as any,
+      invoiceId: job.invoice_id || undefined,
+      notes: job.notes || undefined,
+      createdAt: job.created_at,
+      updatedAt: job.updated_at,
+    };
+
     return NextResponse.json(
-      { success: true, data: job } as ApiResponse<Job>,
+      { success: true, data: transformedJob } as ApiResponse<Job>,
       { status: 201 }
     );
   } catch (error) {
@@ -125,8 +163,27 @@ export async function PUT(
       );
     }
 
+    // Transform database job to match frontend type
+    const transformedJob: Job = {
+      id: job.id,
+      calendarEventId: job.calendar_event_id,
+      date: job.date,
+      customerName: job.customer_name,
+      team: job.team as any,
+      hoursWorked: job.hours_worked,
+      revenue: job.revenue,
+      cost: job.cost,
+      profit: job.profit,
+      jobType: job.job_type as any,
+      status: job.status as any,
+      invoiceId: job.invoice_id || undefined,
+      notes: job.notes || undefined,
+      createdAt: job.created_at,
+      updatedAt: job.updated_at,
+    };
+
     return NextResponse.json(
-      { success: true, data: job } as ApiResponse<Job>
+      { success: true, data: transformedJob } as ApiResponse<Job>
     );
   } catch (error) {
     return NextResponse.json(

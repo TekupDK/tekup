@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import * as calendarApi from '../../../server/api/calendar';
+import * as calendarApi from '@/server/api/calendar';
 
 // GET /api/calendar/events
 export async function GET(request: NextRequest) {

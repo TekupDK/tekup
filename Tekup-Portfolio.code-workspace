@@ -25,6 +25,10 @@
       "path": "apps/web/tekup-cloud-dashboard"
     },
     {
+      "name": "⏱️ Time Tracker",
+      "path": "apps/time-tracker"
+    },
+    {
       "name": "🧹 Rendetalje (Complete App)",
       "path": "apps/rendetalje"
     },
@@ -77,12 +81,40 @@
       "path": "services/tekup-gmail-services"
     },
     {
+      "name": "🔌 MCP Servers",
+      "path": "tekup-mcp-servers"
+    },
+    {
+      "name": "  ├─ Base MCP Server",
+      "path": "tekup-mcp-servers/packages/base-mcp-server"
+    },
+    {
+      "name": "  ├─ Code Intelligence MCP",
+      "path": "tekup-mcp-servers/packages/code-intelligence-mcp"
+    },
+    {
+      "name": "  ├─ Database MCP",
+      "path": "tekup-mcp-servers/packages/database-mcp"
+    },
+    {
+      "name": "  └─ Knowledge MCP",
+      "path": "tekup-mcp-servers/packages/knowledge-mcp"
+    },
+    {
       "name": "🔐 Tekup Secrets",
       "path": "tekup-secrets"
     },
     {
+      "name": "📜 Scripts",
+      "path": "scripts"
+    },
+    {
       "name": "📦 Archive",
       "path": "archive"
+    },
+    {
+      "name": "📚 Documentation",
+      "path": "docs"
     }
   ],
   "settings": {

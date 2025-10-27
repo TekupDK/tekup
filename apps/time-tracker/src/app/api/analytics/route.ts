@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import * as analyticsApi from '../../../server/api/analytics';
+import * as analyticsApi from '@/server/api/analytics';
 
 // GET /api/analytics/monthly
 export async function GET(request: NextRequest) {

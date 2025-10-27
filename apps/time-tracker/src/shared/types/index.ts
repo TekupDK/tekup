@@ -32,6 +32,7 @@ export interface FBSettlement {
 
 export interface MonthlyStats {
   month: string;
+  totalJobs: number;
   totalHours: number;
   fbHours: number;
   ownHours: number;
@@ -48,11 +49,13 @@ export interface CalendarEvent {
   summary: string;
   description?: string;
   start: {
-    dateTime: string;
+    dateTime?: string;
+    date?: string;
     timeZone: string;
   };
   end: {
-    dateTime: string;
+    dateTime?: string;
+    date?: string;
     timeZone: string;
   };
   location?: string;
