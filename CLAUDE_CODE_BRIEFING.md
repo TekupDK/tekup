@@ -186,7 +186,8 @@ Deploy de 3 servere til Render.com (venter på bruger)
 
 ### **Environment Variables (Windows User level):**
 ```bash
-GITHUB_PERSONAL_ACCESS_TOKEN=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
+#### GitHub
+- **GITHUB_PERSONAL_ACCESS_TOKEN**: `github_pat_***` (stored in Windows User Environment Variables)
 SUPABASE_URL=https://uagsdymcvdwcgfvqbtwj.supabase.co
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZ3NkeW1jdmR3Y2dmdnFidHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg5ODYyMjUsImV4cCI6MjA0NDU2MjIyNX0.YTg_SFcOBPBxNhtIPQGXYNXGSy9rP7gNs7bPBw90vZ8
 BILLY_API_KEY=c45ce68ca160aae3548dcb596e6fab6ca4f86e61
