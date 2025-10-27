@@ -85,6 +85,7 @@ export interface KPIMetric {
   change: number;
   trend: 'up' | 'down' | 'stable';
   icon: string;
+  type?: string;
 }
 
 export interface Notification {
@@ -138,4 +139,56 @@ export interface AnalyticsMetric {
   value: number;
   change: number;
   trend: 'up' | 'down' | 'stable';
+}
+
+// Infrastructure Metrics Types
+export interface InfrastructureMetric {
+  id: string;
+  timestamp: string;
+  cpu_usage: number;
+  memory_usage: number;
+  disk_usage: number;
+  network_in: number; // KB/s
+  network_out: number; // KB/s
+  service_id: string;
+}
+
+export interface APIPerformanceMetric {
+  id: string;
+  timestamp: string;
+  endpoint: string;
+  method: string;
+  response_time: number; // ms
+  status_code: number;
+  request_size: number; // bytes
+  response_size: number; // bytes
+  error_rate: number; // percentage
+}
+
+export interface ChartDataPoint {
+  timestamp: string;
+  value: number;
+  label?: string;
+}
+
+export interface TimeSeriesData {
+  name: string;
+  data: ChartDataPoint[];
+  color?: string;
+}
+
+// Real-time WebSocket Message Types
+export interface RealTimeMetric {
+  type: 'infrastructure' | 'api_performance' | 'system_alert';
+  data: InfrastructureMetric | APIPerformanceMetric | SystemAlert;
+  timestamp: string;
+}
+
+export interface SystemAlert {
+  id: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  message: string;
+  service_name: string;
+  timestamp: string;
+  acknowledged: boolean;
 }
