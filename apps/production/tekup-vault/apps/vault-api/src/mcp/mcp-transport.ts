@@ -240,6 +240,7 @@ async function getRepositoryInfo(args: any) {
   };
 }
 
+/* TODO: Uncomment when extended-tools are migrated to Prisma
 // New: Summarize repository tool
 async function summarizeRepository(args: any) {
   const { repository, limit = 20 } = args;
@@ -368,6 +369,7 @@ async function listRepositoryFiles(args: any) {
     structuredContent: files
   };
 }
+*/
 
 // Tool registry
 const tools = {
