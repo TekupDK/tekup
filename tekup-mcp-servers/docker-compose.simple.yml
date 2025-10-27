@@ -1,0 +1,47 @@
+# Simplified Tekup MCP Servers - Only essentials
+# Start with: docker-compose -f docker-compose.simple.yml up -d
+
+services:
+  knowledge-mcp:
+    build:
+      context: ./packages/knowledge-mcp
+      dockerfile: Dockerfile
+    container_name: tekup-knowledge-mcp
+    ports:
+      - "8051:8050"
+    environment:
+      - NODE_ENV=production
+      - PORT=8050
+      - KNOWLEDGE_SEARCH_ROOT=/workspace
+    volumes:
+      - ../../:/workspace:ro
+    restart: unless-stopped
+
+  code-intelligence-mcp:
+    build:
+      context: ./packages/code-intelligence-mcp
+      dockerfile: Dockerfile
+    container_name: tekup-code-intelligence-mcp
+    ports:
+      - "8052:8050"
+    environment:
+      - NODE_ENV=production
+      - PORT=8050
+      - CODE_SEARCH_ROOT=/workspace
+    volumes:
+      - ../../:/workspace:ro
+    restart: unless-stopped
+
+  database-mcp:
+    build:
+      context: ./packages/database-mcp
+      dockerfile: Dockerfile
+    container_name: tekup-database-mcp
+    ports:
+      - "8053:8050"
+    environment:
+      - NODE_ENV=production
+      - PORT=8050
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    restart: unless-stopped

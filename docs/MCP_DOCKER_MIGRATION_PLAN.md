@@ -1,0 +1,1 @@
+# MCP Docker Migration Plan

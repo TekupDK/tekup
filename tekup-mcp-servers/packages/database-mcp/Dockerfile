@@ -13,8 +13,8 @@ COPY tsconfig.json ./
 # Install pnpm
 RUN npm install -g pnpm
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Install dependencies (no lockfile in packages)
+RUN pnpm install
 
 # Copy source
 COPY src/ ./src/

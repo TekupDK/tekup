@@ -1,5 +1,3 @@
-version: '3.8'
-
 # Tekup MCP Servers - Production Docker Compose
 # All custom MCP servers containerized with HTTP/SSE transport
 # Based on Tekup production patterns (tekup-billy, calendar-mcp)
@@ -91,7 +89,9 @@ services:
   # TEKUP BILLY MCP - Billy.dk Integration
   # ==========================================
   billy-mcp:
-    image: ghcr.io/tekupdk/tekup-billy:latest
+    build:
+      context: ../apps/production/tekup-billy
+      dockerfile: Dockerfile
     container_name: tekup-billy-mcp
     ports:
       - "${BILLY_MCP_PORT:-8054}:3000"
