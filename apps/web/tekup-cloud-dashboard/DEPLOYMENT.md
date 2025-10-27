@@ -54,6 +54,13 @@ Projektet har allerede `render.yaml` konfiguration!
    VITE_SUPABASE_ANON_KEY=eyJhbGci...
    ```
 
+   | Key                    | Beskrivelse                           | Eksempel                         | Påkrævet | Opsættes |  
+   | ---------------------- | ------------------------------------- | -------------------------------- | -------- | -------- |  
+   | `VITE_SUPABASE_URL`    | Supabase projektets REST URL          | `https://xyzcompany.supabase.co` | ✅        | Render Dashboard → Environment |  
+   | `VITE_SUPABASE_ANON_KEY` | Supabase anon/public key            | `eyJhbGciOiJIUzI1NiIsInR5cCI6...` | ✅        | Render Dashboard → Environment |  
+   | `VITE_APP_NAME`        | Navn vist i UI (default i blueprint)  | `Tekup Cloud Dashboard`          | ➖ (default) | render.yaml |  
+   | `VITE_ENVIRONMENT`     | Miljøindikator (`production`/`staging`) | `production`                   | ➖ (default) | render.yaml |
+
 4. **Deploy**
    - Klik "Apply"
    - Render builder automatisk
@@ -61,26 +68,19 @@ Projektet har allerede `render.yaml` konfiguration!
 
 ### Manual Deployment
 
-````bash
-# Install Render CLI
-npm i -g render-cli
+```bash
+# Installer Render CLI
+npm install -g render-cli
 
-# Login
+# Login til Tekup Render organisationen
 render login
 
-# Deploy fra apps/web/tekup-cloud-dashboard
-render deploy
+# Deploy blueprintet (fra repo-roden)
+render blueprint apply render.yaml
 
-```bash
-# Installer Netlify CLI
-npm install -g netlify-cli
-
-# Build projektet
-npm run build
-
-# Deploy
-netlify deploy --prod --dir=dist
-````
+# Til efterfølgende opdateringer kan du trigge ny deploy
+render deploy tekup-cloud-dashboard
+```
 
 ## 🐳 Docker Deployment
 
@@ -373,12 +373,14 @@ jobs:
       - run: npm ci
       - run: npm run test
       - run: npm run build
-      - uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID }}
-          vercel-project-id: ${{ secrets.PROJECT_ID }}
-          vercel-args: "--prod"
+      - name: Install Render CLI
+        run: npm install -g render-cli
+      - name: Render Login (API key from Tekup secrets)
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: render login --api-key "$RENDER_API_KEY"
+      - name: Apply Render blueprint
+        run: render blueprint apply render.yaml --yes
 ```
 
 Dette deployment guide sikrer en pålidelig og skalerbar deployment af Tekup Cloud Dashboard.

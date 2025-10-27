@@ -27,7 +27,7 @@ Component Coverage (current)
 
 - UI primitives: Button, Input, Select, Modal, Skeleton
 - Dashboard/Layout: ActivityFeed, Sidebar, TopNav
-- Pages: Dashboard (with provider wrapper), Leads, Agents, System Health
+- Pages: Dashboard (with provider wrapper), Leads, Agents, System Health, Settings, Analytics, Integrations
 
 Authoring Tips
 

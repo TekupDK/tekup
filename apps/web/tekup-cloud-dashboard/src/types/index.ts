@@ -131,3 +131,11 @@ export interface ChatMessage {
   content: string;
   timestamp: string;
 }
+
+export interface AnalyticsMetric {
+  id: string;
+  label: string;
+  value: number;
+  change: number;
+  trend: 'up' | 'down' | 'stable';
+}

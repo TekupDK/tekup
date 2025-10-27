@@ -35,21 +35,3 @@ services:
 
       - key: VITE_SUPABASE_ANON_KEY
         sync: false # Set manually in Render dashboard
-
-      - key: VITE_API_BASE_URL
-        value: https://api.tekup.dk
-
-      - key: VITE_BILLY_API_URL
-        value: https://tekup-billy-mcp.onrender.com
-
-      - key: VITE_VAULT_API_URL
-        value: https://tekupvault-api.onrender.com
-
-      - key: VITE_FEATURE_ANALYTICS
-        value: "true"
-
-      - key: VITE_FEATURE_BILLING
-        value: "true"
-
-      - key: VITE_FEATURE_CHAT
-        value: "true"

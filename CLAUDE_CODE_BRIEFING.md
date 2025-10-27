@@ -74,6 +74,7 @@ Du har **6 MCP servere** tilgængelige i Claude Code:
 ### **1. knowledge** 📚
 **Hvad:** Søg i Tekup's dokumentation  
 **Sti:** `tekup-mcp-servers/packages/knowledge-mcp/`  
+**Transport:** HTTP (`http://localhost:8051/mcp`)  
 **Tool:** `search_knowledge(query)`  
 **Brug til:** Find MCP guides, security docs, implementation plans
 
@@ -85,6 +86,7 @@ Du har **6 MCP servere** tilgængelige i Claude Code:
 ### **2. code-intelligence** 🔍
 **Hvad:** Find og analysér kode i Tekup  
 **Sti:** `tekup-mcp-servers/packages/code-intelligence-mcp/`  
+**Transport:** HTTP (`http://localhost:8052/mcp`)  
 **Tools:**
 - `find_code(query, filePattern, limit)` - Find kode semantisk
 - `analyze_file(filePath)` - Analysér fil struktur
@@ -99,6 +101,7 @@ Du har **6 MCP servere** tilgængelige i Claude Code:
 ### **3. database** 🗄️
 **Hvad:** Query Supabase database (read-only)  
 **Sti:** `tekup-mcp-servers/packages/database-mcp/`  
+**Transport:** HTTP (`http://localhost:8053/mcp`)  
 **Tools:**
 - `query_database(query)` - SQL queries
 - `get_schema()` - Se database struktur

@@ -1,5 +1,121 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
+export type SupabaseLeadsRow = {
+  id: string;
+  tenant_id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  company: string | null;
+  status:
+    | "new"
+    | "contacted"
+    | "qualified"
+    | "proposal"
+    | "negotiation"
+    | "won"
+    | "lost";
+  source: "gmail" | "calendar" | "website" | "manual" | "referral";
+  value: number;
+  assigned_to: string | null;
+  created_at: string;
+  updated_at: string;
+  notes: string | null;
+};
+
+type SupabaseInvoiceRow = {
+  id: string;
+  tenant_id: string;
+  amount: number;
+  status: string;
+  created_at: string;
+  paid_at: string | null;
+};
+
+type SupabaseActivityRow = {
+  id: string;
+  tenant_id: string;
+  user_id: string | null;
+  agent_id: string | null;
+  type:
+    | "lead_created"
+    | "invoice_sent"
+    | "email_sent"
+    | "meeting_scheduled"
+    | "system_alert"
+    | "agent_action";
+  title: string;
+  description: string;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+};
+
+type SupabaseAgentRow = {
+  id: string;
+  tenant_id: string;
+  name: string;
+  status: "active" | "processing" | "error" | "idle";
+  type:
+    | "lead_capture"
+    | "email_automation"
+    | "calendar"
+    | "invoicing"
+    | "support"
+    | "analytics"
+    | "orchestrator";
+  last_activity: string;
+  tasks_processed: number;
+  average_response_time: number;
+  description: string | null;
+};
+
+type SupabaseSystemHealthRow = {
+  id: string;
+  status: string;
+  last_check: string;
+};
+
+type Database = {
+  public: {
+    Tables: {
+      leads: {
+        Row: SupabaseLeadsRow;
+        Insert: Partial<SupabaseLeadsRow>;
+        Update: Partial<SupabaseLeadsRow>;
+        Relationships: [];
+      };
+      invoices: {
+        Row: SupabaseInvoiceRow;
+        Insert: Partial<SupabaseInvoiceRow>;
+        Update: Partial<SupabaseInvoiceRow>;
+        Relationships: [];
+      };
+      activities: {
+        Row: SupabaseActivityRow;
+        Insert: Partial<SupabaseActivityRow>;
+        Update: Partial<SupabaseActivityRow>;
+        Relationships: [];
+      };
+      ai_agents: {
+        Row: SupabaseAgentRow;
+        Insert: Partial<SupabaseAgentRow>;
+        Update: Partial<SupabaseAgentRow>;
+        Relationships: [];
+      };
+      system_health: {
+        Row: SupabaseSystemHealthRow;
+        Insert: Partial<SupabaseSystemHealthRow>;
+        Update: Partial<SupabaseSystemHealthRow>;
+        Relationships: [];
+      };
+    };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
+  };
+};
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const appEnv = import.meta.env.VITE_APP_ENV || 'development';
@@ -105,7 +221,7 @@ const mockSupabase: MockClient = {
 
 export const isSupabaseMock = usingMock;
 
-type RealSupabaseClient = SupabaseClient<unknown, unknown, unknown>;
+type RealSupabaseClient = SupabaseClient<Database>;
 
 export const supabase: RealSupabaseClient = usingMock
   ? (mockSupabase as unknown as RealSupabaseClient)
@@ -113,5 +229,5 @@ export const supabase: RealSupabaseClient = usingMock
       if (!supabaseUrl || !supabaseAnonKey) {
         throw new Error("Missing Supabase environment variables");
       }
-      return createClient(supabaseUrl, supabaseAnonKey);
+      return createClient<Database>(supabaseUrl, supabaseAnonKey);
     })();

@@ -1,6 +1,17 @@
 import { z } from "zod";
-import { supabase, isSupabaseMock } from "./supabase";
-import { Lead, Invoice, Activity, KPIMetric, AIAgent } from "../types";
+import {
+  supabase,
+  isSupabaseMock,
+  SupabaseLeadsRow,
+} from "./supabase";
+import {
+  Lead,
+  Invoice,
+  Activity,
+  KPIMetric,
+  AIAgent,
+  AnalyticsMetric,
+} from "../types";
 
 // Supabase client is provided by central loader that supports mock mode
 
@@ -123,20 +134,32 @@ class ApiService {
   async createLead(
     lead: Omit<Lead, "id" | "created_at" | "updated_at">
   ): Promise<Lead> {
+    const now = new Date().toISOString();
     const { data, error } = await supabase
       .from("leads")
       .insert([
         {
           ...lead,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          phone: lead.phone ?? null,
+          company: lead.company ?? null,
+          assigned_to: lead.assigned_to ?? null,
+          notes: lead.notes ?? null,
+          created_at: now,
+          updated_at: now,
         },
       ])
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    const row = data as SupabaseLeadsRow;
+    return {
+      ...row,
+      phone: row.phone ?? undefined,
+      company: row.company ?? undefined,
+      assigned_to: row.assigned_to ?? undefined,
+      notes: row.notes ?? undefined,
+    };
   }
 
   // Activities
@@ -302,8 +325,21 @@ class ApiService {
     }
   }
 
+  async getAnalyticsOverview(): Promise<AnalyticsMetric[]> {
+    if (isSupabaseMock) {
+      return this.getFallbackAnalytics();
+    }
+
+    // TODO: replace with real analytics backend
+    return [];
+  }
+
   // Private helper methods
   private async getTotalRevenue(tenantId: string): Promise<number> {
+    if (isSupabaseMock) {
+      return 428500;
+    }
+
     const { data, error } = await supabase
       .from("invoices")
       .select("amount")
@@ -311,23 +347,33 @@ class ApiService {
       .eq("status", "paid");
 
     if (error) return 0;
-    return data?.reduce((sum, invoice) => sum + invoice.amount, 0) || 0;
+    const rows = (data as Array<{ amount: number }> | null) ?? [];
+    return rows.reduce((sum, invoice) => sum + Number(invoice.amount ?? 0), 0);
   }
 
   private async getActiveLeadsCount(
     tenantId: string
   ): Promise<{ count: number; change: number }> {
-    const { count, error } = await supabase
+    if (isSupabaseMock) {
+      return { count: 143, change: 8.2 };
+    }
+
+    const response = await supabase
       .from("leads")
       .select("*", { count: "exact", head: true })
       .eq("tenant_id", tenantId)
       .in("status", ["new", "contacted", "qualified"]);
 
-    if (error) return { count: 0, change: 0 };
-    return { count: count || 0, change: 8.2 }; // TODO: Calculate real change
+    if (response.error) return { count: 0, change: 0 };
+    const total = response.count ?? 0;
+    return { count: total, change: 8.2 }; // TODO: Calculate real change
   }
 
   async getSystemHealth(): Promise<number> {
+    if (isSupabaseMock) {
+      return 98.2;
+    }
+
     // Check various system components
     try {
       await Promise.all([
@@ -344,6 +390,10 @@ class ApiService {
   private async getAgentStatus(
     tenantId: string
   ): Promise<{ active: number; total: number }> {
+    if (isSupabaseMock) {
+      return { active: 7, total: 7 };
+    }
+
     const { data, error } = await supabase
       .from("ai_agents")
       .select("status")
@@ -467,6 +517,39 @@ class ApiService {
       },
     ];
   }
+
+  private getFallbackAnalytics(): AnalyticsMetric[] {
+    return [
+      {
+        id: "revenue",
+        label: "Total Revenue",
+        value: 45231,
+        change: 12.1,
+        trend: "up",
+      },
+      {
+        id: "users",
+        label: "Active Users",
+        value: 2543,
+        change: 4.7,
+        trend: "up",
+      },
+      {
+        id: "conversion",
+        label: "Conversion Rate",
+        value: 3.24,
+        change: -0.2,
+        trend: "down",
+      },
+      {
+        id: "order",
+        label: "Avg. Order Value",
+        value: 127,
+        change: 1.4,
+        trend: "stable",
+      },
+    ];
+  }
 }
 
 export const apiService = ApiService.getInstance();
@@ -499,8 +582,8 @@ export const apiClient = {
   },
 
   getAnalytics: async () => {
-    // TODO: Implement analytics endpoint
-    return [];
+    const service = ApiService.getInstance();
+    return service.getAnalyticsOverview();
   },
 };
 

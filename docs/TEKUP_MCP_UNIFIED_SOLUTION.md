@@ -66,7 +66,7 @@
 }
 ```
 
-### Tekup Custom MCP Servers (Future: Docker)
+### Tekup Custom MCP Servers (Docker via HTTP)
 
 Placeret i: `%USERPROFILE%\Tekup\tekup-mcp-servers\`
 
@@ -77,36 +77,36 @@ Placeret i: `%USERPROFILE%\Tekup\tekup-mcp-servers\`
 4. **tekup-billy** - Fakturering via Billy API
 5. **web-scraper** - Python web scraping
 
-**Nuværende status**: Kører lokalt som Node.js processer  
-**Fremtid**: Docker containers via docker-compose
+**Status**: ✅ Phase 2 Complete – Docker HTTP stack live
+**Note**: Andre MCP’er (Billy, calendar, gmail) migreres efter behov.
 
 ## 🔧 Per-IDE Configuration Strategy
 
 ### VS Code / GitHub Copilot (Primary)
 **Config**: `%APPDATA%\Code\User\mcp.json`
-**Format**: `"servers"` key (unique to VS Code)
+**Format**: `"servers"```key (unique to VS Code)
 **Discovery**: DISABLED
 **Servers**: 4 core servere (memory, sequential-thinking, filesystem, github)
 
 ### Claude Desktop (Documentation/Research)
 **Config**: `%APPDATA%\Claude\claude_desktop_config.json`
-**Format**: `"mcpServers"` key
+**Format**: `"mcpServers"```key
 **Servers**: 6 servere (alle Tekup custom + web-scraper)
 **Use case**: Deep research, documentation writing
 
 ### Cursor (Legacy - til udfasning)
 **Config**: `%USERPROFILE%\.cursor\mcp.json`
-**Status**: ⚠️ Disable eller sync med Tekup standard
+**Status**: ✅ Phase 2 Complete – Docker HTTP stack live
 **Servers**: 7 servere (inkl. tekup-billy, tekupvault HTTP)
 
 ### Windsurf (Legacy - til udfasning)
 **Config**: `%USERPROFILE%\.codeium\windsurf\mcp_config.json`
-**Status**: ⚠️ Disable eller sync med Tekup standard
+**Status**: ✅ Phase 2 Complete – Docker HTTP stack live
 **Servers**: 5 servere
 
 ### Kilo Code CLI (Development)
 **Config**: `%USERPROFILE%\.kilocode\cli\mcp.json`
-**Format**: `"mcpServers"` key
+**Format**: `"mcpServers"```key
 **Servers**: 4 servere (sync med VS Code)
 
 ## 📊 Tekup MCP Server Matrix
@@ -217,7 +217,7 @@ services:
 ### Environment Variables
 **ALL** credentials nu i Windows Environment Variables:
 
-```powershell
+`````powershell
 # Already set:
 $env:GITHUB_PERSONAL_ACCESS_TOKEN
 $env:SUPABASE_URL  
@@ -234,7 +234,7 @@ $env:LOG_LEVEL
 3. ✅ **USE** environment variable references: `${VAR_NAME}`
 
 ### Filesystem Scope Reduction
-**BEFORE**: Claude Desktop + Windsurf havde adgang til `%USERPROFILE%` (HELE brugermappen!)
+**BEFORE**: Claude Desktop + Windsurf havde adgang til `%USERPROFILE%```(HELE brugermappen!)
 
 **AFTER**: Kun `%USERPROFILE%\Tekup`
 
@@ -304,16 +304,16 @@ $env:LOG_LEVEL
 
 ## 🔗 Related Documentation
 
-- `MCP_PROBLEM_SOLVED_2025-10-27.md` - Initial problem analysis
-- `SECURITY_REVOKE_GITHUB_PAT.md` - Security fix guide
-- `MCP_COMPLETE_AUDIT_2025-10-27.md` - Complete MCP audit
-- `MCP_PRODUCTION_ARCHITECTURE_PLAN.md` - Production deployment strategy
-- `MCP_DOCKER_MIGRATION_PLAN.md` - Docker migration details (placeholder)
+- `MCP_PROBLEM_SOLVED_2025-10-27.md```- Initial problem analysis
+- `SECURITY_REVOKE_GITHUB_PAT.md```- Security fix guide
+- `MCP_COMPLETE_AUDIT_2025-10-27.md```- Complete MCP audit
+- `MCP_PRODUCTION_ARCHITECTURE_PLAN.md```- Production deployment strategy
+- `MCP_DOCKER_MIGRATION_PLAN.md```- Docker migration details (placeholder)
 
 ## 📝 Next Actions
 
 ### IMMEDIATE (Now)
-```powershell
+`````powershell
 # 1. Restart VS Code to apply discovery disable
 # 2. Verify only 4 MCP tools show in Copilot
 # 3. Revoke old GitHub PAT token
@@ -321,7 +321,7 @@ $env:LOG_LEVEL
 ```
 
 ### TODAY
-```powershell
+`````powershell
 # Update Claude Desktop config
 $claudeConfig = "%APPDATA%\Claude\claude_desktop_config.json"
 # Remove hardcoded: github_pat_11BDCB62Q0...
@@ -333,7 +333,7 @@ $claudeConfig = "%APPDATA%\Claude\claude_desktop_config.json"
 ```
 
 ### THIS WEEK
-```powershell
+`````powershell
 # Start Docker migration
 cd %USERPROFILE%\Tekup\tekup-mcp-servers
 # Create docker-compose.yml
@@ -344,10 +344,10 @@ docker ps  # Verify running
 
 ---
 
-**Status**: ✅ Phase 1 Complete - Discovery Disabled  
-**Next**: Revoke GitHub PAT & Docker Migration  
-**Owner**: Jonas (empir)  
-**Last Updated**: 2025-10-27 14:00
+**Status**: ✅ Phase 2 Complete – Docker HTTP stack live
+**Next**: Revoke GitHub PAT & forberede Render deployment
+**Owner**: Jonas (empir)
+**Last Updated**: 2025-10-27 18:05
 
 ## Docker‑baseret drift (nyt)
 
@@ -355,10 +355,10 @@ For at undgå duplikerede lokale npx‑processer anbefales det at køre MCP‑se
 
 Start/stop scripts:
 
-`powershell
+```powershell
 pwsh -File Tekup/scripts/mcp-up.ps1    # starter knowledge, code-intelligence, database (+ redis)
 pwsh -File Tekup/scripts/mcp-down.ps1  # stopper stacken
-` 
+```
 
 HTTP endpoints (lokalt):
 - knowledge:        http://localhost:8051/mcp

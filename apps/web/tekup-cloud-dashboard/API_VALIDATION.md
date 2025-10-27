@@ -8,9 +8,11 @@ Overview
 Validated Endpoints
 
 - Leads: parses array using `LeadSchema` and returns `Lead[]` or `[]`.
-- Activities: parses with `ActivitySchema` in both `getActivities` and `getRecentActivities`.
-- Agents: parses with `AgentSchema` and falls back to local mock data on failure.
-- Invoices: parses with `InvoiceSchema` and returns `[]` on failure.
+- Activities: parses with `ActivitySchema` in både `getActivities` and `getRecentActivities`.
+- Agents: parses with `AgentSchema` and falder tilbage til lokal mock data ved fejl.
+- Invoices: parses med `InvoiceSchema` og returnerer `[]` ved fejl.
+- System Health / KPI helpers: short-circuit når `isSupabaseMock` er sand for at undgå netværkskald.
+- Analytics overview: bruger `AnalyticsMetric` fallback dataset når Supabase ikke er konfigureret.
 
 Behavior
 
