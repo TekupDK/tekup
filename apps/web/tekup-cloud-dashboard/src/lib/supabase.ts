@@ -1,19 +1,20 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const appEnv = import.meta.env.VITE_APP_ENV || 'development';
 const mockData = import.meta.env.VITE_MOCK_DATA === 'true';
 
-// Mock mode for development without Supabase
-if (appEnv === 'development' && (!supabaseUrl || !supabaseAnonKey || mockData)) {
-  console.warn('⚠️ Running in mock mode - Supabase not configured');
+const usingMock = appEnv === 'development' && (!supabaseUrl || !supabaseAnonKey || mockData);
+
+if (usingMock) {
+  console.warn("⚠️ Running in mock mode - Supabase not configured");
 }
 
-// Create a minimal mock client (no 'any' types)
 type MockSubscription = { unsubscribe: () => void };
 type MockAuth = {
   getSession: () => Promise<{ data: { session: unknown | null }; error: unknown | null }>;
+  getUser: () => Promise<{ data: { user: unknown | null }; error: unknown | null }>;
   onAuthStateChange: () => { data: { subscription: MockSubscription } };
   signInWithPassword: () => Promise<{ data: { user: unknown; session: unknown }; error: { message: string } | null }>;
   signUp: () => Promise<{ data: { user: unknown; session: unknown }; error: { message: string } | null }>;
@@ -21,54 +22,96 @@ type MockAuth = {
   resetPasswordForEmail: () => Promise<{ data: unknown; error: unknown | null }>;
 };
 
-type MockQuery = {
+type MockQueryResult = { data: unknown[]; error: null };
+type MockSingleResult = { data: unknown; error: null };
+
+type MockQueryBuilder = {
+  select: (...args: unknown[]) => MockQueryBuilder;
+  eq: (...args: unknown[]) => MockQueryBuilder;
+  in: (...args: unknown[]) => MockQueryBuilder;
+  order: (...args: unknown[]) => MockQueryBuilder;
+  limit: (...args: unknown[]) => Promise<MockQueryResult>;
+  single: () => Promise<MockSingleResult>;
+} & PromiseLike<MockQueryResult>;
+
+type MockInsertBuilder = {
   select: () => {
-    eq: () => {
-      order: () => {
-        limit: () => Promise<{ data: unknown[]; error: unknown | null }>
-      }
-    }
+    single: () => Promise<MockSingleResult>;
   };
-  insert?: (rows: unknown[]) => {
-    select: () => { single: () => Promise<{ data: unknown; error: unknown | null }> };
-  };
+};
+
+type MockTable = MockQueryBuilder & {
+  insert: (...rows: unknown[]) => MockInsertBuilder;
 };
 
 type MockClient = {
   auth: MockAuth;
-  from: (_table: string) => MockQuery;
+  from: (_table: string) => MockTable;
 };
+
+function createQueryPromise(): Promise<MockQueryResult> {
+  return Promise.resolve({ data: [], error: null });
+}
+
+function createMockQueryBuilder(): MockQueryBuilder {
+  const promise = createQueryPromise();
+  const builder: Partial<MockQueryBuilder> = {};
+  const self = builder as MockQueryBuilder;
+
+  self.select = () => self;
+  self.eq = () => self;
+  self.in = () => self;
+  self.order = () => self;
+  self.limit = () => createQueryPromise();
+  self.single = () => Promise.resolve({ data: null, error: null });
+  self.then = (onFulfilled, onRejected) => promise.then(onFulfilled, onRejected);
+
+  return self;
+}
+
+function createMockTable(): MockTable {
+  const query = createMockQueryBuilder();
+  const table = Object.assign(query, {
+    insert: () => ({
+      select: () => ({
+        single: () => Promise.resolve({ data: null, error: null }),
+      }),
+    }),
+  });
+
+  return table;
+}
 
 const mockSupabase: MockClient = {
   auth: {
     getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    getUser: () => Promise.resolve({ data: { user: null }, error: null }),
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-    signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: { message: 'Mock mode - authentication disabled' } }),
-    signUp: () => Promise.resolve({ data: { user: null, session: null }, error: { message: 'Mock mode - authentication disabled' } }),
+    signInWithPassword: () =>
+      Promise.resolve({
+        data: { user: null, session: null },
+        error: { message: "Mock mode - authentication disabled" },
+      }),
+    signUp: () =>
+      Promise.resolve({
+        data: { user: null, session: null },
+        error: { message: "Mock mode - authentication disabled" },
+      }),
     signOut: () => Promise.resolve({ error: null }),
-    resetPasswordForEmail: () => Promise.resolve({ data: {}, error: null })
+    resetPasswordForEmail: () => Promise.resolve({ data: {}, error: null }),
   },
-  from: () => ({
-    select: () => ({
-      eq: () => ({
-        order: () => ({
-          limit: () => Promise.resolve({ data: [], error: null })
-        })
-      })
-    }),
-    insert: () => ({
-      select: () => ({
-        single: () => Promise.resolve({ data: null, error: null })
-      })
-    })
-  })
+  from: () => createMockTable(),
 };
 
-export const supabase = (appEnv === 'development' && (!supabaseUrl || !supabaseAnonKey || mockData))
-  ? mockSupabase
+export const isSupabaseMock = usingMock;
+
+type RealSupabaseClient = SupabaseClient<unknown, unknown, unknown>;
+
+export const supabase: RealSupabaseClient = usingMock
+  ? (mockSupabase as unknown as RealSupabaseClient)
   : (() => {
       if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error('Missing Supabase environment variables');
+        throw new Error("Missing Supabase environment variables");
       }
       return createClient(supabaseUrl, supabaseAnonKey);
     })();

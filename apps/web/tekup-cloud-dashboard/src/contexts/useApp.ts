@@ -1,11 +1,10 @@
-import { useContext } from 'react';
-import { AppContext } from './appContext';
+import { useContext } from "react";
+import { AppContext, type AppContextType } from "./appContext";
 
-export function useApp() {
+export function useApp(): AppContextType {
   const context = useContext(AppContext);
   if (context === undefined) {
-    throw new Error('useApp must be used within an AppProvider');
+    throw new Error("useApp must be used within an AppProvider");
   }
   return context;
 }
-

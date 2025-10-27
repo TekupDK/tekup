@@ -23,13 +23,15 @@ Configuration
 
 - `vitest.config.ts` sets `environment: 'jsdom'` and includes `vitest.setup.ts` to enable jest-dom matchers.
 
-Component Coverage (initial)
+Component Coverage (current)
 
 - UI primitives: Button, Input, Select, Modal, Skeleton
 - Dashboard/Layout: ActivityFeed, Sidebar, TopNav
+- Pages: Dashboard (with provider wrapper), Leads, Agents, System Health
 
 Authoring Tips
 
 - Prefer role- or text-based queries from Testing Library
 - Avoid implementation details (classes) unless absolutely necessary
 - Use `user-event` for realistic interactions
+- `src/test-utils.tsx` exposes `withProviders` helper for composing Theme/App/Query providers

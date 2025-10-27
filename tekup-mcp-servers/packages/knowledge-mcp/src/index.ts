@@ -7,6 +7,8 @@
  * - No persistent caches; fresh disk reads on each invocation.
  */
 
+import http from "node:http";
+import { URL } from "node:url";
 import dotenv from "dotenv";
 import * as path from "path";
 
@@ -14,7 +16,7 @@ import * as path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import fg from "fast-glob";
@@ -196,62 +198,121 @@ async function handleSearch(query: string, limit = 5) {
   return results.slice(0, Math.max(1, Math.min(20, limit)));
 }
 
-async function main() {
-  const server = new Server(
-    { name: "@tekup/knowledge-mcp", version: "1.0.0" },
-    { capabilities: { tools: {} } }
-  );
+const server = new Server(
+  { name: "@tekup/knowledge-mcp", version: "1.0.0" },
+  { capabilities: { tools: {} } }
+);
 
-  server.setRequestHandler(CallToolRequestSchema, async (request) => {
-    const { name, arguments: args } = request.params;
-    if (name === "search_knowledge") {
-      const { query, limit } = SearchInputSchema.parse(args);
-      const results = await handleSearch(query, limit ?? 5);
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(results, null, 2),
-          },
-        ],
-      };
-    }
-    throw new Error(`Unknown tool: ${name}`);
-  });
-
-  server.setRequestHandler(ListToolsRequestSchema, async () => {
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+  if (name === "search_knowledge") {
+    const { query, limit } = SearchInputSchema.parse(args);
+    const results = await handleSearch(query, limit ?? 5);
     return {
-      tools: [
+      content: [
         {
-          name: "search_knowledge",
-          description: "Search local documentation under KNOWLEDGE_SEARCH_ROOT. Returns top matches with scores, snippets, and summaries.",
-          inputSchema: {
-            type: "object",
-            properties: {
-              query: {
-                type: "string",
-                description: "Search query, minimum 2 characters",
-                minLength: 2,
-              },
-              limit: {
-                type: "number",
-                description: "Maximum results to return (1-20, default: 5)",
-                minimum: 1,
-                maximum: 20,
-              },
-            },
-            required: ["query"],
-          },
+          type: "text",
+          text: JSON.stringify(results, null, 2),
         },
       ],
     };
-  });
+  }
+  throw new Error(`Unknown tool: ${name}`);
+});
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-}
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  return {
+    tools: [
+      {
+        name: "search_knowledge",
+        description:
+          "Search local documentation under KNOWLEDGE_SEARCH_ROOT. Returns top matches with scores, snippets, and summaries.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description: "Search query, minimum 2 characters",
+              minLength: 2,
+            },
+            limit: {
+              type: "number",
+              description: "Maximum results to return (1-20, default: 5)",
+              minimum: 1,
+              maximum: 20,
+            },
+          },
+          required: ["query"],
+        },
+      },
+    ],
+  };
+});
 
-main().catch((err) => {
-  console.error("Knowledge MCP Server failed to start:", err);
-  process.exit(1);
+const PORT = Number.parseInt(process.env.PORT || "8050", 10);
+const SSE_PATH = process.env.MCP_SSE_PATH || "/mcp";
+const POST_PATH = process.env.MCP_POST_PATH || "/mcp/messages";
+
+const transports = new Map<string, SSEServerTransport>();
+
+const httpServer = http.createServer(async (req, res) => {
+  try {
+    const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+
+    if (req.method === "GET" && url.pathname === "/health") {
+      res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
+      return;
+    }
+
+    if (req.method === "GET" && url.pathname === SSE_PATH) {
+      const transport = new SSEServerTransport(POST_PATH, res);
+      transports.set(transport.sessionId, transport);
+      transport.onclose = () => transports.delete(transport.sessionId);
+      transport.onerror = (error) => console.error("Knowledge MCP transport error:", error);
+      await transport.start();
+      server
+        .connect(transport)
+        .catch((error) => {
+          console.error("Knowledge MCP connection failed:", error);
+          transports.delete(transport.sessionId);
+        });
+      return;
+    }
+
+    if (req.method === "POST" && url.pathname === POST_PATH) {
+      const sessionId = url.searchParams.get("sessionId");
+      if (!sessionId) {
+        res.writeHead(400).end("Missing sessionId");
+        return;
+      }
+      const transport = transports.get(sessionId);
+      if (!transport) {
+        res.writeHead(404).end("Unknown sessionId");
+        return;
+      }
+      await transport.handlePostMessage(req, res);
+      return;
+    }
+
+    if (req.method === "OPTIONS") {
+      res.writeHead(204, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      }).end();
+      return;
+    }
+
+    res.writeHead(404).end("Not Found");
+  } catch (error) {
+    console.error("Knowledge MCP HTTP error:", error);
+    if (!res.headersSent) {
+      res.writeHead(500).end("Internal Server Error");
+    }
+  }
+});
+
+httpServer.listen(PORT, () => {
+  console.error(`Knowledge MCP HTTP server listening on port ${PORT}`);
+  console.error(`${REQUIRED_ENV}: ${SEARCH_ROOT}`);
 });

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { supabase } from "./supabase";
+import { supabase, isSupabaseMock } from "./supabase";
 import { Lead, Invoice, Activity, KPIMetric, AIAgent } from "../types";
 
 // Supabase client is provided by central loader that supports mock mode
@@ -27,13 +27,11 @@ class ApiService {
 
   // KPI Metrics
   async getKPIMetrics(tenantId: string): Promise<KPIMetric[]> {
-    try {
-      // Check if Supabase is available
-      if (!supabase) {
-        console.warn("Supabase not available, using fallback data");
-        return this.getFallbackKPIMetrics();
-      }
+    if (isSupabaseMock) {
+      return this.getFallbackKPIMetrics();
+    }
 
+    try {
       // Get real data from Supabase
       const [revenue, leads, systemHealth, agents] = await Promise.all([
         this.getTotalRevenue(tenantId),
@@ -80,6 +78,10 @@ class ApiService {
 
   // Leads
   async getLeads(tenantId: string): Promise<Lead[]> {
+    if (isSupabaseMock) {
+      return this.getFallbackLeads();
+    }
+
     const { data, error } = await supabase
       .from("leads")
       .select("*")
@@ -142,6 +144,10 @@ class ApiService {
     tenantId: string,
     limit: number = 10
   ): Promise<Activity[]> {
+    if (isSupabaseMock) {
+      return this.getFallbackActivities().slice(0, limit);
+    }
+
     const { data, error } = await supabase
       .from("activities")
       .select("*")
@@ -177,13 +183,11 @@ class ApiService {
   }
 
   async getRecentActivities(tenantId: string): Promise<Activity[]> {
-    try {
-      // Check if Supabase is available
-      if (!supabase) {
-        console.warn("Supabase not available, using fallback data");
-        return this.getFallbackActivities();
-      }
+    if (isSupabaseMock) {
+      return this.getFallbackActivities();
+    }
 
+    try {
       const { data, error } = await supabase
         .from("activities")
         .select("*")
@@ -222,13 +226,11 @@ class ApiService {
 
   // AI Agents
   async getAgents(tenantId: string): Promise<AIAgent[]> {
-    try {
-      // Check if Supabase is available
-      if (!supabase) {
-        console.warn("Supabase not available, using fallback data");
-        return this.getFallbackAgents();
-      }
+    if (isSupabaseMock) {
+      return this.getFallbackAgents();
+    }
 
+    try {
       const { data, error } = await supabase
         .from("ai_agents")
         .select("*")
@@ -266,6 +268,10 @@ class ApiService {
 
   // Billy.dk Integration
   async getBillyInvoices(tenantId: string): Promise<Invoice[]> {
+    if (isSupabaseMock) {
+      return [];
+    }
+
     try {
       // This would integrate with Billy API
       // For now, return from Supabase
@@ -382,6 +388,42 @@ class ApiService {
         change: 0,
         trend: "stable",
         icon: "🤖",
+      },
+    ];
+  }
+
+  private getFallbackLeads(): Lead[] {
+    const now = Date.now();
+    return [
+      {
+        id: "1",
+        tenant_id: "1",
+        name: "John Doe",
+        email: "john@acme.com",
+        phone: "+45 12 34 56 78",
+        company: "Acme Corporation",
+        status: "new",
+        source: "website",
+        value: 25000,
+        assigned_to: "1",
+        created_at: new Date(now - 2 * 60 * 60 * 1000).toISOString(),
+        updated_at: new Date(now - 2 * 60 * 60 * 1000).toISOString(),
+        notes: "Interested in enterprise plan",
+      },
+      {
+        id: "2",
+        tenant_id: "1",
+        name: "Sarah Johnson",
+        email: "sarah@techstart.dk",
+        phone: "+45 98 76 54 32",
+        company: "TechStart",
+        status: "qualified",
+        source: "gmail",
+        value: 45000,
+        assigned_to: "2",
+        created_at: new Date(now - 24 * 60 * 60 * 1000).toISOString(),
+        updated_at: new Date(now - 5 * 60 * 60 * 1000).toISOString(),
+        notes: "Follow-up scheduled for next week",
       },
     ];
   }

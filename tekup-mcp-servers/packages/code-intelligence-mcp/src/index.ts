@@ -8,6 +8,8 @@
  * - get_file_dependencies: Analyze imports and dependencies
  */
 
+import http from "node:http";
+import { URL } from "node:url";
 import dotenv from "dotenv";
 import * as path from "path";
 
@@ -15,7 +17,7 @@ import * as path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import fg from "fast-glob";
@@ -397,15 +399,68 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-// Start server
-async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error("Tekup Code Intelligence MCP Server running on stdio");
-  console.error(`CODE_SEARCH_ROOT: ${CODE_SEARCH_ROOT}`);
-}
+const PORT = Number.parseInt(process.env.PORT || "8050", 10);
+const SSE_PATH = process.env.MCP_SSE_PATH || "/mcp";
+const POST_PATH = process.env.MCP_POST_PATH || "/mcp/messages";
 
-main().catch((error) => {
-  console.error("Fatal error:", error);
-  process.exit(1);
+const transports = new Map<string, SSEServerTransport>();
+
+const httpServer = http.createServer(async (req, res) => {
+  try {
+    const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+
+    if (req.method === "GET" && url.pathname === "/health") {
+      res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
+      return;
+    }
+
+    if (req.method === "GET" && url.pathname === SSE_PATH) {
+      const transport = new SSEServerTransport(POST_PATH, res);
+      transports.set(transport.sessionId, transport);
+      transport.onclose = () => transports.delete(transport.sessionId);
+      transport.onerror = (error) => console.error("Code Intelligence MCP transport error:", error);
+      await transport.start();
+      server.connect(transport).catch((error) => {
+        console.error("Code Intelligence MCP connection failed:", error);
+        transports.delete(transport.sessionId);
+      });
+      return;
+    }
+
+    if (req.method === "POST" && url.pathname === POST_PATH) {
+      const sessionId = url.searchParams.get("sessionId");
+      if (!sessionId) {
+        res.writeHead(400).end("Missing sessionId");
+        return;
+      }
+      const transport = transports.get(sessionId);
+      if (!transport) {
+        res.writeHead(404).end("Unknown sessionId");
+        return;
+      }
+      await transport.handlePostMessage(req, res);
+      return;
+    }
+
+    if (req.method === "OPTIONS") {
+      res.writeHead(204, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      }).end();
+      return;
+    }
+
+    res.writeHead(404).end("Not Found");
+  } catch (error) {
+    console.error("Code Intelligence MCP HTTP error:", error);
+    if (!res.headersSent) {
+      res.writeHead(500).end("Internal Server Error");
+    }
+  }
+});
+
+httpServer.listen(PORT, () => {
+  console.error(`Tekup Code Intelligence MCP HTTP server listening on port ${PORT}`);
+  console.error(`CODE_SEARCH_ROOT: ${CODE_SEARCH_ROOT}`);
 });

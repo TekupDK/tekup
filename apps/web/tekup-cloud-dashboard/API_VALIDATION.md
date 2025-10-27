@@ -16,6 +16,7 @@ Behavior
 
 - Uses `z.array(Schema).safeParse(data)` to avoid throwing.
 - Logs a concise warning on validation errors and returns safe defaults.
+- Detects mock client via `isSupabaseMock` and short-circuits to fallback data without hitting network code.
 
 Why
 
@@ -26,4 +27,3 @@ Next
 
 - Add schema for analytics once the endpoint is implemented.
 - Consider centralizing schemas in `src/schemas/` if they grow.
-

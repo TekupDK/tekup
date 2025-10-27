@@ -1,5 +1,5 @@
-import { createContext } from 'react';
-import type { Tenant, User, Notification } from '../types';
+import { createContext } from "react";
+import type { Tenant, User, Notification } from "../types";
 
 export interface AppContextType {
   currentTenant: Tenant | null;
@@ -16,4 +16,3 @@ export interface AppContextType {
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export type { Tenant, User, Notification };

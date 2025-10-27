@@ -19,21 +19,30 @@ try {
   if ($All) {
     docker compose up -d
   } else {
-    docker compose up -d knowledge-mcp code-intelligence-mcp database-mcp redis
+    docker compose up -d knowledge-mcp code-intelligence-mcp database-mcp
   }
 } finally { Pop-Location }
 
-Start-Sleep -Seconds 2
+Start-Sleep -Seconds 4
 
-function Test-Health($name, $url) {
-  try {
-    $r = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 3
-    if ($r.StatusCode -ge 200 -and $r.StatusCode -lt 300) {
-      Write-Host ("OK  - {0} ({1})" -f $name,$url) -ForegroundColor Green
-    } else {
+function Test-Health($name, $url, $attempts = 5) {
+  for ($i = 1; $i -le $attempts; $i++) {
+    try {
+      $r = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 3
+      if ($r.StatusCode -ge 200 -and $r.StatusCode -lt 300) {
+        Write-Host ("OK  - {0} ({1})" -f $name,$url) -ForegroundColor Green
+        return
+      }
       Write-Host ("WARN- {0} returned {1}" -f $name,$r.StatusCode) -ForegroundColor Yellow
+      return
+    } catch {
+      if ($i -eq $attempts) {
+        Write-Host ("FAIL- {0} not healthy: {1}" -f $name,$_.Exception.Message) -ForegroundColor Red
+      } else {
+        Start-Sleep -Seconds 1
+      }
     }
-  } catch { Write-Host ("FAIL- {0} not healthy: {1}" -f $name,$_.Exception.Message) -ForegroundColor Red }
+  }
 }
 
 Write-Host "Health checks:" -ForegroundColor Cyan
@@ -42,4 +51,3 @@ Test-Health "code-intelligence"   "http://localhost:${env:CODE_INTELLIGENCE_PORT
 Test-Health "database-mcp"        "http://localhost:${env:DATABASE_MCP_PORT:-8053}/health"
 
 Write-Host "Done. Configure IDEs to use http://localhost:{8051,8052,8053}/mcp" -ForegroundColor Cyan
-
