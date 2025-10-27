@@ -2,7 +2,7 @@
 
 ## 🚨 EXPOSED TOKEN FOUND
 
-**Lokation**: `C:\Users\empir\AppData\Roaming\Claude\claude_desktop_config.json`
+**Lokation**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 **Token**: `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`
 
@@ -52,7 +52,7 @@ $env:GITHUB_PERSONAL_ACCESS_TOKEN
 
 ### 4. Update Claude Desktop Config
 
-**Find**: `C:\Users\empir\AppData\Roaming\Claude\claude_desktop_config.json`
+**Find**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 **Ændr**:
 ```json
@@ -80,3 +80,5 @@ Genstart Claude Desktop og test GitHub MCP server virker.
 - ELLER: Bare revoke token (simplere)
 
 **Action**: REVOKE TOKEN NU!
+
+

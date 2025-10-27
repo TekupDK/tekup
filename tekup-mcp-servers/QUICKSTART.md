@@ -7,7 +7,7 @@
 ## ⚡ TL;DR - Hurtig Start
 
 ```bash
-cd C:\Users\empir\Tekup\tekup-mcp-servers
+cd %USERPROFILE%\Tekup\tekup-mcp-servers
 cp .env.example .env
 # Rediger .env med dine credentials
 docker-compose up -d
@@ -21,7 +21,7 @@ docker-compose ps
 ### Step 1: Naviger til mappen
 
 ```bash
-cd C:\Users\empir\Tekup\tekup-mcp-servers
+cd %USERPROFILE%\Tekup\tekup-mcp-servers
 ```
 
 ### Step 2: Opret .env fil
@@ -398,3 +398,5 @@ fly deploy
 ---
 
 🎉 **Færdig! Dine MCP servere kører nu i Docker!**
+
+

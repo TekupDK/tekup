@@ -29,7 +29,7 @@ Alle disse processer var **zombier** fra tidligere sessioner som aldrig blev luk
 
 ### 🟢 Active Configs (Opdaterede i Denne Session)
 
-#### 1. Claude Desktop (`C:\Users\empir\AppData\Roaming\Claude\claude_desktop_config.json`)
+#### 1. Claude Desktop (`%APPDATA%\Claude\claude_desktop_config.json`)
 **Status**: ✅ Konfigureret med 6 servere
 ```json
 {
@@ -39,7 +39,7 @@ Alle disse processer var **zombier** fra tidligere sessioner som aldrig blev luk
     "code-intelligence": "node .../code-intelligence-mcp/dist/index.js", 
     "database": "node .../database-mcp/dist/index.js",
     "github": "npx @modelcontextprotocol/server-github",
-    "filesystem": "npx @modelcontextprotocol/server-filesystem C:\Users\empir"
+    "filesystem": "npx @modelcontextprotocol/server-filesystem %USERPROFILE%"
   }
 }
 ```
@@ -50,41 +50,41 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 ```
 **ACTION REQUIRED**: Denne token skal SLETTES og erstattes med environment variable!
 
-#### 2. Kilo Code CLI (`C:\Users\empir\.kilocode\cli\mcp.json`)
+#### 2. Kilo Code CLI (`%USERPROFILE%\.kilocode\cli\mcp.json`)
 **Status**: ✅ Konfigureret med 4 servere
 ```json
 {
   "mcpServers": {
     "memory": "npx @modelcontextprotocol/server-memory",
     "sequential-thinking": "npx @modelcontextprotocol/server-sequential-thinking",
-    "filesystem": "npx @modelcontextprotocol/server-filesystem C:\Users\empir\Tekup",
+    "filesystem": "npx @modelcontextprotocol/server-filesystem %USERPROFILE%\Tekup",
     "github": "npx @modelcontextprotocol/server-github"
   }
 }
 ```
 **Comment i fil**: "All Tekup MCP servers now run in Docker - start with: cd C:/Users/empir/Tekup/tekup-mcp-servers && docker-compose up -d"
 
-#### 3. Cursor (`C:\Users\empir\.cursor\mcp.json`)
+#### 3. Cursor (`%USERPROFILE%\.cursor\mcp.json`)
 **Status**: ✅ Konfigureret med 7 servere
 - memory, sequential-thinking, github, filesystem (Tekup only)
 - tekup-billy (local node)
 - tekupvault (HTTP: https://tekupvault.onrender.com/mcp)
 - puppeteer
 
-#### 4. Windsurf (`C:\Users\empir\.codeium\windsurf\mcp_config.json`)
+#### 4. Windsurf (`%USERPROFILE%\.codeium\windsurf\mcp_config.json`)
 **Status**: ✅ Konfigureret med 5 servere
 - memory, sequential-thinking, puppeteer
-- filesystem (C:\Users\empir - HELE brugermappen!)
+- filesystem (%USERPROFILE% - HELE brugermappen!)
 - tekup-billy (local node)
 
-#### 5. VS Code / GitHub Copilot (`C:\Users\empir\AppData\Roaming\Code\User\mcp.json`)
+#### 5. VS Code / GitHub Copilot (`%APPDATA%\Code\User\mcp.json`)
 **Status**: ✅ Konfigureret med 4 servere
 ```json
 {
   "servers": {  // ⚠️ Bemærk: "servers" ikke "mcpServers"
     "memory": "npx @modelcontextprotocol/server-memory",
     "sequential-thinking": "npx @modelcontextprotocol/server-sequential-thinking",
-    "filesystem": "npx @modelcontextprotocol/server-filesystem C:\Users\empir\Tekup",
+    "filesystem": "npx @modelcontextprotocol/server-filesystem %USERPROFILE%\Tekup",
     "github": "npx @modelcontextprotocol/server-github"
   }
 }
@@ -93,15 +93,15 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 
 ### 🔵 Workspace-Specific Configs
 
-#### 6. Tekup Workspace - Claude (`C:\Users\empir\Tekup\.claude\mcp.json`)
+#### 6. Tekup Workspace - Claude (`%USERPROFILE%\Tekup\.claude\mcp.json`)
 **Status**: ✅ Konfigureret med 7 servere
 - memory, sequential-thinking, github, filesystem
 - tekup-billy, tekupvault (HTTP), puppeteer
 
-#### 7. Tekup Workspace - Kilo Code (`C:\Users\empir\Tekup\.kilocode\mcp.json`)
+#### 7. Tekup Workspace - Kilo Code (`%USERPROFILE%\Tekup\.kilocode\mcp.json`)
 **Status**: ✅ Konfigureret med 4 servere (minimal)
 
-#### 8. Tekup Web Dashboard - Cursor (`C:\Users\empir\Tekup\apps\web\tekup-cloud-dashboard\.cursor\mcp.json`)
+#### 8. Tekup Web Dashboard - Cursor (`%USERPROFILE%\Tekup\apps\web\tekup-cloud-dashboard\.cursor\mcp.json`)
 **Status**: ✅ Workspace-specific config
 
 ## Konfiguration Analyse
@@ -126,11 +126,11 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 
 | IDE | Filesystem Scope | Sikkerhed |
 |-----|------------------|-----------|
-| Kilo Code CLI | `C:\Users\empir\Tekup` | ✅ Sikkert (kun Tekup) |
-| Cursor | `C:\Users\empir\Tekup` | ✅ Sikkert (kun Tekup) |
-| VS Code | `C:\Users\empir\Tekup` | ✅ Sikkert (kun Tekup) |
-| Claude Desktop | `C:\Users\empir` | ⚠️ RISIKabelt (hele brugermappen) |
-| Windsurf | `C:\Users\empir` | ⚠️ RISIKabelt (hele brugermappen) |
+| Kilo Code CLI | `%USERPROFILE%\Tekup` | ✅ Sikkert (kun Tekup) |
+| Cursor | `%USERPROFILE%\Tekup` | ✅ Sikkert (kun Tekup) |
+| VS Code | `%USERPROFILE%\Tekup` | ✅ Sikkert (kun Tekup) |
+| Claude Desktop | `%USERPROFILE%` | ⚠️ RISIKabelt (hele brugermappen) |
+| Windsurf | `%USERPROFILE%` | ⚠️ RISIKabelt (hele brugermappen) |
 
 ### Tekup Custom MCP Servers
 
@@ -147,7 +147,7 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 
 ### 🚨 PROBLEM #1: Exposed GitHub PAT Token
 
-**Lokation**: `C:\Users\empir\AppData\Roaming\Claude\claude_desktop_config.json`
+**Lokation**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 **Token**: `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`
 
@@ -159,12 +159,12 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 
 ### 🚨 PROBLEM #2: Over-Permissive Filesystem Access
 
-Claude Desktop og Windsurf har adgang til `C:\Users\empir` (HELE brugermappen):
+Claude Desktop og Windsurf har adgang til `%USERPROFILE%` (HELE brugermappen):
 - Inkluderer passwords, SSH keys, credentials
 - Inkluderer AppData med tokens og cookies
 - Inkluderer Documents med private filer
 
-**Anbefaling**: Ændr begge til `C:\Users\empir\Tekup`
+**Anbefaling**: Ændr begge til `%USERPROFILE%\Tekup`
 
 ### 🚨 PROBLEM #3: Exposed Supabase Anon Key
 
@@ -203,8 +203,8 @@ Comment i Kilo Code config nævner Docker:
 4. Fjern hardcoded token fra Claude Desktop config
 
 ### 📋 HØJ PRIORITET (I dag)
-5. Ændr filesystem scope i Claude Desktop til kun `C:\Users\empir\Tekup`
-6. Ændr filesystem scope i Windsurf til kun `C:\Users\empir\Tekup`
+5. Ændr filesystem scope i Claude Desktop til kun `%USERPROFILE%\Tekup`
+6. Ændr filesystem scope i Windsurf til kun `%USERPROFILE%\Tekup`
 7. Flyt Supabase credentials til environment variables
 
 ### 🐳 MEDIUM PRIORITET (Denne uge)
@@ -267,7 +267,7 @@ Implementer Docker MCP Gateway så:
 **This Week**:
 ```powershell
 # Implement Docker MCP Gateway
-cd C:\Users\empir\Tekup\tekup-mcp-servers
+cd %USERPROFILE%\Tekup\tekup-mcp-servers
 docker-compose up -d
 
 # Verify all MCP servers running
@@ -279,3 +279,6 @@ docker ps
 **Document Created**: 2025-10-27 12:30  
 **Status**: ✅ Problem SOLVED - From 32 processes to 2!  
 **Next Action**: REVOKE exposed GitHub PAT token ASAP
+
+
+

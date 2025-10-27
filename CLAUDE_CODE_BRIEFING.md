@@ -31,7 +31,7 @@
 
 ## 🗂️ REPOSITORY STRUKTUR
 
-### **Monorepo: C:\Users\empir\Tekup**
+### **Monorepo: %USERPROFILE%\Tekup**
 
 ```
 Tekup/
@@ -115,7 +115,7 @@ Du har **6 MCP servere** tilgængelige i Claude Code:
 **Tools:** create_issue, list_issues, create_pull_request, etc.
 
 ### **5. filesystem** 📁
-**Hvad:** Læs/skriv filer i C:\Users\empir  
+**Hvad:** Læs/skriv filer i %USERPROFILE%  
 **Tools:** read_file, write_file, list_directory, etc.
 
 ### **6. web-scraper** 🌐
@@ -342,9 +342,9 @@ Du er Tekup's AI development assistant. Din opgave er at:
 
 **Organisation:** TekupDK  
 **GitHub:** https://github.com/TekupDK/tekup  
-**Primary Repo:** C:\Users\empir\Tekup  
+**Primary Repo:** %USERPROFILE%\Tekup  
 **Active IDEs:** Kilo Code, VS Code, Claude Code  
-**MCP Config:** C:\Users\empir\AppData\Roaming\Claude\claude_desktop_config.json
+**MCP Config:** %APPDATA%\Claude\claude_desktop_config.json
 
 ---
 
@@ -372,3 +372,6 @@ Hvis det virker, er du klar til at hjælpe med Tekup development! 🚀
 **Last Updated:** 27. oktober 2025 23:45  
 **Version:** 1.0.0  
 **For:** Claude Code AI Assistant
+
+
+

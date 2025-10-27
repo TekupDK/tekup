@@ -17,7 +17,7 @@
 **VS Code Discovery DISABLED** - Kun Tekup's egen MCP config nu!
 
 ```json
-// C:\Users\empir\AppData\Roaming\Code\User\settings.json
+// %APPDATA%\Code\User\settings.json
 "chat.mcp.discovery.enabled": {
   "claude-desktop": false,      // ✅ DISABLED
   "cursor-global": false,        // ✅ DISABLED  
@@ -30,7 +30,7 @@
 
 ### Single Source of Truth: VS Code mcp.json
 
-**Location**: `C:\Users\empir\AppData\Roaming\Code\User\mcp.json`
+**Location**: `%APPDATA%\Code\User\mcp.json`
 
 ```json
 {
@@ -40,7 +40,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"],
       "env": {
-        "MEMORY_FILE_PATH": "C:\\Users\\empir\\.mcp-shared\\memory.json"
+        "MEMORY_FILE_PATH": "%USERPROFILE%\\.mcp-shared\\memory.json"
       }
     },
     "sequential-thinking": {
@@ -51,7 +51,7 @@
     "filesystem": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:\\Users\\empir\\Tekup"]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "%USERPROFILE%\\Tekup"]
     },
     "github": {
       "type": "stdio",
@@ -68,7 +68,7 @@
 
 ### Tekup Custom MCP Servers (Future: Docker)
 
-Placeret i: `C:\Users\empir\Tekup\tekup-mcp-servers\`
+Placeret i: `%USERPROFILE%\Tekup\tekup-mcp-servers\`
 
 **Custom servers**:
 1. **knowledge-mcp** - Semantic search i Tekup dokumentation
@@ -83,29 +83,29 @@ Placeret i: `C:\Users\empir\Tekup\tekup-mcp-servers\`
 ## 🔧 Per-IDE Configuration Strategy
 
 ### VS Code / GitHub Copilot (Primary)
-**Config**: `C:\Users\empir\AppData\Roaming\Code\User\mcp.json`
+**Config**: `%APPDATA%\Code\User\mcp.json`
 **Format**: `"servers"` key (unique to VS Code)
 **Discovery**: DISABLED
 **Servers**: 4 core servere (memory, sequential-thinking, filesystem, github)
 
 ### Claude Desktop (Documentation/Research)
-**Config**: `C:\Users\empir\AppData\Roaming\Claude\claude_desktop_config.json`
+**Config**: `%APPDATA%\Claude\claude_desktop_config.json`
 **Format**: `"mcpServers"` key
 **Servers**: 6 servere (alle Tekup custom + web-scraper)
 **Use case**: Deep research, documentation writing
 
 ### Cursor (Legacy - til udfasning)
-**Config**: `C:\Users\empir\.cursor\mcp.json`
+**Config**: `%USERPROFILE%\.cursor\mcp.json`
 **Status**: ⚠️ Disable eller sync med Tekup standard
 **Servers**: 7 servere (inkl. tekup-billy, tekupvault HTTP)
 
 ### Windsurf (Legacy - til udfasning)
-**Config**: `C:\Users\empir\.codeium\windsurf\mcp_config.json`
+**Config**: `%USERPROFILE%\.codeium\windsurf\mcp_config.json`
 **Status**: ⚠️ Disable eller sync med Tekup standard
 **Servers**: 5 servere
 
 ### Kilo Code CLI (Development)
-**Config**: `C:\Users\empir\.kilocode\cli\mcp.json`
+**Config**: `%USERPROFILE%\.kilocode\cli\mcp.json`
 **Format**: `"mcpServers"` key
 **Servers**: 4 servere (sync med VS Code)
 
@@ -131,7 +131,7 @@ Placeret i: `C:\Users\empir\Tekup\tekup-mcp-servers\`
 
 ### Architecture
 ```
-C:\Users\empir\Tekup\tekup-mcp-servers\
+%USERPROFILE%\Tekup\tekup-mcp-servers\
 ├── docker-compose.yml          # Single source of truth
 ├── packages/
 │   ├── knowledge-mcp/
@@ -159,7 +159,7 @@ services:
     environment:
       - KNOWLEDGE_SEARCH_ROOT=/workspace
     volumes:
-      - C:\Users\empir\Tekup:/workspace:ro
+      - %USERPROFILE%\Tekup:/workspace:ro
     ports:
       - "3001:3000"
     
@@ -168,7 +168,7 @@ services:
     environment:
       - CODE_SEARCH_ROOT=/workspace
     volumes:
-      - C:\Users\empir\Tekup:/workspace:ro
+      - %USERPROFILE%\Tekup:/workspace:ro
     ports:
       - "3002:3000"
     
@@ -234,13 +234,13 @@ $env:LOG_LEVEL
 3. ✅ **USE** environment variable references: `${VAR_NAME}`
 
 ### Filesystem Scope Reduction
-**BEFORE**: Claude Desktop + Windsurf havde adgang til `C:\Users\empir` (HELE brugermappen!)
+**BEFORE**: Claude Desktop + Windsurf havde adgang til `%USERPROFILE%` (HELE brugermappen!)
 
-**AFTER**: Kun `C:\Users\empir\Tekup`
+**AFTER**: Kun `%USERPROFILE%\Tekup`
 
 ```json
 "filesystem": {
-  "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:\\Users\\empir\\Tekup"]
+  "args": ["-y", "@modelcontextprotocol/server-filesystem", "%USERPROFILE%\\Tekup"]
 }
 ```
 
@@ -323,19 +323,19 @@ $env:LOG_LEVEL
 ### TODAY
 ```powershell
 # Update Claude Desktop config
-$claudeConfig = "C:\Users\empir\AppData\Roaming\Claude\claude_desktop_config.json"
+$claudeConfig = "%APPDATA%\Claude\claude_desktop_config.json"
 # Remove hardcoded: github_pat_11BDCB62Q0...
 # Replace with: "${GITHUB_PERSONAL_ACCESS_TOKEN}"
 
 # Reduce filesystem scope
-# Change: "C:\\Users\\empir" 
-# To: "C:\\Users\\empir\\Tekup"
+# Change: "%USERPROFILE%" 
+# To: "%USERPROFILE%\\Tekup"
 ```
 
 ### THIS WEEK
 ```powershell
 # Start Docker migration
-cd C:\Users\empir\Tekup\tekup-mcp-servers
+cd %USERPROFILE%\Tekup\tekup-mcp-servers
 # Create docker-compose.yml
 # Test locally
 docker-compose up -d
@@ -366,4 +366,7 @@ HTTP endpoints (lokalt):
 - database:         http://localhost:8053/mcp
 
 Opdater IDE‑configs (Claude Desktop, VS Code, Cursor) til at bruge disse URLs og slå lokale npx‑servers fra.
+
+
+
 
