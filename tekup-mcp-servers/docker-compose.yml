@@ -1,0 +1,278 @@
+version: '3.8'
+
+# Tekup MCP Servers - Production Docker Compose
+# All custom MCP servers containerized with HTTP/SSE transport
+# Based on Tekup production patterns (tekup-billy, calendar-mcp)
+
+services:
+  # ==========================================
+  # KNOWLEDGE MCP - Documentation Search
+  # ==========================================
+  knowledge-mcp:
+    build:
+      context: ./packages/knowledge-mcp
+      dockerfile: Dockerfile
+    container_name: tekup-knowledge-mcp
+    ports:
+      - "${KNOWLEDGE_MCP_PORT:-8051}:8050"
+    environment:
+      - NODE_ENV=production
+      - PORT=8050
+      - KNOWLEDGE_SEARCH_ROOT=/workspace
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - ../../:/workspace:ro  # Read-only mount of entire Tekup workspace
+      - knowledge_logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8050/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-mcp-network
+
+  # ==========================================
+  # CODE INTELLIGENCE MCP - Code Search & Analysis
+  # ==========================================
+  code-intelligence-mcp:
+    build:
+      context: ./packages/code-intelligence-mcp
+      dockerfile: Dockerfile
+    container_name: tekup-code-intelligence-mcp
+    ports:
+      - "${CODE_INTELLIGENCE_PORT:-8052}:8050"
+    environment:
+      - NODE_ENV=production
+      - PORT=8050
+      - CODE_SEARCH_ROOT=/workspace
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - ../../:/workspace:ro
+      - code_intelligence_logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8050/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-mcp-network
+
+  # ==========================================
+  # DATABASE MCP - Supabase Queries
+  # ==========================================
+  database-mcp:
+    build:
+      context: ./packages/database-mcp
+      dockerfile: Dockerfile
+    container_name: tekup-database-mcp
+    ports:
+      - "${DATABASE_MCP_PORT:-8053}:8050"
+    environment:
+      - NODE_ENV=production
+      - PORT=8050
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8050/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-mcp-network
+    depends_on:
+      - redis
+
+  # ==========================================
+  # TEKUP BILLY MCP - Billy.dk Integration
+  # ==========================================
+  billy-mcp:
+    image: ghcr.io/tekupdk/tekup-billy:latest
+    container_name: tekup-billy-mcp
+    ports:
+      - "${BILLY_MCP_PORT:-8054}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - BILLY_API_KEY=${BILLY_API_KEY}
+      - BILLY_ORGANIZATION_ID=${BILLY_ORGANIZATION_ID}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-mcp-network
+
+  # ==========================================
+  # CALENDAR MCP - Google Calendar Integration
+  # ==========================================
+  calendar-mcp:
+    build:
+      context: ../apps/rendetalje/services/calendar-mcp
+      dockerfile: Dockerfile
+    container_name: tekup-calendar-mcp
+    ports:
+      - "${CALENDAR_MCP_PORT:-8055}:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - MCP_PORT=3001
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - GOOGLE_CALENDAR_CREDENTIALS=${GOOGLE_CALENDAR_CREDENTIALS}
+      - GOOGLE_SERVICE_ACCOUNT_KEY=${GOOGLE_SERVICE_ACCOUNT_KEY}
+      - CALENDAR_ID=${CALENDAR_ID}
+      - CALENDAR_TIMEZONE=${CALENDAR_TIMEZONE:-Europe/Copenhagen}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - calendar_logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-mcp-network
+
+  # ==========================================
+  # GMAIL MCP - Gmail Automation
+  # ==========================================
+  gmail-mcp:
+    build:
+      context: ../services/tekup-gmail-services/apps/gmail-mcp-server
+      dockerfile: Dockerfile
+    container_name: tekup-gmail-mcp
+    ports:
+      - "${GMAIL_MCP_PORT:-8056}:3000"
+    environment:
+      - NODE_ENV=production
+      - GMAIL_CREDENTIALS_PATH=/gmail-server/credentials.json
+      - GMAIL_OAUTH_PATH=/root/.gmail-mcp/gcp-oauth.keys.json
+    volumes:
+      - gmail_credentials:/gmail-server
+      - gmail_oauth:/root/.gmail-mcp
+    restart: unless-stopped
+    networks:
+      - tekup-mcp-network
+
+  # ==========================================
+  # TEKUP VAULT MCP - Secrets Management
+  # ==========================================
+  vault-mcp:
+    build:
+      context: ../apps/production/tekup-vault/apps/mcp
+      dockerfile: Dockerfile
+    container_name: tekup-vault-mcp
+    ports:
+      - "${VAULT_MCP_PORT:-8057}:8050"
+    environment:
+      - NODE_ENV=production
+      - PORT=8050
+      - DATABASE_URL=${VAULT_DATABASE_URL}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8050/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - tekup-mcp-network
+    depends_on:
+      - postgres
+
+  # ==========================================
+  # INFRASTRUCTURE SERVICES
+  # ==========================================
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: tekup-mcp-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - tekup-mcp-network
+
+  # PostgreSQL for vault-mcp (if needed)
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: tekup-mcp-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tekupvault}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tekup-mcp-network
+
+  # ==========================================
+  # NGINX REVERSE PROXY (Optional)
+  # ==========================================
+  nginx:
+    image: nginx:alpine
+    container_name: tekup-mcp-nginx
+    ports:
+      - "${NGINX_HTTP_PORT:-8080}:80"
+      - "${NGINX_HTTPS_PORT:-8443}:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - knowledge-mcp
+      - code-intelligence-mcp
+      - database-mcp
+      - billy-mcp
+      - calendar-mcp
+    restart: unless-stopped
+    networks:
+      - tekup-mcp-network
+
+# ==========================================
+# VOLUMES
+# ==========================================
+volumes:
+  knowledge_logs:
+  code_intelligence_logs:
+  calendar_logs:
+  gmail_credentials:
+  gmail_oauth:
+  redis_data:
+  postgres_data:
+  nginx_logs:
+
+# ==========================================
+# NETWORKS
+# ==========================================
+networks:
+  tekup-mcp-network:
+    name: tekup-mcp-network
+    driver: bridge

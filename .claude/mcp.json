@@ -2,10 +2,7 @@
   "mcpServers": {
     "memory": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
       "env": {
         "MEMORY_FILE_PATH": "C:\\Users\\empir\\.mcp-shared\\memory.json"
       },
@@ -14,69 +11,59 @@
     },
     "sequential-thinking": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
-      "disabled": false,
-      "alwaysAllow": []
-    },
-    "tekup-billy": {
-      "command": "node",
-      "args": [
-        "C:/Users/empir/Tekup/apps/production/tekup-billy/dist/index.js"
-      ],
-      "env": {
-        "BILLY_API_KEY": "${BILLY_API_KEY}",
-        "BILLY_ORGANIZATION_ID": "${BILLY_ORGANIZATION_ID}",
-        "SUPABASE_URL": "${SUPABASE_URL}",
-        "SUPABASE_ANON_KEY": "${SUPABASE_ANON_KEY}",
-        "NODE_ENV": "${NODE_ENV}",
-        "LOG_LEVEL": "${LOG_LEVEL}"
-      },
-      "disabled": false,
-      "alwaysAllow": []
-    },
-    "tekup-vault": {
-      "command": "node",
-      "args": [
-        "C:/Users/empir/Tekup/apps/production/tekup-vault/apps/mcp/dist/index.js"
-      ],
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "disabled": false,
-      "alwaysAllow": []
-    },
-    "calendar-mcp": {
-      "command": "node",
-      "args": [
-        "C:/Users/empir/Tekup/apps/rendetalje/services/calendar-mcp/dist/index.js"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "disabled": false,
       "alwaysAllow": []
     },
     "filesystem": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "C:/Users/empir/Tekup"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:/Users/empir/Tekup"],
       "disabled": false,
       "alwaysAllow": ["read_file", "list_directory"]
     },
     "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
       "disabled": false,
       "alwaysAllow": []
+    },
+    "knowledge-mcp": {
+      "command": "docker",
+      "args": ["exec", "-i", "tekup-knowledge-mcp", "node", "dist/index.js"],
+      "disabled": false,
+      "alwaysAllow": [],
+      "description": "Docker: Documentation search"
+    },
+    "code-intelligence-mcp": {
+      "command": "docker",
+      "args": ["exec", "-i", "tekup-code-intelligence-mcp", "node", "dist/index.js"],
+      "disabled": false,
+      "alwaysAllow": [],
+      "description": "Docker: Code search & analysis"
+    },
+    "database-mcp": {
+      "command": "docker",
+      "args": ["exec", "-i", "tekup-database-mcp", "node", "dist/index.js"],
+      "disabled": false,
+      "alwaysAllow": [],
+      "description": "Docker: Supabase queries"
+    },
+    "billy-mcp": {
+      "command": "docker",
+      "args": ["exec", "-i", "tekup-billy-mcp", "node", "dist/http-server.js"],
+      "disabled": false,
+      "alwaysAllow": [],
+      "description": "Docker: Billy.dk integration"
+    },
+    "calendar-mcp": {
+      "command": "docker",
+      "args": ["exec", "-i", "tekup-calendar-mcp", "node", "dist/index.js"],
+      "disabled": false,
+      "alwaysAllow": [],
+      "description": "Docker: Google Calendar"
     }
   },
   "globalShortcuts": {}
