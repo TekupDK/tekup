@@ -5,13 +5,23 @@
 ### Prerequisites
 - Docker Desktop installed and running
 - Port 8080 available (or change in docker-compose.yml)
+- **Tekup Secrets** configured (see Configuration section below)
 
 ### Quick Start
 
 #### Option 1: Using docker-compose (Recommended)
 ```powershell
 # From apps/web/tekup-cloud-dashboard directory
-docker-compose up -d
+
+# Step 1: Sync Supabase credentials from tekup-secrets
+cd ..\..\..
+cd tekup-secrets
+.\scripts\sync-to-project.ps1 -Project "tekup-cloud-dashboard" -Environment "development"
+
+# Step 2: Return to dashboard directory and start Docker
+cd ..\apps\web\tekup-cloud-dashboard
+Copy-Item .env.docker .env -Force  # Docker-compose reads .env by default
+docker-compose up -d --build
 
 # View logs
 docker-compose logs -f
@@ -22,8 +32,11 @@ docker-compose down
 
 #### Option 2: Using Docker directly
 ```powershell
-# Build image
-docker build -t tekup-cloud-dashboard .
+# Build image with build arguments
+docker build \
+  --build-arg VITE_SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co \
+  --build-arg VITE_SUPABASE_ANON_KEY=your_anon_key_here \
+  -t tekup-cloud-dashboard .
 
 # Run container
 docker run -d -p 8080:80 --name tekup-dashboard tekup-cloud-dashboard
@@ -38,15 +51,49 @@ docker rm tekup-dashboard
 
 ### Access Dashboard
 - **URL:** http://localhost:8080
+- **Login:** Use Supabase credentials (synced from tekup-secrets)
+- **Demo Mode:** Click "Continue in Demo Mode" if you want to test without login
 - **Health check:** http://localhost:8080 (nginx will return 200 OK)
 
 ---
 
 ## ⚙️ Configuration
 
-### Environment Variables
+### Tekup Secrets Integration (Recommended)
 
-Create a `.env` file in the same directory as docker-compose.yml:
+This project uses **centralized secret management** via `tekup-secrets` repository:
+
+```powershell
+# 1. Navigate to tekup-secrets
+cd C:\Users\empir\Tekup\tekup-secrets
+
+# 2. Sync credentials to Cloud Dashboard
+.\scripts\sync-to-project.ps1 -Project "tekup-cloud-dashboard" -Environment "development"
+
+# 3. Return to dashboard and copy for Docker
+cd ..\apps\web\tekup-cloud-dashboard
+Copy-Item .env.docker .env -Force
+
+# 4. Rebuild Docker with new credentials
+docker-compose up -d --build
+```
+
+**What gets synced:**
+- ✅ Supabase URL and ANON key from `tekup-secrets/config/databases.env`
+- ✅ All shared configuration from `.env.shared`
+- ✅ Environment-specific secrets from `.env.development`
+
+**File structure after sync:**
+```
+tekup-cloud-dashboard/
+├── .env               # Complete environment (229 lines) - used by Docker build
+├── .env.docker        # Docker-specific (clean, 9 lines) - template
+└── .env.backup        # Auto-generated full backup
+```
+
+### Manual Configuration (Not Recommended)
+
+If you cannot use tekup-secrets, manually edit `.env.docker`:
 
 ```env
 # Supabase Configuration

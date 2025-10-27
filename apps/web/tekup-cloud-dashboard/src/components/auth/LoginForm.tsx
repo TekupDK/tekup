@@ -8,6 +8,11 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
 
+  const handleDemoMode = () => {
+    // Redirect to dashboard in demo/mock mode
+    window.location.href = '/dashboard';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -109,6 +114,13 @@ export function LoginForm() {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Demo credentials: admin@tekup.dk / demo123
             </p>
+            <button
+              type="button"
+              onClick={handleDemoMode}
+              className="mt-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300"
+            >
+              Continue in Demo Mode (No Login Required)
+            </button>
           </div>
         </form>
       </div>
