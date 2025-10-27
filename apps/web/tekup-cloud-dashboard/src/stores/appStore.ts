@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Tenant, User, Notification } from '../types';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { Tenant, User, Notification } from "../types";
 
 interface AppState {
   // Navigation
@@ -20,7 +20,9 @@ interface AppState {
   // Notifications
   notifications: Notification[];
   setNotifications: (notifications: Notification[]) => void;
-  addNotification: (notification: Omit<Notification, 'id' | 'created_at'>) => void;
+  addNotification: (
+    notification: Omit<Notification, "id" | "created_at">
+  ) => void;
   markNotificationAsRead: (id: string) => void;
   clearNotifications: () => void;
 
@@ -40,29 +42,34 @@ export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
       // Navigation
-      currentPage: 'dashboard',
+      currentPage: "dashboard",
       setCurrentPage: (page: string) => set({ currentPage: page }),
 
       // Layout
       sidebarCollapsed: false,
-      setSidebarCollapsed: (collapsed: boolean) => set({ sidebarCollapsed: collapsed }),
+      setSidebarCollapsed: (collapsed: boolean) =>
+        set({ sidebarCollapsed: collapsed }),
 
       // User & Tenant
       currentTenant: null,
-      setCurrentTenant: (tenant: Tenant | null) => set({ currentTenant: tenant }),
+      setCurrentTenant: (tenant: Tenant | null) =>
+        set({ currentTenant: tenant }),
       currentUser: null,
       setCurrentUser: (user: User | null) => set({ currentUser: user }),
 
       // Notifications
       notifications: [],
-      setNotifications: (notifications: Notification[]) => set({ notifications }),
+      setNotifications: (notifications: Notification[]) =>
+        set({ notifications }),
       addNotification: (notification) => {
         const newNotification: Notification = {
           ...notification,
           id: Date.now().toString(),
           created_at: new Date().toISOString(),
         };
-        set((state) => ({ notifications: [newNotification, ...state.notifications] }));
+        set((state) => ({
+          notifications: [newNotification, ...state.notifications],
+        }));
       },
       markNotificationAsRead: (id: string) => {
         set((state) => ({
@@ -78,22 +85,23 @@ export const useAppStore = create<AppState>()(
       setLoading: (isLoading: boolean) => set({ isLoading }),
 
       // Search
-      searchQuery: '',
+      searchQuery: "",
       setSearchQuery: (searchQuery: string) => set({ searchQuery }),
 
       // Actions
-      reset: () => set({
-        currentPage: 'dashboard',
-        sidebarCollapsed: false,
-        currentTenant: null,
-        currentUser: null,
-        notifications: [],
-        isLoading: false,
-        searchQuery: '',
-      }),
+      reset: () =>
+        set({
+          currentPage: "dashboard",
+          sidebarCollapsed: false,
+          currentTenant: null,
+          currentUser: null,
+          notifications: [],
+          isLoading: false,
+          searchQuery: "",
+        }),
     }),
     {
-      name: 'app-storage',
+      name: "app-storage",
       partialize: (state) => ({
         currentTenant: state.currentTenant,
         sidebarCollapsed: state.sidebarCollapsed,

@@ -1,6 +1,6 @@
-import { useState, useEffect, createContext, useContext } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { useState, useEffect, createContext, useContext } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
 
 interface AuthContextType {
   user: User | null;
@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
@@ -29,25 +29,30 @@ export function useAuthState() {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data }) => {
-      const sessionData = data as { session: Session | null };
-      setSession(sessionData.session);
-      const session = sessionData.session as Session | null;
-      setUser(session?.user ?? null);
-      setLoading(false);
-    }).catch((error: Error) => {
-      console.warn('Auth session error:', error);
-      setLoading(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        const sessionData = data as { session: Session | null };
+        setSession(sessionData.session);
+        const session = sessionData.session as Session | null;
+        setUser(session?.user ?? null);
+        setLoading(false);
+      })
+      .catch((error: Error) => {
+        console.warn("Auth session error:", error);
+        setLoading(false);
+      });
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event: string, session: Session | null) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    } = supabase.auth.onAuthStateChange(
+      (_event: string, session: Session | null) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
+    );
 
     return () => subscription.unsubscribe();
   }, []);

@@ -1,18 +1,18 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from './contexts/ThemeProvider';
-import { AuthProvider } from './components/auth/AuthProvider';
-import { AuthGuard } from './components/auth/AuthGuard';
-import { AppProvider } from './contexts/AppProvider';
-import { Sidebar } from './components/layout/Sidebar';
-import { TopNav } from './components/layout/TopNav';
-import { JarvisChat } from './components/ai/JarvisChat';
-import { Dashboard } from './pages/Dashboard';
-import { Leads } from './pages/Leads';
-import { SystemHealth } from './pages/SystemHealth';
-import { Agents } from './pages/Agents';
-import { Settings } from './pages/Settings';
-import { Analytics } from './pages/Analytics';
-import { Integrations } from './pages/Integrations';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./contexts/ThemeProvider";
+import { AuthProvider } from "./components/auth/AuthProvider";
+import { AuthGuard } from "./components/auth/AuthGuard";
+import { AppProvider } from "./contexts/AppProvider";
+import { Sidebar } from "./components/layout/Sidebar";
+import { TopNav } from "./components/layout/TopNav";
+import { JarvisChat } from "./components/ai/JarvisChat";
+import { Dashboard } from "./pages/Dashboard";
+import { Leads } from "./pages/Leads";
+import { SystemHealth } from "./pages/SystemHealth";
+import { Agents } from "./pages/Agents";
+import { Settings } from "./pages/Settings";
+import { Analytics } from "./pages/Analytics";
+import { Integrations } from "./pages/Integrations";
 
 function App() {
   return (

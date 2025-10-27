@@ -1,0 +1,55 @@
+# Render.com Blueprint for Tekup Cloud Dashboard
+# Auto-deploy to Render.com via this configuration
+
+services:
+  - type: web
+    name: tekup-cloud-dashboard
+    runtime: static
+    region: frankfurt # EU region for GDPR compliance
+    plan: starter # Free tier for static sites
+
+    # Build settings for Vite
+    buildCommand: npm install && npm run build
+
+    # Auto-deploy settings
+    autoDeploy: true
+    branch: master
+
+    # Custom domain (optional - set in Render dashboard)
+    # domains:
+    #   - dashboard.tekup.dk
+
+    # Environment variables for build time
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: VITE_APP_NAME
+        value: Tekup Cloud Dashboard
+
+      - key: VITE_ENVIRONMENT
+        value: production
+
+      - key: VITE_SUPABASE_URL
+        sync: false # Set manually in Render dashboard
+
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false # Set manually in Render dashboard
+
+      - key: VITE_API_BASE_URL
+        value: https://api.tekup.dk
+
+      - key: VITE_BILLY_API_URL
+        value: https://tekup-billy-mcp.onrender.com
+
+      - key: VITE_VAULT_API_URL
+        value: https://tekupvault-api.onrender.com
+
+      - key: VITE_FEATURE_ANALYTICS
+        value: "true"
+
+      - key: VITE_FEATURE_BILLING
+        value: "true"
+
+      - key: VITE_FEATURE_CHAT
+        value: "true"

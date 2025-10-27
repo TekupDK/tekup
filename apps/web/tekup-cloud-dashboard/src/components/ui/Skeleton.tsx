@@ -1,38 +1,38 @@
-import { HTMLAttributes } from 'react';
+import { HTMLAttributes } from "react";
 
 export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
   width?: string | number;
   height?: string | number;
-  variant?: 'text' | 'circular' | 'rectangular';
-  animation?: 'pulse' | 'wave' | 'none';
+  variant?: "text" | "circular" | "rectangular";
+  animation?: "pulse" | "wave" | "none";
 }
 
 export function Skeleton({
   width,
   height,
-  variant = 'rectangular',
-  animation = 'pulse',
-  className = '',
+  variant = "rectangular",
+  animation = "pulse",
+  className = "",
   style,
   ...props
 }: SkeletonProps) {
-  const baseStyles = 'bg-gray-200 dark:bg-gray-700';
+  const baseStyles = "bg-gray-200 dark:bg-gray-700";
 
   const variants = {
-    text: 'rounded',
-    circular: 'rounded-full',
-    rectangular: 'rounded-lg',
+    text: "rounded",
+    circular: "rounded-full",
+    rectangular: "rounded-lg",
   };
 
   const animations = {
-    pulse: 'animate-pulse',
-    wave: 'animate-shimmer',
-    none: '',
+    pulse: "animate-pulse",
+    wave: "animate-shimmer",
+    none: "",
   };
 
   const inlineStyles = {
-    width: typeof width === 'number' ? `${width}px` : width,
-    height: typeof height === 'number' ? `${height}px` : height,
+    width: typeof width === "number" ? `${width}px` : width,
+    height: typeof height === "number" ? `${height}px` : height,
     ...style,
   };
 
@@ -50,7 +50,10 @@ export interface SkeletonTextProps {
   lastLineWidth?: string;
 }
 
-export function SkeletonText({ lines = 3, lastLineWidth = '80%' }: SkeletonTextProps) {
+export function SkeletonText({
+  lines = 3,
+  lastLineWidth = "80%",
+}: SkeletonTextProps) {
   return (
     <div className="space-y-2">
       {Array.from({ length: lines }).map((_, index) => (
@@ -58,7 +61,7 @@ export function SkeletonText({ lines = 3, lastLineWidth = '80%' }: SkeletonTextP
           key={index}
           variant="text"
           height={16}
-          width={index === lines - 1 ? lastLineWidth : '100%'}
+          width={index === lines - 1 ? lastLineWidth : "100%"}
         />
       ))}
     </div>

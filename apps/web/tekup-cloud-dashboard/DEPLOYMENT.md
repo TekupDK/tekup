@@ -1,6 +1,6 @@
 # Deployment Guide - Tekup Cloud Dashboard
 
-Denne guide beskriver, hvordan du deployer Tekup Cloud Dashboard til forskellige hosting-platforme.
+Denne guide beskriver, hvordan du deployer Tekup Cloud Dashboard til Render.com (anbefalet for Tekup Portfolio konsistens).
 
 ## 📋 Pre-deployment Checklist
 
@@ -10,94 +10,66 @@ Denne guide beskriver, hvordan du deployer Tekup Cloud Dashboard til forskellige
 - [ ] Tests passerer (`npm run test`)
 - [ ] Linting er clean (`npm run lint`)
 
-## 🌐 Vercel Deployment (Anbefalet)
+## 🌐 Render.com Deployment (ANBEFALET - Tekup Standard)
 
-### Automatisk Deployment
+### Hvorfor Render.com?
 
-1. **Forbind Repository**
-   ```bash
-   # Push til GitHub
-   git add .
-   git commit -m "Ready for deployment"
-   git push origin main
-   ```
+Alle Tekup production services bruger Render.com:
 
-2. **Opsæt Vercel Project**
-   - Gå til [vercel.com](https://vercel.com)
-   - Klik "New Project"
-   - Import dit GitHub repository
-   - Vælg "tekup-cloud-dashboard"
+- ✅ tekup-vault (Frankfurt)
+- ✅ tekup-billy (Frankfurt)
+- ✅ tekup-database (Frankfurt)
+- ✅ calendar-mcp (Frankfurt)
+- ✅ rendetalje services (Frankfurt)
 
-3. **Konfigurer Build Settings**
-   - Framework Preset: `Vite`
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-   - Install Command: `npm install`
+**Benefits:**
 
-4. **Tilføj Environment Variables**
+- 🇪🇺 Frankfurt region (GDPR compliance)
+- 🔗 Service mesh integration
+- 🛠️ Fælles infrastructure management
+- 📊 Unified monitoring dashboard
+
+### Automatisk Deployment via render.yaml
+
+Projektet har allerede `render.yaml` konfiguration!
+
+1. **Connect GitHub Repository**
+
+   - Gå til [render.com/dashboard](https://dashboard.render.com)
+   - Klik "New" → "Blueprint"
+   - Connect GitHub repository: `TekupDK/tekup`
+   - Select path: `apps/web/tekup-cloud-dashboard`
+
+2. **Render detekterer automatisk `render.yaml`**
+
+   - Service navn: `tekup-cloud-dashboard`
+   - Region: Frankfurt
+   - Runtime: Static Site
+   - Build: `npm install && npm run build`
+
+3. **Tilføj Environment Variables**
+
    ```env
-   VITE_SUPABASE_URL=your_production_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_production_supabase_anon_key
-   VITE_APP_NAME=Tekup Cloud Dashboard
-   VITE_API_BASE_URL=https://api.tekup.dk
-   VITE_ENVIRONMENT=production
-   VITE_FEATURE_ANALYTICS=true
-   VITE_FEATURE_BILLING=true
-   VITE_FEATURE_CHAT=true
+   VITE_SUPABASE_URL=https://xxx.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJhbGci...
    ```
 
-5. **Deploy**
-   - Klik "Deploy"
-   - Vent på build completion
-   - Test deployment på den genererede URL
-
-### Manual Deployment via CLI
-
-```bash
-# Installer Vercel CLI
-npm i -g vercel
-
-# Login til Vercel
-vercel login
-
-# Deploy
-vercel --prod
-```
-
-## 🚀 Netlify Deployment
-
-### Via Git Integration
-
-1. **Forbind Repository**
-   - Gå til [netlify.com](https://netlify.com)
-   - Klik "New site from Git"
-   - Vælg GitHub og dit repository
-
-2. **Build Settings**
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-   - Node version: `18`
-
-3. **Environment Variables**
-   Tilføj samme variabler som til Vercel i Netlify dashboard.
-
-4. **Deploy Settings**
-   ```toml
-   # netlify.toml
-   [build]
-     command = "npm run build"
-     publish = "dist"
-
-   [build.environment]
-     NODE_VERSION = "18"
-
-   [[redirects]]
-     from = "/*"
-     to = "/index.html"
-     status = 200
-   ```
+4. **Deploy**
+   - Klik "Apply"
+   - Render builder automatisk
+   - URL: `https://tekup-cloud-dashboard.onrender.com`
 
 ### Manual Deployment
+
+````bash
+# Install Render CLI
+npm i -g render-cli
+
+# Login
+render login
+
+# Deploy fra apps/web/tekup-cloud-dashboard
+render deploy
 
 ```bash
 # Installer Netlify CLI
@@ -108,7 +80,7 @@ npm run build
 
 # Deploy
 netlify deploy --prod --dir=dist
-```
+````
 
 ## 🐳 Docker Deployment
 
@@ -202,29 +174,34 @@ aws s3 website s3://your-bucket-name \
 
 ```json
 {
-  "Origins": [{
-    "DomainName": "your-bucket-name.s3.amazonaws.com",
-    "Id": "S3-your-bucket-name",
-    "S3OriginConfig": {
-      "OriginAccessIdentity": ""
+  "Origins": [
+    {
+      "DomainName": "your-bucket-name.s3.amazonaws.com",
+      "Id": "S3-your-bucket-name",
+      "S3OriginConfig": {
+        "OriginAccessIdentity": ""
+      }
     }
-  }],
+  ],
   "DefaultCacheBehavior": {
     "TargetOriginId": "S3-your-bucket-name",
     "ViewerProtocolPolicy": "redirect-to-https",
     "Compress": true
   },
-  "CustomErrorResponses": [{
-    "ErrorCode": 404,
-    "ResponseCode": 200,
-    "ResponsePagePath": "/index.html"
-  }]
+  "CustomErrorResponses": [
+    {
+      "ErrorCode": 404,
+      "ResponseCode": 200,
+      "ResponsePagePath": "/index.html"
+    }
+  ]
 }
 ```
 
 ## 🔧 Environment-Specific Configuration
 
 ### Development
+
 ```env
 VITE_ENVIRONMENT=development
 VITE_API_BASE_URL=http://localhost:3001
@@ -232,6 +209,7 @@ VITE_SUPABASE_URL=your_dev_supabase_url
 ```
 
 ### Staging
+
 ```env
 VITE_ENVIRONMENT=staging
 VITE_API_BASE_URL=https://staging-api.tekup.dk
@@ -239,6 +217,7 @@ VITE_SUPABASE_URL=your_staging_supabase_url
 ```
 
 ### Production
+
 ```env
 VITE_ENVIRONMENT=production
 VITE_API_BASE_URL=https://api.tekup.dk
@@ -252,7 +231,7 @@ VITE_SUPABASE_URL=your_prod_supabase_url
 ```javascript
 // src/lib/monitoring.ts
 export const initMonitoring = () => {
-  if (import.meta.env.VITE_ENVIRONMENT === 'production') {
+  if (import.meta.env.VITE_ENVIRONMENT === "production") {
     // Sentry, LogRocket, eller anden monitoring
   }
 };
@@ -262,9 +241,9 @@ export const initMonitoring = () => {
 
 ```javascript
 // Google Analytics 4
-gtag('config', 'GA_MEASUREMENT_ID', {
+gtag("config", "GA_MEASUREMENT_ID", {
   page_title: document.title,
-  page_location: window.location.href
+  page_location: window.location.href,
 });
 ```
 
@@ -273,20 +252,27 @@ gtag('config', 'GA_MEASUREMENT_ID', {
 ### Content Security Policy
 
 ```html
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; 
                script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;
                style-src 'self' 'unsafe-inline';
                img-src 'self' data: https:;
-               connect-src 'self' https://api.tekup.dk https://*.supabase.co;">
+               connect-src 'self' https://api.tekup.dk https://*.supabase.co;"
+/>
 ```
 
 ### HTTPS Enforcement
 
 ```javascript
 // Redirect HTTP til HTTPS i production
-if (location.protocol !== 'https:' && import.meta.env.VITE_ENVIRONMENT === 'production') {
-  location.replace(`https:${location.href.substring(location.protocol.length)}`);
+if (
+  location.protocol !== "https:" &&
+  import.meta.env.VITE_ENVIRONMENT === "production"
+) {
+  location.replace(
+    `https:${location.href.substring(location.protocol.length)}`
+  );
 }
 ```
 
@@ -295,6 +281,7 @@ if (location.protocol !== 'https:' && import.meta.env.VITE_ENVIRONMENT === 'prod
 ### Almindelige Deployment Issues
 
 1. **Build Fejl**
+
    ```bash
    # Clear cache og reinstaller
    rm -rf node_modules package-lock.json
@@ -303,11 +290,13 @@ if (location.protocol !== 'https:' && import.meta.env.VITE_ENVIRONMENT === 'prod
    ```
 
 2. **Environment Variables Ikke Loaded**
+
    - Tjek at variablerne starter med `VITE_`
    - Verificer at de er tilføjet i hosting platform
    - Restart deployment efter tilføjelse
 
 3. **Routing Issues (404 på refresh)**
+
    - Opsæt redirects til `/index.html`
    - Tjek server konfiguration for SPA support
 
@@ -322,7 +311,7 @@ if (location.protocol !== 'https:' && import.meta.env.VITE_ENVIRONMENT === 'prod
 // src/lib/health.ts
 export const healthCheck = async () => {
   try {
-    const response = await fetch('/api/health');
+    const response = await fetch("/api/health");
     return response.ok;
   } catch {
     return false;
@@ -341,14 +330,14 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          supabase: ['@supabase/supabase-js'],
-          ui: ['lucide-react']
-        }
-      }
+          vendor: ["react", "react-dom"],
+          supabase: ["@supabase/supabase-js"],
+          ui: ["lucide-react"],
+        },
+      },
     },
-    chunkSizeWarningLimit: 1000
-  }
+    chunkSizeWarningLimit: 1000,
+  },
 });
 ```
 
@@ -380,7 +369,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
       - run: npm ci
       - run: npm run test
       - run: npm run build
@@ -389,7 +378,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
-          vercel-args: '--prod'
+          vercel-args: "--prod"
 ```
 
 Dette deployment guide sikrer en pålidelig og skalerbar deployment af Tekup Cloud Dashboard.

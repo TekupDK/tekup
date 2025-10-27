@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 export interface CardProps {
   children: ReactNode;
@@ -7,12 +7,17 @@ export interface CardProps {
   shadow?: string;
 }
 
-export function Card({ children, className = '', hover = false, shadow }: CardProps) {
-  const shadowClass = shadow || 'shadow-sm';
+export function Card({
+  children,
+  className = "",
+  hover = false,
+  shadow,
+}: CardProps) {
+  const shadowClass = shadow || "shadow-sm";
   return (
     <div
       className={`bg-white dark:bg-gray-800 rounded-lg ${shadowClass} border border-gray-200 dark:border-gray-700 ${
-        hover ? 'hover:shadow-md transition-shadow duration-200' : ''
+        hover ? "hover:shadow-md transition-shadow duration-200" : ""
       } ${className}`}
     >
       {children}
@@ -25,9 +30,11 @@ interface CardHeaderProps {
   className?: string;
 }
 
-export function CardHeader({ children, className = '' }: CardHeaderProps) {
+export function CardHeader({ children, className = "" }: CardHeaderProps) {
   return (
-    <div className={`px-6 py-4 border-b border-gray-200 dark:border-gray-700 ${className}`}>
+    <div
+      className={`px-6 py-4 border-b border-gray-200 dark:border-gray-700 ${className}`}
+    >
       {children}
     </div>
   );
@@ -38,7 +45,7 @@ interface CardBodyProps {
   className?: string;
 }
 
-export function CardBody({ children, className = '' }: CardBodyProps) {
+export function CardBody({ children, className = "" }: CardBodyProps) {
   return <div className={`px-6 py-4 ${className}`}>{children}</div>;
 }
 
@@ -47,9 +54,11 @@ interface CardFooterProps {
   className?: string;
 }
 
-export function CardFooter({ children, className = '' }: CardFooterProps) {
+export function CardFooter({ children, className = "" }: CardFooterProps) {
   return (
-    <div className={`px-6 py-4 border-t border-gray-200 dark:border-gray-700 ${className}`}>
+    <div
+      className={`px-6 py-4 border-t border-gray-200 dark:border-gray-700 ${className}`}
+    >
       {children}
     </div>
   );

@@ -1,122 +1,169 @@
-import { Card, CardHeader, CardBody } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
-import { AgentTask, AIAgent } from '../types';
+import { Card, CardHeader, CardBody } from "../components/ui/Card";
+import { Badge } from "../components/ui/Badge";
+import { AgentTask, AIAgent } from "../types";
 
 export function Agents() {
   const agents: AIAgent[] = [
     {
-      id: '1',
-      name: 'Lead Capture Agent',
-      type: 'lead_capture',
-      status: 'active',
+      id: "1",
+      name: "Lead Capture Agent",
+      type: "lead_capture",
+      status: "active",
       last_activity: new Date().toISOString(),
       tasks_processed: 1247,
       average_response_time: 145,
-      description: 'Monitors and captures leads from Gmail, Calendar, and Website',
+      description:
+        "Monitors and captures leads from Gmail, Calendar, and Website",
     },
     {
-      id: '2',
-      name: 'Email Automation Agent',
-      type: 'email_automation',
-      status: 'active',
+      id: "2",
+      name: "Email Automation Agent",
+      type: "email_automation",
+      status: "active",
       last_activity: new Date().toISOString(),
       tasks_processed: 3421,
       average_response_time: 89,
-      description: 'Manages email campaigns and automated follow-ups',
+      description: "Manages email campaigns and automated follow-ups",
     },
     {
-      id: '3',
-      name: 'Calendar Agent',
-      type: 'calendar',
-      status: 'processing',
+      id: "3",
+      name: "Calendar Agent",
+      type: "calendar",
+      status: "processing",
       last_activity: new Date().toISOString(),
       tasks_processed: 892,
       average_response_time: 212,
-      description: 'Handles meeting scheduling and calendar synchronization',
+      description: "Handles meeting scheduling and calendar synchronization",
     },
     {
-      id: '4',
-      name: 'Invoicing Agent',
-      type: 'invoicing',
-      status: 'active',
+      id: "4",
+      name: "Invoicing Agent",
+      type: "invoicing",
+      status: "active",
       last_activity: new Date().toISOString(),
       tasks_processed: 567,
       average_response_time: 324,
-      description: 'Manages Billy.dk invoicing and payment tracking',
+      description: "Manages Billy.dk invoicing and payment tracking",
     },
     {
-      id: '5',
-      name: 'Support Agent',
-      type: 'support',
-      status: 'active',
+      id: "5",
+      name: "Support Agent",
+      type: "support",
+      status: "active",
       last_activity: new Date().toISOString(),
       tasks_processed: 2134,
       average_response_time: 178,
-      description: 'Provides customer support and knowledge base queries',
+      description: "Provides customer support and knowledge base queries",
     },
     {
-      id: '6',
-      name: 'Analytics Agent',
-      type: 'analytics',
-      status: 'active',
+      id: "6",
+      name: "Analytics Agent",
+      type: "analytics",
+      status: "active",
       last_activity: new Date().toISOString(),
       tasks_processed: 445,
       average_response_time: 456,
-      description: 'Generates reports and business intelligence insights',
+      description: "Generates reports and business intelligence insights",
     },
     {
-      id: '7',
-      name: 'Orchestrator Agent',
-      type: 'orchestrator',
-      status: 'active',
+      id: "7",
+      name: "Orchestrator Agent",
+      type: "orchestrator",
+      status: "active",
       last_activity: new Date().toISOString(),
       tasks_processed: 8923,
       average_response_time: 67,
-      description: 'Coordinates all agents and manages task distribution',
+      description: "Coordinates all agents and manages task distribution",
     },
   ];
 
   const tasks: AgentTask[] = [
-    { id: '1', agent_id: '2', tenant_id: '1', title: 'Send follow-up email campaign', priority: 'high', status: 'processing', progress: 65, created_at: new Date(Date.now() - 5 * 60000).toISOString() },
-    { id: '2', agent_id: '1', tenant_id: '1', title: 'Process new leads from website', priority: 'medium', status: 'queued', progress: 0, created_at: new Date(Date.now() - 10 * 60000).toISOString() },
-    { id: '3', agent_id: '3', tenant_id: '1', title: 'Sync calendar appointments', priority: 'low', status: 'completed', progress: 100, created_at: new Date(Date.now() - 30 * 60000).toISOString(), completed_at: new Date(Date.now() - 2 * 60000).toISOString() },
-    { id: '4', agent_id: '4', tenant_id: '1', title: 'Generate monthly invoices', priority: 'critical', status: 'queued', progress: 0, created_at: new Date(Date.now() - 2 * 60000).toISOString() },
-    { id: '5', agent_id: '6', tenant_id: '1', title: 'Generate weekly analytics report', priority: 'medium', status: 'processing', progress: 35, created_at: new Date(Date.now() - 45 * 60000).toISOString() },
+    {
+      id: "1",
+      agent_id: "2",
+      tenant_id: "1",
+      title: "Send follow-up email campaign",
+      priority: "high",
+      status: "processing",
+      progress: 65,
+      created_at: new Date(Date.now() - 5 * 60000).toISOString(),
+    },
+    {
+      id: "2",
+      agent_id: "1",
+      tenant_id: "1",
+      title: "Process new leads from website",
+      priority: "medium",
+      status: "queued",
+      progress: 0,
+      created_at: new Date(Date.now() - 10 * 60000).toISOString(),
+    },
+    {
+      id: "3",
+      agent_id: "3",
+      tenant_id: "1",
+      title: "Sync calendar appointments",
+      priority: "low",
+      status: "completed",
+      progress: 100,
+      created_at: new Date(Date.now() - 30 * 60000).toISOString(),
+      completed_at: new Date(Date.now() - 2 * 60000).toISOString(),
+    },
+    {
+      id: "4",
+      agent_id: "4",
+      tenant_id: "1",
+      title: "Generate monthly invoices",
+      priority: "critical",
+      status: "queued",
+      progress: 0,
+      created_at: new Date(Date.now() - 2 * 60000).toISOString(),
+    },
+    {
+      id: "5",
+      agent_id: "6",
+      tenant_id: "1",
+      title: "Generate weekly analytics report",
+      priority: "medium",
+      status: "processing",
+      progress: 35,
+      created_at: new Date(Date.now() - 45 * 60000).toISOString(),
+    },
   ];
 
-  const getStatusBadge = (status: AIAgent['status']) => {
+  const getStatusBadge = (status: AIAgent["status"]) => {
     switch (status) {
-      case 'active':
+      case "active":
         return <Badge variant="success">Active</Badge>;
-      case 'processing':
+      case "processing":
         return <Badge variant="warning">Processing</Badge>;
-      case 'error':
+      case "error":
         return <Badge variant="danger">Error</Badge>;
       default:
         return <Badge variant="gray">Idle</Badge>;
     }
   };
 
-  const getTaskStatusBadge = (status: AgentTask['status']) => {
+  const getTaskStatusBadge = (status: AgentTask["status"]) => {
     switch (status) {
-      case 'completed':
+      case "completed":
         return <Badge variant="success">Completed</Badge>;
-      case 'processing':
+      case "processing":
         return <Badge variant="warning">Processing</Badge>;
-      case 'failed':
+      case "failed":
         return <Badge variant="danger">Failed</Badge>;
       default:
         return <Badge variant="gray">Queued</Badge>;
     }
   };
 
-  const getPriorityBadge = (priority: AgentTask['priority']) => {
+  const getPriorityBadge = (priority: AgentTask["priority"]) => {
     switch (priority) {
-      case 'critical':
+      case "critical":
         return <Badge variant="danger">Critical</Badge>;
-      case 'high':
+      case "high":
         return <Badge variant="warning">High</Badge>;
-      case 'medium':
+      case "medium":
         return <Badge variant="primary">Medium</Badge>;
       default:
         return <Badge variant="gray">Low</Badge>;
@@ -126,7 +173,9 @@ export function Agents() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">AI Agent Monitoring</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          AI Agent Monitoring
+        </h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
           Monitor and manage all AI agents in the TekUp ecosystem
         </p>
@@ -144,18 +193,24 @@ export function Agents() {
                     </h3>
                     {getStatusBadge(agent.status)}
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{agent.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {agent.description}
+                  </p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Tasks Processed</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Tasks Processed
+                  </p>
                   <p className="text-lg font-bold text-gray-900 dark:text-white">
                     {agent.tasks_processed.toLocaleString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Avg Response</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Avg Response
+                  </p>
                   <p className="text-lg font-bold text-gray-900 dark:text-white">
                     {agent.average_response_time}ms
                   </p>
@@ -168,7 +223,9 @@ export function Agents() {
 
       <Card>
         <CardHeader>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Task Queue</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Task Queue
+          </h3>
         </CardHeader>
         <CardBody className="p-0">
           <div className="overflow-x-auto">
@@ -191,14 +248,21 @@ export function Agents() {
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {tasks.map((task) => (
-                  <tr key={task.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <tr
+                    key={task.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                  >
                     <td className="px-6 py-4">
                       <span className="text-sm font-medium text-gray-900 dark:text-white">
                         {task.title}
                       </span>
                     </td>
-                    <td className="px-6 py-4">{getPriorityBadge(task.priority)}</td>
-                    <td className="px-6 py-4">{getTaskStatusBadge(task.status)}</td>
+                    <td className="px-6 py-4">
+                      {getPriorityBadge(task.priority)}
+                    </td>
+                    <td className="px-6 py-4">
+                      {getTaskStatusBadge(task.status)}
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
                         <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
