@@ -1,106 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '../lib/supabase';
-import { getCalendarService } from '../services/calendar';
-import { calculateFBSettlement, generateMonthlyReport } from '../../shared/utils';
-import type { Job, MonthlyStats, ApiResponse } from '../../shared/types';
+import { supabaseAdmin } from '../../../../src/server/lib/supabase';
+import type { Job, ApiResponse } from '../../../../src/shared/types';
 
 // Billy.dk integration
 const BILLY_API_KEY = process.env.BILLY_API_KEY;
 const BILLY_ORGANIZATION_ID = process.env.BILLY_ORGANIZATION_ID;
 const BILLY_API_BASE = process.env.BILLY_API_BASE || 'https://api.billysbilling.com/v2';
 
-// GET /api/jobs - Get all jobs with optional filters
-export async function GET(request: NextRequest) {
+// GET /api/jobs/[id] - Get a specific job
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const jobId = id;
   try {
-    const { searchParams } = new URL(request.url);
-    const month = searchParams.get('month');
-    const team = searchParams.get('team');
-    const status = searchParams.get('status');
-    const customer = searchParams.get('customer');
-
-    let query = supabaseAdmin.from('jobs').select('*');
-
-    // Apply filters
-    if (month) {
-      query = query.gte('date', `${month}-01`).lt('date', `${month}-31`);
-    }
-    if (team) {
-      query = query.eq('team', team);
-    }
-    if (status) {
-      query = query.eq('status', status);
-    }
-    if (customer) {
-      query = query.ilike('customer_name', `%${customer}%`);
-    }
-
-    const { data: jobs, error } = await query.order('date', { ascending: false });
-
-    if (error) {
-      return NextResponse.json(
-        { success: false, error: error.message } as ApiResponse<null>,
-        { status: 500 }
-      );
-    }
-
-    // Transform database jobs to match frontend types
-    const transformedJobs: Job[] = (jobs || []).map(job => ({
-      id: job.id,
-      calendarEventId: job.calendar_event_id,
-      date: job.date,
-      customerName: job.customer_name,
-      team: job.team as any,
-      hoursWorked: job.hours_worked,
-      revenue: job.revenue,
-      cost: job.cost,
-      profit: job.profit,
-      jobType: job.job_type as any,
-      status: job.status as any,
-      invoiceId: job.invoice_id || undefined,
-      notes: job.notes || undefined,
-      createdAt: job.created_at,
-      updatedAt: job.updated_at,
-    }));
-
-    return NextResponse.json(
-      { success: true, data: transformedJobs } as ApiResponse<Job[]>
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' } as ApiResponse<null>,
-      { status: 500 }
-    );
-  }
-}
-
-// POST /api/jobs - Create a new job
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    const jobData = {
-      calendar_event_id: body.calendarEventId,
-      date: body.date,
-      customer_name: body.customerName,
-      team: body.team,
-      hours_worked: body.hoursWorked,
-      revenue: body.revenue,
-      cost: body.team === 'FB' ? body.hoursWorked * 90 : 0,
-      job_type: body.jobType,
-      status: body.status || 'planned',
-      notes: body.notes,
-    };
-
     const { data: job, error } = await supabaseAdmin
       .from('jobs')
-      .insert(jobData)
-      .select()
+      .select('*')
+      .eq('id', jobId)
       .single();
 
-    if (error) {
+    if (error || !job) {
       return NextResponse.json(
-        { success: false, error: error.message } as ApiResponse<null>,
-        { status: 500 }
+        { success: false, error: 'Job not found' } as ApiResponse<null>,
+        { status: 404 }
       );
     }
 
@@ -124,8 +48,7 @@ export async function POST(request: NextRequest) {
     };
 
     return NextResponse.json(
-      { success: true, data: transformedJob } as ApiResponse<Job>,
-      { status: 201 }
+      { success: true, data: transformedJob } as ApiResponse<Job>
     );
   } catch (error) {
     return NextResponse.json(
@@ -135,11 +58,13 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/jobs/[id] - Update a job
+// PUT /api/jobs/[id] - Update a specific job
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+  const jobId = id;
   try {
     const body = await request.json();
 
@@ -157,7 +82,7 @@ export async function PUT(
     const { data: job, error } = await supabaseAdmin
       .from('jobs')
       .update(updateData)
-      .eq('id', params.id)
+      .eq('id', jobId)
       .select()
       .single();
 
@@ -198,16 +123,18 @@ export async function PUT(
   }
 }
 
-// DELETE /api/jobs/[id] - Delete a job
+// DELETE /api/jobs/[id] - Delete a specific job
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+  const jobId = id;
   try {
     const { error } = await supabaseAdmin
       .from('jobs')
       .delete()
-      .eq('id', params.id);
+      .eq('id', jobId);
 
     if (error) {
       return NextResponse.json(
@@ -230,14 +157,16 @@ export async function DELETE(
 // POST /api/jobs/[id]/invoice - Create invoice for job
 export async function POST_INVOICE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+  const jobId = id;
   try {
     // Get job details
     const { data: job, error: jobError } = await supabaseAdmin
       .from('jobs')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', jobId)
       .single();
 
     if (jobError || !job) {
@@ -325,13 +254,16 @@ async function getOrCreateBillyContact(customerName: string): Promise<string> {
     },
     body: JSON.stringify({
       organizationId: BILLY_ORGANIZATION_ID,
-      search: customerName,
     }),
   });
 
   if (searchResponse.ok) {
     const searchData = await searchResponse.json();
     if (searchData.contacts && searchData.contacts.length > 0) {
+      // Look for exact match
+      const exactMatch = searchData.contacts.find((c: any) => c.name === customerName);
+      if (exactMatch) return exactMatch.id;
+      // Return first contact as fallback
       return searchData.contacts[0].id;
     }
   }

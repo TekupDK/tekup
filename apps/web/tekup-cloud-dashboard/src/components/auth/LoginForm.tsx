@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
@@ -8,7 +7,6 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
-  const navigate = useNavigate();
 
   // Auto-redirect to dashboard if Supabase is not configured (mock mode)
   useEffect(() => {
@@ -20,13 +18,15 @@ export function LoginForm() {
         supabaseUrl.includes('your-project') || 
         supabaseKey.includes('your')) {
       console.log('Supabase not configured, redirecting to demo mode...');
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1500);
     }
-  }, [navigate]);
+  }, []);
 
   const handleDemoMode = () => {
-    // Redirect to dashboard in demo/mock mode
-    navigate('/dashboard');
+    // Redirect to dashboard in demo/mock mode using window.location
+    window.location.href = '/dashboard';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
