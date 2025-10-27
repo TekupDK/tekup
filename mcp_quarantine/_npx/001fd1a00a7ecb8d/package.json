@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@tailwindcss/upgrade": "^4.1.13"
+  },
+  "_npx": {
+    "packages": [
+      "@tailwindcss/upgrade@latest"
+    ]
+  }
+}

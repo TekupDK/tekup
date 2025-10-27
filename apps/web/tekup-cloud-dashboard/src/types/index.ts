@@ -65,7 +65,7 @@ export interface Activity {
   type: 'lead_created' | 'invoice_sent' | 'email_sent' | 'meeting_scheduled' | 'system_alert' | 'agent_action';
   title: string;
   description: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
 }
 

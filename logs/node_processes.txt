@@ -1,0 +1,24 @@
+--- PID: 7088 ---
+"C:\Program Files\nodejs\\node.exe"  "C:\Program Files\nodejs\\node_modules\npm\bin\npx-cli.js" -y @modelcontextprotocol/server-sequential-thinking
+--- PID: 16628 ---
+"C:\Program Files\nodejs\\node.exe"  "C:\Program Files\nodejs\\node_modules\npm\bin\npx-cli.js" -y @modelcontextprotocol/server-filesystem C:\Users\empir
+--- PID: 26832 ---
+"node"   "C:\Users\empir\AppData\Local\npm-cache\_npx\3dfbf5a9eea4a1b3\node_modules\.bin\\..\@modelcontextprotocol\server-github\dist\index.js" 
+--- PID: 26944 ---
+"node"   "C:\Users\empir\AppData\Local\npm-cache\_npx\a3241bba59c344f5\node_modules\.bin\\..\@modelcontextprotocol\server-filesystem\dist\index.js" C:\Users\empir
+--- PID: 27536 ---
+"C:\Program Files\nodejs\\node.exe"  "C:\Program Files\nodejs\\node_modules\npm\bin\npx-cli.js" -y @modelcontextprotocol/server-memory
+--- PID: 28848 ---
+"node"   "C:\Users\empir\AppData\Local\npm-cache\_npx\a3241bba59c344f5\node_modules\.bin\\..\@modelcontextprotocol\server-filesystem\dist\index.js" C:\Users\empir\Tekup
+--- PID: 30324 ---
+"C:\Program Files\nodejs\\node.exe"  "C:\Program Files\nodejs\\node_modules\npm\bin\npx-cli.js" -y @modelcontextprotocol/server-filesystem C:\Users\empir\Tekup
+--- PID: 32084 ---
+"node"   "C:\Users\empir\AppData\Roaming\npm\\node_modules\@modelcontextprotocol\server-puppeteer\dist\index.js" 
+--- PID: 32156 ---
+"node"   "C:\Users\empir\AppData\Local\npm-cache\_npx\15b07286cbcc3329\node_modules\.bin\\..\@modelcontextprotocol\server-memory\dist\index.js" 
+--- PID: 33288 ---
+"node"   "C:\Users\empir\AppData\Local\npm-cache\_npx\de2bd410102f5eda\node_modules\.bin\\..\@modelcontextprotocol\server-sequential-thinking\dist\index.js" 
+--- PID: 34284 ---
+"C:\Program Files\nodejs\\node.exe"  "C:\Program Files\nodejs\\node_modules\npm\bin\npx-cli.js" -y @modelcontextprotocol/server-puppeteer
+--- PID: 35252 ---
+"C:\Program Files\nodejs\\node.exe"  "C:\Program Files\nodejs\\node_modules\npm\bin\npx-cli.js" -y @modelcontextprotocol/server-github

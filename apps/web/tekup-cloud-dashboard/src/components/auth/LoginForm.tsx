@@ -15,8 +15,9 @@ export function LoginForm() {
 
     try {
       await signIn(email, password);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred during sign in');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An error occurred during sign in';
+      setError(message);
     } finally {
       setLoading(false);
     }

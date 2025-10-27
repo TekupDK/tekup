@@ -1,4 +1,4 @@
-import { FileText, Mail, Calendar, UserPlus, Plus } from 'lucide-react';
+import { FileText, Mail, Calendar, UserPlus } from 'lucide-react';
 import { Card, CardHeader, CardBody } from '../ui/Card';
 
 export function QuickActions() {

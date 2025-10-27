@@ -16,11 +16,12 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useAppStore } from '../../stores';
+import type { ComponentType, SVGProps } from 'react';
 
 interface NavItem {
   id: string;
   label: string;
-  icon: any;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   category?: string;
 }
 

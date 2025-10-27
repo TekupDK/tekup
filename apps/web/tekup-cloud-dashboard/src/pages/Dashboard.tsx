@@ -5,13 +5,9 @@ import { QuickActions } from '../components/dashboard/QuickActions';
 import { PerformanceChart } from '../components/dashboard/PerformanceChart';
 import { AgentMonitor } from '../components/agents/AgentMonitor';
 import { SkeletonCard } from '../components/ui';
-import { KPIMetric, Activity, AIAgent } from '../types';
 import { apiClient, queryKeys } from '../lib/api';
-import { useAppStore } from '../stores';
 
 export function Dashboard() {
-  const { currentTenant } = useAppStore();
-
   // React Query for data fetching
   const { data: kpiMetrics = [], isLoading: kpiLoading, error: kpiError } = useQuery({
     queryKey: queryKeys.kpis,
@@ -38,7 +34,7 @@ export function Dashboard() {
     return (
       <div className="space-y-6">
         <div>
-          <SkeletonCard lines={2} />
+          <SkeletonCard />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

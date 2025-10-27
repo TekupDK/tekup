@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "lint-staged": "^16.2.4"
+  },
+  "_npx": {
+    "packages": [
+      "lint-staged"
+    ]
+  }
+}

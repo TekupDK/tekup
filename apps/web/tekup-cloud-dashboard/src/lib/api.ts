@@ -1,9 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { Lead, Invoice, Activity, KPIMetric, AIAgent } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
-const BILLY_API_URL = import.meta.env.VITE_BILLY_API_URL || 'https://api.billy.dk';
-
 // Supabase client
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -133,7 +130,7 @@ class ApiService {
         .from('activities')
         .select('*')
         .eq('tenant_id', tenantId)
-        .order('timestamp', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(10);
 
       if (error) throw error;
@@ -209,10 +206,10 @@ class ApiService {
     return { count: count || 0, change: 8.2 }; // TODO: Calculate real change
   }
 
-  private async getSystemHealth(): Promise<number> {
+  async getSystemHealth(): Promise<number> {
     // Check various system components
     try {
-      const checks = await Promise.all([
+      await Promise.all([
         supabase.from('system_health').select('status').limit(1),
         // Add more health checks here
       ]);
@@ -268,16 +265,18 @@ class ApiService {
       {
         id: '1',
         type: 'lead_created',
+        title: 'New Lead',
         description: 'New lead captured from website',
-        timestamp: new Date().toISOString(),
+        created_at: new Date().toISOString(),
         tenant_id: '',
         metadata: {}
       },
       {
         id: '2',
         type: 'email_sent',
+        title: 'Email Sent',
         description: 'Follow-up email sent to prospect',
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        created_at: new Date(Date.now() - 3600000).toISOString(),
         tenant_id: '',
         metadata: {}
       }

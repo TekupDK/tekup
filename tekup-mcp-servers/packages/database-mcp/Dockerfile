@@ -9,6 +9,7 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY tsconfig.base.json ./
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -33,9 +34,11 @@ RUN npm install -g pnpm && \
 
 # Copy package files
 COPY package*.json ./
+COPY tsconfig.json ./
+COPY tsconfig.base.json ./
 
 # Install production dependencies
-RUN pnpm install --prod --frozen-lockfile && pnpm store prune
+RUN pnpm install --prod --no-frozen-lockfile && pnpm store prune
 
 # Copy built files
 COPY --from=builder /app/dist ./dist

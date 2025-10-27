@@ -10,7 +10,7 @@ import {
   User,
   Building2,
 } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../contexts/useTheme';
 import { useAppStore } from '../../stores';
 
 export function TopNav() {

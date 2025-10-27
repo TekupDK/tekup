@@ -1,15 +1,17 @@
 import { ReactNode } from 'react';
 
-interface CardProps {
+export interface CardProps {
   children: ReactNode;
   className?: string;
   hover?: boolean;
+  shadow?: string;
 }
 
-export function Card({ children, className = '', hover = false }: CardProps) {
+export function Card({ children, className = '', hover = false, shadow }: CardProps) {
+  const shadowClass = shadow || 'shadow-sm';
   return (
     <div
-      className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${
+      className={`bg-white dark:bg-gray-800 rounded-lg ${shadowClass} border border-gray-200 dark:border-gray-700 ${
         hover ? 'hover:shadow-md transition-shadow duration-200' : ''
       } ${className}`}
     >

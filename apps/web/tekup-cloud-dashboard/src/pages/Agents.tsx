@@ -1,7 +1,6 @@
 import { Card, CardHeader, CardBody } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { AgentTask, AIAgent } from '../types';
-import { CheckCircle2, Clock, AlertCircle, Activity } from 'lucide-react';
 
 export function Agents() {
   const agents: AIAgent[] = [

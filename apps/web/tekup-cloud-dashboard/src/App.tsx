@@ -1,9 +1,8 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider } from './contexts/ThemeProvider';
 import { AuthProvider } from './components/auth/AuthProvider';
 import { AuthGuard } from './components/auth/AuthGuard';
-import { AppProvider } from './contexts/AppContext';
+import { AppProvider } from './contexts/AppProvider';
 import { Sidebar } from './components/layout/Sidebar';
 import { TopNav } from './components/layout/TopNav';
 import { JarvisChat } from './components/ai/JarvisChat';
