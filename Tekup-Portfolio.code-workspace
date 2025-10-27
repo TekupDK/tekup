@@ -97,6 +97,10 @@
       "path": "tekup-mcp-servers/packages/database-mcp"
     },
     {
+      "name": "  ├─ Autonomous Browser Tester",
+      "path": "tekup-mcp-servers/packages/autonomous-browser-tester"
+    },
+    {
       "name": "  └─ Knowledge MCP",
       "path": "tekup-mcp-servers/packages/knowledge-mcp"
     },
