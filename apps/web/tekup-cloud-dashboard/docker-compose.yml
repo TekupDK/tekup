@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  tekup-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tekup-cloud-dashboard
+    ports:
+      - "8080:80"
+    environment:
+      # Environment variables for runtime (if needed by Vite build)
+      - NODE_ENV=production
+      - VITE_APP_NAME=Tekup Cloud Dashboard
+      - VITE_ENVIRONMENT=production
+      # Add your Supabase credentials here or in .env file
+      # - VITE_SUPABASE_URL=https://xxx.supabase.co
+      # - VITE_SUPABASE_ANON_KEY=eyJhbGci...
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - tekup-network
+
+networks:
+  tekup-network:
+    driver: bridge
