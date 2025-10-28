@@ -47,6 +47,9 @@ test-results/
 next-env.d.ts
 playwright-report/
 
+# Old TekupVault (moved to standalone repo)
+apps/production/tekup-vault/
+
 # Environment files (local overrides)
 .env.local
 .env.*.local
