@@ -1,4 +1,3 @@
-
 import {
   LineChart,
   Line,
@@ -10,22 +9,25 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
-} from 'recharts';
-import { Card, CardHeader, CardBody } from '../ui/Card';
-import { InfrastructureMetric } from '../../types';
+} from "recharts";
+import { Card, CardHeader, CardBody } from "../ui/Card";
+import { InfrastructureMetric, MCPServerMetric, MCPServer } from "../../types";
+import { Server, Activity } from "lucide-react";
 
 interface InfrastructureChartProps {
   data: InfrastructureMetric[];
-  timeRange: '1h' | '6h' | '24h' | '7d';
+  timeRange: "1h" | "6h" | "24h" | "7d";
   serviceId?: string;
+  mcpServerMetrics?: MCPServerMetric[];
+  mcpServers?: MCPServer[];
 }
 
 export function InfrastructureChart({ data }: InfrastructureChartProps) {
   // Process data for charts
-  const chartData = data.map(metric => ({
-    timestamp: new Date(metric.timestamp).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+  const chartData = data.map((metric) => ({
+    timestamp: new Date(metric.timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
     }),
     cpu: Math.round(metric.cpu_usage),
     memory: Math.round(metric.memory_usage),
@@ -43,14 +45,14 @@ export function InfrastructureChart({ data }: InfrastructureChartProps) {
           </p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.dataKey === 'cpu' && 'CPU: '}
-              {entry.dataKey === 'memory' && 'Memory: '}
-              {entry.dataKey === 'disk' && 'Disk: '}
-              {entry.dataKey === 'networkIn' && 'Network In: '}
-              {entry.dataKey === 'networkOut' && 'Network Out: '}
+              {entry.dataKey === "cpu" && "CPU: "}
+              {entry.dataKey === "memory" && "Memory: "}
+              {entry.dataKey === "disk" && "Disk: "}
+              {entry.dataKey === "networkIn" && "Network In: "}
+              {entry.dataKey === "networkOut" && "Network Out: "}
               <span className="font-medium">
                 {entry.value}
-                {entry.dataKey.includes('network') ? ' KB/s' : '%'}
+                {entry.dataKey.includes("network") ? " KB/s" : "%"}
               </span>
             </p>
           ))}
@@ -76,16 +78,20 @@ export function InfrastructureChart({ data }: InfrastructureChartProps) {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-              <XAxis 
-                dataKey="timestamp" 
+              <XAxis
+                dataKey="timestamp"
                 tick={{ fontSize: 12 }}
-                tickLine={{ stroke: '#6b7280' }}
+                tickLine={{ stroke: "#6b7280" }}
               />
-              <YAxis 
+              <YAxis
                 domain={[0, 100]}
                 tick={{ fontSize: 12 }}
-                tickLine={{ stroke: '#6b7280' }}
-                label={{ value: 'Usage (%)', angle: -90, position: 'insideLeft' }}
+                tickLine={{ stroke: "#6b7280" }}
+                label={{
+                  value: "Usage (%)",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -94,7 +100,7 @@ export function InfrastructureChart({ data }: InfrastructureChartProps) {
                 dataKey="cpu"
                 stroke="#ef4444"
                 strokeWidth={2}
-                dot={{ fill: '#ef4444', strokeWidth: 2, r: 3 }}
+                dot={{ fill: "#ef4444", strokeWidth: 2, r: 3 }}
                 name="CPU Usage"
               />
               <Line
@@ -102,7 +108,7 @@ export function InfrastructureChart({ data }: InfrastructureChartProps) {
                 dataKey="memory"
                 stroke="#3b82f6"
                 strokeWidth={2}
-                dot={{ fill: '#3b82f6', strokeWidth: 2, r: 3 }}
+                dot={{ fill: "#3b82f6", strokeWidth: 2, r: 3 }}
                 name="Memory Usage"
               />
             </LineChart>
@@ -124,15 +130,15 @@ export function InfrastructureChart({ data }: InfrastructureChartProps) {
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-              <XAxis 
-                dataKey="timestamp" 
+              <XAxis
+                dataKey="timestamp"
                 tick={{ fontSize: 12 }}
-                tickLine={{ stroke: '#6b7280' }}
+                tickLine={{ stroke: "#6b7280" }}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fontSize: 12 }}
-                tickLine={{ stroke: '#6b7280' }}
-                label={{ value: 'KB/s', angle: -90, position: 'insideLeft' }}
+                tickLine={{ stroke: "#6b7280" }}
+                label={{ value: "KB/s", angle: -90, position: "insideLeft" }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />

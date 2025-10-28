@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { BusinessMetricsChart } from '../components/monitoring';
 import { InfrastructureChart } from '../components/monitoring';
 import { APIPerformanceChart } from '../components/monitoring';
+import { MCPServerChart } from '../components/monitoring';
 import { useRealTimeMetrics } from '../hooks/useRealTimeMetrics';
+import { useMCPServerMetrics } from '../hooks/useMCPServerMetrics';
 
 export function Analytics() {
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
-  const [activeTab, setActiveTab] = useState<'business' | 'infrastructure' | 'api'>('business');
+const [activeTab, setActiveTab] = useState<'business' | 'infrastructure' | 'api' | 'mcp'>('business');
   
   const {
     infrastructureData,
@@ -14,10 +16,23 @@ export function Analytics() {
     connectionStatus,
     isConnected,
     error,
-  } = useRealTimeMetrics({
+} = useRealTimeMetrics({
     enableInfrastructure: true,
     enableAPIPerformance: true,
     enableAlerts: false,
+  });
+
+  const {
+    servers: mcpServers,
+    metrics: mcpMetrics,
+    health: mcpHealth,
+    toolExecutions: mcpToolExecutions,
+    loading: mcpLoading,
+    error: mcpError,
+    refresh: refreshMCP,
+  } = useMCPServerMetrics({
+    pollInterval: 30000,
+    enableRealTime: true,
   });
 
   // Mock business metrics data for development
@@ -124,6 +139,16 @@ export function Analytics() {
                 }`}
               >
                 API Performance
+              </button>
+              <button
+                onClick={() => setActiveTab('mcp')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'mcp'
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                MCP Servers
               </button>
             </nav>
           </div>
@@ -304,6 +329,46 @@ export function Analytics() {
               </div>
               <APIPerformanceChart
                 data={apiPerformanceData}
+                timeRange="24h"
+                mcpServerMetrics={mcpMetrics}
+              />
+            </div>
+          )}
+          
+          {activeTab === 'mcp' && (
+            <div>
+              <div className="mb-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      MCP Server Monitoring
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Real-time monitoring of MCP server performance and health
+                    </p>
+                  </div>
+                  <button
+                    onClick={refreshMCP}
+                    disabled={mcpLoading}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {mcpLoading ? 'Refreshing...' : 'Refresh'}
+                  </button>
+                </div>
+              </div>
+              
+              {mcpError && (
+                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <p className="text-sm text-red-600 dark:text-red-400">
+                    <strong>MCP Error:</strong> {mcpError}
+                  </p>
+                </div>
+              )}
+              
+              <MCPServerChart
+                servers={mcpServers}
+                metrics={mcpMetrics}
+                toolExecutions={mcpToolExecutions}
                 timeRange="24h"
               />
             </div>

@@ -7,7 +7,8 @@ export enum SourceType {
   GITHUB = 'github',
   SUPABASE = 'supabase',
   RENDER = 'render',
-  COPILOT = 'copilot'
+  COPILOT = 'copilot',
+  LOCAL = 'local'
 }
 
 /**

@@ -1,4 +1,3 @@
-
 import {
   BarChart,
   Bar,
@@ -12,19 +11,24 @@ import {
   Line,
   ScatterChart,
   Scatter,
-} from 'recharts';
-import { Card, CardHeader, CardBody } from '../ui/Card';
-import { APIPerformanceMetric } from '../../types';
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import { Card, CardHeader, CardBody } from "../ui/Card";
+import { APIPerformanceMetric, MCPServerMetric } from "../../types";
+import { Server, Activity } from "lucide-react";
 
 interface APIPerformanceChartProps {
   data: APIPerformanceMetric[];
-  timeRange: '1h' | '6h' | '24h' | '7d';
+  timeRange: "1h" | "6h" | "24h" | "7d";
+  mcpServerMetrics?: MCPServerMetric[];
 }
 
 export function APIPerformanceChart({ data }: APIPerformanceChartProps) {
   // Group data by endpoint for bar chart
   const endpointData = data.reduce((acc, metric) => {
-    const existing = acc.find(item => item.endpoint === metric.endpoint);
+    const existing = acc.find((item) => item.endpoint === metric.endpoint);
     if (existing) {
       existing.total_requests += 1;
       existing.avg_response_time += metric.response_time;
@@ -43,18 +47,20 @@ export function APIPerformanceChart({ data }: APIPerformanceChartProps) {
   }, [] as any[]);
 
   // Time series data for response time trends
-  const timeSeriesData = data.slice(0, 20).map(metric => ({
-    timestamp: new Date(metric.timestamp).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+  const timeSeriesData = data.slice(0, 20).map((metric) => ({
+    timestamp: new Date(metric.timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
     }),
     responseTime: metric.response_time,
     errorRate: metric.status_code >= 400 ? 100 : 0,
-    endpoint: metric.endpoint.substring(0, 20) + (metric.endpoint.length > 20 ? '...' : ''),
+    endpoint:
+      metric.endpoint.substring(0, 20) +
+      (metric.endpoint.length > 20 ? "..." : ""),
   }));
 
   // Response time distribution for scatter plot
-  const scatterData = data.map(metric => ({
+  const scatterData = data.map((metric) => ({
     responseTime: metric.response_time,
     statusCode: metric.status_code,
     size: Math.sqrt(metric.request_size + metric.response_size) / 10, // Scale for visibility
@@ -70,15 +76,18 @@ export function APIPerformanceChart({ data }: APIPerformanceChartProps) {
           </p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.dataKey === 'avg_response_time' && 'Avg Response Time: '}
-              {entry.dataKey === 'total_requests' && 'Total Requests: '}
-              {entry.dataKey === 'error_count' && 'Error Count: '}
-              {entry.dataKey === 'responseTime' && 'Response Time: '}
-              {entry.dataKey === 'errorRate' && 'Error Rate: '}
+              {entry.dataKey === "avg_response_time" && "Avg Response Time: "}
+              {entry.dataKey === "total_requests" && "Total Requests: "}
+              {entry.dataKey === "error_count" && "Error Count: "}
+              {entry.dataKey === "responseTime" && "Response Time: "}
+              {entry.dataKey === "errorRate" && "Error Rate: "}
               <span className="font-medium">
                 {entry.value}
-                {entry.dataKey === 'avg_response_time' || entry.dataKey === 'responseTime' ? 'ms' : ''}
-                {entry.dataKey === 'errorRate' ? '%' : ''}
+                {entry.dataKey === "avg_response_time" ||
+                entry.dataKey === "responseTime"
+                  ? "ms"
+                  : ""}
+                {entry.dataKey === "errorRate" ? "%" : ""}
               </span>
             </p>
           ))}
@@ -102,20 +111,27 @@ export function APIPerformanceChart({ data }: APIPerformanceChartProps) {
         </CardHeader>
         <CardBody>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={endpointData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+            <BarChart
+              data={endpointData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+            >
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-              <XAxis 
-                dataKey="endpoint" 
+              <XAxis
+                dataKey="endpoint"
                 angle={-45}
                 textAnchor="end"
                 height={100}
                 tick={{ fontSize: 11 }}
-                tickLine={{ stroke: '#6b7280' }}
+                tickLine={{ stroke: "#6b7280" }}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fontSize: 12 }}
-                tickLine={{ stroke: '#6b7280' }}
-                label={{ value: 'Requests', angle: -90, position: 'insideLeft' }}
+                tickLine={{ stroke: "#6b7280" }}
+                label={{
+                  value: "Requests",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -151,15 +167,19 @@ export function APIPerformanceChart({ data }: APIPerformanceChartProps) {
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={timeSeriesData}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                <XAxis 
-                  dataKey="timestamp" 
+                <XAxis
+                  dataKey="timestamp"
                   tick={{ fontSize: 10 }}
-                  tickLine={{ stroke: '#6b7280' }}
+                  tickLine={{ stroke: "#6b7280" }}
                 />
-                <YAxis 
+                <YAxis
                   tick={{ fontSize: 12 }}
-                  tickLine={{ stroke: '#6b7280' }}
-                  label={{ value: 'Response Time (ms)', angle: -90, position: 'insideLeft' }}
+                  tickLine={{ stroke: "#6b7280" }}
+                  label={{
+                    value: "Response Time (ms)",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
@@ -168,7 +188,7 @@ export function APIPerformanceChart({ data }: APIPerformanceChartProps) {
                   dataKey="responseTime"
                   stroke="#10b981"
                   strokeWidth={2}
-                  dot={{ fill: '#10b981', strokeWidth: 2, r: 3 }}
+                  dot={{ fill: "#10b981", strokeWidth: 2, r: 3 }}
                   name="Response Time (ms)"
                 />
                 <Line
@@ -199,22 +219,30 @@ export function APIPerformanceChart({ data }: APIPerformanceChartProps) {
             <ResponsiveContainer width="100%" height={250}>
               <ScatterChart data={scatterData}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                <XAxis 
+                <XAxis
                   type="number"
                   dataKey="statusCode"
                   domain={[190, 210, 290, 310, 390, 410, 490, 510]}
                   tick={{ fontSize: 12 }}
-                  tickLine={{ stroke: '#6b7280' }}
-                  label={{ value: 'Status Code', position: 'insideBottom', offset: -5 }}
+                  tickLine={{ stroke: "#6b7280" }}
+                  label={{
+                    value: "Status Code",
+                    position: "insideBottom",
+                    offset: -5,
+                  }}
                 />
-                <YAxis 
+                <YAxis
                   type="number"
                   dataKey="responseTime"
                   tick={{ fontSize: 12 }}
-                  tickLine={{ stroke: '#6b7280' }}
-                  label={{ value: 'Response Time (ms)', angle: -90, position: 'insideLeft' }}
+                  tickLine={{ stroke: "#6b7280" }}
+                  label={{
+                    value: "Response Time (ms)",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
                 />
-                <Tooltip 
+                <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;

@@ -1,0 +1,75 @@
+{
+  "mcpServers": [
+    {
+      "id": "code-intelligence-mcp",
+      "name": "Code Intelligence MCP",
+      "description": "Semantic code search and analysis server",
+      "type": "http",
+      "baseUrl": "http://localhost:8050",
+      "healthEndpoint": "/health",
+      "metricsEndpoint": "/metrics",
+      "summaryEndpoint": "/metrics/summary",
+      "status": "active",
+      "category": "development-tools",
+      "tags": ["code-search", "semantic-analysis", "development"]
+    },
+    {
+      "id": "database-mcp",
+      "name": "Database MCP",
+      "description": "Supabase and Prisma integration server",
+      "type": "http",
+      "baseUrl": "http://localhost:8051",
+      "healthEndpoint": "/health",
+      "metricsEndpoint": "/metrics",
+      "summaryEndpoint": "/metrics/summary",
+      "status": "active",
+      "category": "database-tools",
+      "tags": ["supabase", "prisma", "database"]
+    },
+    {
+      "id": "knowledge-mcp",
+      "name": "Knowledge MCP",
+      "description": "Knowledge management and search server",
+      "type": "http",
+      "baseUrl": "http://localhost:8052",
+      "healthEndpoint": "/health",
+      "metricsEndpoint": "/metrics",
+      "summaryEndpoint": "/metrics/summary",
+      "status": "active",
+      "category": "knowledge-tools",
+      "tags": ["search", "documentation", "knowledge-base"]
+    },
+    {
+      "id": "autonomous-browser-tester",
+      "name": "Autonomous Browser Tester",
+      "description": "Browser automation and testing server",
+      "type": "stdio",
+      "status": "active",
+      "category": "testing-tools",
+      "tags": ["browser-automation", "testing", "puppeteer"]
+    }
+  ],
+  "monitoring": {
+    "pollInterval": 30000,
+    "healthCheckTimeout": 5000,
+    "retryAttempts": 3,
+    "alertThresholds": {
+      "memoryUsageWarning": 75,
+      "memoryUsageCritical": 90,
+      "errorRateWarning": 20,
+      "errorRateCritical": 50,
+      "responseTimeWarning": 5000,
+      "responseTimeCritical": 10000,
+      "toolExecutionTimeWarning": 10000,
+      "toolExecutionTimeCritical": 30000
+    }
+  },
+  "dashboard": {
+    "refreshInterval": 30000,
+    "enableRealtimeUpdates": true,
+    "enableAlerts": true,
+    "enableHistoricalData": true,
+    "dataRetentionDays": 30,
+    "chartUpdateInterval": 10000
+  }
+}

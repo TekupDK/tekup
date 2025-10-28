@@ -1,6 +1,6 @@
 /**
  * Database MCP Server - Supabase and Prisma integration for Tekup
- * 
+ *
  * Features:
  * - query_database: Execute safe read queries
  * - get_schema: Inspect database schema
@@ -22,6 +22,14 @@ import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { PerformanceMonitor, MonitoringHttpHandler, withPerformanceMonitoring } from "@tekup/performance-monitor/dist/index.js";
+
+// Initialize performance monitoring
+const performanceMonitor = new PerformanceMonitor(
+  'database-mcp',
+  '1.0.0',
+  Number.parseInt(process.env.PORT || "8050", 10)
+);
 
 // Environment configuration
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -399,15 +407,27 @@ const POST_PATH = process.env.MCP_POST_PATH || "/mcp/messages";
 
 const transports = new Map<string, SSEServerTransport>();
 
-const httpServer = http.createServer(async (req, res) => {
+// Enhanced HTTP server with performance monitoring
+const httpServer = http.createServer();
+
+// Add monitoring endpoints
+MonitoringHttpHandler.addMonitoringEndpoints(httpServer, performanceMonitor);
+
+// Custom handler for MCP-specific endpoints
+httpServer.on('request', async (req, res) => {
   try {
     const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
 
     if (req.method === "GET" && url.pathname === "/health") {
+      const health = performanceMonitor.getHealthStatus();
       res
         .writeHead(200, { "Content-Type": "application/json" })
         .end(
-          JSON.stringify({ status: "ok", supabaseUrl: SUPABASE_URL, admin: Boolean(supabaseAdmin) })
+          JSON.stringify({
+            ...health,
+            supabaseUrl: SUPABASE_URL,
+            admin: Boolean(supabaseAdmin)
+          })
         );
       return;
     }

@@ -9,6 +9,12 @@ const config = loadConfig();
  * Index all unindexed documents
  */
 export async function indexDocuments(): Promise<void> {
+  // Skip indexing if OpenAI API key not configured
+  if (!config.OPENAI_API_KEY) {
+    logger.info('Document indexing skipped (OPENAI_API_KEY not configured)');
+    return;
+  }
+
   const startTime = Date.now();
   logger.info('Starting document indexing job');
 

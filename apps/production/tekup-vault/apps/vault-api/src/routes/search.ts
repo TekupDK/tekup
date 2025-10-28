@@ -10,7 +10,7 @@ const router: RouterType = Router();
 const config = loadConfig();
 
 const embeddingService = new EmbeddingService(
-  config.OPENAI_API_KEY,
+  config.OPENAI_API_KEY || 'placeholder_key',
   supabase,
   logger
 );

@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { loadConfig, SYNC_CONFIG } from '@tekupvault/vault-core';
 import { logger } from './lib/logger';
 import { syncAllGitHubRepos } from './jobs/sync-github';
+import { syncLocalWorkspace } from './jobs/sync-local';
 import { indexDocuments } from './jobs/index-documents';
 
 const config = loadConfig();
@@ -15,6 +16,13 @@ async function runJobs(): Promise<void> {
 
     // Sync GitHub repositories
     await syncAllGitHubRepos();
+
+    // Sync local workspace (if enabled)
+    if (process.env.LOCAL_SYNC_ENABLED === 'true') {
+      await syncLocalWorkspace();
+    } else {
+      logger.info('Local sync disabled (set LOCAL_SYNC_ENABLED=true to enable)');
+    }
 
     // Index unindexed documents
     await indexDocuments();

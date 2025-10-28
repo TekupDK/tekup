@@ -1,6 +1,6 @@
 /**
  * Code Intelligence MCP Server - Semantic code search and analysis for Tekup
- * 
+ *
  * Features:
  * - find_code: Search for code by description/functionality
  * - analyze_file: Get insights about a specific file
@@ -22,6 +22,14 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprot
 import { z } from "zod";
 import fg from "fast-glob";
 import { promises as fs } from "fs";
+import { PerformanceMonitor, MonitoringHttpHandler, withPerformanceMonitoring } from "@tekup/performance-monitor/dist/index.js";
+
+// Initialize performance monitoring
+const performanceMonitor = new PerformanceMonitor(
+  'code-intelligence-mcp',
+  '1.0.0',
+  Number.parseInt(process.env.PORT || "8050", 10)
+);
 
 // Environment configuration
 const CODE_SEARCH_ROOT = process.env.CODE_SEARCH_ROOT || process.cwd();
@@ -270,123 +278,135 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 // Tool: call tool
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
+  
+  const context = performanceMonitor.startToolExecution(name);
 
   try {
-    switch (name) {
-      case "find_code": {
-        const { query, filePattern, limit } = FindCodeSchema.parse(args);
-        
-        const files = await findCodeFiles(filePattern);
-        const results: FileInfo[] = [];
-        
-        for (const file of files) {
-          const content = await readFile(file);
-          if (!content) continue;
-          
-          const score = scoreFile(content, query);
-          if (score === 0) continue;
-          
-          const snippets = extractSnippets(content, query);
-          const summary = generateFileSummary(content, file);
-          
-          results.push({ path: file, score, snippets, summary });
+    const result = await withPerformanceMonitoring(
+      performanceMonitor,
+      name,
+      async () => {
+        switch (name) {
+          case "find_code": {
+            const { query, filePattern, limit } = FindCodeSchema.parse(args);
+            
+            const files = await findCodeFiles(filePattern);
+            const results: FileInfo[] = [];
+            
+            for (const file of files) {
+              const content = await readFile(file);
+              if (!content) continue;
+              
+              const score = scoreFile(content, query);
+              if (score === 0) continue;
+              
+              const snippets = extractSnippets(content, query);
+              const summary = generateFileSummary(content, file);
+              
+              results.push({ path: file, score, snippets, summary });
+            }
+            
+            // Sort by score descending
+            results.sort((a, b) => b.score - a.score);
+            
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(results.slice(0, limit), null, 2),
+                },
+              ],
+            };
+          }
+
+          case "analyze_file": {
+            const { filePath } = AnalyzeFileSchema.parse(args);
+            const normalized = normalizePath(filePath);
+            
+            const content = await readFile(normalized);
+            if (!content) {
+              return {
+                content: [{ type: "text", text: `Error: Could not read file ${filePath}` }],
+                isError: true,
+              };
+            }
+            
+            const summary = generateFileSummary(content, normalized);
+            const dependencies = await analyzeFileDependencies(normalized);
+            const lines = content.split("\n").length;
+            const size = Buffer.from(content).length;
+            
+            const analysis = {
+              path: normalized,
+              lines,
+              size: `${Math.round(size / 1024)} KB`,
+              dependencies,
+              summary,
+            };
+            
+            return {
+              content: [{ type: "text", text: JSON.stringify(analysis, null, 2) }],
+            };
+          }
+
+          case "find_similar_code": {
+            const { codeSnippet, filePattern, limit } = FindSimilarCodeSchema.parse(args);
+            
+            const files = await findCodeFiles(filePattern);
+            const results: FileInfo[] = [];
+            
+            for (const file of files) {
+              const content = await readFile(file);
+              if (!content) continue;
+              
+              // Simple similarity: check for similar tokens
+              const snippetTokens = codeSnippet.toLowerCase().match(/\w+/g) || [];
+              const score = scoreFile(content, snippetTokens.join(" "));
+              
+              if (score === 0) continue;
+              
+              const snippets = extractSnippets(content, snippetTokens.join(" "), 2);
+              const summary = generateFileSummary(content, file);
+              
+              results.push({ path: file, score, snippets, summary });
+            }
+            
+            results.sort((a, b) => b.score - a.score);
+            
+            return {
+              content: [{ type: "text", text: JSON.stringify(results.slice(0, limit), null, 2) }],
+            };
+          }
+
+          case "get_file_dependencies": {
+            const { filePath } = AnalyzeFileSchema.parse(args);
+            const normalized = normalizePath(filePath);
+            
+            const dependencies = await analyzeFileDependencies(normalized);
+            
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify({ file: normalized, dependencies }, null, 2),
+                },
+              ],
+            };
+          }
+
+          default:
+            return {
+              content: [{ type: "text", text: `Unknown tool: ${name}` }],
+              isError: true,
+            };
         }
-        
-        // Sort by score descending
-        results.sort((a, b) => b.score - a.score);
-        
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(results.slice(0, limit), null, 2),
-            },
-          ],
-        };
       }
+    )();
 
-      case "analyze_file": {
-        const { filePath } = AnalyzeFileSchema.parse(args);
-        const normalized = normalizePath(filePath);
-        
-        const content = await readFile(normalized);
-        if (!content) {
-          return {
-            content: [{ type: "text", text: `Error: Could not read file ${filePath}` }],
-            isError: true,
-          };
-        }
-        
-        const summary = generateFileSummary(content, normalized);
-        const dependencies = await analyzeFileDependencies(normalized);
-        const lines = content.split("\n").length;
-        const size = Buffer.from(content).length;
-        
-        const analysis = {
-          path: normalized,
-          lines,
-          size: `${Math.round(size / 1024)} KB`,
-          dependencies,
-          summary,
-        };
-        
-        return {
-          content: [{ type: "text", text: JSON.stringify(analysis, null, 2) }],
-        };
-      }
-
-      case "find_similar_code": {
-        const { codeSnippet, filePattern, limit } = FindSimilarCodeSchema.parse(args);
-        
-        const files = await findCodeFiles(filePattern);
-        const results: FileInfo[] = [];
-        
-        for (const file of files) {
-          const content = await readFile(file);
-          if (!content) continue;
-          
-          // Simple similarity: check for similar tokens
-          const snippetTokens = codeSnippet.toLowerCase().match(/\w+/g) || [];
-          const score = scoreFile(content, snippetTokens.join(" "));
-          
-          if (score === 0) continue;
-          
-          const snippets = extractSnippets(content, snippetTokens.join(" "), 2);
-          const summary = generateFileSummary(content, file);
-          
-          results.push({ path: file, score, snippets, summary });
-        }
-        
-        results.sort((a, b) => b.score - a.score);
-        
-        return {
-          content: [{ type: "text", text: JSON.stringify(results.slice(0, limit), null, 2) }],
-        };
-      }
-
-      case "get_file_dependencies": {
-        const { filePath } = AnalyzeFileSchema.parse(args);
-        const normalized = normalizePath(filePath);
-        
-        const dependencies = await analyzeFileDependencies(normalized);
-        
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({ file: normalized, dependencies }, null, 2),
-            },
-          ],
-        };
-      }
-
-      default:
-        return {
-          content: [{ type: "text", text: `Unknown tool: ${name}` }],
-          isError: true,
-        };
-    }
+    performanceMonitor.completeToolExecution(context, true);
+    return result;
   } catch (error) {
+    performanceMonitor.completeToolExecution(context, false, (error as Error).message);
     return {
       content: [
         {
@@ -405,12 +425,20 @@ const POST_PATH = process.env.MCP_POST_PATH || "/mcp/messages";
 
 const transports = new Map<string, SSEServerTransport>();
 
-const httpServer = http.createServer(async (req, res) => {
+// Enhanced HTTP server with performance monitoring
+const httpServer = http.createServer();
+
+// Add monitoring endpoints
+MonitoringHttpHandler.addMonitoringEndpoints(httpServer, performanceMonitor);
+
+// Custom handler for MCP-specific endpoints
+httpServer.on('request', async (req, res) => {
   try {
     const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
 
     if (req.method === "GET" && url.pathname === "/health") {
-      res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
+      const health = performanceMonitor.getHealthStatus();
+      res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(health));
       return;
     }
 

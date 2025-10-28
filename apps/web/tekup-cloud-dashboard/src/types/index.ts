@@ -191,4 +191,56 @@ export interface SystemAlert {
   service_name: string;
   timestamp: string;
   acknowledged: boolean;
+
+// MCP Server Types
+export interface MCPServer {
+  id: string;
+  name: string;
+  description: string;
+  type: 'http' | 'stdio';
+  baseUrl?: string;
+  healthEndpoint?: string;
+  metricsEndpoint?: string;
+  summaryEndpoint?: string;
+  status: 'active' | 'inactive' | 'error';
+  category: string;
+  tags: string[];
+}
+
+export interface MCPServerMetric {
+  id: string;
+  server_id: string;
+  timestamp: string;
+  uptime: number; // percentage
+  response_time: number; // ms
+  memory_usage: number; // MB
+  cpu_usage: number; // percentage
+  active_connections: number;
+  total_requests: number;
+  error_count: number;
+  tool_executions: number;
+  average_execution_time: number;
+  status: 'healthy' | 'degraded' | 'down';
+}
+
+export interface MCPServerHealth {
+  server_id: string;
+  status: 'healthy' | 'degraded' | 'down' | 'unknown';
+  last_check: string;
+  response_time: number;
+  error_message?: string;
+  version?: string;
+  uptime: number;
+}
+
+export interface MCPToolExecution {
+  id: string;
+  server_id: string;
+  tool_name: string;
+  status: 'success' | 'error' | 'timeout';
+  execution_time: number;
+  timestamp: string;
+  error_message?: string;
+  parameters?: Record<string, unknown>;
+}
 }

@@ -3,6 +3,18 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import puppeteer from 'puppeteer';
 import { z } from 'zod';
+import { StdioPerformanceMonitor, withStdioPerformanceMonitoring } from '@tekup/performance-monitor/dist/stdio-monitor.js';
+
+// Initialize performance monitoring
+const performanceMonitor = new StdioPerformanceMonitor(
+  'autonomous-browser-tester',
+  '1.0.0'
+);
+
+// Log metrics every 5 minutes
+setInterval(() => {
+  performanceMonitor.logMetricsSummary();
+}, 5 * 60 * 1000);
 
 class AutonomousBrowserTester {
   constructor() {
@@ -132,7 +144,7 @@ server.tool(
   {
     url: z.string().describe("URL to navigate to")
   },
-  async ({ url }) => {
+  withStdioPerformanceMonitoring(performanceMonitor, "navigate", async ({ url }) => {
     try {
       const result = await browserTester.navigate(url);
       return {
@@ -144,7 +156,7 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Tool: Click element
@@ -153,7 +165,7 @@ server.tool(
   {
     selector: z.string().describe("CSS selector for element to click")
   },
-  async ({ selector }) => {
+  withStdioPerformanceMonitoring(performanceMonitor, "click", async ({ selector }) => {
     try {
       const result = await browserTester.click(selector);
       return {
@@ -165,7 +177,7 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Tool: Fill input field
@@ -175,7 +187,7 @@ server.tool(
     selector: z.string().describe("CSS selector for input field"),
     value: z.string().describe("Value to fill")
   },
-  async ({ selector, value }) => {
+  withStdioPerformanceMonitoring(performanceMonitor, "fill", async ({ selector, value }) => {
     try {
       const result = await browserTester.fill(selector, value);
       return {
@@ -187,7 +199,7 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Tool: Take screenshot
@@ -196,7 +208,7 @@ server.tool(
   {
     name: z.string().optional().describe("Name for the screenshot")
   },
-  async ({ name = 'screenshot' }) => {
+  withStdioPerformanceMonitoring(performanceMonitor, "screenshot", async ({ name = 'screenshot' }) => {
     try {
       const result = await browserTester.screenshot(name);
       return {
@@ -211,7 +223,7 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Tool: Get text from element
@@ -220,7 +232,7 @@ server.tool(
   {
     selector: z.string().describe("CSS selector for element")
   },
-  async ({ selector }) => {
+  withStdioPerformanceMonitoring(performanceMonitor, "get_text", async ({ selector }) => {
     try {
       const result = await browserTester.getText(selector);
       return {
@@ -232,7 +244,7 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Tool: Wait for element
@@ -242,7 +254,7 @@ server.tool(
     selector: z.string().describe("CSS selector to wait for"),
     timeout: z.number().optional().describe("Timeout in milliseconds")
   },
-  async ({ selector, timeout = 10000 }) => {
+  withStdioPerformanceMonitoring(performanceMonitor, "wait_for_element", async ({ selector, timeout = 10000 }) => {
     try {
       const result = await browserTester.waitForElement(selector, timeout);
       return {
@@ -254,7 +266,7 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Tool: Execute JavaScript
@@ -263,7 +275,7 @@ server.tool(
   {
     script: z.string().describe("JavaScript code to execute")
   },
-  async ({ script }) => {
+  withStdioPerformanceMonitoring(performanceMonitor, "evaluate", async ({ script }) => {
     try {
       const result = await browserTester.evaluate(script);
       return {
@@ -275,7 +287,7 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Tool: Test demo mode specifically
@@ -284,7 +296,7 @@ server.tool(
   {
     url: z.string().optional().describe("URL to test (default: http://localhost:8080)")
   },
-  async ({ url = 'http://localhost:8080' }) => {
+  withStdioPerformanceMonitoring(performanceMonitor, "test_demo_mode", async ({ url = 'http://localhost:8080' }) => {
     try {
       const result = await browserTester.testDemoMode(url);
       const content = [
@@ -304,14 +316,14 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Tool: Close browser
 server.tool(
   "close_browser",
   {},
-  async () => {
+  withStdioPerformanceMonitoring(performanceMonitor, "close_browser", async () => {
     try {
       await browserTester.closeBrowser();
       return {
@@ -323,7 +335,7 @@ server.tool(
         isError: true
       };
     }
-  }
+  })
 );
 
 // Start the server

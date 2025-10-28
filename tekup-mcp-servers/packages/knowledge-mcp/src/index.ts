@@ -22,6 +22,14 @@ import { z } from "zod";
 import fg from "fast-glob";
 import { promises as fs } from "fs";
 import * as fsSync from "fs";
+import { PerformanceMonitor, MonitoringHttpHandler, withPerformanceMonitoring } from "@tekup/performance-monitor/dist/index.js";
+
+// Initialize performance monitoring
+const performanceMonitor = new PerformanceMonitor(
+  'knowledge-mcp',
+  '1.0.0',
+  Number.parseInt(process.env.PORT || "8050", 10)
+);
 
 const REQUIRED_ENV = "KNOWLEDGE_SEARCH_ROOT";
 const SEARCH_ROOT = process.env[REQUIRED_ENV]?.trim();
@@ -205,19 +213,36 @@ const server = new Server(
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
-  if (name === "search_knowledge") {
-    const { query, limit } = SearchInputSchema.parse(args);
-    const results = await handleSearch(query, limit ?? 5);
-    return {
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify(results, null, 2),
-        },
-      ],
-    };
+  
+  const context = performanceMonitor.startToolExecution(name);
+
+  try {
+    const result = await withPerformanceMonitoring(
+      performanceMonitor,
+      name,
+      async () => {
+        if (name === "search_knowledge") {
+          const { query, limit } = SearchInputSchema.parse(args);
+          const results = await handleSearch(query, limit ?? 5);
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(results, null, 2),
+              },
+            ],
+          };
+        }
+        throw new Error(`Unknown tool: ${name}`);
+      }
+    )();
+
+    performanceMonitor.completeToolExecution(context, true);
+    return result;
+  } catch (error) {
+    performanceMonitor.completeToolExecution(context, false, (error as Error).message);
+    throw error;
   }
-  throw new Error(`Unknown tool: ${name}`);
 });
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -255,12 +280,20 @@ const POST_PATH = process.env.MCP_POST_PATH || "/mcp/messages";
 
 const transports = new Map<string, SSEServerTransport>();
 
-const httpServer = http.createServer(async (req, res) => {
+// Enhanced HTTP server with performance monitoring
+const httpServer = http.createServer();
+
+// Add monitoring endpoints
+MonitoringHttpHandler.addMonitoringEndpoints(httpServer, performanceMonitor);
+
+// Custom handler for MCP-specific endpoints
+httpServer.on('request', async (req, res) => {
   try {
     const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
 
     if (req.method === "GET" && url.pathname === "/health") {
-      res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
+      const health = performanceMonitor.getHealthStatus();
+      res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(health));
       return;
     }
 

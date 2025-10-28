@@ -8,16 +8,16 @@ const ConfigSchema = z.object({
   DATABASE_URL: z.string().url(),
   
   // Supabase
-  SUPABASE_URL: z.string().url(),
-  SUPABASE_ANON_KEY: z.string().min(1),
-  SUPABASE_SERVICE_KEY: z.string().min(1),
+  SUPABASE_URL: z.string().url().optional(),
+  SUPABASE_ANON_KEY: z.string().min(1).optional(),
+  SUPABASE_SERVICE_KEY: z.string().min(1).optional(),
   
   // GitHub
-  GITHUB_TOKEN: z.string().min(1),
+  GITHUB_TOKEN: z.string().min(1).optional(),
   GITHUB_WEBHOOK_SECRET: z.string().min(1).optional(),
   
   // OpenAI
-  OPENAI_API_KEY: z.string().min(1),
+  OPENAI_API_KEY: z.string().min(1).optional(),
   
   // Server
   PORT: z.coerce.number().int().positive().default(3000),

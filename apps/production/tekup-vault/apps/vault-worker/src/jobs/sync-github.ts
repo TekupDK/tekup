@@ -9,6 +9,12 @@ const config = loadConfig();
  * Sync all GitHub repositories in parallel
  */
 export async function syncAllGitHubRepos(): Promise<void> {
+  // Skip GitHub sync if token not configured
+  if (!config.GITHUB_TOKEN) {
+    logger.info('GitHub sync skipped (GITHUB_TOKEN not configured)');
+    return;
+  }
+
   const startTime = Date.now();
   logger.info({ repos: GITHUB_REPOS.length }, 'Starting GitHub sync job (parallel)');
 
