@@ -13,8 +13,8 @@
       "path": "apps/production/tekup-database"
     },
     {
-      "name": "  ├─ 📚 TekupVault (Knowledge Layer)",
-      "path": "apps/production/tekup-vault"
+      "name": "  ├─ 📚 TekupVault (Standalone)",
+      "path": "../tekup-vault"
     },
     {
       "name": "  └─ 💰 Tekup Billy (MCP Server)",
@@ -142,7 +142,7 @@
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
-    "powershell.cwd": ".",
+    "powershell.cwd": "📊 Tekup Portfolio (Root)",
     "files.autoSave": "onFocusChange",
     "explorer.compactFolders": false,
     "breadcrumbs.enabled": true,
