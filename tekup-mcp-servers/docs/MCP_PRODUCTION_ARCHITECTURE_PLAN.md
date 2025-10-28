@@ -384,7 +384,7 @@ Concurrent users: 500+
 - [TEKUP_MCP_SECURITY.md](./TEKUP_MCP_SECURITY.md) - Security audit
 - [TEKUP_CUSTOM_MCP_INNOVATION_PLAN.md](./TEKUP_CUSTOM_MCP_INNOVATION_PLAN.md) - Business case
 - [Tekup-Billy Deployment Docs](../apps/production/tekup-billy/docs/DEPLOYMENT_COMPLETE.md)
-- [TekupVault MCP Docs](../apps/production/tekup-vault/docs/MCP_IMPLEMENTATION_COMPLETE.md)
+- [TekupVault](https://github.com/TekupDK/tekup-vault) - Standalone repository (moved from monorepo)
 
 ---
 
