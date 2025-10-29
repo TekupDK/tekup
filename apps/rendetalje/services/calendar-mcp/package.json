@@ -41,7 +41,7 @@
     "@langchain/openai": "^1.0.0",
     "@modelcontextprotocol/sdk": "^1.20.0",
     "@supabase/supabase-js": "^2.75.0",
-    "@tekup/database": "link:..\\..\\..\\production\\tekup-database",
+    "@tekup/database": "file:../../../production/tekup-database",
     "@types/uuid": "^10.0.0",
     "axios": "^1.6.0",
     "compression": "^1.7.4",

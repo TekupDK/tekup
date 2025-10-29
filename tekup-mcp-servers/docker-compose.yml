@@ -170,7 +170,7 @@ services:
   # ==========================================
   vault-mcp:
     build:
-      context: ../apps/production/tekup-vault/apps/mcp
+      context: ../tekup-vault/apps/mcp
       dockerfile: Dockerfile
     container_name: tekup-vault-mcp
     ports:

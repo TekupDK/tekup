@@ -128,18 +128,26 @@ check_system_ports() {
 
     for port in "${!PORT_REGISTRY[@]}"; do
         if [[ -z "${CONFLICTS_FOUND[$port]}" ]]; then
-            # Check if port is in use on the system
-            if command -v netstat &> /dev/null; then
-                if netstat -tuln 2>/dev/null | grep -q ":$port "; then
-                    system_conflicts+=("$port")
-                    echo -e "${YELLOW}⚠️  Port $port is already in use on system${NC}"
-                fi
-            elif command -v ss &> /dev/null; then
-                if ss -tuln 2>/dev/null | grep -q ":$port "; then
-                    system_conflicts+=("$port")
-                    echo -e "${YELLOW}⚠️  Port $port is already in use on system${NC}"
-                fi
-            fi
+            # Check if port is in use on the system (cross-platform)
+                    if command -v netstat &> /dev/null; then
+                        if netstat -tuln 2>/dev/null | grep -q ":$port "; then
+                            system_conflicts+=("$port")
+                            echo -e "${YELLOW}⚠️  Port $port is already in use on system${NC}"
+                        fi
+                    elif command -v ss &> /dev/null; then
+                        if ss -tuln 2>/dev/null | grep -q ":$port "; then
+                            system_conflicts+=("$port")
+                            echo -e "${YELLOW}⚠️  Port $port is already in use on system${NC}"
+                        fi
+                    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
+                        # Windows-specific port checking
+                        if command -v netstat &> /dev/null; then
+                            if netstat -ano 2>/dev/null | findstr ":$port " > /dev/null; then
+                                system_conflicts+=("$port")
+                                echo -e "${YELLOW}⚠️  Port $port is already in use on system${NC}"
+                            fi
+                        fi
+                    fi
         fi
     done
 

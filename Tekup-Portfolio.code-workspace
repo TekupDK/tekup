@@ -141,16 +141,8 @@
       "typescript": "html",
       "typescriptreact": "html"
     },
-    "eslint.workingDirectories": [
-      "apps/*",
-      "services/*",
-      "packages/*"
-    ],
-    "prettier.workingDirectories": [
-      "apps/*",
-      "services/*",
-      "packages/*"
-    ]
+    "eslint.workingDirectories": ["apps/*", "services/*", "packages/*"],
+    "prettier.workingDirectories": ["apps/*", "services/*", "packages/*"]
   },
   "extensions": {
     "recommendations": [
@@ -175,8 +167,6 @@
       "formulahendry.auto-close-tag",
       "ms-vscode.vscode-css-peek",
       "christian-kohler.npm-intellisense",
-      "ms-vscode.vscode-npm-script",
-      "visualstudioexptteam.vscodeintellicode",
       "tabnine.tabnine-vscode",
       "github.copilot",
       "github.copilot-chat",

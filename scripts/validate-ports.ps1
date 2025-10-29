@@ -149,7 +149,16 @@ function Check-SystemPorts {
                 }
             } catch {
                 # Get-NetTCPConnection might not be available or might fail
-                Write-Host "⚠️  Could not check system port $port" -ForegroundColor Yellow
+                # Try alternative methods for cross-platform compatibility
+                try {
+                    $netstatOutput = netstat -ano 2>$null | Select-String ":$port\s"
+                    if ($netstatOutput) {
+                        $systemConflicts += $port
+                        Write-Host "⚠️  Port $port is already in use on system" -ForegroundColor Yellow
+                    }
+                } catch {
+                    Write-Host "⚠️  Could not check system port $port" -ForegroundColor Yellow
+                }
             }
         }
     }
