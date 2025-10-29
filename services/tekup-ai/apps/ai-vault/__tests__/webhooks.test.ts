@@ -40,7 +40,7 @@ describe('GitHub Webhook Handler', () => {
     it('should accept webhook with valid HMAC signature', async () => {
       const payload = {
         repository: {
-          full_name: 'JonasAbde/renos-backend'
+          full_name: 'TekupDK/tekup'
         },
         ref: 'refs/heads/main'
       };
@@ -64,7 +64,7 @@ describe('GitHub Webhook Handler', () => {
       
       for (const eventType of eventTypes) {
         const payload = {
-          repository: { full_name: 'JonasAbde/test-repo' },
+          repository: { full_name: 'TekupDK/test-repo' },
           action: 'opened'
         };
         
@@ -85,7 +85,7 @@ describe('GitHub Webhook Handler', () => {
   describe('WEBHOOK-002: Webhook uden signature', () => {
     it('should reject request without signature header', async () => {
       const payload = {
-        repository: { full_name: 'JonasAbde/test-repo' }
+        repository: { full_name: 'TekupDK/test-repo' }
       };
 
       const res = await request(server)
@@ -101,7 +101,7 @@ describe('GitHub Webhook Handler', () => {
   describe('WEBHOOK-003: Webhook med invalid signature', () => {
     it('should reject webhook with incorrect signature', async () => {
       const payload = {
-        repository: { full_name: 'JonasAbde/test-repo' }
+        repository: { full_name: 'TekupDK/test-repo' }
       };
 
       const res = await request(server)
@@ -169,7 +169,7 @@ describe('GitHub Webhook Handler', () => {
     it('should extract repository name from payload', async () => {
       const payload = {
         repository: {
-          full_name: 'JonasAbde/renos-backend'
+          full_name: 'TekupDK/tekup'
         }
       };
       

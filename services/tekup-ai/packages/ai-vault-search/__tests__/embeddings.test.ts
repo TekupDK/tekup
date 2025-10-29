@@ -373,7 +373,7 @@ describe('Embedding Service', () => {
         limit: 5,
         threshold: 0.6,
         source: 'github',
-        repository: 'JonasAbde/renos-backend',
+        repository: 'TekupDK/tekup',
       };
 
       mockSupabase.rpc.mockResolvedValueOnce({
@@ -389,7 +389,7 @@ describe('Embedding Service', () => {
           match_threshold: 0.6,
           match_count: 5,
           filter_source: 'github',
-          filter_repository: 'JonasAbde/renos-backend',
+          filter_repository: 'TekupDK/tekup',
         })
       );
     });
