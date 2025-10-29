@@ -1,0 +1,181 @@
+{
+  "markdownlint.config": {
+    "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/v0.38.0/schema/markdownlint-config-schema.json"
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.markdownlint": "explicit"
+    }
+  },
+  "files.associations": {
+    "*.md": "markdown"
+  },
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "markdown": true,
+    "plaintext": false
+  },
+  "github.copilot.chat.enable": true,
+  "github.copilot.chat.codeBlock.enable": true,
+  "github.copilot.inlineSuggest.enable": true,
+  "github.copilot.autocomplete.enable": true,
+  "github.copilot.organizations": [],
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "cursordown",
+  "editor.accessibilitySupport": "off",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.acceptSuggestionOnCommitCharacter": true,
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.wordWrap": "on",
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "javascript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.inlayHints.parameterTypes.enabled": true,
+  "typescript.inlayHints.variableTypes.enabled": true,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.inlayHints.enumMemberValues.enabled": true,
+  "javascript.inlayHints.parameterNames.enabled": "all",
+  "javascript.inlayHints.parameterTypes.enabled": true,
+  "javascript.inlayHints.variableTypes.enabled": true,
+  "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.preferences.tsdk": "",
+  "typescript.tsserver.useSeparateSyntaxServer": true,
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.tsserver.log": "off",
+  "typescript.validate.enable": true,
+  "typescript.suggest.autoImports": true,
+  "typescript.suggest.includeCompletionsForImportStatements": true,
+  "typescript.suggest.includeAutomaticOptionalChainCompletions": true,
+  "prettier.singleQuote": true,
+  "prettier.semi": true,
+  "prettier.trailingComma": "es5",
+  "prettier.printWidth": 80,
+  "prettier.tabWidth": 2,
+  "eslint.workingDirectories": [
+    "apps/*",
+    "services/*",
+    "packages/*",
+    "tekup-mcp-servers/packages/*"
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.scss": "scss",
+    "*.js": "javascript",
+    "*.jsx": "javascriptreact",
+    "*.ts": "typescript",
+    "*.tsx": "typescriptreact",
+    "*.json": "jsonc",
+    "*.yml": "yaml",
+    "*.yaml": "yaml",
+    "docker-compose*.yml": "yaml"
+  },
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "docker.defaultRegistryPath": "ghcr.io/tekup",
+  "docker.dockerfile.associations": {
+    "dockerfile": "dockerfile",
+    "Dockerfile.*": "dockerfile"
+  },
+  "git.ignoreLimitWarning": true,
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "gitlens.blame.compact": false,
+  "gitlens.blame.heatmap.enabled": false,
+  "gitlens.currentLine.enabled": true,
+  "gitlens.codeLens.enabled": true,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.blame.inlineMode": "off",
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/.turbo": true,
+    "**/pnpm-lock.yaml": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/coverage/**": true,
+    "**/.next/**": true,
+    "**/out/**": true,
+    "**/.turbo/**": true,
+    "**/.git/**": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["package.json"],
+      "url": "https://json.schemastore.org/package.json"
+    },
+    {
+      "fileMatch": ["docker-compose*.yml", "docker-compose*.yaml"],
+      "url": "https://json.schemastore.org/docker-compose.json"
+    }
+  ],
+  "yaml.schemas": {
+    "https://json.schemastore.org/docker-compose.json": "docker-compose*.{yml,yaml}"
+  },
+  "thunder-client.importFiles": "new-file",
+  "thunder-client.collectionsSortOrder": "name",
+  "thunder-client.environments": [
+    {
+      "id": "development",
+      "name": "Development"
+    },
+    {
+      "id": "production",
+      "name": "Production"
+    }
+  ],
+  "remote.SSH.remoteServerListenOnSocket": true,
+  "remote.SSH.enableRemoteCommand": true,
+  "remote.SSH.connectTimeout": 30,
+  "remote.SSH.configFile": "C:\\Users\\empir\\.ssh\\config",
+  "remote.SSH.enableRemoteCommand": true,
+  "extensions.experimental.affinity": {
+    "github.copilot": 1,
+    "github.copilot-chat": 1
+  }
+}
