@@ -2,71 +2,92 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Backend: Debug (NestJS)",
+      "name": "Debug TekupDK Backend",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start:debug"],
+      "program": "${workspaceFolder}/apps/rendetalje/services/backend-nestjs/dist/main.js",
       "cwd": "${workspaceFolder}/apps/rendetalje/services/backend-nestjs",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3001"
+      },
       "console": "integratedTerminal",
       "restart": true,
-      "protocol": "inspector",
+      "runtimeArgs": ["--nolazy"],
       "skipFiles": ["<node_internals>/**"]
     },
     {
-      "name": "Frontend: Debug (Next.js)",
+      "name": "Debug MCP Knowledge Server",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "program": "${workspaceFolder}/tekup-mcp-servers/packages/knowledge-mcp/dist/index.js",
+      "cwd": "${workspaceFolder}/tekup-mcp-servers/packages/knowledge-mcp",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "8051"
+      },
+      "console": "integratedTerminal",
+      "restart": true
+    },
+    {
+      "name": "Debug Gmail MCP Server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/services/tekup-gmail-services/apps/gmail-mcp-server/dist/index.js",
+      "cwd": "${workspaceFolder}/services/tekup-gmail-services/apps/gmail-mcp-server",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "8056"
+      },
+      "console": "integratedTerminal",
+      "restart": true
+    },
+    {
+      "name": "Debug Calendar MCP Server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/rendetalje/services/calendar-mcp/dist/index.js",
+      "cwd": "${workspaceFolder}/apps/rendetalje/services/calendar-mcp",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3003"
+      },
+      "console": "integratedTerminal",
+      "restart": true
+    },
+    {
+      "name": "Debug Frontend (Next.js)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/rendetalje/services/frontend-nextjs/node_modules/.bin/next",
+      "args": ["dev"],
       "cwd": "${workspaceFolder}/apps/rendetalje/services/frontend-nextjs",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3002"
+      },
       "console": "integratedTerminal",
-      "serverReadyAction": {
-        "pattern": "started server on .+, url: (https?://.+)",
-        "uriFormat": "%s",
-        "action": "debugWithChrome"
-      }
+      "restart": true,
+      "runtimeArgs": ["--inspect"]
     },
     {
-      "name": "Mobile: Expo Start",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start"],
-      "cwd": "${workspaceFolder}/apps/rendetalje/services/mobile",
-      "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
-    },
-    {
-      "name": "Docker: Attach to Backend",
-      "type": "node",
+      "name": "Debug Docker Compose Services",
+      "type": "docker",
       "request": "attach",
-      "port": 9229,
-      "address": "localhost",
-      "localRoot": "${workspaceFolder}/apps/rendetalje/services/backend-nestjs",
-      "remoteRoot": "/app",
-      "protocol": "inspector",
-      "skipFiles": ["<node_internals>/**"]
-    },
-    {
-      "name": "Test: Current File (Jest)",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": ["${relativeFile}", "--config", "jest.config.js"],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true,
-      "windows": {
-        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-      }
+      "service": "rendetalje-backend",
+      "dockerOptions": {
+        "docker-compose": "docker-compose.yml"
+      },
+      "console": "integratedTerminal"
     }
   ],
   "compounds": [
     {
-      "name": "Full Stack: Backend + Frontend",
-      "configurations": ["Backend: Debug (NestJS)", "Frontend: Debug (Next.js)"],
-      "stopAll": true
+      "name": "Debug Full Stack",
+      "configurations": [
+        "Debug TekupDK Backend",
+        "Debug Frontend (Next.js)"
+      ]
     }
   ]
 }
