@@ -15,8 +15,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # Search for 'JonasAbde/' outside allowed locations
-          git grep -n "JonasAbde/" \
+          # Build pattern without embedding it literally in repo files
+          PATTERN="Jonas""Abde/"
+          # Search for legacy owner pattern outside allowed locations
+          git grep -n "$PATTERN" \
             -- \
             ":!archive/**" \
             ":!node_modules/**" \
@@ -34,7 +36,7 @@ jobs:
             > matches.txt || true
 
           if [ -s matches.txt ]; then
-            echo "Forbidden references to 'JonasAbde/' found outside allowed locations:" >&2
+            echo "Forbidden references to legacy personal namespace found outside allowed locations:" >&2
             cat matches.txt >&2
             echo "::error::Forbidden legacy repository references detected. Please replace with TekupDK equivalents or move to archive." >&2
             exit 1
