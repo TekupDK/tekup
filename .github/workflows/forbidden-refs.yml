@@ -1,0 +1,43 @@
+name: forbid-legacy-repo-refs
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan for forbidden legacy references
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Search for 'JonasAbde/' outside allowed locations
+          git grep -n "JonasAbde/" \
+            -- \
+            ":!archive/**" \
+            ":!node_modules/**" \
+            ":!**/*.png" \
+            ":!**/*.jpg" \
+            ":!**/*.jpeg" \
+            ":!**/*.gif" \
+            ":!**/*.pdf" \
+            ":!**/*.zip" \
+            ":!**/*.woff" \
+            ":!**/*.woff2" \
+            ":!fix-references.ps1" \
+            ":!fix-references-v2.ps1" \
+            ":!kilo-code-settings.json" \
+            > matches.txt || true
+
+          if [ -s matches.txt ]; then
+            echo "Forbidden references to 'JonasAbde/' found outside allowed locations:" >&2
+            cat matches.txt >&2
+            echo "::error::Forbidden legacy repository references detected. Please replace with TekupDK equivalents or move to archive." >&2
+            exit 1
+          else
+            echo "No forbidden legacy references found."
+          fi
