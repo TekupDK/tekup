@@ -320,7 +320,7 @@ app.get('/', (req: Request, res: Response) => {
             mcp: '/mcp',
             mcp_root: '/ (POST for ChatGPT compatibility)',
             api: '/api/v1/tools',
-            documentation: 'https://github.com/JonasAbde/Tekup-Billy'
+            documentation: 'https://github.com/TekupDK/Tekup-Billy'
         }
     });
 });
@@ -393,7 +393,7 @@ app.get('/.well-known/mcp.json', (req: Request, res: Response) => {
         protocolVersions: ['2025-03-26', '2025-06-18'],
         contact: {
             email: 'support@tekup.dk',
-            url: 'https://github.com/JonasAbde/Tekup-Billy'
+            url: 'https://github.com/TekupDK/Tekup-Billy'
         }
     });
 });
@@ -507,7 +507,7 @@ app.get('/.well-known/oauth-authorization-server', (req: Request, res: Response)
         grant_types_supported: ['api_key'],
         response_types_supported: [],
         token_endpoint_auth_methods_supported: ['client_secret_post'],
-        service_documentation: 'https://github.com/JonasAbde/Tekup-Billy',
+    service_documentation: 'https://github.com/TekupDK/Tekup-Billy',
         ui_locales_supported: ['en-US', 'da-DK']
     });
 });
@@ -528,7 +528,7 @@ app.get('/.well-known/oauth-protected-resource/mcp', (req: Request, res: Respons
         authorization_servers: [],
         scopes_supported: ['read', 'write'],
         bearer_methods_supported: ['header', 'query'],
-        resource_documentation: 'https://github.com/JonasAbde/Tekup-Billy'
+    resource_documentation: 'https://github.com/TekupDK/Tekup-Billy'
     });
 });
 
