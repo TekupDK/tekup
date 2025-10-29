@@ -24,5 +24,8 @@
     "ms-vscode.vscode-git-base",
     "eamodio.gitlens",
     "ms-vscode.vscode-behave"
+  ],
+  "unwantedRecommendations": [
+    "tabnine.tabnine-vscode"
   ]
 }
