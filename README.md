@@ -2,6 +2,44 @@
 
 This repository contains the full source code and documentation for the Tekup platform, a comprehensive suite of tools for managing and operating a modern business.
 
+## Quick Start
+
+### Prerequisites
+- Node.js 20+ (LTS)
+- pnpm 10.17.0+ (enforced via `packageManager` field)
+- Git with conventional commit support
+
+### Installation
+
+```powershell
+# Clone repository
+git clone https://github.com/TekupDK/tekup.git
+cd tekup
+
+# Install dependencies (also sets up git hooks)
+pnpm install
+
+# Start development servers
+pnpm dev
+```
+
+### Git Workflow
+
+This workspace enforces [Conventional Commits](https://www.conventionalcommits.org/). All commits must follow this format:
+
+```
+<type>(<scope>): <subject>
+```
+
+**Examples:**
+- `feat(vault): add semantic search endpoint`
+- `fix(billy): handle rate limit on token refresh`
+- `docs(readme): update quick start guide`
+
+See [docs/CONVENTIONAL_COMMITS.md](docs/CONVENTIONAL_COMMITS.md) for complete guide.
+
+**Git hooks** (via Husky) automatically validate commit messages before creation. CI validates all commits on push and PR.
+
 ## Active Projects
 
 ### Rendetalje Mobile App

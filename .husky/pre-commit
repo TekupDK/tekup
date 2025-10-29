@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run markdown linting on staged markdown files
+npx markdownlint-cli2 $(git diff --cached --name-only --diff-filter=ACM | grep '\.md$' | grep -v 'node_modules' | grep -v 'archive')

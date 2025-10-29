@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Commitlint & Git Governance** (Oct 29, 2025)
+  - Added: `commitlint.config.cjs` — Conventional commits enforcement with TekupDK scopes
+  - Added: `docs/CONVENTIONAL_COMMITS.md` — Complete guide with examples and rules
+  - Added: `.husky/commit-msg` — Git hook to validate commit messages locally
+  - Added: `.husky/pre-commit` — Git hook to lint staged markdown files
+  - Added: `.github/workflows/commitlint.yml` — CI workflow to validate commits on PR and push
+  - Added: `.github/SETUP_COMMITLINT.md` — Installation and troubleshooting guide
+  - Enhanced: `.github/PULL_REQUEST_TEMPLATE.md` — Added commit validation, type/scope fields, comprehensive checklists
+  - Enhanced: `README.md` — Added git workflow section and quick start guide
+  - Enhanced: `.github/chatmodes/TekupDK.chatmode.md` — Added autonomy, git workflow defaults, and isolation rules
+  - Dependencies: `@commitlint/cli@18.6.0`, `@commitlint/config-conventional@18.6.0`, `husky@9.0.0`
+  - Purpose: Enforce consistent commit format across all projects, enable automated PR validation
+
 ### In Progress
 
 - **Monitoring Implementation** - 80% complete, 2 user actions remaining

@@ -1,0 +1,82 @@
+name: Commitlint
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  commitlint:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          npm install --save-dev @commitlint/cli @commitlint/config-conventional
+      
+      - name: Validate PR commits
+        if: github.event_name == 'pull_request'
+        run: |
+          npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      
+      - name: Validate pushed commits
+        if: github.event_name == 'push'
+        run: |
+          npx commitlint --from ${{ github.event.before }} --to ${{ github.event.after }} --verbose
+      
+      - name: Comment on PR (failure)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const message = `## ❌ Commit Message Validation Failed
+            
+            One or more commits in this PR do not follow the [Conventional Commits](https://www.conventionalcommits.org/) format.
+            
+            ### Required Format
+            \`\`\`
+            <type>(<scope>): <subject>
+            \`\`\`
+            
+            ### Examples
+            - \`feat(vault): add semantic search endpoint\`
+            - \`fix(billy): handle rate limit on token refresh\`
+            - \`docs(chatmode): update git workflow section\`
+            - \`chore(deps): bump supabase to 2.39.0\`
+            
+            ### Valid Types
+            \`feat\`, \`fix\`, \`docs\`, \`style\`, \`refactor\`, \`perf\`, \`test\`, \`chore\`, \`ci\`, \`build\`, \`revert\`
+            
+            ### Rules
+            - Subject must be lowercase and imperative mood
+            - No period at the end
+            - Min 10 characters, max 72 total (including type and scope)
+            
+            📖 See [CONVENTIONAL_COMMITS.md](../blob/master/docs/CONVENTIONAL_COMMITS.md) for complete guide.
+            
+            **To fix:** Rewrite commit messages using \`git rebase -i\` or \`git commit --amend\``;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
