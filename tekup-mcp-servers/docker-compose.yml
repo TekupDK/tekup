@@ -168,27 +168,27 @@ services:
   # ==========================================
   # TEKUP VAULT MCP - Secrets Management
   # ==========================================
-  vault-mcp:
-    build:
-      context: ../tekup-vault/apps/mcp
-      dockerfile: Dockerfile
-    container_name: tekup-vault-mcp
-    ports:
-      - "${VAULT_MCP_PORT:-8057}:8050"
-    environment:
-      - NODE_ENV=production
-      - PORT=8050
-      - DATABASE_URL=${VAULT_DATABASE_URL}
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8050/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - tekup-mcp-network
-    depends_on:
-      - postgres
+  # vault-mcp:
+  #   build:
+  #     context: ../tekup-vault/apps/mcp
+  #     dockerfile: Dockerfile
+  #   container_name: tekup-vault-mcp
+  #   ports:
+  #     - "${VAULT_MCP_PORT:-8057}:8050"
+  #   environment:
+  #     - NODE_ENV=production
+  #     - PORT=8050
+  #     - DATABASE_URL=${VAULT_DATABASE_URL}
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8050/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - tekup-mcp-network
+  #   depends_on:
+  #     - postgres
 
   # ==========================================
   # INFRASTRUCTURE SERVICES
