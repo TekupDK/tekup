@@ -177,5 +177,29 @@
   "extensions.experimental.affinity": {
     "github.copilot": 1,
     "github.copilot-chat": 1
+  },
+  "github.copilot.chat.mcp.enabled": true,
+  "github.copilot.chat.mcp.servers": {
+    "knowledge-mcp": {
+      "transport": {
+        "type": "sse",
+        "url": "http://localhost:8051/sse"
+      },
+      "description": "Search TekupDK documentation and knowledge base"
+    },
+    "code-intelligence-mcp": {
+      "transport": {
+        "type": "sse",
+        "url": "http://localhost:8052/sse"
+      },
+      "description": "Code analysis and intelligence for TekupDK projects"
+    },
+    "database-mcp": {
+      "transport": {
+        "type": "sse",
+        "url": "http://localhost:8053/sse"
+      },
+      "description": "Supabase database queries and operations"
+    }
   }
 }
