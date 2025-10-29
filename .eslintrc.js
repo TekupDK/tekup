@@ -5,10 +5,7 @@ module.exports = {
     node: true,
     es2021: true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -19,14 +16,17 @@ module.exports = {
     // Prevent console.log in production code
     // Allow console.warn and console.error for important messages
     'no-console': ['error', { allow: ['warn', 'error'] }],
-    
+
     // TypeScript specific rules
     '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-unused-vars': ['error', {
-      argsIgnorePattern: '^_',
-      varsIgnorePattern: '^_',
-    }],
-    
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
+
     // Code quality rules
     'no-debugger': 'error',
     'no-alert': 'warn',
@@ -47,10 +47,7 @@ module.exports = {
     // React-specific configuration
     {
       files: ['**/*.tsx', '**/*.jsx'],
-      extends: [
-        'plugin:react/recommended',
-        'plugin:react-hooks/recommended',
-      ],
+      extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
       plugins: ['react', 'react-hooks'],
       settings: {
         react: {

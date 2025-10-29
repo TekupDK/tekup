@@ -1,0 +1,29 @@
+{
+  "name": "@tekup/ai-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TekupAI - Shortwave.ai-like AI Assistant with MCP Integration",
+  "author": "Jonas Abde <[email protected]>",
+  "license": "PRIVATE",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter @tekup/ai-frontend dev\" \"pnpm --filter @tekup/ai-backend dev\"",
+    "build": "pnpm --filter @tekup/ai-shared build && pnpm --filter @tekup/ai-backend build && pnpm --filter @tekup/ai-frontend build",
+    "start": "concurrently \"pnpm --filter @tekup/ai-backend start:prod\" \"pnpm --filter @tekup/ai-frontend start\"",
+    "lint": "pnpm --recursive lint",
+    "test": "pnpm --recursive test",
+    "clean": "pnpm --recursive clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.15.0"
+  }
+}

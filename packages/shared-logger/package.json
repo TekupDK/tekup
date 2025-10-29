@@ -1,0 +1,27 @@
+{
+  "name": "@tekup/shared-logger",
+  "version": "1.0.0",
+  "description": "Centralized Winston-based logging for Tekup Portfolio monorepo",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "winston",
+    "logging",
+    "tekup",
+    "monorepo"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.9.3"
+  }
+}

@@ -6,7 +6,7 @@ param(
     [string]$DashboardName = "renos-calendar-dashboard",
     [string]$Region = "frankfurt",
     [string]$Branch = "main",
-    [string]$RepoUrl = "https://github.com/JonasAbde/Tekup-Cloud"
+    [string]$RepoUrl = "https://github.com/TekupDK/tekup"
 )
 
 Write-Host "=== Deploying to Render.com ===" -ForegroundColor Magenta

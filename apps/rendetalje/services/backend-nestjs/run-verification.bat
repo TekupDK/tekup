@@ -1,0 +1,2 @@
+cd c:\Users\empir\Tekup\apps\rendetalje\services\backend-nestjs
+node verify-supabase-db.js

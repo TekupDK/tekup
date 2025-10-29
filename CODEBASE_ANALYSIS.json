@@ -1,0 +1,454 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-29T07:45:00Z",
+    "analysisVersion": "1.0.0",
+    "repository": "TekupDK Portfolio",
+    "branch": "master",
+    "analyzer": "Claude Code Analyze-Codebase"
+  },
+  "statistics": {
+    "codebase": {
+      "totalSourceFiles": 3492,
+      "totalLinesOfCode": 40503,
+      "excludedFiles": "node_modules, .git, archive",
+      "primaryLanguages": {
+        "TypeScript": "~85%",
+        "JavaScript": "~12%",
+        "Other": "~3%"
+      }
+    },
+    "projects": {
+      "totalPackages": 142,
+      "activePackages": 25,
+      "archivedPackages": 117,
+      "mainApplications": [
+        "apps/rendetalje (Main Application - Cleaning Business Management)",
+        "apps/production/tekup-billy (MCP Server - Billy.dk Integration)",
+        "apps/production/tekup-database (Central Database Service)",
+        "apps/time-tracker (Time Tracking Application)",
+        "apps/web/tekup-cloud-dashboard (Cloud Management Dashboard)",
+        "services/tekup-ai (AI Services Suite)",
+        "services/tekup-gmail-services (Gmail Automation Services)",
+        "tekup-mcp-servers (MCP Server Collection)"
+      ]
+    },
+    "structure": {
+      "monorepoType": "pnpm workspace",
+      "totalDirectories": "~500+ (excluding node_modules)",
+      "dockerfiles": 14,
+      "dockerComposeFiles": 13,
+      "readmeFiles": 20,
+      "tsConfigFiles": 20
+    }
+  },
+  "health": {
+    "typeScriptErrors": {
+      "status": "unknown",
+      "note": "Multiple tsconfig.json files found. No centralized TypeScript check run. Individual projects may have errors.",
+      "recommendation": "Run 'npx tsc --noEmit' in each sub-project to check for TypeScript errors"
+    },
+    "eslintConfiguration": {
+      "status": "minimal",
+      "configFilesFound": 0,
+      "configFilesInNodeModules": "multiple",
+      "recommendation": "Implement centralized ESLint configuration at root level"
+    },
+    "testCoverage": {
+      "status": "partial",
+      "testFiles": 54,
+      "testFrameworks": ["Jest", "Vitest", "Playwright"],
+      "coverage": "Unknown - no centralized test coverage report",
+      "recommendation": "Implement centralized test coverage tracking"
+    },
+    "dependencyHealth": {
+      "status": "needs-review",
+      "packageManagers": ["pnpm (primary)", "npm (legacy)"],
+      "recommendation": "Run 'pnpm outdated' to check for outdated dependencies across workspace"
+    }
+  },
+  "patterns": {
+    "architectural": [
+      {
+        "pattern": "Monorepo with Workspace Structure",
+        "description": "Using pnpm workspaces to manage multiple applications and shared packages",
+        "implementation": "pnpm-workspace.yaml with apps/, services/, and packages/ directories",
+        "maturity": "mature"
+      },
+      {
+        "pattern": "Microservices Architecture",
+        "description": "Backend services are split into independent microservices (NestJS backend, Next.js frontend, Mobile app)",
+        "implementation": "apps/rendetalje/services/* with backend-nestjs, frontend-nextjs, mobile, calendar-mcp",
+        "maturity": "mature"
+      },
+      {
+        "pattern": "Model Context Protocol (MCP) Integration",
+        "description": "Heavy use of MCP servers for AI-powered integrations",
+        "implementation": "tekup-mcp-servers/, apps/production/tekup-billy, apps/rendetalje/mcp",
+        "maturity": "mature"
+      },
+      {
+        "pattern": "Shared Database Layer",
+        "description": "Centralized database package using Prisma ORM",
+        "implementation": "@tekup/database package with multi-schema support (billy, crm, flow, renos, vault)",
+        "maturity": "mature"
+      },
+      {
+        "pattern": "Docker Containerization",
+        "description": "Services are containerized for deployment",
+        "implementation": "14 Dockerfiles and 13 docker-compose configurations",
+        "maturity": "developing"
+      }
+    ],
+    "codePatterns": [
+      {
+        "pattern": "NestJS Modules",
+        "usage": "Backend services (rendetalje, flow-api, voicedk-api)",
+        "benefits": "Dependency injection, modular architecture, testing support",
+        "examples": ["apps/rendetalje/services/backend-nestjs"]
+      },
+      {
+        "pattern": "Next.js App Router",
+        "usage": "Frontend applications",
+        "benefits": "Server-side rendering, routing, API routes",
+        "examples": ["apps/rendetalje/services/frontend-nextjs", "apps/time-tracker"]
+      },
+      {
+        "pattern": "Expo/React Native",
+        "usage": "Mobile application",
+        "benefits": "Cross-platform mobile development",
+        "examples": ["apps/rendetalje/services/mobile"]
+      },
+      {
+        "pattern": "Prisma ORM",
+        "usage": "Database access layer",
+        "benefits": "Type-safe database queries, migrations, multi-schema support",
+        "examples": ["apps/production/tekup-database"]
+      },
+      {
+        "pattern": "Zustand State Management",
+        "usage": "Frontend state management",
+        "benefits": "Lightweight, hooks-based state management",
+        "examples": ["apps/rendetalje/services/frontend-nextjs/src/store"]
+      },
+      {
+        "pattern": "React Query (TanStack Query)",
+        "usage": "Server state management",
+        "benefits": "Caching, synchronization, data fetching",
+        "examples": ["apps/rendetalje/services/frontend-nextjs"]
+      },
+      {
+        "pattern": "Socket.io WebSockets",
+        "usage": "Real-time communication",
+        "benefits": "Bidirectional event-based communication",
+        "examples": ["apps/rendetalje/services/backend-nestjs"]
+      },
+      {
+        "pattern": "Supabase Integration",
+        "usage": "Authentication, database, real-time subscriptions",
+        "benefits": "Managed backend services",
+        "examples": ["apps/rendetalje/services/backend-nestjs", "apps/web/tekup-cloud-dashboard"]
+      },
+      {
+        "pattern": "Redis Caching",
+        "usage": "Distributed caching and session management",
+        "benefits": "Performance optimization, scalability",
+        "examples": ["apps/production/tekup-billy"]
+      },
+      {
+        "pattern": "Sentry Monitoring",
+        "usage": "Error tracking and performance monitoring",
+        "benefits": "Production error tracking, performance insights",
+        "examples": ["apps/rendetalje/services/backend-nestjs", "apps/rendetalje/services/frontend-nextjs"]
+      }
+    ],
+    "antiPatterns": [
+      {
+        "pattern": "Console.log in Production",
+        "severity": "medium",
+        "occurrences": 5521,
+        "files": 491,
+        "recommendation": "Replace with proper logging using Winston or similar logger. Use environment-based logging levels."
+      },
+      {
+        "pattern": "TypeScript Suppressions",
+        "severity": "low-medium",
+        "occurrences": 8,
+        "types": ["@ts-ignore", "@ts-expect-error", "@ts-nocheck"],
+        "recommendation": "Review and fix underlying TypeScript issues rather than suppressing errors."
+      },
+      {
+        "pattern": "Large Archive Directory",
+        "severity": "low",
+        "description": "Archive contains 117+ archived packages taking up space",
+        "recommendation": "Consider moving archived code to separate repository or pruning old code."
+      },
+      {
+        "pattern": "Inconsistent Package Managers",
+        "severity": "medium",
+        "description": "Mix of pnpm and npm package-lock files",
+        "recommendation": "Standardize on pnpm across all projects and remove npm artifacts."
+      },
+      {
+        "pattern": "No Centralized ESLint",
+        "severity": "medium",
+        "description": "No root-level ESLint configuration found",
+        "recommendation": "Implement workspace-wide ESLint configuration for consistent code quality."
+      }
+    ]
+  },
+  "technicalDebt": {
+    "summary": {
+      "totalTodoComments": 252,
+      "totalTsIgnores": 8,
+      "totalConsoleStatements": 5521,
+      "estimatedRefactoringEffort": "Medium-High"
+    },
+    "categories": {
+      "todos": {
+        "count": 252,
+        "files": 89,
+        "locations": [
+          "apps/web/tekup-cloud-dashboard",
+          "apps/rendetalje/services",
+          "archive/tekup-org-archived-2025-10-22"
+        ],
+        "priority": "medium",
+        "recommendation": "Review TODO/FIXME comments and convert to tracked issues or implement fixes."
+      },
+      "typeScriptSuppressions": {
+        "count": 8,
+        "files": 5,
+        "types": {
+          "@ts-ignore": "present",
+          "@ts-expect-error": "present",
+          "@ts-nocheck": "present"
+        },
+        "priority": "low-medium",
+        "recommendation": "Address underlying type issues instead of suppressing errors."
+      },
+      "consoleStatements": {
+        "count": 5521,
+        "files": 491,
+        "priority": "high",
+        "recommendation": "Replace console.* calls with structured logging using Winston or similar."
+      },
+      "deprecated": {
+        "count": "unknown",
+        "recommendation": "Scan for deprecated API usage in dependencies"
+      }
+    },
+    "hotspots": [
+      {
+        "area": "apps/rendetalje/services",
+        "issues": ["TODO comments", "console.log statements"],
+        "priority": "high",
+        "reason": "Main production application"
+      },
+      {
+        "area": "apps/production/tekup-billy",
+        "issues": ["console.log statements in production"],
+        "priority": "high",
+        "reason": "Production MCP server"
+      },
+      {
+        "area": "archive/",
+        "issues": ["Unmaintained code", "outdated dependencies"],
+        "priority": "low",
+        "reason": "Archived code - consider removal"
+      }
+    ]
+  },
+  "documentation": {
+    "coverage": {
+      "readmeFiles": 20,
+      "markdownDocs": "100+",
+      "inlineComments": "moderate",
+      "apiDocumentation": "partial",
+      "architectureDocs": "good"
+    },
+    "quality": {
+      "rootReadme": "present",
+      "projectReadmes": "most projects have README",
+      "apiDocs": "Swagger implemented in NestJS services",
+      "architectureOverview": "Multiple architecture documents present"
+    },
+    "gaps": [
+      {
+        "area": "API Documentation",
+        "severity": "medium",
+        "description": "Not all services have complete API documentation"
+      },
+      {
+        "area": "Setup Guides",
+        "severity": "low",
+        "description": "Some sub-projects lack detailed setup guides"
+      },
+      {
+        "area": "Testing Documentation",
+        "severity": "medium",
+        "description": "Testing strategies not fully documented"
+      }
+    ],
+    "strengths": [
+      "Comprehensive markdown documentation (100+ files)",
+      "Architecture documents present",
+      "Implementation guides and roadmaps",
+      "Monitoring and deployment documentation"
+    ]
+  },
+  "dependencies": {
+    "keyDependencies": {
+      "backend": {
+        "nestjs": "^10.0.0",
+        "prisma": "6.17.1",
+        "supabase-js": "^2.76.1",
+        "redis": "^4.6.0",
+        "ioredis": "^5.8.2",
+        "winston": "^3.18.3",
+        "axios": "^1.6.0",
+        "socket.io": "^4.7.0"
+      },
+      "frontend": {
+        "next": "^15.0.0",
+        "react": "^18.0.0",
+        "zustand": "^4.4.0",
+        "tanstack-query": "^5.0.0",
+        "tailwindcss": "^3.3.0"
+      },
+      "mobile": {
+        "expo": "present",
+        "react-native": "present"
+      },
+      "database": {
+        "prisma": "^6.17.1",
+        "prisma-client": "6.17.1"
+      },
+      "monitoring": {
+        "sentry": "^10.21.0+",
+        "sentry-nextjs": "^10.22.0"
+      },
+      "mcp": {
+        "modelcontextprotocol-sdk": "^1.20.0"
+      }
+    },
+    "versionConsistency": "moderate",
+    "securityConcerns": "none identified (requires npm audit)",
+    "updateStrategy": "partial - some packages on latest versions"
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "priority": "high",
+        "title": "Implement Structured Logging",
+        "description": "Replace 5521 console.log statements with Winston or similar structured logging",
+        "effort": "high",
+        "impact": "high"
+      },
+      {
+        "priority": "high",
+        "title": "Run Security Audit",
+        "description": "Run 'pnpm audit' across all workspaces to identify security vulnerabilities",
+        "effort": "low",
+        "impact": "high"
+      },
+      {
+        "priority": "medium",
+        "title": "Centralize ESLint Configuration",
+        "description": "Implement workspace-wide ESLint configuration for consistent code quality",
+        "effort": "medium",
+        "impact": "medium"
+      },
+      {
+        "priority": "medium",
+        "title": "Review TODO Comments",
+        "description": "Convert 252 TODO/FIXME comments into tracked issues or implement fixes",
+        "effort": "medium",
+        "impact": "medium"
+      }
+    ],
+    "shortTerm": [
+      {
+        "priority": "medium",
+        "title": "Update Dependencies",
+        "description": "Review and update outdated dependencies across workspace",
+        "effort": "medium",
+        "impact": "medium"
+      },
+      {
+        "priority": "medium",
+        "title": "Implement Test Coverage Tracking",
+        "description": "Set up centralized test coverage reporting",
+        "effort": "medium",
+        "impact": "medium"
+      },
+      {
+        "priority": "low",
+        "title": "Standardize Package Manager",
+        "description": "Remove npm artifacts and standardize on pnpm",
+        "effort": "low",
+        "impact": "low"
+      }
+    ],
+    "longTerm": [
+      {
+        "priority": "low",
+        "title": "Archive Cleanup",
+        "description": "Move archived code to separate repository or prune old code",
+        "effort": "high",
+        "impact": "low"
+      },
+      {
+        "priority": "medium",
+        "title": "API Documentation",
+        "description": "Complete API documentation for all services",
+        "effort": "high",
+        "impact": "medium"
+      },
+      {
+        "priority": "medium",
+        "title": "Monorepo Optimization",
+        "description": "Optimize build times and dependency graph",
+        "effort": "high",
+        "impact": "medium"
+      }
+    ]
+  },
+  "strengths": [
+    "Well-structured monorepo with clear separation of concerns",
+    "Modern tech stack (Next.js 15, NestJS 10, React 18, Prisma 6)",
+    "Comprehensive documentation (100+ markdown files)",
+    "Strong use of TypeScript for type safety",
+    "Microservices architecture with proper service boundaries",
+    "MCP integration for AI-powered features",
+    "Production monitoring with Sentry",
+    "Docker containerization for deployment",
+    "Centralized database layer with Prisma",
+    "Real-time capabilities with WebSockets"
+  ],
+  "riskAreas": [
+    {
+      "area": "Production Logging",
+      "risk": "high",
+      "description": "5521 console.log statements in production code could impact performance and expose sensitive data",
+      "mitigation": "Implement structured logging with Winston"
+    },
+    {
+      "area": "Dependency Updates",
+      "risk": "medium",
+      "description": "Multiple packages may have outdated dependencies",
+      "mitigation": "Regular dependency audits and updates"
+    },
+    {
+      "area": "Test Coverage",
+      "risk": "medium",
+      "description": "Unknown test coverage across projects",
+      "mitigation": "Implement centralized test coverage tracking"
+    },
+    {
+      "area": "Code Quality",
+      "risk": "medium",
+      "description": "No centralized linting or code quality checks",
+      "mitigation": "Implement workspace-wide ESLint and Prettier"
+    }
+  ]
+}

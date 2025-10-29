@@ -17,7 +17,7 @@ if ($LASTEXITCODE -eq 0) {
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Successfully pushed to GitHub!" -ForegroundColor Green
-        Write-Host "Repository: https://github.com/JonasAbde/tekup-database" -ForegroundColor Cyan
+    Write-Host "Repository: https://github.com/TekupDK/tekup" -ForegroundColor Cyan
     } else {
         Write-Host "Failed to push to GitHub" -ForegroundColor Red
     }

@@ -85,7 +85,7 @@ app.get('/', (_req, res) => {
       mcp: '/mcp',
       mcpDiscovery: '/.well-known/mcp.json',
       api: '/api',
-      documentation: 'https://github.com/JonasAbde/TekupVault'
+  documentation: 'https://github.com/TekupDK/tekup'
     }
   });
 });
@@ -132,7 +132,7 @@ app.get('/.well-known/mcp.json', (_req, res) => {
     },
     protocolVersions: ['2024-11-05', '2025-03-26', '2025-06-18'],
     contact: {
-      url: 'https://github.com/JonasAbde/TekupVault'
+      url: 'https://github.com/TekupDK/tekup'
     }
   });
 });

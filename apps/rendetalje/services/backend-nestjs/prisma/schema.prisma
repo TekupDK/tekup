@@ -1117,15 +1117,39 @@ model RenosCompetitorPricing {
 
 // Service Catalog
 model RenosService {
-  id          String   @id @default(cuid())
-  name        String
+  id          String   @id @db.Uuid
+  name        String   @unique
   description String?  @db.Text
-  price       Float
-  duration    Int
+  // Keep legacy columns to avoid destructive drops
+  category           String?
+  defaultPriceDkk    Decimal? @map("default_price_dkk") @db.Decimal(10, 2)
+
+  price       Float    @default(0)
+  duration    Int      @default(60)
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("services")
+  @@schema("renos")
+}
+
+// Preserve existing table to prevent Prisma from attempting to drop it
+model RenosSubcontractor {
+  id           String    @id @db.Uuid
+  companyName  String?   @map("company_name")
+  contactName  String?   @map("contact_name")
+  email        String?   @unique
+  phone        String?
+  address      String?
+  city         String?
+  zipCode      String?   @map("zip_code")
+  status       String?
+  rating       Decimal?  @db.Decimal(3, 2)
+  notes        String?   @db.Text
+  createdAt    DateTime? @map("created_at") @db.Timestamptz
+  updatedAt    DateTime? @map("updated_at") @db.Timestamptz
+
+  @@map("subcontractors")
   @@schema("renos")
 }
 
@@ -1948,4 +1972,61 @@ model SharedAuditLog {
   @@index([createdAt])
   @@map("audit_logs")
   @@schema("shared")
+}
+
+// Legacy subcontractor tables - protected from Prisma changes
+model RenosSubcontractorAgreement {
+  id String @id
+
+  @@map("subcontractor_agreements")
+  @@schema("renos")
+  @@ignore
+}
+
+model RenosSubcontractorAvailability {
+  id String @id
+
+  @@map("subcontractor_availability")
+  @@schema("renos")
+  @@ignore
+}
+
+model RenosSubcontractorDocument {
+  id String @id
+
+  @@map("subcontractor_documents")
+  @@schema("renos")
+  @@ignore
+}
+
+model RenosSubcontractorReview {
+  id String @id
+
+  @@map("subcontractor_reviews")
+  @@schema("renos")
+  @@ignore
+}
+
+model RenosSubcontractorService {
+  id String @id
+
+  @@map("subcontractor_services")
+  @@schema("renos")
+  @@ignore
+}
+
+model RenosPushSubscription {
+  id String @id
+
+  @@map("push_subscriptions")
+  @@schema("renos")
+  @@ignore
+}
+
+model RenosTaskAssignment {
+  id String @id
+
+  @@map("task_assignments")
+  @@schema("renos")
+  @@ignore
 }

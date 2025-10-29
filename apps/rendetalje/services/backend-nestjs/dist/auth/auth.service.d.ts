@@ -1,14 +1,14 @@
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { CreateUserDto, LoginDto, UpdateProfileDto } from './dto';
-import { User } from './entities/user.entity';
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { CreateUserDto, LoginDto, UpdateProfileDto } from "./dto";
+import { User } from "./entities/user.entity";
 export interface JwtPayload {
     sub: string;
     email: string;
     role: string;
 }
 export interface AuthResponse {
-    user: Omit<User, 'passwordHash'>;
+    user: Omit<User, "passwordHash">;
     accessToken: string;
 }
 export declare class AuthService {

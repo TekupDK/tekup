@@ -1,0 +1,209 @@
+// =====================================================
+// TekupAI - Prisma Schema Extension
+// =====================================================
+// This extends the main Tekup database with AI Assistant schema
+// Version: 1.0.0
+// =====================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema", "postgresqlExtensions"]
+  output          = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL") // For migrations
+  extensions = [uuid_ossp(map: "uuid-ossp")]
+  schemas    = ["ai_assistant", "public"]
+}
+
+// =====================================================
+// AI ASSISTANT SCHEMA
+// =====================================================
+
+model AiUser {
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email          String   @unique
+  name           String?
+  supabaseUserId String   @unique @map("supabase_user_id")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  conversations AiConversation[]
+  memories      AiMemory[]
+  savedPrompts  AiSavedPrompt[]
+  settings      AiUserSettings?
+  integrations  AiIntegration[]
+  usageStats    AiUsageStats[]
+
+  @@map("users")
+  @@schema("ai_assistant")
+}
+
+model AiConversation {
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  title     String   @default("New Conversation")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  archived  Boolean  @default(false)
+  metadata  Json     @default("{}")
+
+  user     AiUser      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AiMessage[]
+
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@index([archived])
+  @@map("conversations")
+  @@schema("ai_assistant")
+}
+
+model AiMessage {
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  conversationId String   @map("conversation_id") @db.Uuid
+  role           String   // 'user', 'assistant', 'system'
+  content        String   @db.Text
+  toolCalls      Json?    @map("tool_calls")
+  toolResults    Json?    @map("tool_results")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  tokens         Int?
+  model          String?
+  metadata       Json     @default("{}")
+
+  conversation AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([createdAt(sort: Desc)])
+  @@index([role])
+  @@map("messages")
+  @@schema("ai_assistant")
+}
+
+model AiMemory {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  category  String    @default("general") // 'preference', 'fact', 'instruction', 'context', 'general'
+  content   String    @db.Text
+  metadata  Json      @default("{}")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  expiresAt DateTime? @map("expires_at") @db.Timestamptz
+  isActive  Boolean   @default(true) @map("is_active")
+  source    String    @default("user_told") // 'user_told', 'system_inferred', 'imported'
+  priority  Int       @default(5) // 1-10, higher = more important
+
+  user AiUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+  @@index([isActive])
+  @@index([priority(sort: Desc)])
+  @@map("memories")
+  @@schema("ai_assistant")
+}
+
+model AiUserSettings {
+  id                String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId            String   @unique @map("user_id") @db.Uuid
+  defaultModel      String   @default("claude-3-5-sonnet-20241022") @map("default_model")
+  systemPrompt      String?  @map("system_prompt") @db.Text
+  temperature       Float    @default(0.7) @db.DoublePrecision
+  maxTokens         Int      @default(4096) @map("max_tokens")
+  enableMemory      Boolean  @default(true) @map("enable_memory")
+  maxMemories       Int      @default(25) @map("max_memories")
+  enabledMcpServers Json     @default("[]") @map("enabled_mcp_servers") // Array of MCP server IDs
+  uiPreferences     Json     @default("{}") @map("ui_preferences")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user AiUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+  @@schema("ai_assistant")
+}
+
+model AiSavedPrompt {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  name        String
+  description String?
+  prompt      String   @db.Text
+  category    String?  // 'coding', 'writing', 'analysis', 'business', etc.
+  isPublic    Boolean  @default(false) @map("is_public")
+  usageCount  Int      @default(0) @map("usage_count")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user AiUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+  @@index([isPublic])
+  @@index([usageCount(sort: Desc)])
+  @@map("saved_prompts")
+  @@schema("ai_assistant")
+}
+
+model AiIntegration {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  type       String    // 'mcp_http', 'mcp_stdio', 'oauth_service'
+  name       String
+  config     Json      // MCP server config or OAuth tokens (encrypted)
+  isActive   Boolean   @default(true) @map("is_active")
+  lastUsedAt DateTime? @map("last_used_at") @db.Timestamptz
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user AiUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, name])
+  @@index([userId])
+  @@index([isActive])
+  @@map("integrations")
+  @@schema("ai_assistant")
+}
+
+model AiUsageStats {
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  date           DateTime @db.Date
+  messagesCount  Int      @default(0) @map("messages_count")
+  tokensUsed     Int      @default(0) @map("tokens_used")
+  toolCallsCount Int      @default(0) @map("tool_calls_count")
+  cost           Float    @default(0) @db.DoublePrecision // Estimated cost in USD
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user AiUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date(sort: Desc)])
+  @@map("usage_stats")
+  @@schema("ai_assistant")
+}
+
+model AiMcpServerRegistry {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String   @unique
+  displayName String   @map("display_name")
+  description String?  @db.Text
+  type        String   // 'http', 'stdio'
+  config      Json     // Server configuration
+  isPublic    Boolean  @default(false) @map("is_public")
+  isActive    Boolean  @default(true) @map("is_active")
+  version     String?
+  icon        String?  // URL to icon or emoji
+  category    String?  // 'knowledge', 'code', 'database', 'productivity', etc.
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([isPublic])
+  @@index([isActive])
+  @@index([category])
+  @@map("mcp_server_registry")
+  @@schema("ai_assistant")
+}
