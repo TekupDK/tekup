@@ -1,4 +1,4 @@
-# 📝 Documentation Update - JonasAbde → TekupDK
+# 📝 Documentation Update - Legacy owner → TekupDK
 
 **Date:** 29. Oktober 2025
 **Status:** ✅ Complete
@@ -7,7 +7,7 @@
 
 ## 🎯 Objective
 
-Update all documentation references from personal account (`JonasAbde`) to organization account (`TekupDK`) to reflect the proper repository structure under the TekupDK organization.
+Update all documentation references from the former personal account to the organization account (`TekupDK`) to reflect the proper repository structure under the TekupDK organization.
 
 ---
 
@@ -17,11 +17,11 @@ Update all documentation references from personal account (`JonasAbde`) to organ
 
 Ran `fix-references-v2.ps1` script to automatically update:
 
-1. **GitHub URLs**: `github.com/JonasAbde/` → `github.com/TekupDK/`
-2. **Mentions**: `@JonasAbde` → `@TekupDK`
-3. **Owner references**: `Owner: Jonas Abde (@JonasAbde)` → `Organization: TekupDK`
-4. **Contact info**: `Contact @JonasAbde` → `Create GitHub issue`
-5. **Maintainer**: `Maintained by: Jonas Abde` → `Maintained by: TekupDK`
+1. **GitHub URLs**: normalized to `github.com/TekupDK/`
+2. **Mentions**: normalized to `@TekupDK`
+3. **Ownership**: switched to organization ownership across docs
+4. **Contact info**: updated to use GitHub issues
+5. **Maintainer**: set to TekupDK
 
 ### Files Updated (Active)
 
@@ -63,7 +63,7 @@ Ran `fix-references-v2.ps1` script to automatically update:
 
 ### Verification
 
-**Before:** 168 files with "JonasAbde" references
+**Before:** 168 files with legacy owner references
 **After:** 212 total occurrences (95 files)
   - Active files: ~10 occurrences (need manual review)
   - Archive files: ~202 occurrences (expected, historical)
@@ -84,7 +84,7 @@ Archived projects with references:
 
 ## 🔍 Manual Review Needed
 
-A few files may still contain `JonasAbde` references in:
+A few files may still contain legacy owner references in:
 
 1. **README.md badges** - GitHub Actions badges pointing to old workflows
 2. **Historical commit messages** - Cannot be changed (git history)
@@ -95,8 +95,8 @@ A few files may still contain `JonasAbde` references in:
 ## ✅ Verification Commands
 
 ```bash
-# Check remaining active references
-grep -r "JonasAbde\|jonasabde" --include="*.md" --exclude-dir="archive" --exclude-dir="node_modules" .
+# Check remaining active references (example)
+grep -r "legacy owner" --include="*.md" --exclude-dir="archive" --exclude-dir="node_modules" .
 
 # View all changes
 git diff --stat
@@ -126,7 +126,7 @@ git diff apps/production/tekup-billy/README.md
 3. Commit changes:
    ```bash
    git add .
-   git commit -m "docs: update all references from JonasAbde to TekupDK organization
+  git commit -m "docs: update all references to TekupDK organization
 
    - Updated 83 markdown files
    - Changed GitHub URLs to TekupDK organization
