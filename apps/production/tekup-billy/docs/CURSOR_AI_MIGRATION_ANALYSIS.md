@@ -1,4 +1,4 @@
-# 🚀 Cursor AI Migration Analysis - Tekup-Billy MCP Server
+﻿# 🚀 Cursor AI Migration Analysis - Tekup-Billy MCP Server
 
 **Analyseret:** 11. Oktober 2025  
 **Version:** 1.0.0  
@@ -99,7 +99,7 @@ https://cursor.sh/download
 #### Step 2: Clone Projekt (hvis nyt miljø)
 
 ```bash
-git clone https://github.com/JonasAbde/Tekup-Billy.git
+git clone https://github.com/TekupDK/Tekup-Billy.git
 cd Tekup-Billy
 npm install
 ```
@@ -508,7 +508,7 @@ Output as docs/WHITE_LABEL_DEPLOYMENT.md
 gh repo create acme-accounting-mcp --private
 
 # Clone Tekup-Billy
-git clone https://github.com/JonasAbde/Tekup-Billy.git acme-accounting-mcp
+git clone https://github.com/TekupDK/Tekup-Billy.git acme-accounting-mcp
 cd acme-accounting-mcp
 
 # Update remote

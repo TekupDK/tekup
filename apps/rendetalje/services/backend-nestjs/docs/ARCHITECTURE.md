@@ -35,6 +35,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
 ### Core Modules
 
 #### AuthModule
+
 - **Purpose**: User authentication and authorization
 - **Components**:
   - `AuthController` - Login, register, password reset
@@ -43,6 +44,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - `RolesGuard` - Role-based access control
 
 #### JobsModule
+
 - **Purpose**: Job/booking management
 - **Components**:
   - `JobsController` - Job CRUD endpoints
@@ -51,6 +53,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - Status tracking
 
 #### CustomersModule
+
 - **Purpose**: Customer relationship management
 - **Components**:
   - `CustomersController` - Customer CRUD
@@ -59,6 +62,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - Communication tracking
 
 #### TeamModule
+
 - **Purpose**: Team member management
 - **Components**:
   - `TeamController` - Team CRUD
@@ -67,6 +71,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - Schedule management
 
 #### TimeTrackingModule
+
 - **Purpose**: Time and attendance tracking
 - **Components**:
   - `TimeTrackingController` - Time entry endpoints
@@ -75,6 +80,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - Overtime calculation
 
 #### QualityModule
+
 - **Purpose**: Quality control and assessment
 - **Components**:
   - `QualityController` - Quality endpoints
@@ -83,6 +89,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - `PhotoDocumentationService` - Photo upload/management
 
 #### AiFridayModule
+
 - **Purpose**: AI assistant integration
 - **Components**:
   - `AiFridayController` - Chat endpoints
@@ -91,6 +98,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - Voice transcription
 
 #### IntegrationsModule
+
 - **Purpose**: External service integrations
 - **Components**:
   - `TekupBillyService` - Billy.dk accounting
@@ -98,6 +106,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - `RenosCalendarService` - Calendar integration
 
 #### RealtimeModule
+
 - **Purpose**: Real-time features
 - **Components**:
   - `RealtimeGateway` - WebSocket gateway
@@ -105,6 +114,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
   - Connection management
 
 #### GdprModule
+
 - **Purpose**: GDPR compliance
 - **Components**:
   - `GdprController` - Data rights endpoints
@@ -114,6 +124,7 @@ RendetaljeOS backend is built with **NestJS** and follows a modular, domain-driv
 ## Design Patterns
 
 ### Dependency Injection
+
 All services use constructor-based dependency injection:
 
 ```typescript
@@ -127,6 +138,7 @@ export class JobsService {
 ```
 
 ### Repository Pattern
+
 Data access abstracted through Prisma ORM:
 
 ```typescript
@@ -139,6 +151,7 @@ async findAll(organizationId: string) {
 ```
 
 ### Service Layer Pattern
+
 Business logic separated from controllers:
 
 ```typescript
@@ -155,6 +168,7 @@ export class JobsController {
 ```
 
 ### BaseService Pattern
+
 Generic CRUD operations in base class:
 
 ```typescript
@@ -168,6 +182,7 @@ export abstract class BaseService<T> {
 ```
 
 ### Guard Pattern
+
 Security implemented via guards:
 
 ```typescript
@@ -178,6 +193,7 @@ async create(@Body() dto, @Request() req) { }
 ```
 
 ### DTO Pattern
+
 Input validation via Data Transfer Objects:
 
 ```typescript
@@ -214,6 +230,7 @@ Subsequent requests:
 ## Database Architecture
 
 ### Multi-Schema Design
+
 PostgreSQL with multiple schemas:
 
 - **public** - Core application data
@@ -223,6 +240,7 @@ PostgreSQL with multiple schemas:
 - **shared** - Shared resources
 
 ### Row Level Security (RLS)
+
 Supabase RLS policies enforce data isolation:
 
 ```sql
@@ -238,6 +256,7 @@ CREATE POLICY "org_jobs_policy" ON jobs
 ## Configuration Management
 
 ### Environment Variables
+
 Configuration loaded via `@nestjs/config`:
 
 ```typescript
@@ -257,6 +276,7 @@ Configuration loaded via `@nestjs/config`:
 ```
 
 ### Feature Flags
+
 Enable/disable features via environment:
 
 ```typescript
@@ -268,6 +288,7 @@ ENABLE_REAL_TIME_TRACKING=true
 ## Error Handling
 
 ### Global Exception Filter
+
 Catch all exceptions:
 
 ```typescript
@@ -282,6 +303,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 ```
 
 ### Custom Exceptions
+
 Domain-specific exceptions:
 
 ```typescript
@@ -293,6 +315,7 @@ throw new BadRequestException('Invalid job status');
 ## Logging & Monitoring
 
 ### Winston Logger
+
 Structured logging:
 
 ```typescript
@@ -302,6 +325,7 @@ this.logger.warn('Job approaching deadline', { jobId });
 ```
 
 ### Sentry Integration
+
 Error tracking in production:
 
 ```typescript
@@ -314,11 +338,13 @@ Sentry.captureException(error, {
 ## Performance Optimization
 
 ### Database Connection Pooling
+
 ```typescript
 DATABASE_POOL_SIZE=10
 ```
 
 ### Redis Caching
+
 ```typescript
 @Injectable()
 export class CacheService {
@@ -329,6 +355,7 @@ export class CacheService {
 ```
 
 ### Query Optimization
+
 - Selective field loading
 - Index optimization
 - Batch operations
@@ -337,22 +364,26 @@ export class CacheService {
 ## Security Features
 
 ### Authentication
+
 - JWT tokens (24h expiry)
 - Refresh token support
 - Supabase Auth integration
 
 ### Authorization
+
 - Role-based access control (RBAC)
 - Organization-level data isolation
 - Row Level Security (RLS)
 
 ### Data Protection
+
 - Password hashing (bcrypt, 12 rounds)
 - Encryption at rest
 - HTTPS enforcement
 - CORS configuration
 
 ### Rate Limiting
+
 ```typescript
 @ThrottlerGuard()
 // 100 requests per 1 minute
@@ -361,16 +392,19 @@ export class CacheService {
 ## Testing Strategy
 
 ### Unit Tests
+
 ```bash
 npm run test
 ```
 
 ### Integration Tests
+
 ```bash
 npm run test:integration
 ```
 
 ### E2E Tests
+
 ```bash
 npm run test:e2e
 ```
@@ -378,6 +412,7 @@ npm run test:e2e
 ## Deployment Architecture
 
 ### Production Setup
+
 ```
 ┌──────────────┐
 │   Render.com │  Web Service
@@ -393,6 +428,7 @@ npm run test:e2e
 ```
 
 ### Environment Separation
+
 - **Development**: Local PostgreSQL + Redis
 - **Staging**: Supabase Dev instance
 - **Production**: Supabase Production + Redis Cloud
@@ -400,6 +436,7 @@ npm run test:e2e
 ## API Versioning
 
 ### Version Strategy
+
 - URL-based versioning: `/api/v1/...`
 - Future versions: `/api/v2/...`
 - Backward compatibility maintained
@@ -407,6 +444,7 @@ npm run test:e2e
 ## Documentation
 
 ### Swagger/OpenAPI
+
 Auto-generated documentation at `/docs`:
 
 ```typescript
@@ -452,6 +490,7 @@ src/
 ## Best Practices
 
 ### Code Organization
+
 - One module per domain
 - Controllers handle HTTP only
 - Services contain business logic
@@ -459,18 +498,21 @@ src/
 - Interfaces for types
 
 ### Naming Conventions
+
 - Controllers: `{Entity}Controller`
 - Services: `{Entity}Service`
 - DTOs: `Create{Entity}Dto`, `Update{Entity}Dto`
 - Guards: `{Purpose}Guard`
 
 ### Error Handling
+
 - Always use typed exceptions
 - Log errors with context
 - Return standardized error responses
 - Send errors to Sentry in production
 
 ### Security
+
 - Always validate user input
 - Enforce authentication on all routes (except public)
 - Check authorization before operations

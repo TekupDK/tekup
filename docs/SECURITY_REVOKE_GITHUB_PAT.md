@@ -6,7 +6,8 @@
 
 **Token**: `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`
 
-**Også fundet i**: 
+**Også fundet i**:
+
 - Git commits (5c7ca06)
 - CLAUDE_CODE_BRIEFING.md (redacted)
 - MCP_COMPLETE_AUDIT_2025-10-27.md (redacted)
@@ -15,7 +16,7 @@
 
 ### 1. Revoke Token (AKUT)
 
-1. Gå til: https://github.com/settings/tokens
+1. Gå til: <https://github.com/settings/tokens>
 2. Find token: `github_pat_11BDCB62Q0...`
 3. Klik "Delete" eller "Revoke"
 4. Bekræft deletion
@@ -23,6 +24,7 @@
 ### 2. Generer Ny Token (Minimal Scope)
 
 **Scope needed for MCP**:
+
 - ✅ `repo:status` - Commit status
 - ✅ `repo:public_repo` - Public repositories only
 - ❌ ~~`repo`~~ - Fuld adgang IKKE nødvendig
@@ -76,9 +78,9 @@ Genstart Claude Desktop og test GitHub MCP server virker.
 ---
 
 **VIGTIGT**: Token er også synlig i git history (commit 5c7ca06). Overvej:
+
 - Git history rewrite (git filter-repo)
 - ELLER: Bare revoke token (simplere)
 
 **Action**: REVOKE TOKEN NU!
-
 

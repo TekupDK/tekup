@@ -98,9 +98,10 @@ pwsh -File Tekup/scripts/mcp-down.ps1  # stopper stacken
 ```
 
 HTTP endpoints (lokalt):
-- knowledge:        http://localhost:8051/mcp
-- code-intelligence: http://localhost:8052/mcp
-- database:         http://localhost:8053/mcp
+
+- knowledge:        <http://localhost:8051/mcp>
+- code-intelligence: <http://localhost:8052/mcp>
+- database:         <http://localhost:8053/mcp>
 
 Konfigurer IDE’er til at bruge ovenstående URLs (Claude Desktop, VS Code, Cursor). Slå lokale npx‑servers fra for at undgå duplicates.
 
@@ -377,7 +378,7 @@ fly deploy
 2. **Hot reload:** Mount din `src/` folder som volume under udvikling
 3. **Environment:** Hold `.env` opdateret men ALDRIG commit den!
 4. **Backup:** Tag backup af volumes: `docker run --rm -v tekup-mcp_redis_data:/data -v $(pwd):/backup alpine tar czf /backup/redis-backup.tar.gz /data`
-5. **Health checks:** Tjek http://localhost:8051/health regelmæssigt
+5. **Health checks:** Tjek <http://localhost:8051/health> regelmæssigt
 
 ---
 
@@ -398,5 +399,4 @@ fly deploy
 ---
 
 🎉 **Færdig! Dine MCP servere kører nu i Docker!**
-
 

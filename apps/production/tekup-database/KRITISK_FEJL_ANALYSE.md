@@ -8,7 +8,8 @@
 
 ## ❌ Hvad Jeg Gjorde Forkert
 
-### Oprindelig Plan (KORREKT):
+### Oprindelig Plan (KORREKT)
+
 ```
 ✅ TekupVault → Supabase (allerede done)
 ✅ Tekup-Billy → Supabase (allerede done)
@@ -22,7 +23,8 @@
    - Lavere omkostninger
 ```
 
-### Hvad Jeg Faktisk Gjorde (FORKERT):
+### Hvad Jeg Faktisk Gjorde (FORKERT)
+
 ```
 ❌ tekup-database → Docker PostgreSQL (localhost:5432)
 ❌ PROVIDER: Local Docker container
@@ -37,10 +39,12 @@
 
 ## 📋 Oprindelig Plan (Fra DATABASE_CONSOLIDATION_ANALYSE.md)
 
-### Executive Summary (Linje 18):
+### Executive Summary (Linje 18)
+>
 > "ANBEFALING: ✅ Konsolidering til ét Supabase-projekt er højst anbefalingsværdigt og vil give betydelige fordele."
 
-### Fase 1: Forberedelse (Linje 170):
+### Fase 1: Forberedelse (Linje 170)
+
 ```sql
 # Opret nyt Supabase projekt via dashboard
 # Navn: tekup-central-database
@@ -56,7 +60,8 @@ CREATE SCHEMA rendetalje;   -- Rendetalje operations
 CREATE SCHEMA shared;       -- Delte tabeller (brugere, etc.)
 ```
 
-### Migration Efter Supabase (Linje 282):
+### Migration Efter Supabase (Linje 282)
+
 ```typescript
 // Efter (Supabase):
 import { createClient } from '@supabase/supabase-js';
@@ -72,14 +77,16 @@ const { data: leads, error } = await supabase
 
 ## 💰 Omkostnings-Analyse (Fra Docs)
 
-### Nuværende Situation (Linje 462):
+### Nuværende Situation (Linje 462)
+
 ```
 5x Separate PostgreSQL instances:
 - Render/Heroku Hobby: 5 x $7/mo = $35/mo
 Total: ~$35-75/mdr
 ```
 
-### Efter Konsolidering til Supabase (Linje 472):
+### Efter Konsolidering til Supabase (Linje 472)
+
 ```
 1x Supabase Pro:
 - Pro tier: $25/mo
@@ -88,7 +95,8 @@ Total: ~$35-75/mdr
 BESPARELSE: $10-50/mdr (30-65%)
 ```
 
-### Supabase Free Tier (Fra SUPABASE_CURRENT_STATE.md, linje 416):
+### Supabase Free Tier (Fra SUPABASE_CURRENT_STATE.md, linje 416)
+
 ```
 ✅ Database: 500 MB (vi bruger ~150-300 MB)
 ✅ API Requests: 500,000/måned (vi bruger ~60k)
@@ -101,6 +109,7 @@ Status: 🟢 INDEN FOR FREE TIER!
 ## 🎯 Hvad Der SKULLE Være Sket
 
 ### Step 1: Opret Supabase Projekt
+
 ```bash
 # Via Supabase Dashboard:
 # 1. Opret nyt projekt: "tekup-central-database"
@@ -109,6 +118,7 @@ Status: 🟢 INDEN FOR FREE TIER!
 ```
 
 ### Step 2: Setup Schemas i Supabase
+
 ```sql
 -- Connect til Supabase PostgreSQL
 psql "postgresql://postgres.[project-ref]:[password]@db.[project-ref].supabase.co:5432/postgres"
@@ -127,6 +137,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
 ### Step 3: Migrer Prisma Schema til Supabase
+
 ```bash
 # Setup Supabase CLI
 npm install -g supabase
@@ -144,6 +155,7 @@ supabase db push
 ```
 
 ### Step 4: Update tekup-database Package
+
 ```typescript
 // src/client/index.ts
 import { createClient } from '@supabase/supabase-js';
@@ -172,6 +184,7 @@ export const vault = {
 ## 🔧 Hvad Skal Fikses NU
 
 ### Option A: Migrer Docker → Supabase (KORREKT)
+
 ```
 1. Opret Supabase projekt
 2. Export data fra Docker PostgreSQL
@@ -182,6 +195,7 @@ export const vault = {
 ```
 
 **Fordele:**
+
 - ✅ Følger oprindelig plan
 - ✅ Ét Supabase projekt for ALT
 - ✅ Free tier tilgængelig
@@ -189,12 +203,14 @@ export const vault = {
 - ✅ Real-time features
 
 **Ulemper:**
+
 - ⏱️ 3-4 timers migration arbejde
 - 🔄 Skal re-deploye alt
 
 ---
 
 ### Option B: Behold Docker (KOMPROMIS)
+
 ```
 1. Keep Docker for development
 2. Setup Supabase for production
@@ -202,10 +218,12 @@ export const vault = {
 ```
 
 **Fordele:**
+
 - 🏠 Lokal dev uden internet
 - 💰 Free for development
 
 **Ulemper:**
+
 - 🔀 To environments at maintaine
 - ❌ Følger ikke oprindelig plan
 
@@ -240,16 +258,19 @@ export const vault = {
 
 ## 📚 Ressourcer for Supabase Migration
 
-### Official Docs:
+### Official Docs
+
 - [Prisma to Supabase](https://supabase.com/docs/guides/database/prisma)
 - [Multi-schema Support](https://supabase.com/docs/guides/database/schemas)
 - [pgvector Setup](https://supabase.com/docs/guides/database/extensions/pgvector)
 
-### Migration Tools:
+### Migration Tools
+
 - [Supabase CLI](https://github.com/supabase/cli)
 - [Migration Generator](https://migrate.supabase.com/)
 
-### Community:
+### Community
+
 - [Supabase Discord](https://discord.supabase.com)
 - [GitHub Discussions](https://github.com/orgs/supabase/discussions)
 
@@ -258,16 +279,19 @@ export const vault = {
 ## ✅ Konklusion
 
 **Min Fejl:**
+
 - Deployede til Docker i stedet for Supabase
 - Fulgte ikke den oprindelige konsolideringsplan
 - Skabte nyt problem i stedet for at løse eksisterende
 
 **Korrekt Approach:**
+
 - TekupVault + Tekup-Billy + RenOS + CRM + Flow → ÉT Supabase projekt
 - Multi-schema support i Supabase
 - Unified database provider
 
 **Næste Skridt:**
+
 - Vent på user decision
 - Hvis Supabase: Migrer alt
 - Hvis Docker: Opdater docs til at reflektere dette valg

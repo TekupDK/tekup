@@ -9,6 +9,7 @@
 ## 📋 Hvad Er Bygget
 
 ### ✅ Frontend (app/page.tsx)
+
 - ChatGPT-lignende interface
 - Real-time message streaming UI
 - Markdown rendering med code highlighting
@@ -17,6 +18,7 @@
 - Responsive design
 
 ### ✅ Backend API (app/api/chat/route.ts)
+
 - OpenAI GPT-4o integration
 - TekupVault RAG knowledge search
 - Automatic source citations
@@ -24,6 +26,7 @@
 - Error handling
 
 ### ✅ Features
+
 - 💬 Clean chat interface
 - 🤖 AI responses med TekupVault context
 - 📚 Automatic dokumentation citations
@@ -32,7 +35,7 @@
 
 ---
 
-## 🏃 Kom I Gang NU!
+## 🏃 Kom I Gang NU
 
 ### Step 1: Check Environment Variables
 
@@ -53,7 +56,8 @@ TEKUPVAULT_API_KEY=your-tekupvault-key-here
 ```
 
 **Hvor finder du keys:**
-- **OpenAI**: https://platform.openai.com/api-keys
+
+- **OpenAI**: <https://platform.openai.com/api-keys>
 - **TekupVault**: Tjek din TekupVault deployment på Render.com
 
 ### Step 2: Install Dependencies
@@ -83,24 +87,28 @@ http://localhost:3000
 Prøv disse spørgsmål for at teste funktionalitet:
 
 ### 1. Knowledge Retrieval
+
 ```
 Hvordan laver jeg en faktura i Billy.dk?
 ```
 **Forventet:** Code example + citation fra Tekup-Billy docs
 
 ### 2. Strategic Decision
+
 ```
 Skal jeg slette Tekup-org for at spare plads?
 ```
 **Forventet:** WARNING om €360K værdi + extraction plan
 
 ### 3. Code Help
+
 ```
 Vis mig hvordan jeg tilføjer en ny MCP tool
 ```
 **Forventet:** TypeScript code + best practices
 
 ### 4. Multi-Turn Conversation
+
 ```
 User: Hjælp mig med at deploye TekupVault
 AI: [responds]
@@ -113,18 +121,21 @@ User: Hvordan sætter jeg environment variables op?
 ## 📊 Hvad Virker
 
 ✅ **Chat Interface**
+
 - Clean UI similar til ChatGPT
 - Message bubbles (user=blue, AI=white)
 - Auto-scroll til nye beskeder
 - Loading spinner under AI thinking
 
 ✅ **AI Integration**
+
 - OpenAI GPT-4o streaming
 - TekupVault knowledge search
 - Conversation history (last 10 messages)
 - Source citations automatically added
 
 ✅ **Error Handling**
+
 - API errors shown in chat
 - Graceful fallbacks
 - Console logging for debugging
@@ -134,18 +145,21 @@ User: Hvordan sætter jeg environment variables op?
 ## 🔧 Hvad Mangler (Next Steps)
 
 ### Phase 2 Features (3-4 timer)
+
 - [ ] Voice input (microphone button)
 - [ ] File upload (attach documents)
 - [ ] Export conversations
 - [ ] Code block copy buttons
 
 ### Phase 3 Features (2-3 timer)
+
 - [ ] Sidebar med conversation history
 - [ ] Search in messages
 - [ ] Dark mode toggle
 - [ ] Keyboard shortcuts
 
 ### Phase 4 (Production Ready)
+
 - [ ] Supabase database persistence
 - [ ] User authentication
 - [ ] Rate limiting
@@ -156,6 +170,7 @@ User: Hvordan sætter jeg environment variables op?
 ## 🐛 Troubleshooting
 
 ### Issue: "OpenAI API key invalid"
+
 ```bash
 # Check .env.local file
 cat .env.local | grep OPENAI_API_KEY
@@ -165,6 +180,7 @@ cat .env.local | grep OPENAI_API_KEY
 ```
 
 ### Issue: "TekupVault search failed"
+
 ```bash
 # Test TekupVault directly
 curl https://tekupvault.onrender.com/api/health
@@ -174,6 +190,7 @@ cat .env.local | grep TEKUPVAULT_API_KEY
 ```
 
 ### Issue: Page won't load
+
 ```bash
 # Check port 3000 is free
 netstat -ano | findstr :3000
@@ -186,6 +203,7 @@ npm run dev
 ```
 
 ### Issue: Markdown not rendering
+
 ```bash
 # Verify dependencies installed
 npm list react-markdown
@@ -218,6 +236,7 @@ tekup-chat/
 ## 🎯 Success Metrics
 
 **Prototype is successful if:**
+
 - ✅ Chat interface loads uden errors
 - ✅ Messages send and receive
 - ✅ AI responses appear within 3-5 seconds
@@ -225,6 +244,7 @@ tekup-chat/
 - ✅ Conversation context maintained
 
 **Test it:**
+
 1. Send 3-5 messages
 2. Verify responses make sense
 3. Check if sources are cited
@@ -235,6 +255,7 @@ tekup-chat/
 ## 💡 Tips & Tricks
 
 ### Hurtigere Development
+
 ```bash
 # Auto-reload ved file changes (already enabled)
 npm run dev
@@ -244,6 +265,7 @@ npm run type-check -- --watch
 ```
 
 ### Better Debugging
+
 ```javascript
 // I app/api/chat/route.ts - se hvad der sendes til OpenAI
 console.log('Messages sent to OpenAI:', conversationMessages);
@@ -253,6 +275,7 @@ console.log('Current messages:', messages);
 ```
 
 ### Performance Optimization
+
 ```typescript
 // Limit conversation history (already done)
 const recentMessages = messages.slice(-10);
@@ -285,14 +308,17 @@ max_tokens: 500  // Faster, mindre detaljeret
 ## 📞 Need Help?
 
 **Common Issues:**
+
 - API key errors → Check .env.local
 - No responses → Check OpenAI billing/quota
 - No sources → TekupVault might be down/slow
 
 **Debug Steps:**
+
 1. Check browser console (F12)
 2. Check terminal running `npm run dev`
 3. Test API endpoint directly:
+
 ```bash
 curl -X POST http://localhost:3000/api/chat \
   -H "Content-Type: application/json" \
@@ -302,7 +328,7 @@ curl -X POST http://localhost:3000/api/chat \
 ---
 
 **Status:** ✅ PROTOTYPE READY  
-**Test It:** `npm run dev` → http://localhost:3000  
+**Test It:** `npm run dev` → <http://localhost:3000>  
 **Duration:** 5 min setup, works immediately!
 
 🚀 **LET'S GO!**

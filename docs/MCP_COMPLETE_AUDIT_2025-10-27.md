@@ -11,6 +11,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ## 📊 MCP Overview Statistics
 
 ### Totalt Fund
+
 - **MCP Config Filer:** 8 primære konfigurationer
 - **MCP Server Packages:** 12+ custom servere
 - **MCP Dokumentation:** 30+ dokumenter
@@ -18,6 +19,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 - **Total MCP-relaterede filer:** 200+ (ekskl. node_modules)
 
 ### IDEs med MCP Support
+
 1. ✅ **Cursor** (C:\.cursor\mcp.json)
 2. ✅ **Kilo Code** (C:\.kilocode\mcp.json + Tekup\.kilocode\mcp.json)
 3. ✅ **Claude Desktop** (AppData\Roaming\Claude\claude_desktop_config.json)
@@ -30,6 +32,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ## 🗂️ MCP Configuration Files - Detaljeret Analyse
 
 ### 1. **C:\.cursor\mcp.json** (Cursor IDE)
+
 **Status:** 🟢 Aktiv
 **Servere:** 7 total
 
@@ -46,6 +49,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ```
 
 **Features:**
+
 - ✅ GitHub integration
 - ✅ Filesystem access (scoped til Tekup)
 - ✅ Local Billy server
@@ -53,6 +57,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 - ✅ Browser automation (Puppeteer)
 
 **Environment Variables:**
+
 - `GITHUB_PERSONAL_ACCESS_TOKEN`
 - `SUPABASE_URL`, `SUPABASE_ANON_KEY`
 - `BILLY_API_KEY`, `BILLY_ORGANIZATION_ID`
@@ -60,6 +65,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ---
 
 ### 2. **C:\.kilocode\mcp.json** (Kilo Code - Global)
+
 **Status:** 🟢 Aktiv
 **Servere:** 9 total
 
@@ -78,6 +84,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ```
 
 **Key Difference from Cursor:**
+
 - 🔓 Full `C:\Users\empir` filesystem access (ikke kun Tekup)
 - ✅ **3 Custom MCP Servers** (knowledge, code-intelligence, database)
 - ✅ Gmail integration
@@ -85,6 +92,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ---
 
 ### 3. **C:\Users\empir\AppData\Roaming\Claude\claude_desktop_config.json**
+
 **Status:** 🟢 Aktiv (Claude Desktop)
 **Servere:** 6 total
 
@@ -104,6 +112,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ---
 
 ### 4. **C:\.codeium\windsurf\mcp_config.json** (Windsurf IDE)
+
 **Status:** 🟡 Minimal config
 **Servere:** 4 total
 
@@ -121,6 +130,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ---
 
 ### 5. **C:\Users\empir\Tekup\.claude\mcp.json** (Claude Code - Tekup workspace)
+
 **Status:** 🟢 Aktiv
 **Servere:** 7 total
 
@@ -137,6 +147,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ```
 
 **Features:**
+
 - ✅ **3 Production Tekup Servers** (billy, vault, calendar)
 - ✅ Auto-allow for `read_file` og `list_directory`
 - ✅ Scoped til Tekup repository
@@ -144,6 +155,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ---
 
 ### 6. **C:\Users\empir\Tekup\.kilocode\mcp.json** (Kilo Code - Tekup workspace)
+
 **Status:** 🟢 Aktiv (Duplicate af config #5)
 **Servere:** 4 total
 
@@ -165,6 +177,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ### Production Servers (Live)
 
 #### 1. **tekup-billy** 💰
+
 - **Path:** `Tekup\apps\production\tekup-billy\dist\index.js`
 - **Status:** 🟢 Production (10+ months live)
 - **Transport:** Local Node.js
@@ -179,6 +192,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
   - `SUPABASE_URL`, `SUPABASE_ANON_KEY`
 
 #### 2. **tekupvault** 📚
+
 - **Path:** `https://tekupvault.onrender.com/mcp`
 - **Status:** 🟢 Production (Render.com deployment)
 - **Transport:** Streamable HTTP (Remote)
@@ -194,6 +208,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ### Development Servers (Ready)
 
 #### 3. **knowledge-mcp** 📖
+
 - **Path:** `tekup-mcp-servers\packages\knowledge-mcp\dist\index.js`
 - **Status:** ✅ Built & tested
 - **Capabilities:**
@@ -203,6 +218,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 - **Environment:** `KNOWLEDGE_SEARCH_ROOT=C:\Users\empir\Tekup`
 
 #### 4. **code-intelligence-mcp** 🔍
+
 - **Path:** `tekup-mcp-servers\packages\code-intelligence-mcp\dist\index.js`
 - **Status:** ✅ Built & tested
 - **Capabilities:**
@@ -214,6 +230,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 - **Environment:** `CODE_SEARCH_ROOT=C:\Users\empir\Tekup`
 
 #### 5. **database-mcp** 🗄️
+
 - **Path:** `tekup-mcp-servers\packages\database-mcp\dist\index.js`
 - **Status:** ✅ Built & tested (awaits SERVICE_ROLE_KEY)
 - **Capabilities:**
@@ -229,11 +246,13 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
   - `SUPABASE_SERVICE_ROLE_KEY` (MISSING)
 
 #### 6. **calendar-mcp** 📅
+
 - **Path:** `Tekup\apps\rendetalje\services\calendar-mcp\dist\index.js`
 - **Status:** ⚠️ Built (not verified)
 - **Capabilities:** Google Calendar integration
 
 #### 7. **gmail-mcp-server** 📧
+
 - **Path:** `Tekup\services\tekup-gmail-services\apps\gmail-mcp-server\dist\index.js`
 - **Status:** ⚠️ Built (not fully verified)
 - **Capabilities:** Gmail automation
@@ -300,6 +319,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ### Product-Specific Documentation
 
 #### Tekup Billy
+
 - `MCP_IMPLEMENTATION_GUIDE.md`
 - `UNIVERSAL_MCP_PLUGIN_GUIDE.md`
 - `CLAUDE_WEB_MCP_REPORT.md`
@@ -312,15 +332,18 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 - `CLAUDE_MCP_SETUP.md`
 
 #### TekupVault
+
 - `CURSOR_MCP_SETUP_COMPLETE.md`
 - `MCP_IMPLEMENTATION_COMPLETE.md`
 - `MCP_DEBUG_ANALYSIS_2025-10-17.md`
 
 #### RenOS/Rendetalje
+
 - `MCP_DIAGNOSTIC_REPORT_2025-10-20.md`
 - `MCP_CONNECTION_GUIDE.md` (calendar-mcp)
 
 #### Tekup Cloud Dashboard
+
 - `.cursor\mcp.json` (project-specific config)
 
 ---
@@ -378,7 +401,7 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 
 2. **tekupvault MCP** 📚
    - Environment: Render.com
-   - URL: https://tekupvault.onrender.com/mcp
+   - URL: <https://tekupvault.onrender.com/mcp>
    - Status: 🟢 Production
    - Transport: Streamable HTTP (Remote)
    - Unique: First remote HTTP MCP in production
@@ -411,26 +434,31 @@ Komplet audit af **ALLE** MCP (Model Context Protocol) konfigurationer, servere 
 ### Required Across All Configs
 
 #### GitHub
+
 - `GITHUB_PERSONAL_ACCESS_TOKEN`
   - Value: `github_pat_***` (stored in Windows User Environment Variables)
   - Used by: Cursor, Kilo Code, Claude Desktop
 
 #### Supabase
+
 - `SUPABASE_URL`: `https://uagsdymcvdwcgfvqbtwj.supabase.co`
 - `SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (public safe key)
 - `SUPABASE_SERVICE_ROLE_KEY`: ⚠️ **MISSING** (needs manual fetch from dashboard)
 
 #### Billy API
+
 - `BILLY_API_KEY`: `c45ce68ca160aae3548dcb596e6fab6ca4f86e61`
 - `BILLY_ORGANIZATION_ID`: (set in environment)
 
 #### Tekup Projects
+
 - `KNOWLEDGE_SEARCH_ROOT`: `C:\Users\empir\Tekup`
 - `CODE_SEARCH_ROOT`: `C:\Users\empir\Tekup`
 - `NODE_ENV`: `development` | `production`
 - `LOG_LEVEL`: `info` | `debug`
 
 ### Shared Memory
+
 - `MEMORY_FILE_PATH`: `C:\Users\empir\.mcp-shared\memory.json`
   - Shared across IDEs for persistent memory
 
@@ -538,7 +566,7 @@ C:\Users\empir\
 
 1. ⚠️ **SUPABASE_SERVICE_ROLE_KEY missing**
    - Required for: database-mcp
-   - Action: Fetch from https://supabase.com/dashboard/project/uagsdymcvdwcgfvqbtwj/settings/api
+   - Action: Fetch from <https://supabase.com/dashboard/project/uagsdymcvdwcgfvqbtwj/settings/api>
    - Priority: HIGH
 
 ### High Priority
@@ -557,7 +585,7 @@ C:\Users\empir\
 4. 📝 **GitHub issue not created**
    - File ready: `GITHUB_ISSUE_MCP_DEPLOYMENT.md`
    - Action: Manual creation via web UI
-   - URL: https://github.com/TekupDK/tekup/issues/new
+   - URL: <https://github.com/TekupDK/tekup/issues/new>
 
 5. ⚠️ **calendar-mcp & gmail-mcp not verified**
    - Status: Built but not fully tested
@@ -574,22 +602,26 @@ C:\Users\empir\
 ## 📈 MCP ROI Analysis
 
 ### Current Investment
+
 - **Development Time:** ~40 hours (over 3 weeks)
 - **Infrastructure Cost:** $30/month (Billy + TekupVault)
 - **Total Monthly Cost:** $30/month
 
 ### Projected Investment (Phase 1 Complete)
+
 - **Additional Dev Time:** ~6 hours (deployment)
 - **Additional Cost:** $21/month (3 new servers)
 - **Total Monthly Cost:** $51/month
 
 ### Return on Investment
+
 - **Time Saved:** ~80 hours/month (automation)
 - **Value per Hour:** $200 DKK
 - **Monthly Value:** 16,000 DKK (~$2,300)
 - **ROI:** 1,602% (based on $51 investment → $2,300 value)
 
 ### Qualitative Benefits
+
 - ✅ Instant access to documentation
 - ✅ Semantic code search across entire codebase
 - ✅ Safe database queries without risking data
@@ -634,6 +666,7 @@ C:\Users\empir\
 Med 2 production servere, 3 deployment-klar servere, og 8 IDE konfigurationer, er vi **early adopters** af MCP protokollen.
 
 **Hovedpointer:**
+
 - ✅ Proven production viability (10+ months tekup-billy)
 - ✅ First in Denmark med remote HTTP MCP (tekupvault)
 - ✅ Complete development ecosystem (knowledge, code, database)

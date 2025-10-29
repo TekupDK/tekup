@@ -37,6 +37,7 @@ CREATE TYPE sync_status AS ENUM ('pending', 'in_progress', 'success', 'error');
 ### Tabeller (3 stk)
 
 #### 1. **vault_documents** - Dokument storage
+
 ```sql
 CREATE TABLE vault_documents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -61,6 +62,7 @@ CREATE INDEX idx_vault_documents_metadata ON vault_documents USING GIN(metadata)
 **Data:** ~1,000+ dokumenter fra 14 GitHub repos
 
 #### 2. **vault_embeddings** - Vector embeddings
+
 ```sql
 CREATE TABLE vault_embeddings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -81,6 +83,7 @@ WITH (lists = 100);
 **Data:** ~1,000+ vector embeddings (1536 dimensioner hver)
 
 #### 3. **vault_sync_status** - Sync tracking
+
 ```sql
 CREATE TABLE vault_sync_status (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -105,6 +108,7 @@ CREATE INDEX idx_vault_sync_status_updated_at ON vault_sync_status(updated_at DE
 ### Functions
 
 #### **match_documents()** - Semantic search
+
 ```sql
 CREATE OR REPLACE FUNCTION match_documents(
     query_embedding VECTOR(1536),
@@ -166,11 +170,13 @@ DATABASE_URL=postgresql://postgres.[project-ref]:[password]@db.[project-ref].sup
 ### Current Usage
 
 **API Calls:**
+
 - `/api/search` - Semantic search across documents
 - `/api/sync-status` - Check sync health
 - `/webhook/github` - GitHub push events
 
 **Worker:**
+
 - Syncs 14 repos every 6 hours
 - Generates embeddings for new documents
 - Updates sync status
@@ -188,6 +194,7 @@ DATABASE_URL=postgresql://postgres.[project-ref]:[password]@db.[project-ref].sup
 #### Tabeller (Minimum 6)
 
 1. **billy_organizations** - Organization management
+
 ```sql
 CREATE TABLE billy_organizations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -203,6 +210,7 @@ CREATE TABLE billy_organizations (
 ```
 
 2. **billy_cached_invoices** - Invoice caching
+
 ```sql
 CREATE TABLE billy_cached_invoices (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -219,6 +227,7 @@ CREATE INDEX idx_cached_invoices_expires ON billy_cached_invoices(expires_at);
 ```
 
 3. **billy_cached_customers** - Customer caching
+
 ```sql
 CREATE TABLE billy_cached_customers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -232,6 +241,7 @@ CREATE TABLE billy_cached_customers (
 ```
 
 4. **billy_cached_products** - Product caching
+
 ```sql
 CREATE TABLE billy_cached_products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -245,6 +255,7 @@ CREATE TABLE billy_cached_products (
 ```
 
 5. **billy_audit_logs** - Audit trail
+
 ```sql
 CREATE TABLE billy_audit_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -265,6 +276,7 @@ CREATE INDEX idx_audit_logs_action ON billy_audit_logs(action);
 ```
 
 6. **billy_usage_metrics** - Usage tracking
+
 ```sql
 CREATE TABLE billy_usage_metrics (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -291,11 +303,13 @@ CREATE INDEX idx_usage_metrics_tool ON billy_usage_metrics(tool_name);
 ### Security Features
 
 **Encryption:**
+
 - API keys encrypted med AES-256-GCM
 - Scrypt key derivation
 - Unique IV per encryption
 
 **Access Control:**
+
 - Organization-based isolation
 - Service role for backend operations
 - Authenticated users for future multi-tenant
@@ -314,6 +328,7 @@ ENCRYPTION_SALT=your-16-char-salt
 ### Current Usage
 
 **Features:**
+
 - ✅ 5x hurtigere responses (caching)
 - ✅ Audit trail for alle operations
 - ✅ Usage analytics
@@ -321,6 +336,7 @@ ENCRYPTION_SALT=your-16-char-salt
 - ✅ Multi-tenant support
 
 **Performance:**
+
 - Cache hit rate: ~80%
 - Average response time: <100ms (cached)
 - 25 MCP tools supported
@@ -411,6 +427,7 @@ Total API Requests: ~60,000/måned
 ```
 
 **Supabase Free Tier Limits:**
+
 - ✅ Database: 500 MB (vi bruger ~150-300 MB)
 - ✅ API Requests: 500,000/måned (vi bruger ~60k)
 - ✅ Storage: 1 GB (ikke brugt endnu)
@@ -429,6 +446,7 @@ Total API Requests: ~60,000/måned
 **Action:** Kan flyttes til `vault` schema i centralt projekt
 
 **Migration complexity:** 🟢 LAV
+
 - Kræver schema præfix (vault.*)
 - Opdater connection strings
 - Test semantic search
@@ -441,6 +459,7 @@ Total API Requests: ~60,000/måned
 **Action:** Kan flyttes til `billy` schema i centralt projekt
 
 **Migration complexity:** 🟢 LAV
+
 - Kræver schema præfix (billy.*)
 - Encryption keys skal bevares
 - Test caching logic
@@ -448,11 +467,13 @@ Total API Requests: ~60,000/måned
 ### Estimeret Effort
 
 **Hvis TekupVault og Billy ER på samme projekt:**
+
 - Migration: 2-3 timer (schema reorganization)
 - Testing: 1-2 timer
 - **Total:** 4-5 timer
 
 **Hvis de ER på separate projekter:**
+
 - Migration: 4-6 timer (data migration + schema merge)
 - Testing: 2-3 timer
 - **Total:** 6-9 timer
@@ -493,18 +514,21 @@ ENCRYPTION_SALT=16-char-salt
 ## 📋 Migration Plan Overview
 
 ### Fase 1: Verificer Struktur ✅
+
 - [x] Dokumenter TekupVault schema
 - [x] Dokumenter Tekup-Billy schema
 - [ ] Verificer om de bruger samme Supabase projekt
 - [ ] Find andre potentielle Supabase-projekter
 
 ### Fase 2: Forbered Central Database
+
 - [ ] Opret nyt Supabase projekt ELLER brug eksisterende
 - [ ] Opret schemas: vault, billy, renos, crm, flow, shared
 - [ ] Setup RLS policies per schema
 - [ ] Konfigurer connection pooling
 
 ### Fase 3: Migrer Eksisterende (Vault & Billy)
+
 - [ ] Eksporter data fra nuværende projekt(er)
 - [ ] Migrer til vault/billy schemas
 - [ ] Opdater connection strings i apps
@@ -512,6 +536,7 @@ ENCRYPTION_SALT=16-char-salt
 - [ ] Cutover
 
 ### Fase 4: Migrer Prisma Apps (RenOS osv.)
+
 - [ ] Se separat migration plan
 
 ---

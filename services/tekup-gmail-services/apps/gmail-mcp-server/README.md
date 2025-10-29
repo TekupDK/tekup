@@ -39,6 +39,7 @@ npx -y @smithery/cli install @gongrzhe/server-gmail-autoauth-mcp --client claude
 ```
 
 ### Installing Manually
+
 1. Create a Google Cloud Project and obtain credentials:
 
    a. Create a Google Cloud Project:
@@ -82,7 +83,7 @@ npx -y @smithery/cli install @gongrzhe/server-gmail-autoauth-mcp --client claude
    - Open your default browser for Google authentication
    - Save credentials as `~/.gmail-mcp/credentials.json`
 
-   > **Note**: 
+   > **Note**:
    > - After successful authentication, credentials are stored globally in `~/.gmail-mcp/` and can be used from any directory
    > - Both Desktop app and Web application credentials are supported
    > - For Web application credentials, make sure to add `http://localhost:3000/oauth2callback` to your authorized redirect URIs
@@ -107,6 +108,7 @@ npx -y @smithery/cli install @gongrzhe/server-gmail-autoauth-mcp --client claude
 If you prefer using Docker:
 
 1. Authentication:
+
 ```bash
 docker run -i --rm \
   --mount type=bind,source=/path/to/gcp-oauth.keys.json,target=/gcp-oauth.keys.json \
@@ -118,6 +120,7 @@ docker run -i --rm \
 ```
 
 2. Usage:
+
 ```json
 {
   "mcpServers": {
@@ -235,6 +238,7 @@ Multipart Email Example (HTML + Plain Text):
 ```
 
 ### 2. Draft Email (`draft_email`)
+
 Creates a draft email without sending it. **Also supports attachments**.
 
 ```json
@@ -248,6 +252,7 @@ Creates a draft email without sending it. **Also supports attachments**.
 ```
 
 ### 3. Read Email (`read_email`)
+
 Retrieves the content of a specific email by its ID. **Now shows enhanced attachment information**.
 
 ```json
@@ -271,6 +276,7 @@ Attachments (2):
 ```
 
 ### 4. **Download Attachment (`download_attachment`)**
+
 **NEW**: Downloads email attachments to your local filesystem.
 
 ```json
@@ -283,12 +289,14 @@ Attachments (2):
 ```
 
 Parameters:
+
 - `messageId`: The ID of the email containing the attachment
 - `attachmentId`: The attachment ID (shown in enhanced email display)
 - `savePath`: Directory to save the file (optional, defaults to current directory)
 - `filename`: Custom filename (optional, uses original filename if not provided)
 
 ### 5. Search Emails (`search_emails`)
+
 Searches for emails using Gmail search syntax.
 
 ```json
@@ -299,6 +307,7 @@ Searches for emails using Gmail search syntax.
 ```
 
 ### 6. Modify Email (`modify_email`)
+
 Adds or removes labels from emails (move to different folders, archive, etc.).
 
 ```json
@@ -310,6 +319,7 @@ Adds or removes labels from emails (move to different folders, archive, etc.).
 ```
 
 ### 7. Delete Email (`delete_email`)
+
 Permanently deletes an email.
 
 ```json
@@ -319,6 +329,7 @@ Permanently deletes an email.
 ```
 
 ### 8. List Email Labels (`list_email_labels`)
+
 Retrieves all available Gmail labels.
 
 ```json
@@ -326,6 +337,7 @@ Retrieves all available Gmail labels.
 ```
 
 ### 9. Create Label (`create_label`)
+
 Creates a new Gmail label.
 
 ```json
@@ -337,6 +349,7 @@ Creates a new Gmail label.
 ```
 
 ### 10. Update Label (`update_label`)
+
 Updates an existing Gmail label.
 
 ```json
@@ -349,6 +362,7 @@ Updates an existing Gmail label.
 ```
 
 ### 11. Delete Label (`delete_label`)
+
 Deletes a Gmail label.
 
 ```json
@@ -358,6 +372,7 @@ Deletes a Gmail label.
 ```
 
 ### 12. Get or Create Label (`get_or_create_label`)
+
 Gets an existing label by name or creates it if it doesn't exist.
 
 ```json
@@ -369,6 +384,7 @@ Gets an existing label by name or creates it if it doesn't exist.
 ```
 
 ### 13. Batch Modify Emails (`batch_modify_emails`)
+
 Modifies labels for multiple emails in efficient batches.
 
 ```json
@@ -381,6 +397,7 @@ Modifies labels for multiple emails in efficient batches.
 ```
 
 ### 14. Batch Delete Emails (`batch_delete_emails`)
+
 Permanently deletes multiple emails in efficient batches.
 
 ```json
@@ -391,6 +408,7 @@ Permanently deletes multiple emails in efficient batches.
 ```
 
 ### 14. Create Filter (`create_filter`)
+
 Creates a new Gmail filter with custom criteria and actions.
 
 ```json
@@ -407,6 +425,7 @@ Creates a new Gmail filter with custom criteria and actions.
 ```
 
 ### 15. List Filters (`list_filters`)
+
 Retrieves all Gmail filters.
 
 ```json
@@ -414,6 +433,7 @@ Retrieves all Gmail filters.
 ```
 
 ### 16. Get Filter (`get_filter`)
+
 Gets details of a specific Gmail filter.
 
 ```json
@@ -423,6 +443,7 @@ Gets details of a specific Gmail filter.
 ```
 
 ### 17. Delete Filter (`delete_filter`)
+
 Deletes a Gmail filter.
 
 ```json
@@ -432,6 +453,7 @@ Deletes a Gmail filter.
 ```
 
 ### 18. Create Filter from Template (`create_filter_from_template`)
+
 Creates a filter using pre-defined templates for common scenarios.
 
 ```json
@@ -477,6 +499,7 @@ Filters can perform the following actions:
 The server includes pre-built templates for common filtering scenarios:
 
 #### 1. From Sender Template (`fromSender`)
+
 Filters emails from a specific sender and optionally archives them.
 
 ```json
@@ -491,6 +514,7 @@ Filters emails from a specific sender and optionally archives them.
 ```
 
 #### 2. Subject Filter Template (`withSubject`)
+
 Filters emails with specific subject text and optionally marks as read.
 
 ```json
@@ -505,6 +529,7 @@ Filters emails with specific subject text and optionally marks as read.
 ```
 
 #### 3. Attachment Filter Template (`withAttachments`)
+
 Filters all emails with attachments.
 
 ```json
@@ -517,6 +542,7 @@ Filters all emails with attachments.
 ```
 
 #### 4. Large Email Template (`largeEmails`)
+
 Filters emails larger than a specified size.
 
 ```json
@@ -530,6 +556,7 @@ Filters emails larger than a specified size.
 ```
 
 #### 5. Content Filter Template (`containingText`)
+
 Filters emails containing specific text and optionally marks as important.
 
 ```json
@@ -544,6 +571,7 @@ Filters emails containing specific text and optionally marks as important.
 ```
 
 #### 6. Mailing List Template (`mailingList`)
+
 Filters mailing list emails and optionally archives them.
 
 ```json
@@ -658,6 +686,7 @@ The server intelligently extracts email content from complex MIME structures:
 ### International Character Support
 
 The server fully supports non-ASCII characters in email subjects and content, including:
+
 - Turkish, Chinese, Japanese, Korean, and other non-Latin alphabets
 - Special characters and symbols
 - Proper encoding ensures correct display in email clients
@@ -674,6 +703,7 @@ The server provides a complete set of tools for managing Gmail labels:
 - **Label Visibility Options**: Control how labels appear in message and label lists
 
 Label visibility settings include:
+
 - `messageListVisibility`: Controls whether the label appears in the message list (`show` or `hide`)
 - `labelListVisibility`: Controls how the label appears in the label list (`labelShow`, `labelShowIfUnread`, or `labelHide`)
 

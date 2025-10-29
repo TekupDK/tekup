@@ -283,7 +283,7 @@ Render auto-deploys on push to main branch.
 
 Visit: `https://renos-frontend.onrender.com/sentry-example-page`  
 Click "Trigger Test Error" button  
-Check Sentry dashboard at: https://sentry.io
+Check Sentry dashboard at: <https://sentry.io>
 
 ---
 

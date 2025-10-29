@@ -1,4 +1,5 @@
 # 🎨 RenOS - Visual System Summary
+
 \n\n
 \n\n*Quick Reference Guide for Developers*
 
@@ -389,5 +390,5 @@ toast({
 \n\n
 ---
 
-*Last Updated: 3. Oktober 2025*  
-*Version: 1.0*
+_Last Updated: 3. Oktober 2025_  
+_Version: 1.0_

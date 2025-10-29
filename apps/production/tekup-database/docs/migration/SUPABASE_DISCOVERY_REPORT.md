@@ -5,24 +5,28 @@
 
 ---
 
-## 🎯 FUND: 2 Separate Supabase Projekter!
+## 🎯 FUND: 2 Separate Supabase Projekter
 
-### **Projekt 1: TekupVault** 
+### **Projekt 1: TekupVault**
+
 **Project ID:** `twaoebtlusudzxshjral`  
 **URL:** `https://twaoebtlusudzxshjral.supabase.co`  
 **Region:** EU Central (Frankfurt)  
 **Database:** `aws-0-eu-central-1.pooler.supabase.com`
 
 **Tabeller (3):**
+
 - `vault_documents` - Document storage
 - `vault_embeddings` - Vector embeddings (1536 dim, pgvector)
 - `vault_sync_status` - Sync tracking
 
 **Migrations:**
+
 - ✅ `20250114000000_initial_schema.sql` - Opret tabeller + indexes
 - ✅ `20250116000000_add_rls_policies.sql` - Row Level Security
 
 **Features:**
+
 - ✅ pgvector extension (vector similarity search)
 - ✅ RLS policies (service_role + authenticated)
 - ✅ IVFFlat index for embeddings
@@ -33,6 +37,7 @@
 ---
 
 ### **Projekt 2: RenOS/Billy Shared** 🔄
+
 **Project ID:** `oaevagdgrasfppbrxbey`  
 **URL:** `https://oaevagdgrasfppbrxbey.supabase.co`  
 **Region:** Unknown (sandsynligvis EU)  
@@ -50,11 +55,13 @@
 ```
 
 **Shared mellem:**
+
 - ✅ **Tekup-Billy MCP** - Billy.dk integration
 - ✅ **RenOS Backend** - Cleaning operations  
 - ⚠️ **RendetaljeOS** (?) - Skal verificeres
 
 **Tabeller:**
+
 - Billy tables: `billy_*` (6+ tabeller)
 - RenOS tables: Lead, Customer, Booking, etc. (19+ models)
 - Total: ~25+ tabeller?
@@ -99,7 +106,7 @@
 
 ---
 
-## 🚨 KRITISK OPDAGELSE!
+## 🚨 KRITISK OPDAGELSE
 
 ### **Billy + RenOS Deler SAMME Supabase Projekt!**
 
@@ -110,6 +117,7 @@ SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
 ```
 
 **Dette betyder:**
+
 - ✅ RenOS og Billy er ALLEREDE konsolideret til 1 projekt
 - ✅ Deler connection pool
 - ✅ Deler backup strategi
@@ -120,6 +128,7 @@ SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
 ## 🎯 Konsolideringsmuligheder
 
 ### **Option A: Merge Projekt 1 → Projekt 2** ⭐
+
 ```
 Flyt TekupVault → RenOS/Billy projektet
 
@@ -132,17 +141,20 @@ EFFORT: 2-3 timer
 ```
 
 **Fordele:**
+
 - ✅ 1 projekt = lavere cost
 - ✅ Delt connection pool
 - ✅ Unified monitoring
 
 **Ulemper:**
+
 - 🔄 Migration effort
 - ⚠️ Downtime for TekupVault
 
 ---
 
 ### **Option B: Keep 2 Projects, Add tekup-database**
+
 ```
 Projekt 1: TekupVault (eksisterende)
 Projekt 2: RenOS + Billy (eksisterende)
@@ -155,16 +167,19 @@ RESULTAT:
 ```
 
 **Fordele:**
+
 - ✅ Ingen migration af eksisterende
 - ✅ Isolation mellem services
 
 **Ulemper:**
+
 - ❌ 3 projekter at maintaine
 - ❌ Højere cost ved scale
 
 ---
 
 ### **Option C: Consolidate ALL → tekup-database** 🚀
+
 ```
 Opret NYT Supabase projekt: "tekup-central-database"
 
@@ -182,12 +197,14 @@ RESULTAT:
 ```
 
 **Fordele:**
+
 - ✅ Fuldt konsolideret
 - ✅ Laveste cost ($0-25/mdr)
 - ✅ Unified alt
 - ✅ Følger original plan
 
 **Ulemper:**
+
 - 🔄 Stor migration (4-6 timer)
 - ⚠️ Risk of downtime
 
@@ -196,6 +213,7 @@ RESULTAT:
 ## 📋 Næste Skridt for at Undersøge Videre
 
 ### 1. Check RenOS Project Tables
+
 ```bash
 # Se hvilke tabeller der findes i oaevagdgra projektet
 cd c:/Users/empir/RendetaljeOS
@@ -206,6 +224,7 @@ psql "postgresql://postgres.oaevagdgrasfppbrxbey:[password]@db.oaevagdgrasfppbrx
 ```
 
 ### 2. Check Database Sizes
+
 ```sql
 -- TekupVault projekt
 SELECT pg_size_pretty(pg_database_size('postgres'));
@@ -224,6 +243,7 @@ ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
 ```
 
 ### 3. List All Migrations
+
 ```bash
 # TekupVault
 cd c:/Users/empir/TekupVault/supabase
@@ -241,6 +261,7 @@ find . -name "supabase" -type d
 **OPTION C: Full Consolidation til NYT Central Projekt**
 
 **Hvorfor:**
+
 1. ✅ Følger original DATABASE_CONSOLIDATION_ANALYSE plan
 2. ✅ Laveste long-term cost
 3. ✅ Unified monitoring & backup
@@ -248,6 +269,7 @@ find . -name "supabase" -type d
 5. ✅ Fremtidssikret for nye services
 
 **Migration Approach:**
+
 1. Opret nyt Supabase projekt "tekup-central-database"
 2. Setup 6 schemas (vault, billy, renos, crm, flow, shared)
 3. Export data fra begge eksisterende projekter
@@ -257,6 +279,7 @@ find . -name "supabase" -type d
 7. Decommission gamle projekter
 
 **Timeline:**
+
 - Dag 1 (2t): Opret projekt + setup schemas
 - Dag 2 (3t): Migrer TekupVault data
 - Dag 3 (3t): Migrer Billy + RenOS data
@@ -264,6 +287,7 @@ find . -name "supabase" -type d
 - Total: 10 timer spread over 4 dage
 
 **Cost:**
+
 - Current: $0 (2 free tier projekter)
 - After: $0 (1 free tier projekt under 500MB)
 - At scale: $25/mdr (Pro tier når vi når limits)

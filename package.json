@@ -8,6 +8,15 @@
     "dev": "pnpm -r --parallel --if-present dev",
     "test": "pnpm -r --if-present test",
     "lint": "pnpm -r --if-present lint",
-    "clean": "pnpm -r --if-present clean"
+    "clean": "pnpm -r --if-present clean",
+    "markdown:lint": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#archive\" \"#.git\"",
+    "markdown:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\" \"#archive\" \"#.git\"",
+    "markdown:check": "markdownlint-cli2 --config .markdownlint.json \"**/*.md\""
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "markdownlint-cli2": "^0.16.0"
   }
 }

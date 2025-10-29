@@ -201,6 +201,7 @@ CREATE SCHEMA shared;
 ```
 
 **Fordele:**
+
 - ✅ Data isolation
 - ✅ Independent migrations
 - ✅ Separate permissions
@@ -471,16 +472,19 @@ pnpm db:migrate:prod
 ## 📚 Documentation
 
 ### Getting Started
+
 - **[Quick Start Guide](QUICK_START.md)** - Get started in 30 minutes
 - **[Setup Guide](docs/SETUP.md)** - Detailed installation and configuration
 
 ### Development
+
 - **[API Reference](docs/API_REFERENCE.md)** - Complete client library reference 🆕
 - **[Schema Design](docs/SCHEMA_DESIGN.md)** - Database architecture and patterns 🆕
 - **[Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute 🆕
 - **[Examples](examples/)** - Code examples for all clients 🆕
 
 ### Operations
+
 - **[Migration Guide](docs/MIGRATION_GUIDE.md)** - Migrate existing services
 - **[Supabase Migration](docs/migration/README.md)** - Complete Supabase migration documentation 🆕
 - **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment 🆕
@@ -488,6 +492,7 @@ pnpm db:migrate:prod
 - **[Performance Guide](docs/PERFORMANCE.md)** - Optimization tips 🆕
 
 ### Reference
+
 - **[Security Policy](docs/SECURITY.md)** - Security best practices 🆕
 - **[Changelog](CHANGELOG.md)** - Version history and updates
 - **[Release Notes](VERSION_1.1.0_RELEASE_NOTES.md)** - v1.1.0 details 🆕

@@ -9,15 +9,18 @@
 ## 📊 **EXECUTIVE SUMMARY**
 
 ### **Din Situation:**
+
 - ✅ GitHub organization "TekupDK" oprettet
 - 💻 2 computere (PC 1: hovedcomputer, PC 2: skal sættes op)
 - 🎯 Workspace skal synkroniseres mellem begge
 - 👥 Klar til team expansion
 
 ### **Anbefalet Strategi:**
+
 **MULTI-REPO** (separate repositories) ✅
 
 **Rationale:**
+
 - Hver service/app er sit eget repo
 - Nemmere team collaboration
 - Independent versioning og deployment
@@ -29,17 +32,20 @@
 ## 🎯 **MONOREPO VS MULTI-REPO**
 
 ### **Monorepo (ÉN stor repo)**
+
 ```
 github.com/TekupDK/tekup-workspace
 └── Alle projekter i én repo
 ```
 
 **Pros:**
+
 - ✅ Easy code sharing
 - ✅ Atomic commits across projects
 - ✅ Single place for everything
 
 **Cons:**
+
 - ❌ Huge repo size (slow clone/pull)
 - ❌ Complex CI/CD
 - ❌ All-or-nothing access control
@@ -50,6 +56,7 @@ github.com/TekupDK/tekup-workspace
 ---
 
 ### **Multi-Repo (Mange separate repos)** ✅ ANBEFALET
+
 ```
 github.com/TekupDK/
 ├── tekup-database
@@ -61,6 +68,7 @@ github.com/TekupDK/
 ```
 
 **Pros:**
+
 - ✅ Independent versioning
 - ✅ Independent deployment
 - ✅ Granular access control
@@ -69,6 +77,7 @@ github.com/TekupDK/
 - ✅ Easy to contribute to specific project
 
 **Cons:**
+
 - ❌ Code sharing requires packages
 - ❌ More repos to manage
 - ❌ Cross-repo changes harder
@@ -119,7 +128,8 @@ Organization Settings:
 ```
 
 **How to:**
-1. Go to https://github.com/orgs/TekupDK/settings
+
+1. Go to <https://github.com/orgs/TekupDK/settings>
 2. Set base permissions to "None"
 3. Require 2FA for all members
 4. Configure member privileges
@@ -144,7 +154,8 @@ TekupDK/
 ```
 
 **How to create:**
-1. Go to https://github.com/orgs/TekupDK/teams
+
+1. Go to <https://github.com/orgs/TekupDK/teams>
 2. Click "New team"
 3. Create each team with appropriate access
 
@@ -174,6 +185,7 @@ TekupDK/
 ```
 
 **For each repo:**
+
 - [x] Description
 - [x] README.md
 - [x] .gitignore (Node, TypeScript)
@@ -208,6 +220,7 @@ Collaborators & teams:
 ## 💻 **2-COMPUTER WORKFLOW**
 
 ### **Scenario:**
+
 - **PC 1** (Hovedcomputer): c:\Users\empir\Tekup\
 - **PC 2** (Anden computer): Clone fra GitHub
 
@@ -216,6 +229,7 @@ Collaborators & teams:
 ### **PC 1: Push Eksisterende Projekter til GitHub**
 
 #### **Setup Git Authentication:**
+
 ```bash
 # Install GitHub CLI
 winget install --id GitHub.cli
@@ -292,6 +306,7 @@ foreach ($project in $projects) {
 ### **PC 2: Clone & Setup Workspace**
 
 #### **Step 1: Setup Git**
+
 ```bash
 # Install Git
 winget install --id Git.Git
@@ -367,6 +382,7 @@ Write-Host "✅ All repos cloned!" -ForegroundColor Green
 ## 🔄 **DAGLIG WORKFLOW (BEGGE COMPUTERE)**
 
 ### **Før du starter arbejde:**
+
 ```bash
 cd c:\Users\empir\Tekup\apps\production\tekup-vault
 
@@ -378,6 +394,7 @@ git checkout -b feature/add-new-search
 ```
 
 ### **Under arbejde:**
+
 ```bash
 # Make changes...
 
@@ -389,6 +406,7 @@ git commit -m "feat: add semantic search filter"
 ```
 
 ### **Efter arbejde:**
+
 ```bash
 # Push to GitHub
 git push origin feature/add-new-search
@@ -401,6 +419,7 @@ gh pr merge
 ```
 
 ### **Skift mellem computere:**
+
 ```bash
 # PC 1: Push changes
 git push
@@ -495,6 +514,7 @@ cp .env.example .env
 ```
 
 **GitHub Secrets (for CI/CD):**
+
 1. Go to repo → Settings → Secrets and variables → Actions
 2. Add secrets: DATABASE_URL, API_KEYS, etc.
 3. Use in GitHub Actions workflows
@@ -518,6 +538,7 @@ git push -u origin main
 ```
 
 Contains:
+
 - README.md (workspace overview)
 - WORKSPACE_STRUCTURE_IMPROVED.md
 - GITHUB_ORGANIZATION_SETUP_GUIDE.md
@@ -527,6 +548,7 @@ Contains:
 ### **Option 2: Wiki per Repo**
 
 Enable Wiki for each major repo:
+
 - tekup-database → Technical docs
 - tekup-vault → API docs
 - rendetalje-os → User guide
@@ -536,6 +558,7 @@ Enable Wiki for each major repo:
 ## ✅ **IMPLEMENTATION CHECKLIST**
 
 ### **GitHub Setup (30 min):**
+
 - [ ] Organization created (TekupDK) ✅
 - [ ] 2FA enabled
 - [ ] Teams created
@@ -544,6 +567,7 @@ Enable Wiki for each major repo:
 - [ ] Branch protection enabled
 
 ### **PC 1 - Push til GitHub (1 time):**
+
 - [ ] Git installed & authenticated
 - [ ] Each project pushed to GitHub
 - [ ] .gitignore added
@@ -551,6 +575,7 @@ Enable Wiki for each major repo:
 - [ ] Secrets removed from commits
 
 ### **PC 2 - Clone workspace (30 min):**
+
 - [ ] Git installed & authenticated
 - [ ] Folder structure created
 - [ ] All repos cloned
@@ -563,12 +588,14 @@ Enable Wiki for each major repo:
 ## 🚀 **QUICK START COMMANDS**
 
 ### **PC 1: Push Everything**
+
 ```powershell
 cd c:\Users\empir\Tekup\scripts
 .\push-all-to-github.ps1
 ```
 
 ### **PC 2: Clone Everything**
+
 ```powershell
 cd c:\Users\[username]
 mkdir Tekup
@@ -577,6 +604,7 @@ cd Tekup
 ```
 
 ### **Daily Sync**
+
 ```bash
 # Pull updates across all repos
 cd c:\Users\empir\Tekup
@@ -592,14 +620,16 @@ Get-ChildItem -Recurse -Depth 2 -Directory -Filter ".git" | ForEach-Object {
 ## 📞 **SUPPORT**
 
 **GitHub Docs:**
-- Organizations: https://docs.github.com/en/organizations
-- Teams: https://docs.github.com/en/organizations/organizing-members-into-teams
-- Branch protection: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches
+
+- Organizations: <https://docs.github.com/en/organizations>
+- Teams: <https://docs.github.com/en/organizations/organizing-members-into-teams>
+- Branch protection: <https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches>
 
 **Questions?**
+
 - Check this guide first
-- GitHub Community: https://github.community
-- GitHub Support: https://support.github.com
+- GitHub Community: <https://github.community>
+- GitHub Support: <https://support.github.com>
 
 ---
 

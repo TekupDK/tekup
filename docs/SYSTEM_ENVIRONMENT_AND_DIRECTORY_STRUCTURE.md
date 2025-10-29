@@ -16,6 +16,7 @@ This document describes the complete Windows development environment at `C:/User
 ## 🖥️ System Overview
 
 ### Environment Details
+
 - **Operating System:** Windows 11
 - **User Account:** empir
 - **Home Directory:** `C:/Users/empir`
@@ -23,6 +24,7 @@ This document describes the complete Windows development environment at `C:/User
 - **Workspace:** `C:/Users/empir` is the default VS Code workspace
 
 ### Key Context for AI Assistants
+
 - This is a **professional development environment** with 30+ tools installed
 - The presence of many `.xxx` folders is **normal and expected**
 - **Tekup** is the primary active project - RendetaljeMonorepo is legacy/archived
@@ -33,14 +35,18 @@ This document describes the complete Windows development environment at `C:/User
 ## 📁 Understanding Dot Folders (`.xxx`)
 
 ### What Are Dot Folders?
+
 Folders starting with `.` (period/dot) are **hidden configuration folders**. This is a Unix/Linux convention now supported by Windows. They store:
+
 - Application settings and preferences
 - Cache and temporary data
 - User-specific configurations
 - Tool state and history
 
 ### Why So Many?
+
 The environment has **10+ AI coding assistants** and **20+ development tools**, and **each tool creates its own configuration folder**. This is:
+
 - ✅ **Normal** - Standard behavior for development tools
 - ✅ **Necessary** - Tools need isolated storage for settings
 - ✅ **Expected** - Professional dev environments typically have 30-50 folders
@@ -49,6 +55,7 @@ The environment has **10+ AI coding assistants** and **20+ development tools**, 
 ### Common Dot Folders
 
 #### AI Development Tools
+
 | Folder | Tool | Purpose |
 |--------|------|---------|
 | `.kilocode/` | Kilo Code | AI coding assistant configuration, CLI tools, MCP server config |
@@ -62,6 +69,7 @@ The environment has **10+ AI coding assistants** and **20+ development tools**, 
 | `.ollama/` | Ollama | Local LLM runtime for running models locally |
 
 #### Development Infrastructure
+
 | Folder | Tool | Purpose |
 |--------|------|---------|
 | `.vscode/` | VS Code | Editor extensions and settings |
@@ -73,6 +81,7 @@ The environment has **10+ AI coding assistants** and **20+ development tools**, 
 | `.gnupg/` | GPG | Encryption keys |
 
 #### Configuration & Security
+
 | Folder | Purpose |
 |--------|---------|
 | `.scripts/` | PowerShell automation scripts (mcp-sync, cleanup, security-audit) |
@@ -86,6 +95,7 @@ The environment has **10+ AI coding assistants** and **20+ development tools**, 
 ### Active Projects
 
 #### Tekup (Primary Active Project)
+
 - **Location:** `C:/Users/empir/Tekup/`
 - **Type:** Monorepo
 - **Organization:** tekupdk
@@ -99,11 +109,13 @@ The environment has **10+ AI coding assistants** and **20+ development tools**, 
   - `tekup-mcp-servers/` - MCP servers
 
 #### Supporting Projects
+
 - **Tekup-Cloud** - Cloud infrastructure and services
 - **tekup-database** - Database files
 - **tekup-mcp-servers** - Model Context Protocol servers
 
 ### Legacy/Archived Projects
+
 - **RendetaljeMonorepo** - ⚠️ **LEGACY/ARCHIVED** - No longer actively developed, kept for reference only
 
 ---
@@ -123,6 +135,7 @@ C:/Users/empir/
 ```
 
 ### Storage Distribution
+
 - **Active Projects:** ~40% (Tekup and related)
 - **AI Tools Config:** ~15%
 - **Development Tools:** ~15%
@@ -135,6 +148,7 @@ C:/Users/empir/
 ## 🔍 For AI Assistants: Key Insights
 
 ### Development Workflow
+
 1. **Heavy AI Tool Usage** - Multiple AI assistants (Kilo Code, Claude, Cursor, etc.)
 2. **Modern Tech Stack** - TypeScript, React Native, Docker, pnpm, Turborepo
 3. **Monorepo Architecture** - Tekup uses modern monorepo patterns
@@ -142,6 +156,7 @@ C:/Users/empir/
 5. **Automated Maintenance** - PowerShell scripts in `.scripts/`
 
 ### When Working on This System
+
 - **Primary Focus:** All active work is in `Tekup/` directory
 - **Documentation Location:** `Tekup/docs/` contains 50+ knowledge base files
 - **Legacy Code:** RendetaljeMonorepo is archived - don't suggest modifications there
@@ -167,18 +182,22 @@ A: `Tekup/docs/` contains comprehensive project documentation and knowledge base
 ## 📚 Related Documentation
 
 ### Complete Directory Documentation
+
 For detailed analysis of the entire directory structure, see:
+
 - **Main Entry:** `C:/Users/empir/README_DIRECTORY_DOCUMENTATION.md`
 - **Detailed Map:** `C:/Users/empir/WINDOWS_USER_DIRECTORY_MAP.md`
 - **Visual Diagrams:** `C:/Users/empir/WINDOWS_USER_DIRECTORY_VISUAL_MAP.md`
 
 ### Tekup-Specific Documentation
+
 - [`CLAUDE_CODE_BRIEFING.md`](../CLAUDE_CODE_BRIEFING.md) - Project briefing for AI assistants
 - [`WORKSPACE_GUIDE.md`](../WORKSPACE_GUIDE.md) - Workspace navigation guide
 - [`README.md`](../README.md) - Project overview
 - This file: `docs/SYSTEM_ENVIRONMENT_AND_DIRECTORY_STRUCTURE.md`
 
 ### MCP and AI Tools
+
 - [`docs/MCP_COMPLETE_AUDIT_2025-10-27.md`](./MCP_COMPLETE_AUDIT_2025-10-27.md) - MCP server audit
 - [`docs/MCP_SUBMODULE_INTEGRATION.md`](./MCP_SUBMODULE_INTEGRATION.md) - MCP integration guide
 - `.kilocode/mcp.json` - MCP server configuration
@@ -188,17 +207,20 @@ For detailed analysis of the entire directory structure, see:
 ## 🛠️ Maintenance Guidelines
 
 ### Regular Tasks
+
 - **Monthly:** Run `.scripts/monthly-cleanup.ps1` to clear old caches
 - **Quarterly:** Run `.scripts/security-audit.ps1` for security check
 - **As Needed:** Run `.scripts/mcp-sync-check.ps1` to verify MCP servers
 
 ### What NOT to Do
+
 - ❌ Delete dot folders without understanding their purpose
 - ❌ Move configuration folders to "clean up"
 - ❌ Work on RendetaljeMonorepo (it's archived)
 - ❌ Expose contents of `.secrets/`, `.aws/`, `.gnupg/`
 
 ### What TO Do
+
 - ✅ Focus all active development in Tekup/
 - ✅ Document changes in Tekup/docs/
 - ✅ Keep this knowledge base updated
@@ -209,18 +231,21 @@ For detailed analysis of the entire directory structure, see:
 ## 🎯 Quick Reference for AI Assistants
 
 ### When Starting a Task
+
 1. **Check Project Status:** Confirm you're working in Tekup/ (active project)
 2. **Review Documentation:** Check `Tekup/docs/` for relevant guides
 3. **Understand Context:** This is a well-configured professional environment
 4. **Respect Structure:** Don't suggest reorganizing dot folders
 
 ### When Answering Questions
+
 1. **Directory Structure:** Reference the detailed documentation in user root
 2. **Dot Folders:** Explain they're normal and necessary
 3. **Project Focus:** Always emphasize Tekup as primary active project
 4. **Legacy Code:** Clarify RendetaljeMonorepo is archived
 
 ### When Making Changes
+
 1. **Work in Tekup/** - Primary active project location
 2. **Update Docs** - Add to `Tekup/docs/` when relevant
 3. **Use Tools** - Leverage AI assistants and MCP servers
@@ -246,4 +271,4 @@ For detailed analysis of the entire directory structure, see:
 
 ---
 
-*This document is part of the Tekup knowledge base and should be referenced by AI assistants when working on system-level questions or understanding the development environment.*
+_This document is part of the Tekup knowledge base and should be referenced by AI assistants when working on system-level questions or understanding the development environment._

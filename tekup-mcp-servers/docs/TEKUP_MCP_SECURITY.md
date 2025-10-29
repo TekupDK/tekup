@@ -12,12 +12,14 @@
 Under komplet analyse af Tekup's MCP økosystem blev der identificeret **1 kritisk sikkerhedsproblem** og **3 mindre problemer** der kræver handling.
 
 ### Kritisk Severity
+
 - **1 kritisk issue:** Hardcoded credentials i Cursor MCP config
 - **Impact:** Exposed GitHub PAT, Supabase credentials, Billy API key
 - **Affected Systems:** Cursor IDE, potentielt git backups
 - **Immediate Action Required:** JA
 
 ### Medium Severity
+
 - **2 medium issues:** Memory file inconsistency, placeholder API keys
 - **Impact:** Fragmented context, non-functional servers
 - **Immediate Action Required:** NEJ (men anbefalet indenfor 1 uge)
@@ -57,6 +59,7 @@ Cursor IDE MCP konfiguration indeholder hardcoded credentials i plain text:
 ### Security Impact
 
 #### Immediate Risks
+
 1. **Git Commit Risk**
    - Hvis `.cursor/` folder committed til git → credentials exposed i history
    - Potentielt synligt i GitHub/GitLab hvis pushed
@@ -78,6 +81,7 @@ Cursor IDE MCP konfiguration indeholder hardcoded credentials i plain text:
    - Billy API key har organisation access
 
 #### Potential Attack Vectors
+
 - File system compromise → instant credential access
 - Malware scanning local files
 - Accidental git commit → public exposure
@@ -535,6 +539,7 @@ Update Cursor config memory path:
 ## 📋 REMEDIATION CHECKLIST
 
 ### Immediate (Day 1)
+
 - [ ] **CRITICAL:** Rotate GitHub PAT
 - [ ] **CRITICAL:** Rotate Billy API key
 - [ ] **CRITICAL:** Update Cursor config with `${VAR}` syntax
@@ -544,6 +549,7 @@ Update Cursor config memory path:
 - [ ] Update `.gitignore` for IDE configs
 
 ### Week 1
+
 - [ ] Fix Cursor memory path inconsistency
 - [ ] Setup pre-commit hook for secret detection
 - [ ] Document security policy
@@ -551,12 +557,14 @@ Update Cursor config memory path:
 - [ ] Review tekup-secrets submodule usage
 
 ### Week 2
+
 - [ ] Decide on Jan API keys (get or disable)
 - [ ] Configure or disable Qoder MCP
 - [ ] Review Tekup/.kilocode missing servers
 - [ ] Security team review (if applicable)
 
 ### Ongoing
+
 - [ ] Quarterly credential rotation
 - [ ] Regular security audits
 - [ ] Team security training
@@ -567,6 +575,7 @@ Update Cursor config memory path:
 ## 🎓 LESSONS LEARNED
 
 ### What Went Wrong
+
 1. Manual credential entry in IDE configs without validation
 2. No centralized secret management enforcement
 3. Lack of pre-commit hooks for secret detection
@@ -575,6 +584,7 @@ Update Cursor config memory path:
 ### Prevention for Future
 
 #### For Custom MCP Servers
+
 1. **Design for environment variables from start**
    ```typescript
    const apiKey = process.env.API_KEY;
@@ -606,12 +616,14 @@ Update Cursor config memory path:
 ## 📚 REFERENCES
 
 ### Security Resources
+
 - [GitHub Secret Scanning](https://docs.github.com/en/code-security/secret-scanning)
 - [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/)
 - [git-filter-repo](https://github.com/newren/git-filter-repo)
 - [OWASP Secrets Management](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
 
 ### Tekup Resources
+
 - tekup-secrets submodule (reference for secret storage)
 - VS Code MCP config (reference for proper `${VAR}` usage)
 - Windsurf MCP config (reference for environment variables)

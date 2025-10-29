@@ -1,4 +1,5 @@
 # Dokumentations Standardiserings Plan
+
 *Genereret: 18. oktober 2025*
 
 ## 📋 Executive Summary
@@ -14,6 +15,7 @@
 ## 🔍 Nuværende Dokumentations Audit
 
 ### **📊 Analyse Dokumenter (9 stk)**
+
 ```
 ✅ AI_ASSISTANT_KNOWLEDGE_BASE_ANALYSIS_2025.md (14.6 KB)
 ✅ PORTFOLIO_STRATEGIC_ANALYSIS.md (29.5 KB)
@@ -27,6 +29,7 @@
 ```
 
 ### **📋 Audit Dokumenter (3 stk)**
+
 ```
 📄 PORTFOLIO_AUDIT_2025-10-17_04-26-23.md
 📄 PORTFOLIO_AUDIT_2025-10-17_04-45-31.md
@@ -34,11 +37,13 @@
 ```
 
 ### **📈 Rapport Dokumenter (1 stk)**
+
 ```
 📊 TEKUPVAULT_AUTONOMOUS_FIX_REPORT.md
 ```
 
 ### **📚 Øvrige Dokumenter (13 stk)**
+
 ```
 AI_ASSISTANT_EXECUTIVE_SUMMARY_DANSK.md
 AI_ASSISTANT_IMPLEMENTATION_CHECKLIST.md
@@ -60,6 +65,7 @@ PORTFOLIO_EXECUTIVE_SUMMARY.md
 ## ⚠️ Identificerede Inkonsistenser
 
 ### **1. Navngivnings Inkonsistenser**
+
 ```
 ❌ Problemer:
 - Blandet brug af ANALYSIS vs DEEP_ANALYSIS
@@ -73,6 +79,7 @@ PORTFOLIO_EXECUTIVE_SUMMARY.md
 ```
 
 ### **2. Header Format Inkonsistenser**
+
 ```
 ❌ Problemer:
 - Forskellige header formater
@@ -86,6 +93,7 @@ PORTFOLIO_EXECUTIVE_SUMMARY.md
 ```
 
 ### **3. Struktur Inkonsistenser**
+
 ```
 ❌ Problemer:
 - Forskellige section navne
@@ -104,6 +112,7 @@ PORTFOLIO_EXECUTIVE_SUMMARY.md
 ## 📝 Ny Dokumentations Standard
 
 ### **Navngivnings Konvention**
+
 ```
 Format: [KOMPONENT]_[TYPE]_[YYYYMMDD].md
 
@@ -131,6 +140,7 @@ Eksempler:
 ```
 
 ### **Standardiseret Header Template**
+
 ```markdown
 # [Komponent Navn] - [Dokument Type]
 *Genereret: DD. måned YYYY*
@@ -154,6 +164,7 @@ Eksempler:
 ```
 
 ### **Standardiserede Sektioner**
+
 ```markdown
 ## 🏗️ Arkitektur Analyse
 ## 📦 Dependencies Analyse  
@@ -170,6 +181,7 @@ Eksempler:
 ```
 
 ### **Emoji Standarder**
+
 ```
 📋 Executive Summary
 🎯 Formål/Mål
@@ -197,6 +209,7 @@ Eksempler:
 ## 🔄 Standardiserings Process
 
 ### **Fase 1: Omdøbning (1-2 timer)**
+
 ```powershell
 # Omdøb filer til ny standard
 Rename-Item "TEKUPVAULT_DEEP_ANALYSIS.md" "TEKUP_VAULT_ANALYSIS_20251018.md"
@@ -208,6 +221,7 @@ Rename-Item "TEKUP_DASHBOARDS_ANALYSIS.md" "TEKUP_DASHBOARDS_ANALYSIS_20251018.m
 ```
 
 ### **Fase 2: Header Standardisering (2-3 timer)**
+
 ```markdown
 # Opdater alle headers til ny standard
 # Tilføj konsistent metadata
@@ -216,6 +230,7 @@ Rename-Item "TEKUP_DASHBOARDS_ANALYSIS.md" "TEKUP_DASHBOARDS_ANALYSIS_20251018.m
 ```
 
 ### **Fase 3: Struktur Harmonisering (3-4 timer)**
+
 ```markdown
 # Tilføj manglende standardsektioner
 # Ensret section navne
@@ -224,6 +239,7 @@ Rename-Item "TEKUP_DASHBOARDS_ANALYSIS.md" "TEKUP_DASHBOARDS_ANALYSIS_20251018.m
 ```
 
 ### **Fase 4: Indhold Review (2-3 timer)**
+
 ```markdown
 # Tjek for forældede oplysninger
 # Opdater metrics og scores
@@ -236,6 +252,7 @@ Rename-Item "TEKUP_DASHBOARDS_ANALYSIS.md" "TEKUP_DASHBOARDS_ANALYSIS_20251018.m
 ## 📊 Prioriteret Opdaterings Liste
 
 ### **🚨 Høj Prioritet (Gør først)**
+
 1. **TEKUP_BILLY_DEEP_ANALYSIS.md** → **TEKUP_BILLY_ANALYSIS_20251018.md**
    - Mest aktuelle og vigtige analyse
    - Nyligt opdateret med v1.4.0 info
@@ -253,11 +270,13 @@ Rename-Item "TEKUP_DASHBOARDS_ANALYSIS.md" "TEKUP_DASHBOARDS_ANALYSIS_20251018.m
    - Nyligt analyseret
 
 ### **⚡ Medium Prioritet**
+
 5. **TEKUP_DASHBOARDS_ANALYSIS.md** → **TEKUP_DASHBOARDS_ANALYSIS_20251018.md**
 6. **TEKUP_ORGANIZATION_DESIGN_ANALYSIS.md** → **TEKUP_ORG_DESIGN_ANALYSIS_20251018.md**
 7. **TEKUP_ORG_FORENSIC_ANALYSIS_COMPLETE.md** → **TEKUP_ORG_FORENSICS_20251018.md**
 
 ### **🔧 Lav Prioritet (Senere)**
+
 8. Portfolio dokumenter
 9. AI Assistant dokumenter
 10. ChatGPT guides
@@ -268,6 +287,7 @@ Rename-Item "TEKUP_DASHBOARDS_ANALYSIS.md" "TEKUP_DASHBOARDS_ANALYSIS_20251018.m
 ## 🎯 Kvalitetssikring
 
 ### **Tjekliste for Hvert Dokument**
+
 ```
 □ Korrekt filnavn format (KOMPONENT_TYPE_YYYYMMDD.md)
 □ Standardiseret header med metadata
@@ -282,6 +302,7 @@ Rename-Item "TEKUP_DASHBOARDS_ANALYSIS.md" "TEKUP_DASHBOARDS_ANALYSIS_20251018.m
 ```
 
 ### **Automatiseret Validering**
+
 ```powershell
 # Script til at validere dokumenter
 function Validate-Document {
@@ -314,6 +335,7 @@ function Validate-Document {
 ## 📈 Success Metrics
 
 ### **Målsætninger**
+
 ```
 ✅ 100% af filer følger navngivningskonvention
 ✅ 100% af filer har standardiseret header
@@ -325,6 +347,7 @@ function Validate-Document {
 ```
 
 ### **Før/Efter Sammenligning**
+
 ```
 Før Standardisering:
 ❌ 9 forskellige header formater
@@ -346,21 +369,25 @@ Efter Standardisering:
 ## 🚀 Implementation Plan
 
 ### **Dag 1: Forberedelse**
+
 - [ ] Opret backup af alle eksisterende filer
 - [ ] Gennemgå og godkend standarder
 - [ ] Forbered omdøbnings script
 
 ### **Dag 2: Omdøbning & Headers**
+
 - [ ] Omdøb alle filer til ny standard
 - [ ] Opdater alle headers
 - [ ] Tilføj manglende metadata
 
 ### **Dag 3: Struktur & Indhold**
+
 - [ ] Harmoniser sektionsstrukturer
 - [ ] Opdater forældede oplysninger
 - [ ] Tilføj manglende sektioner
 
 ### **Dag 4: Kvalitetssikring**
+
 - [ ] Kør validering på alle filer
 - [ ] Fix identificerede issues
 - [ ] Final review og godkendelse

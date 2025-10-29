@@ -5,6 +5,7 @@
 The RendetaljeOS API is a RESTful API built with NestJS that provides comprehensive functionality for managing cleaning service operations. The API supports multi-tenant architecture with role-based access control.
 
 ## Base URL
+
 ```
 Production: https://api.rendetalje.dk
 Development: http://localhost:3000
@@ -13,6 +14,7 @@ Development: http://localhost:3000
 ## Authentication
 
 ### JWT Bearer Token
+
 All API endpoints require authentication using JWT Bearer tokens.
 
 ```http
@@ -20,6 +22,7 @@ Authorization: Bearer <your-jwt-token>
 ```
 
 ### Login
+
 ```http
 POST /auth/login
 Content-Type: application/json
@@ -46,6 +49,7 @@ Content-Type: application/json
 ## Core Entities
 
 ### Customer
+
 ```typescript
 interface Customer {
   id: string;
@@ -64,6 +68,7 @@ interface Customer {
 ```
 
 ### Job
+
 ```typescript
 interface Job {
   id: string;
@@ -89,6 +94,7 @@ interface Job {
 ```
 
 ### TeamMember
+
 ```typescript
 interface TeamMember {
   id: string;
@@ -110,11 +116,13 @@ interface TeamMember {
 ### Customers
 
 #### Get All Customers
+
 ```http
 GET /customers
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 20)
 - `search` (string): Search by name or email
@@ -135,6 +143,7 @@ GET /customers
 ```
 
 #### Get Customer by ID
+
 ```http
 GET /customers/:id
 ```
@@ -160,6 +169,7 @@ GET /customers/:id
 ```
 
 #### Create Customer
+
 ```http
 POST /customers
 Content-Type: application/json
@@ -174,6 +184,7 @@ Content-Type: application/json
 ```
 
 #### Update Customer
+
 ```http
 PUT /customers/:id
 Content-Type: application/json
@@ -186,6 +197,7 @@ Content-Type: application/json
 ```
 
 #### Delete Customer
+
 ```http
 DELETE /customers/:id
 ```
@@ -193,11 +205,13 @@ DELETE /customers/:id
 ### Jobs
 
 #### Get All Jobs
+
 ```http
 GET /jobs
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `status` (string): Filter by status
@@ -208,11 +222,13 @@ GET /jobs
 - `serviceType` (string): Filter by service type
 
 #### Get Job by ID
+
 ```http
 GET /jobs/:id
 ```
 
 #### Create Job
+
 ```http
 POST /jobs
 Content-Type: application/json
@@ -230,6 +246,7 @@ Content-Type: application/json
 ```
 
 #### Update Job
+
 ```http
 PUT /jobs/:id
 Content-Type: application/json
@@ -250,6 +267,7 @@ Content-Type: application/json
 ```
 
 #### Assign Job
+
 ```http
 POST /jobs/:id/assign
 Content-Type: application/json
@@ -260,6 +278,7 @@ Content-Type: application/json
 ```
 
 #### Upload Job Photo
+
 ```http
 POST /jobs/:id/photos
 Content-Type: multipart/form-data
@@ -273,16 +292,19 @@ description?: "string"
 ### Team Members
 
 #### Get All Team Members
+
 ```http
 GET /team
 ```
 
 #### Get Team Member by ID
+
 ```http
 GET /team/:id
 ```
 
 #### Create Team Member
+
 ```http
 POST /team
 Content-Type: application/json
@@ -298,6 +320,7 @@ Content-Type: application/json
 ```
 
 #### Update Team Member
+
 ```http
 PUT /team/:id
 Content-Type: application/json
@@ -312,17 +335,20 @@ Content-Type: application/json
 ### Time Tracking
 
 #### Get Time Entries
+
 ```http
 GET /time-entries
 ```
 
 **Query Parameters:**
+
 - `userId` (string): Filter by user ID
 - `jobId` (string): Filter by job ID
 - `startDate` (string): Filter from date
 - `endDate` (string): Filter to date
 
 #### Create Time Entry
+
 ```http
 POST /time-entries
 Content-Type: application/json
@@ -339,11 +365,13 @@ Content-Type: application/json
 ### Analytics and Reports
 
 #### Dashboard Statistics
+
 ```http
 GET /analytics/dashboard
 ```
 
 **Query Parameters:**
+
 - `period` ('today' | 'week' | 'month' | 'year'): Time period
 - `startDate` (string): Custom start date
 - `endDate` (string): Custom end date
@@ -376,16 +404,19 @@ GET /analytics/dashboard
 ```
 
 #### Revenue Report
+
 ```http
 GET /analytics/revenue
 ```
 
 #### Customer Report
+
 ```http
 GET /analytics/customers
 ```
 
 #### Team Performance Report
+
 ```http
 GET /analytics/team
 ```
@@ -397,6 +428,7 @@ GET /analytics/team
 Connect to WebSocket at `/socket.io`
 
 #### Job Status Updates
+
 ```javascript
 socket.on('job:status-updated', (data) => {
   console.log('Job status changed:', data);
@@ -405,6 +437,7 @@ socket.on('job:status-updated', (data) => {
 ```
 
 #### Team Location Updates
+
 ```javascript
 socket.on('team:location-updated', (data) => {
   console.log('Team member location:', data);
@@ -413,6 +446,7 @@ socket.on('team:location-updated', (data) => {
 ```
 
 #### New Booking
+
 ```javascript
 socket.on('booking:created', (data) => {
   console.log('New booking:', data);
@@ -423,6 +457,7 @@ socket.on('booking:created', (data) => {
 ## Error Handling
 
 ### Error Response Format
+
 ```json
 {
   "statusCode": 400,
@@ -438,6 +473,7 @@ socket.on('booking:created', (data) => {
 ```
 
 ### Common HTTP Status Codes
+
 - `200` - Success
 - `201` - Created
 - `400` - Bad Request (validation errors)
@@ -451,6 +487,7 @@ socket.on('booking:created', (data) => {
 ## Rate Limiting
 
 API requests are rate limited:
+
 - **Authenticated users**: 1000 requests per hour
 - **Public endpoints**: 100 requests per hour
 
@@ -488,17 +525,20 @@ GET /customers?page=2&limit=50
 ## Filtering and Sorting
 
 ### Filtering
+
 Use query parameters for filtering:
 ```http
 GET /jobs?status=completed&serviceType=Deep Cleaning&startDate=2025-10-01
 ```
 
 ### Sorting
+
 ```http
 GET /customers?sortBy=name&sortOrder=desc
 ```
 
 ### Search
+
 ```http
 GET /customers?search=john
 ```
@@ -508,6 +548,7 @@ GET /customers?search=john
 Configure webhooks to receive real-time notifications:
 
 ### Webhook Events
+
 - `job.created`
 - `job.updated`
 - `job.completed`
@@ -515,6 +556,7 @@ Configure webhooks to receive real-time notifications:
 - `payment.received`
 
 ### Webhook Payload
+
 ```json
 {
   "event": "job.completed",
@@ -531,6 +573,7 @@ Configure webhooks to receive real-time notifications:
 ## SDK and Libraries
 
 ### JavaScript/TypeScript
+
 ```bash
 npm install @rendetalje/api-client
 ```
@@ -547,6 +590,7 @@ const customers = await api.customers.list();
 ```
 
 ### Python
+
 ```bash
 pip install rendetalje-api
 ```
@@ -561,17 +605,21 @@ customers = api.customers.list()
 ## Testing
 
 ### Test Environment
+
 ```
 Base URL: https://api-test.rendetalje.dk
 ```
 
 ### Test Data
+
 Test environment includes sample data:
+
 - 50 test customers
 - 200 test jobs
 - 10 test team members
 
 ### API Testing Tools
+
 - **Postman Collection**: [Download](https://api.rendetalje.dk/postman)
 - **OpenAPI Spec**: [View](https://api.rendetalje.dk/swagger)
 - **Insomnia Collection**: [Download](https://api.rendetalje.dk/insomnia)
@@ -579,20 +627,23 @@ Test environment includes sample data:
 ## Changelog
 
 ### v2.1.0 (2025-10-22)
+
 - Added GDPR compliance endpoints
 - Enhanced analytics with real-time data
 - Improved error handling and validation
 
 ### v2.0.0 (2025-09-15)
+
 - Major API restructure
 - Added multi-tenant support
 - Enhanced security with JWT tokens
 
 ### v1.5.0 (2025-08-01)
+
 - Added WebSocket support
 - Real-time job tracking
 - Team location updates
 
 ---
 
-*For more information, contact our developer support at dev@rendetalje.dk*
+*For more information, contact our developer support at <dev@rendetalje.dk>*

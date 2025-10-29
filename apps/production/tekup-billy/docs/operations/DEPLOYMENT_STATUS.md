@@ -1,4 +1,4 @@
-# 🚀 v1.4.0 Deployment Status
+﻿# 🚀 v1.4.0 Deployment Status
 
 **Date:** 18. Oktober 2025, kl. 12:45  
 **Version:** v1.4.0  
@@ -24,7 +24,7 @@ Deletions: -14,509 lines
 Branch: main
 Remote: origin (GitHub)
 Status: ✅ Successfully pushed
-URL: https://github.com/JonasAbde/Tekup-Billy.git
+URL: https://github.com/TekupDK/Tekup-Billy.git
 ```
 
 ---

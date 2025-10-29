@@ -20,12 +20,15 @@ All ports are now **fully configurable** via environment variables. No more hard
 ## ðŸš€ Quick Start with Custom Ports
 
 ### 1ï¸âƒ£ Copy Port Configuration Template
+
 \\\ash
 cp .env.ports.example .env.ports
 \\\
 
 ### 2ï¸âƒ£ Edit Port Configuration
+
 \\\ash
+
 # .env.ports - Change any ports you need
 
 MCP_PORT=4001          # â† Change from 3001 to 4001
@@ -37,34 +40,45 @@ NGINX_HTTPS_PORT=8443  # â† Change from 443 to 8443
 \\\
 
 ### 3ï¸âƒ£ Load Config & Check for Conflicts
+
 \\\ash
+
 # Load environment
+
 set -a
 source .env.ports
 set +a
 
 # Check if ports are available
+
 npm run check:ports
 
 # Or manually with docker-compose
+
 docker-compose up --check-ports
 \\\
 
 ### 4ï¸âƒ£ Start with Docker Compose
+
 \\\ash
+
 # Start in background with automatic port check
+
 npm run docker:up:detached
 
 # Or foreground with logs
+
 npm run docker:up
 
 # View logs
+
 npm run docker:logs
 \\\
 
 ## ðŸŽ¯ Common Port Scenarios
 
 ### Development Environment (No Conflicts)
+
 \\\env
 MCP_PORT=4001
 DASHBOARD_PORT=3010
@@ -75,6 +89,7 @@ NGINX_HTTPS_PORT=8443
 \\\
 
 ### Testing/CI Environment (Isolated)
+
 \\\env
 MCP_PORT=5001
 DASHBOARD_PORT=5006
@@ -85,6 +100,7 @@ NGINX_HTTPS_PORT=9443
 \\\
 
 ### Production (Standard)
+
 \\\env
 MCP_PORT=3001
 DASHBOARD_PORT=3006
@@ -97,6 +113,7 @@ NGINX_HTTPS_PORT=443
 ## âš ï¸ Port Conflict Detection
 
 ### Check if Port is Available
+
 \\\ash
 npm run check:ports
 \\\
@@ -119,8 +136,9 @@ If ports are in use:
 âŒ Port 3006 (dashboard) is IN USE
 
 âŒ Found 2 port conflict(s):
-   - mcp: port 3001
-   - dashboard: port 3006
+
+- mcp: port 3001
+- dashboard: port 3006
 
 ðŸ’¡ Solution: Change ports in .env or .env.ports
 \\\
@@ -128,15 +146,20 @@ If ports are in use:
 ## ðŸ”§ Linux/macOS
 
 ### Check which process uses a port
+
 \\\ash
+
 # Find process on port 3001
+
 lsof -i :3001
 
 # Or with netstat
+
 netstat -tlnp | grep 3001
 \\\
 
 ### Kill process
+
 \\\ash
 kill -9 <PID>
 \\\
@@ -144,11 +167,13 @@ kill -9 <PID>
 ## ðŸªŸ Windows
 
 ### Check which process uses a port
+
 \\\powershell
 netstat -ano | findstr :3001
 \\\
 
 ### Kill process
+
 \\\powershell
 taskkill /PID <PID> /F
 \\\
@@ -156,7 +181,8 @@ taskkill /PID <PID> /F
 ## ðŸ“ Using Ports in Application Code
 
 ### Access Configured Ports
-\\\	ypescript
+
+\\\ ypescript
 import config from './config';
 
 console.log('MCP Server running on port:', config.ports.mcp);
@@ -170,17 +196,24 @@ console.log('Nginx HTTPS on port:', config.ports.nginxHttps);
 ## ðŸ³ Docker Compose Usage
 
 ### Start with Custom Ports
+
 \\\ash
+
 # Via environment variables
+
 MCP_PORT=4001 DASHBOARD_PORT=3010 CHATBOT_PORT=3011 docker-compose up
 
 # Via .env file
+
 docker-compose --env-file .env.ports up
 \\\
 
 ### Scale Services (if not using fixed ports)
+
 \\\ash
+
 # Note: Fixed ports prevent scaling; use load balancer instead
+
 docker-compose up --scale mcp-server=3
 \\\
 
@@ -189,18 +222,22 @@ docker-compose up --scale mcp-server=3
 After starting containers, verify ports:
 
 \\\ash
+
 # Check container status
+
 docker-compose ps
 
 # Check port mappings
+
 docker-compose port mcp-server 3001
 docker-compose port dashboard 3006
 docker-compose port chatbot 3005
 
 # Test connectivity
-curl http://localhost:MCP_PORT/health
-curl http://localhost:DASHBOARD_PORT
-curl http://localhost:CHATBOT_PORT
+
+curl <http://localhost:MCP_PORT/health>
+curl <http://localhost:DASHBOARD_PORT>
+curl <http://localhost:CHATBOT_PORT>
 \\\
 
 ## ðŸš¨ Troubleshooting
@@ -210,6 +247,5 @@ curl http://localhost:CHATBOT_PORT
 | Port already in use | Change port in .env.ports or kill existing process |
 | Containers can't communicate | Ensure all services use same docker network |
 | External can't reach app | Check Nginx ports (80, 443) and firewall |
-| Services timeout | Run port check: 
+| Services timeout | Run port check:
 pm run check:ports |
-

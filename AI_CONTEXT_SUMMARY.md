@@ -9,16 +9,17 @@
 ## 📊 **WORKSPACE SNAPSHOT**
 
 ### **Basic Info:**
+
 ```yaml
 Organization: TekupDK
 GitHub: https://github.com/TekupDK/tekup
 Structure: Monorepo (all projects in one repository)
-Owner: Jonas Abde (@JonasAbde)
 Setup Date: Oktober 2025
 Purpose: Complete development monorepo for Tekup ecosystem
 ```
 
 ### **Tech Stack:**
+
 ```yaml
 Languages: TypeScript (primary), JavaScript, Python
 Frameworks: Next.js 15, React 19, Express
@@ -38,6 +39,7 @@ Testing: Vitest, Playwright, Jest
 ### **Production Services (CRITICAL):**
 
 #### 1. **tekup-database** (v1.4.0)
+
 ```yaml
 Location: apps/production/tekup-database
 Status: ✅ LIVE - Central database
@@ -48,6 +50,7 @@ Health: 10/10 - CRITICAL
 ```
 
 #### 2. **tekup-vault** (v0.1.0)
+
 ```yaml
 Location: apps/production/tekup-vault
 Status: ✅ LIVE - https://tekupvault.onrender.com
@@ -58,6 +61,7 @@ Health: 8.5/10
 ```
 
 #### 3. **tekup-billy** (v1.4.3)
+
 ```yaml
 Location: apps/production/tekup-billy
 Status: ✅ LIVE - https://tekup-billy.onrender.com
@@ -72,6 +76,7 @@ Health: 9.2/10
 ### **Web Applications:**
 
 #### 4. **rendetalje-os** (Monorepo)
+
 ```yaml
 Location: apps/web/rendetalje-os
 Status: 🟡 Active development
@@ -83,6 +88,7 @@ Note: Database connection pending
 ```
 
 #### 5. **tekup-cloud-dashboard**
+
 ```yaml
 Location: apps/web/tekup-cloud-dashboard
 Status: 🟡 Production-ready (unreleased)
@@ -97,6 +103,7 @@ Health: 6/10
 ### **Backend Services:**
 
 #### 6. **tekup-ai** (Phase 1)
+
 ```yaml
 Location: services/tekup-ai
 Status: 🟡 Under development - AI infrastructure monorepo
@@ -109,6 +116,7 @@ Health: 6/10 (structure ready, implementation ongoing)
 ```
 
 #### 7. **tekup-cloud**
+
 ```yaml
 Location: services/tekup-cloud
 Status: ✅ Documentation hub + MCP server
@@ -119,6 +127,7 @@ Health: 8.5/10
 ```
 
 #### 8. **tekup-gmail-services** (v1.0.0)
+
 ```yaml
 Location: services/tekup-gmail-services
 Status: ✅ Consolidated monorepo
@@ -129,6 +138,7 @@ Health: 9/10
 ```
 
 #### 9. **tekup-ai-assistant** (v1.5.0)
+
 ```yaml
 Location: services/tekup-ai-assistant
 Status: ✅ Documentation & configs
@@ -144,6 +154,7 @@ Health: 7/10
 ### **Why this structure?**
 
 Based on research fra:
+
 - Luca Pette (monorepo expert)
 - Aviator (monorepo guide)
 - GitHub conventions
@@ -176,6 +187,7 @@ Based on research fra:
 ## 🔄 **COMMON PATTERNS**
 
 ### **Database Connection:**
+
 ALL projects connect to central `tekup-database`:
 ```typescript
 // Standard pattern across all projects
@@ -191,6 +203,7 @@ Schemas:
 ```
 
 ### **Environment Variables:**
+
 ```bash
 # Never commit .env files!
 # Always use .env.example as template
@@ -202,6 +215,7 @@ Schemas:
 ```
 
 ### **Package Manager:**
+
 ```bash
 # ALWAYS use pnpm (not npm or yarn)
 pnpm install
@@ -215,6 +229,7 @@ pnpm --filter [package-name] dev  # Run script in specific package
 ```
 
 ### **Git Workflow:**
+
 ```bash
 # Standard workflow
 git checkout -b feature/my-feature
@@ -238,6 +253,7 @@ chore: Maintenance
 ## 🚨 **CRITICAL INFORMATION**
 
 ### **DO NOT:**
+
 - ❌ Delete or modify `apps/production/tekup-database` without extreme caution
 - ❌ Commit .env files with secrets
 - ❌ Push directly to main branch (use PRs)
@@ -245,6 +261,7 @@ chore: Maintenance
 - ❌ Use npm or yarn (only pnpm)
 
 ### **ALWAYS:**
+
 - ✅ Pull before starting work (`git pull`)
 - ✅ Use conventional commit messages
 - ✅ Add tests for new features
@@ -253,6 +270,7 @@ chore: Maintenance
 - ✅ Run `pnpm lint` before committing
 
 ### **IF UNSURE:**
+
 - 📚 Check project README first
 - 📚 Check workspace docs in `Tekup/docs/`
 - 📚 Check CONTRIBUTING.md for guidelines
@@ -264,6 +282,7 @@ chore: Maintenance
 ## 📋 **QUICK REFERENCE**
 
 ### **Find Documentation:**
+
 ```bash
 Workspace docs:     Tekup/docs/
 Project docs:       Tekup/apps/[category]/[project]/README.md
@@ -273,6 +292,7 @@ Deployment:         Tekup/docs/deployment/
 ```
 
 ### **Common Locations:**
+
 ```bash
 Database schema:    tekup-database/prisma/schema.prisma
 Migrations:         tekup-database/prisma/migrations/
@@ -282,6 +302,7 @@ Tests:              [project]/tests/
 ```
 
 ### **Important Files:**
+
 ```bash
 README.md               - Workspace overview
 CONTRIBUTING.md         - Development guidelines
@@ -296,6 +317,7 @@ README_PC2_QUICK_START.md - PC 2 setup guide
 ## 🎯 **TYPICAL AI TASKS**
 
 ### **1. "Understand workspace structure"**
+
 ```
 Read:
 - Tekup/README.md
@@ -304,6 +326,7 @@ Read:
 ```
 
 ### **2. "Work on project X"**
+
 ```
 1. Navigate: cd Tekup/apps/[category]/[project]
 2. Read: README.md in that project
@@ -313,12 +336,14 @@ Read:
 ```
 
 ### **3. "Understand database schema"**
+
 ```
 Read: tekup-database/prisma/schema.prisma
 Schemas: vault, billy, renos, crm, flow, shared
 ```
 
 ### **4. "Add new feature to project"**
+
 ```
 1. Create branch: git checkout -b feature/my-feature
 2. Make changes in project
@@ -330,12 +355,14 @@ Schemas: vault, billy, renos, crm, flow, shared
 ```
 
 ### **5. "Deploy changes"**
+
 ```
 Check: docs/deployment/[project]-deployment.md
 Most projects: Auto-deploy on push to main (Render.com)
 ```
 
 ### **6. "Sync between computers"**
+
 ```
 PC 1 → GitHub: git push
 PC 2 ← GitHub: git pull
@@ -347,16 +374,19 @@ All changes synced automatically via GitHub
 ## 🤝 **COLLABORATION CONTEXT**
 
 ### **Team:**
-- Owner: Jonas Abde (@JonasAbde)
+
+- Organization: TekupDK
 - Current: Solo developer with AI assistants
 - Future: Expandable to team (structure ready)
 
 ### **Communication:**
+
 - Issues: GitHub Issues per repo
 - Discussions: GitHub Discussions
 - Docs: Markdown files in repos
 
 ### **Review Process:**
+
 - All changes via Pull Requests
 - Reviewers auto-assigned via CODEOWNERS
 - Require 1 approval (currently owner)
@@ -367,18 +397,21 @@ All changes synced automatically via GitHub
 ## 📚 **LEARNING PATH FOR NEW AI**
 
 ### **Day 1:**
+
 1. Read this file completely
 2. Read Tekup/README.md
 3. Understand workspace structure
 4. Know where to find docs
 
 ### **Week 1:**
+
 1. Familiarize with 3 main projects
 2. Understand database schema
 3. Know git workflow
 4. Understand deployment process
 
 ### **Ongoing:**
+
 1. Read project-specific docs as needed
 2. Check CONTRIBUTING.md for standards
 3. Reference CODEOWNERS for ownership
@@ -408,6 +441,7 @@ If unclear on any, read relevant docs before proceeding.
 ## 🔄 **KEEP UPDATED**
 
 This context file is updated when:
+
 - New projects added
 - Major structure changes
 - Important patterns established
@@ -417,6 +451,6 @@ This context file is updated when:
 
 ---
 
-**Last updated:** 23. Oktober 2025, 08:50 CET  
-**Version:** 1.0.0  
-**Maintained by:** Jonas Abde
+**Last updated:** 29. Oktober 2025
+**Version:** 1.1.0
+**Maintained by:** TekupDK

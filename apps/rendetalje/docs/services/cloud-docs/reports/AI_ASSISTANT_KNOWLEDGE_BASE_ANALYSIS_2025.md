@@ -32,6 +32,7 @@
 ## 🎯 Nuværende Situation - TekupVault
 
 ### Status (18. Okt 2025)
+
 ```
 ✅ Operationel siden 17. oktober
 ✅ 1,063 filer synkroniseret fra 3 repos
@@ -43,11 +44,13 @@
 ```
 
 ### Synkroniserede Repositories
+
 - **Tekup-Billy**: 188 filer (MCP tools, dokumentation)
 - **renos-backend**: 607 filer (TypeScript, Prisma schemas)
 - **renos-frontend**: 268 filer (React components, UI)
 
 ### Teknisk Setup
+
 ```typescript
 Tech Stack:
 - Database: PostgreSQL 15 + pgvector
@@ -64,11 +67,13 @@ Tech Stack:
 ### 1. **ChatGPT (OpenAI)** ⭐⭐⭐⭐⭐
 
 #### Custom GPTs
+
 - **Pris:** $20/måned (Plus) eller $25/måned (Pro)
 - **Knowledge Base:** Upload op til 20 filer per GPT (max 512MB total)
 - **Integration:** API actions (kan kalde TekupVault API)
 
 #### Fordele
+
 ✅ Bedste model flexibility (GPT-4, GPT-4o, o1-preview)  
 ✅ Custom GPTs kan deles med team  
 ✅ Memory feature (husker præferencer)  
@@ -76,11 +81,13 @@ Tech Stack:
 ✅ API actions til eksterne services
 
 #### Ulemper
+
 ❌ Begrænset filantal per GPT  
 ❌ Ikke direkte MCP support i web interface  
 ❌ Knowledge base refresh kræver manual upload
 
 #### Tekup Use Case
+
 ```yaml
 Setup:
   1. Opret Custom GPT: "Tekup Assistant"
@@ -100,11 +107,13 @@ Integration Effort: 2-4 timer
 ### 2. **Claude (Anthropic)** ⭐⭐⭐⭐⭐
 
 #### Projects Feature
+
 - **Pris:** $20/måned (Claude Pro)
 - **Knowledge Base:** Op til 5 Projects, hver med egen knowledge
 - **Context Window:** 200K tokens (største i markedet)
 
 #### Fordele
+
 ✅ Massiv context window (200K = ~150K ord)  
 ✅ Projects med custom instructions per projekt  
 ✅ Artifacts feature (genererer kode, charts)  
@@ -112,11 +121,13 @@ Integration Effort: 2-4 timer
 ✅ MCP support i desktop app
 
 #### Ulemper
+
 ❌ Ingen GPT marketplace  
 ❌ Ingen API actions i web interface  
 ❌ Projects er ikke shareable mellem brugere
 
 #### Tekup Use Case
+
 ```yaml
 Project 1: "Tekup-Billy Development"
   - Billy API docs
@@ -142,11 +153,13 @@ Integration Effort: 1-2 timer
 ### 3. **Perplexity AI** ⭐⭐⭐⭐⭐
 
 #### Internal Knowledge Search + Spaces
+
 - **Pris:** $20/måned (Pro) eller $40/bruger/måned (Enterprise Pro)
 - **Knowledge Base:** Unlimited file upload i Spaces
 - **Unique Feature:** Web search + internal docs combined
 
 #### Fordele
+
 ✅ Best-in-class search (web + internal combined)  
 ✅ Spaces: Collaborative AI workspaces  
 ✅ File upload med automatisk indexering  
@@ -154,11 +167,13 @@ Integration Effort: 1-2 timer
 ✅ Transparent citations (viser kilder)
 
 #### Ulemper
+
 ❌ Enterprise Pro påkrævet for teams  
 ❌ Ingen custom model selection  
 ❌ API begrænset (kun search, ikke chat)
 
 #### Tekup Use Case
+
 ```yaml
 Space 1: "Tekup Development"
   - Upload alle 1,063 docs fra TekupVault
@@ -184,11 +199,13 @@ Integration Effort: 2-3 timer
 ### 4. **Microsoft 365 Copilot** ⭐⭐⭐⭐
 
 #### Enterprise Knowledge Base
+
 - **Pris:** $30/bruger/måned (kræver M365 E3/E5)
 - **Knowledge Base:** SharePoint, OneDrive, Teams automatisk
 - **Integration:** Dyb integration med Office apps
 
 #### Fordele
+
 ✅ Auto-indexerer M365 content  
 ✅ Confluence & SharePoint connectors  
 ✅ Security & compliance built-in  
@@ -196,12 +213,14 @@ Integration Effort: 2-3 timer
 ✅ Enterprise-grade
 
 #### Ulemper
+
 ❌ Dyrt ($30/bruger + M365 license)  
 ❌ Kræver Microsoft ecosystem  
 ❌ Låst til Microsoft model  
 ❌ Kompleks setup
 
 #### Tekup Use Case
+
 ```yaml
 Kun relevant hvis:
   - I har M365 E3/E5 licenses
@@ -219,23 +238,27 @@ Integration Effort: 1-2 uger (IT admin required)
 ### 5. **Notion AI** ⭐⭐⭐
 
 #### Workspace AI Assistant
+
 - **Pris:** $10/bruger/måned (tilføj til Notion workspace)
 - **Knowledge Base:** Automatisk indexering af Notion pages
 - **Integration:** Q&A over workspace content
 
 #### Fordele
+
 ✅ Billig tilføjelse hvis I bruger Notion  
 ✅ Auto-search over workspace  
 ✅ Generér content baseret på docs  
 ✅ Good for wikis og knowledge bases
 
 #### Ulemper
+
 ❌ Kun Notion content (ikke eksterne files)  
 ❌ Begrænset AI model (GPT-3.5 level)  
 ❌ Ingen custom instructions  
 ❌ Kan ikke erstatte TekupVault
 
 #### Tekup Use Case
+
 ```yaml
 Hvis I migrerer docs til Notion:
   Cost: $40/måned (4 brugere)
@@ -251,11 +274,13 @@ Anbefaling: Skip - TekupVault er bedre
 ### Top Open-Source RAG Frameworks (for custom build)
 
 #### 1. **Dify** ⭐⭐⭐⭐⭐
+
 - **Stars:** 90.5K på GitHub
 - **Type:** Open-source LLM application platform
 - **Best For:** Visual workflow, no-code RAG
 
 **Features:**
+
 - Visual workflow editor
 - Support for 100+ LLM models
 - RAG pipeline (PDF, PPT, etc.)
@@ -275,6 +300,7 @@ Anbefaling: Overvej hvis TekupVault ikke er nok
 ```
 
 #### 2. **LangChain** ⭐⭐⭐⭐
+
 - **Stars:** 105K på GitHub
 - **Type:** Framework for LLM applications
 - **Best For:** Custom integrations
@@ -298,11 +324,13 @@ Anbefaling: Phase 4 for TekupVault
 ```
 
 #### 3. **RAGFlow** ⭐⭐⭐⭐
+
 - **Stars:** 48.5K på GitHub
 - **Type:** Document-heavy RAG
 - **Best For:** PDF processing, enterprise docs
 
 **Features:**
+
 - Advanced PDF parsing
 - Layout analysis
 - Multi-modal docs
@@ -379,6 +407,7 @@ Total Cost: $87-145/måned
 ### 🚀 Implementation Plan
 
 #### Phase 1: Optimization (1-2 dage)
+
 ```bash
 1. Deploy TekupVault fixes til production
    cd c:\Users\empir\TekupVault
@@ -392,6 +421,7 @@ Total Cost: $87-145/måned
 ```
 
 #### Phase 2: AI Integration (2-3 dage)
+
 ```yaml
 ChatGPT Custom GPT Setup:
   1. Create Custom GPT: "Tekup Assistant"
@@ -415,6 +445,7 @@ Perplexity Spaces:
 ```
 
 #### Phase 3: Team Rollout (1 uge)
+
 ```yaml
 Week 1:
   - Train team på chosen platform(s)
@@ -592,19 +623,22 @@ External Data:
 ## 📞 Support & Resources
 
 ### Documentation
+
 - **TekupVault Guide:** `c:\Users\empir\TekupVault\README.md`
 - **ChatGPT Setup:** `c:\Users\empir\Tekup-Cloud\CHATGPT_CUSTOM_INSTRUCTIONS.md`
 - **Strategic Analysis:** `c:\Users\empir\Tekup-Cloud\audit-results\STRATEGIC_ANALYSIS_2025-10-17.md`
 
 ### Tools
+
 - **Test Scripts:** `c:\Users\empir\TekupVault\*.ps1`
-- **API:** https://tekupvault.onrender.com
+- **API:** <https://tekupvault.onrender.com>
 - **Database:** Supabase dashboard
 
 ### External Resources
-- LangChain Docs: https://python.langchain.com/docs/
-- Dify Platform: https://dify.ai/
-- RAG Best Practices: https://www.firecrawl.dev/blog/best-open-source-rag-frameworks
+
+- LangChain Docs: <https://python.langchain.com/docs/>
+- Dify Platform: <https://dify.ai/>
+- RAG Best Practices: <https://www.firecrawl.dev/blog/best-open-source-rag-frameworks>
 
 ---
 

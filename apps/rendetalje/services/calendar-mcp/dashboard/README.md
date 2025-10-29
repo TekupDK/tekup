@@ -5,18 +5,21 @@ Mobile-first PWA dashboard til RenOS Calendar Intelligence MCP.
 ## Features
 
 ✅ **Real-time Dashboard**
+
 - I dag's bookinger
 - Manglende fakturaer
 - Overtids-alerts
 - Profit tracking
 
 ✅ **Mobile PWA**
+
 - Installérbar på mobil
 - Offline support
 - Push notifications (upcoming)
 - Native feel
 
 ✅ **Quick Actions**
+
 - Opret ny booking
 - Generer fakturaer
 - Se kunder
@@ -30,7 +33,7 @@ npm install
 npm run dev
 ```
 
-Åbn http://localhost:5173
+Åbn <http://localhost:5173>
 
 ## Build Production
 
@@ -64,4 +67,3 @@ VITE_API_URL=https://renos-calendar-mcp.onrender.com
 - **Vite PWA** - Progressive Web App
 - **Axios** - HTTP client
 - **date-fns** - Date formatting
-

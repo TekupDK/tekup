@@ -1,4 +1,4 @@
-# 🚀 TekUp AI Assistant
+﻿# 🚀 TekUp AI Assistant
 
 **Local AI-powered assistant for automating daily business tasks**
 
@@ -36,15 +36,19 @@ AI: ✅ 12 invoices created - 1 minute total
 ## 📋 Getting Started
 
 ### 1. **Install & Setup** (30 minutes)
+
 Follow the [Installation Guide](SETUP.md) to set up:
+
 - Ollama server with 3 AI models
 - Jan AI or Open WebUI interface
 - MCP integrations
 
 ### 2. **Learn the Architecture** (10 minutes)
+
 Understand how everything works in the [Architecture Overview](ARCHITECTURE.md)
 
 ### 3. **Use Daily Workflows** (5 minutes)
+
 See practical examples in [Workflows Guide](WORKFLOWS.md)
 
 ---
@@ -77,16 +81,19 @@ See practical examples in [Workflows Guide](WORKFLOWS.md)
 ## 📚 Documentation Index
 
 ### Core Documentation
+
 - **[SETUP.md](SETUP.md)** - Complete installation guide (Phase 1-4)
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design and data flow
 - **[WORKFLOWS.md](WORKFLOWS.md)** - Daily use cases and examples
 - **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues & fixes
 
 ### API & Integration
+
 - **[Billy.dk API](api/tekup-billy-api.md)** - Invoicing integration
 - **[Daily Workflow Guide](guides/daily-workflow.md)** - Step-by-step workflows
 
 ### Examples
+
 - **[Invoice Creation Example](examples/create-invoice.md)** - Complete walkthrough
 
 ---
@@ -105,6 +112,7 @@ See practical examples in [Workflows Guide](WORKFLOWS.md)
 ## 💡 Key Features
 
 ### ✅ Already Implemented
+
 - Local AI inference (no cloud APIs)
 - Multiple model support
 - MCP web scraper for data fetching
@@ -112,11 +120,13 @@ See practical examples in [Workflows Guide](WORKFLOWS.md)
 - Architecture planning
 
 ### 🔄 In Development
+
 - Jan AI / Open WebUI setup
 - Billy.dk invoice creation
 - Calendar integration
 
 ### ⏳ Planned
+
 - RenOS booking management
 - System monitoring
 - Chat history archival (TekupVault)
@@ -135,12 +145,14 @@ See practical examples in [Workflows Guide](WORKFLOWS.md)
 ## 📊 Performance Metrics
 
 Your Hardware:
+
 - **CPU:** Intel Core Ultra 9 285H (16 cores) ✅
 - **RAM:** 64GB ✅
 - **GPU:** NVIDIA RTX 5070 (8GB VRAM) ✅
 - **Storage:** 127GB free ✅
 
 Expected Performance:
+
 - **Qwen 14B:** 3-5 sec response time
 - **Llama 8B:** 2-3 sec response time
 - **Mistral 7B:** 1-2 sec response time
@@ -155,4 +167,4 @@ This project is part of the TekUp ecosystem. All components are designed to work
 
 **Last Updated:** 2025-01-15  
 **Version:** 1.0.0  
-**Repository:** [GitHub](https://github.com/JonasAbde/tekup-ai-assistant)
+**Repository:** [GitHub](https://github.com/TekupDK/tekup-ai-assistant)

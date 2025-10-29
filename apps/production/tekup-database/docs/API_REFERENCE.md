@@ -7,6 +7,7 @@ Complete reference for Tekup Database client libraries.
 ## Vault Client
 
 ### `vault.findDocuments(filters?)`
+
 Find documents with filtering.
 
 ```typescript
@@ -18,21 +19,27 @@ const docs = await vault.findDocuments({
 ```
 
 ### `vault.createDocument(data)`
+
 Create new document.
 
 ### `vault.upsertDocument(data)`
+
 Create or update document (no duplicates).
 
 ### `vault.createEmbedding(documentId, embedding)`
+
 Store 1536-dimensional vector embedding.
 
 ### `vault.semanticSearch(queryEmbedding, limit?, threshold?)`
+
 Search by semantic similarity (cosine distance).
 
 ### `vault.getSyncStatus(source?, repository?)`
+
 Get sync status.
 
 ### `vault.updateSyncStatus(source, repository, status, errorMessage?)`
+
 Update sync status.
 
 ---
@@ -40,33 +47,43 @@ Update sync status.
 ## Billy Client
 
 ### `billy.findOrganization(billyOrgId)`
+
 Find organization by Billy.dk ID.
 
 ### `billy.createOrganization(data)`
+
 Create new organization.
 
 ### `billy.getCachedInvoice(organizationId, billyId)`
+
 Retrieve cached invoice (checks TTL).
 
 ### `billy.setCachedInvoice(organizationId, billyId, data, ttlMinutes?)`
+
 Cache invoice with TTL (default 60 min).
 
 ### `billy.clearExpiredCache(organizationId?)`
+
 Remove expired cache entries.
 
 ### `billy.logAudit(data)`
+
 Log audit trail entry.
 
 ### `billy.getAuditLogs(organizationId, limit?)`
+
 Get audit history.
 
 ### `billy.trackUsage(organizationId, toolName, success, durationMs?)`
+
 Track API usage.
 
 ### `billy.getUsageMetrics(organizationId, startDate, endDate)`
+
 Get usage metrics.
 
 ### `billy.checkRateLimit(organizationId, toolName, maxRequests, windowMinutes)`
+
 Check rate limiting.
 
 ---

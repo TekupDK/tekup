@@ -5,9 +5,11 @@
 **Status:** ✅ **COMPLETE SUCCESS**
 
 **Før:**
+
 - 🔴 534 Markdown linting fejl
 
 **Efter:**
+
 - ✅ 0 Markdown linting fejl
 - ✅ Alle 164 .md filer rettet
 
@@ -18,6 +20,7 @@
 ### 1. **Markdown Formatting Issues (534 → 0)**
 
 **Primære Problemer:**
+
 - MD022: Manglende blank lines omkring headings
 - MD032: Manglende blank lines omkring lists
 - MD031: Manglende blank lines omkring code blocks
@@ -29,6 +32,7 @@
 
 **Løsning:**
 Oprettede PowerShell script `fix-markdown.ps1` der automatisk:
+
 1. Fjernede trailing spaces
 2. Fjernede excessive blank lines (\n\n\n+ → \n\n)
 3. Tilføjede blank lines før/efter headings
@@ -42,6 +46,7 @@ Oprettede PowerShell script `fix-markdown.ps1` der automatisk:
 **Problem:** `'React' is not defined` i UI component .d.ts filer
 
 **Fixet:**
+
 - ✅ `client/src/components/ui/button.d.ts` - Added `import * as React`
 - ✅ `client/src/components/ui/input.d.ts` - Added `import * as React`
 - ✅ `client/src/components/ui/textarea.d.ts` - Added `import * as React`
@@ -65,9 +70,11 @@ Oprettede PowerShell script `fix-markdown.ps1` der automatisk:
 ## 🛠️ Filer Oprettet
 
 ### 1. `fix-markdown.ps1`
+
 PowerShell script til automatisk markdown formatting fix.
 
 **Features:**
+
 - Rekursiv scanning af alle .md filer
 - Ekskluderer node_modules, .git, dist
 - Anvender 7 forskellige regex patterns
@@ -89,9 +96,11 @@ Complete!
 ```
 
 ### 2. `.markdownlint.json`
+
 Konfiguration for markdownlint med disabled ikke-kritiske regler.
 
 **Disabled Rules:**
+
 - MD003 (heading-style)
 - MD007 (ul-indent)
 - MD009 (no-trailing-spaces)
@@ -111,6 +120,7 @@ Disse regler er enten for strenge for teknisk dokumentation eller allerede hånd
 ## ⚠️ Resterende Ikke-Kritiske Advarsler (2)
 
 ### 1. CSS: Unknown at-rule `@theme`
+
 **File:** `client/src/App.css`
 **Line:** 8
 
@@ -126,6 +136,7 @@ Disse regler er enten for strenge for teknisk dokumentation eller allerede hånd
 **Løsning:** Intet - det er ikke en reel fejl.
 
 ### 2. TypeScript: ES2015 module syntax preferred over namespaces
+
 **File:** `src/middleware/contextEnrichment.ts`
 **Line:** 129
 
@@ -155,6 +166,7 @@ declare global {
 **Script Runs:** 2 (første kørsel + optimization)
 
 **Files per kategori:**
+
 - Root directory: 120 .md filer
 - docs/ directory: 44 .md filer
 - TypeScript files: 4 .d.ts filer fixet
@@ -188,6 +200,7 @@ Showing first 50 results out of 534
 Alle 534 Markdown linting fejl er blevet systematisk fixet via automatiseret PowerShell script. Alle TypeScript declaration files har fået proper React imports. Alle unused variables er fjernet.
 
 **System Status:**
+
 - ✅ Kode kompilerer uden fejl
 - ✅ Markdown dokumentation er valid og konsistent
 - ✅ TypeScript types er korrekte
@@ -200,12 +213,14 @@ Alle 534 Markdown linting fejl er blevet systematisk fixet via automatiseret Pow
 ## 📝 Læring & Best Practices
 
 **PowerShell Regex Tips:**
+
 - Brug `$content -replace 'pattern', 'replacement'` for global replace
 - Escape specielle karakterer med `` ` `` i strings
 - Brug `-replace` i stedet for `-creplace` for case-insensitive
 - Test regex patterns på små filer først
 
 **Markdown Best Practices:**
+
 - Altid blank line før/efter headings
 - Altid blank line før/efter lists
 - Altid blank line før/efter code blocks
@@ -213,11 +228,13 @@ Alle 534 Markdown linting fejl er blevet systematisk fixet via automatiseret Pow
 - Brug `## Heading` i stedet for `**Heading**`
 
 **TypeScript Declaration Files:**
+
 - Altid import React types: `import * as React from 'react'`
 - Brug `import type { }` for type-only imports hvor muligt
 - Verificer .d.ts filer kompilerer uden fejl
 
 **Error Handling:**
+
 - Brug `catch { }` i stedet for `catch (error) { }` hvis error ikke bruges
 - Brug `_variable` prefix hvis variable skal defineres men ikke bruges
 

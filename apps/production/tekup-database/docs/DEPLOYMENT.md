@@ -20,7 +20,7 @@ Deploy Tekup Database to production environments.
 ### 1. Create PostgreSQL Database
 
 1. **Log in to Render.com**
-   - Go to https://render.com
+   - Go to <https://render.com>
    - Navigate to Dashboard
 
 2. **Create New PostgreSQL**
@@ -306,6 +306,7 @@ pnpm db:backup
 ### Backup Storage
 
 **Recommended:**
+
 - Store in S3/Spaces/Azure Blob
 - Keep minimum 30 days
 - Encrypt backups
@@ -397,9 +398,9 @@ const users = await prisma.user.findMany({
 
 ## Support
 
-**Issues:** https://github.com/TekupDK/tekup/issues  
+**Issues:** <https://github.com/TekupDK/tekup/issues>  
 **Documentation:** See README.md, TROUBLESHOOTING.md  
-**Render Support:** https://render.com/docs
+**Render Support:** <https://render.com/docs>
 
 ---
 

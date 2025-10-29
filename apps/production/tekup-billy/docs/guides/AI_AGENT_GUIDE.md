@@ -1,4 +1,4 @@
-# 📚 Tekup-Billy AI Agent Guide - Complete Reference
+﻿# 📚 Tekup-Billy AI Agent Guide - Complete Reference
 
 **Dato:** October 16, 2025  
 **Version:** 1.0  
@@ -268,7 +268,7 @@ Response: { invoices: [...], pageNumber: 1, itemsPerPage: 20 }
 
 ```powershell
 # 1. Clone repository
-git clone https://github.com/JonasAbde/Tekup-Billy.git
+git clone https://github.com/TekupDK/Tekup-Billy.git
 cd Tekup-Billy
 
 # 2. Copy environment template

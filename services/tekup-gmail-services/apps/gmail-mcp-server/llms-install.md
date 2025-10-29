@@ -87,6 +87,7 @@ If you encounter any issues during installation:
 After installation, you can perform various Gmail operations:
 
 ### Send Email
+
 ```json
 {
   "to": ["recipient@example.com"],
@@ -98,6 +99,7 @@ After installation, you can perform various Gmail operations:
 ```
 
 ### Search Emails
+
 ```json
 {
   "query": "from:sender@example.com after:2024/01/01",
@@ -106,6 +108,7 @@ After installation, you can perform various Gmail operations:
 ```
 
 ### Manage Email
+
 - Read emails by ID
 - Move emails between labels
 - Mark emails as read/unread

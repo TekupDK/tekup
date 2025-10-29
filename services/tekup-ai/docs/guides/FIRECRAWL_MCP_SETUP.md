@@ -10,6 +10,7 @@
 **Official MCP server** fra Firecrawl.dev der giver web scraping capabilities til AI assistants.
 
 **Use Cases for RenOS:**
+
 - ✅ Scrape Leadmail.no emails automatisk
 - ✅ Extract lead data fra company websites
 - ✅ Monitor konkurrent services
@@ -128,16 +129,19 @@ I Copilot Chat:
 ## 📊 Pricing
 
 ### Free Tier (Included)
+
 - 500 credits/month
 - Perfect for testing og development
 - ~500 page scrapes
 
 ### Paid Plans (Hvis nødvendigt)
+
 - Starter: $20/month (5,000 credits)
 - Growth: $100/month (50,000 credits)
 - Enterprise: Custom pricing
 
 **RenOS Usage Estimate:**
+
 - ~50 lead emails/måned × 1 credit = 50 credits
 - Competitor research: ~20 pages/måned = 20 credits
 - Total: ~100 credits/måned → **Free tier er nok!**
@@ -194,10 +198,12 @@ I Copilot Chat:
 **ALDRIG commit API key til Git!**
 
 ✅ **Gem i:**
+
 - Password manager (1Password, LastPass)
 - mcp.json (lokalt, ikke committed)
 
 ❌ **IKKE her:**
+
 - .env fil (hvis committed)
 - Source code
 - Slack/email
@@ -205,6 +211,7 @@ I Copilot Chat:
 ### Rate Limiting
 
 Firecrawl har rate limits:
+
 - Free tier: 10 requests/min
 - Paid: 100 requests/min
 
@@ -253,17 +260,20 @@ async function monitorCompetitors() {
 ## 🎯 Next Steps
 
 ### Immediate
+
 1. **Get API key** fra firecrawl.dev
 2. **Add to mcp.json** (see Step 2 above)
 3. **Reload VS Code**
 4. **Test** scraping med Copilot Chat
 
 ### This Week
+
 5. **Integrate** med lead detection workflow
 6. **Setup** competitor monitoring
 7. **Document** common scraping patterns
 
 ### Next Week
+
 8. **Build** automated lead processor
 9. **Add** company enrichment
 10. **Monitor** credit usage
@@ -283,18 +293,21 @@ async function monitorCompetitors() {
 ## 🎉 Summary
 
 **Firecrawl MCP giver:**
+
 - ✅ Natural language web scraping
 - ✅ Structured data extraction
 - ✅ No more manual HTML parsing
 - ✅ Perfect til lead automation
 
 **Setup:**
+
 1. Get API key (2 min)
 2. Add to mcp.json (1 min)
 3. Reload VS Code (10 sec)
 4. Start scraping! 🚀
 
 **Impact på RenOS:**
+
 - Automatic lead detection
 - Competitor intelligence
 - Company enrichment

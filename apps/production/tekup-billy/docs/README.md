@@ -1,4 +1,4 @@
-# Tekup-Billy MCP Server - Documentation
+﻿# Tekup-Billy MCP Server - Documentation
 
 Denne mappe indeholder komplet dokumentation for Tekup-Billy MCP Server projektet.
 
@@ -175,7 +175,7 @@ Se [RENOS_INTEGRATION_GUIDE.md](./RENOS_INTEGRATION_GUIDE.md) for:
 
 Hvis du ikke finder svar i dokumentationen:
 
-1. Check [GitHub Issues](https://github.com/JonasAbde/Tekup-Billy/issues)
+1. Check [GitHub Issues](https://github.com/TekupDK/Tekup-Billy/issues)
 2. Se [CONTRIBUTING.md](../CONTRIBUTING.md) for contribution guidelines
 3. Opret et nyt issue med [Question] tag
 

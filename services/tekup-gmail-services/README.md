@@ -1,4 +1,5 @@
 # Tekup Gmail Services
+
 **Unified Gmail & Email Automation Platform**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -63,12 +64,14 @@ tekup-gmail-services/
 ### Installation
 
 #### 1. Clone Repository
+
 ```bash
 git clone https://github.com/tekup/tekup-gmail-services.git
 cd tekup-gmail-services
 ```
 
 #### 2. Setup Environment
+
 ```bash
 cp .env.example .env
 # Edit .env with your credentials
@@ -108,14 +111,16 @@ docker-compose down
 ```
 
 **Access:**
-- Gmail MCP Server: http://localhost:3010
-- RenOS Gmail Services: http://localhost:3011
+
+- Gmail MCP Server: <http://localhost:3010>
+- RenOS Gmail Services: <http://localhost:3011>
 
 ## 📦 Services Overview
 
 ### 1. Gmail Automation (Python)
 
 **Features:**
+
 - ✅ PDF forwarding from Gmail
 - ✅ Receipt processing (Google Photos integration)
 - ✅ Economic API integration
@@ -135,6 +140,7 @@ python -m src.core.gmail_forwarder
 ### 2. Gmail MCP Server (Node.js)
 
 **Features:**
+
 - ✅ MCP protocol server
 - ✅ Filter management
 - ✅ Label management
@@ -155,6 +161,7 @@ npm start
 ### 3. RenOS Gmail Services (TypeScript)
 
 **Features:**
+
 - ✅ AI email generation (Gemini 2.0)
 - ✅ Lead monitoring & parsing
 - ✅ Email approval workflow
@@ -208,24 +215,28 @@ See [docs/GOOGLE_SETUP.md](docs/GOOGLE_SETUP.md) for detailed instructions.
 ## 🧪 Testing
 
 ### Python Tests
+
 ```bash
 cd apps/gmail-automation
 pytest
 ```
 
 ### Node.js Tests (MCP Server)
+
 ```bash
 cd apps/gmail-mcp-server
 npm test
 ```
 
 ### TypeScript Tests (RenOS Services)
+
 ```bash
 cd apps/renos-gmail-services
 npm test
 ```
 
 ### Integration Tests
+
 ```bash
 cd tests/integration
 npm test
@@ -285,7 +296,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - **Documentation:** [GitHub Wiki](https://github.com/tekup/tekup-gmail-services/wiki)
 - **Issues:** [GitHub Issues](https://github.com/tekup/tekup-gmail-services/issues)
-- **Email:** info@tekup.dk
+- **Email:** <info@tekup.dk>
 
 ## 🏷️ Version History
 
@@ -298,6 +309,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 📊 Migration Info
 
 This repository was created by consolidating:
+
 - `tekup-gmail-automation` (Python + Node.js MCP)
 - `Tekup Google AI` Gmail services (TypeScript)
 - `Gmail-PDF-Auto` (deleted - empty)

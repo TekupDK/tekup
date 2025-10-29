@@ -4,10 +4,10 @@ This pull request is ready for review. Before merging, please ensure all checks 
 
 ### Reviewer Checklist
 
--   [ ] **TypeScript Compilation:** The code compiles without errors.
--   [ ] **Docker Build:** The `docker-compose` build completes successfully.
--   [ ] **Documentation:** All relevant documentation has been updated.
--   [ ] **CI Tests:** All tests pass in the continuous integration pipeline.
+- [ ] **TypeScript Compilation:** The code compiles without errors.
+- [ ] **Docker Build:** The `docker-compose` build completes successfully.
+- [ ] **Documentation:** All relevant documentation has been updated.
+- [ ] **CI Tests:** All tests pass in the continuous integration pipeline.
 
 ### Description
 

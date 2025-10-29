@@ -43,6 +43,7 @@ Systematically fix all TypeScript compilation errors autonomously.
 ## Autonomous Mode
 
 Use bash/Python scripts (NOT Edit tool) for file modifications:
+
 - sed for simple replacements
 - Python for complex logic
 - cat/heredoc for full file rewrites

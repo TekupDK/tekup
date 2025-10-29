@@ -1,0 +1,57 @@
+# Directories
+**/node_modules/
+**/node_modules/**
+node_modules/
+dist/
+build/
+.next/
+.expo/
+.expo-shared/
+coverage/
+.turbo/
+out/
+target/
+vendor/
+
+# Git
+.git/
+.github/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build artifacts
+*.min.js
+*.min.css
+*.bundle.js
+
+# Archives
+archive/
+*.zip
+*.tar.gz
+
+# Generated files
+CHANGELOG.md
+**/CHANGELOG.md
+
+# Specific paths to exclude
+tekup-secrets/.env*
+**/prisma/migrations/**
+**/__tests__/**
+**/test/**
+**/tests/**
+
+# Generated documentation that should not be linted
+**/api-docs/**
+**/generated/**
+**/auto-generated/**

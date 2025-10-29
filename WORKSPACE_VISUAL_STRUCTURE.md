@@ -71,6 +71,7 @@ apps/production/
 ```
 
 **Status:**
+
 - ✅ Kode komplet (123,171+ linjer)
 - ⏳ Dependencies ikke installeret
 - ✅ Production live (Billy, Vault)
@@ -150,7 +151,7 @@ apps/rendetalje/               ← Hovedmappe (inkonsistent naming)
         └── deploy-all.ps1
 ```
 
-### 🔴 IDENTIFICEREDE PROBLEMER:
+### 🔴 IDENTIFICEREDE PROBLEMER
 
 1. **Inkonsistent Package Naming:**
    - Backend/Frontend/Mobile/Shared: `@rendetaljeos/*`
@@ -263,6 +264,7 @@ archive/
 ```
 
 **Dependencies:**
+
 - RenOS Backend → tekup-database (Prisma schemas)
 - RenOS Backend → tekup-billy (Invoice API via MCP client)
 - RenOS Backend → tekup-vault (Knowledge search)
@@ -272,18 +274,21 @@ archive/
 
 ## 📊 STATISTIK
 
-### Projekter:
+### Projekter
+
 - **Production Services:** 3 (Billy, Database, Vault)
 - **RenOS Services:** 7 (Backend, Frontend, Calendar, Mobile, Shared, Database, Scripts)
 - **Web Dashboards:** 1 (placeholder)
 - **Backend Services:** 2 (AI, Gmail)
 
-### Kode:
+### Kode
+
 - **Total filer:** 700+ filer
 - **Total linjer:** 150,000+ linjer
 - **Secrets:** 10 encrypted .env filer
 
-### Dependencies Status:
+### Dependencies Status
+
 - ✅ **Secrets unlocked** (git-crypt)
 - ⏳ **Dependencies mangler** (npm/pnpm install)
 - ⏳ **Build ikke kørt** (npm run build)
@@ -293,34 +298,42 @@ archive/
 ## 🚨 HVAD ER FORVIRRENDE (OG HVORDAN VI LØSER DET)
 
 ### Problem 1: "Hvor er RenOS koden?"
+
 **Svar:** `apps/rendetalje/services/` ← Alt RenOS kode er her
 
 ### Problem 2: "Hvorfor hedder det både rendetalje OG renos?"
+
 **Svar:** Inkonsistent naming - derfor laver vi restructure planen!
 
 ### Problem 3: "Hvad er den tomme monorepo/ mappe?"
+
 **Svar:** Fejl - skal slettes (0 filer)
 
 ### Problem 4: "Hvordan hænger Billy, Database og Vault sammen?"
-**Svar:** 
+
+**Svar:**
+
 - Billy = API til fakturering
 - Database = Fælles schemas for alle projekter
 - Vault = Knowledge base for AI search
 - RenOS Backend bruger ALLE TRE
 
 ### Problem 5: "Skal jeg installere dependencies i hver mappe?"
+
 **Svar:** Ja, hver package.json skal have `npm install` / `pnpm install`
 
 ---
 
 ## ✅ NÆSTE STEPS
 
-### For at få klarhed:
+### For at få klarhed
+
 1. ✅ **Læs denne fil** (du er her!)
 2. ⏳ **Beslut:** Kør Rendetalje restructure? (se RENDETALJE_RESTRUCTURE_COMPLETE_PLAN.md)
 3. ⏳ **Installer dependencies** når struktur er klar
 
-### Quick Commands til at udforske:
+### Quick Commands til at udforske
+
 ```powershell
 # Se production services
 ls apps\production\

@@ -1,4 +1,4 @@
-# ✅ Audit Implementation Complete
+﻿# ✅ Audit Implementation Complete
 
 **Repository:** Tekup-Billy MCP  
 **Dato:** 13. Oktober 2025  
@@ -229,9 +229,9 @@ Tekup-Billy MCP opfylder nu **enterprise-grade DevOps standards**:
 
 ## 📞 Support
 
-**Issues?** Open ticket: <https://github.com/JonasAbde/Tekup-Billy/issues>  
+**Issues?** Open ticket: <https://github.com/TekupDK/Tekup-Billy/issues>  
 **Questions?** Se dokumentation i `docs/` folder  
-**Owner:** @JonasAbde
+**Owner:** @TekupDK
 
 ---
 

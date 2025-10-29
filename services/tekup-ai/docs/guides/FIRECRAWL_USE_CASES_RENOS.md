@@ -28,6 +28,7 @@ I Copilot Chat:
 ## 💼 RenOS Use Case #1: Lead Email Parsing
 
 ### Problem Nu
+
 RenOS modtager leads fra **Leadmail.no** som emails med HTML indhold:
 
 ```
@@ -56,6 +57,7 @@ function parseLeadmailEmail(html: string): LeadData {
 ```
 
 **Problem:**
+
 - ❌ Fragile - breaks ved HTML ændringer
 - ❌ Svært at maintain
 - ❌ Kan ikke håndtere variations i format
@@ -123,6 +125,7 @@ async function processLeadEmail(gmailMessageId: string) {
 ```
 
 **Impact:**
+
 - ✅ Robust - håndterer HTML ændringer
 - ✅ Automatic structured data extraction
 - ✅ No manual parsing maintenance
@@ -132,15 +135,18 @@ async function processLeadEmail(gmailMessageId: string) {
 ## 🔍 RenOS Use Case #2: Competitor Price Monitoring
 
 ### Problem
+
 RenOS skal monitore konkurrent priser for at være competitive:
 
 **Konkurrenter:**
+
 - Molly.dk
 - Renova.dk
 - Hjemme.dk
 - ISS.dk
 
 **Nuværende løsning:**
+
 - ❌ Manuel check af websites
 - ❌ Copy-paste til Excel
 - ❌ Tidskrævende (30+ min/uge)
@@ -227,6 +233,7 @@ cron.schedule('0 9 * * 1', monitorCompetitors); // Every Monday 9am
 ```
 
 **Impact:**
+
 - ✅ Automatic weekly monitoring
 - ✅ Alert on price changes
 - ✅ Data-driven pricing decisions
@@ -237,6 +244,7 @@ cron.schedule('0 9 * * 1', monitorCompetitors); // Every Monday 9am
 ## 🏢 RenOS Use Case #3: Company Enrichment
 
 ### Problem
+
 Når et lead kommer ind, RenOS ved kun email/navn:
 
 ```
@@ -245,6 +253,7 @@ Name: Unknown company
 ```
 
 **Nuværende løsning:**
+
 - ❌ Manuel Google search
 - ❌ Manual website check
 - ❌ Tidskrævende (5-10 min per lead)
@@ -326,6 +335,7 @@ async function enrichLead(leadId: string) {
 ```
 
 **Impact:**
+
 - ✅ Automatic company research
 - ✅ Better lead qualification
 - ✅ Prioritize high-value leads
@@ -336,7 +346,9 @@ async function enrichLead(leadId: string) {
 ## 📊 RenOS Use Case #4: Market Intelligence
 
 ### Problem
+
 RenOS vil forstå markedet bedre:
+
 - Hvilke services er populære?
 - Hvad markedsfører konkurrenter?
 - Nye trends i branchen?
@@ -398,6 +410,7 @@ cron.schedule('0 9 1 * *', analyzeMarket); // 1st of each month
 ```
 
 **Impact:**
+
 - ✅ Data-driven business decisions
 - ✅ Spot market trends early
 - ✅ Competitive advantage
@@ -408,7 +421,9 @@ cron.schedule('0 9 1 * *', analyzeMarket); // 1st of each month
 ## 🤖 RenOS Use Case #5: Automated Content Generation
 
 ### Problem
+
 RenOS skal opdatere website content baseret på:
+
 - Competitor analysis
 - Service descriptions
 - SEO optimization
@@ -459,6 +474,7 @@ const improvedContent = await gemini.completeChat([
 ```
 
 **Impact:**
+
 - ✅ Always competitive content
 - ✅ SEO optimized
 - ✅ Save content writing time
@@ -480,10 +496,12 @@ const improvedContent = await gemini.completeChat([
 ### Cost-Benefit
 
 **Firecrawl Cost:**
+
 - Free tier: 500 credits/month = 0 kr
 - Paid tier (if needed): $20/month = ~150 kr
 
 **Value of Time Saved:**
+
 - 15.75 hours × 500 kr/hour = **7,875 kr/month**
 
 **ROI:** 7,875 kr saved vs. 0-150 kr cost = **5,250% ROI** 🚀
@@ -493,14 +511,17 @@ const improvedContent = await gemini.completeChat([
 ## 🎯 Implementation Priority
 
 ### Phase 1: Quick Wins (This Week)
+
 1. **Lead Email Parsing** - Immediate impact, high value
 2. **Manual testing** via Copilot Chat
 
 ### Phase 2: Automation (Next Week)
+
 3. **Competitor Monitoring** - Cron job
 4. **Company Enrichment** - Automatic on new leads
 
 ### Phase 3: Advanced (Next Month)
+
 5. **Market Intelligence** - Monthly reports
 6. **Content Generation** - Quarterly updates
 
@@ -509,6 +530,7 @@ const improvedContent = await gemini.completeChat([
 ## 🛠️ Technical Integration
 
 ### Option 1: Via Copilot Chat (Manual)
+
 **Use now for ad-hoc scraping:**
 ```
 > "Scrape molly.dk/priser and extract pricing"
@@ -516,6 +538,7 @@ const improvedContent = await gemini.completeChat([
 ```
 
 ### Option 2: Via Firecrawl API (Automated)
+
 **Build into RenOS handlers:**
 ```typescript
 // src/services/firecrawlService.ts
@@ -546,6 +569,7 @@ export class FirecrawlService {
 ## 🎉 Konklusion
 
 **Firecrawl giver RenOS:**
+
 - ✅ Automatic lead data extraction
 - ✅ Competitive intelligence
 - ✅ Company enrichment
@@ -554,6 +578,7 @@ export class FirecrawlService {
 - ✅ 5,250% ROI
 
 **Start nu:**
+
 1. Test via Copilot Chat (manual)
 2. Build API integration (automated)
 3. Set up cron jobs (scheduled)

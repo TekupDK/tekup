@@ -7,6 +7,7 @@
 **Kategorisering:**
 
 ### ✅ SKAL BLIVE I ROD (Kritiske)
+
 - `package.json`, `package-lock.json`
 - `tsconfig.json`
 - `Dockerfile`
@@ -28,6 +29,7 @@
 ### 📁 SKAL FLYTTES TIL `docs/`
 
 #### Planning & Reports (→ `docs/planning/`)
+
 - `ACTION_PLAN_OCT21.md`
 - `AUDIT_SUMMARY_OCT21.md`
 - `IMPLEMENTATION_COMPLETE_OCT21.md`
@@ -38,6 +40,7 @@
 - `VALGFRIE_OPGAVER_COMPLETE.md`
 
 #### Operations (→ `docs/operations/`)
+
 - `DAILY_OPERATIONS_GUIDE.md`
 - `DEPLOYMENT_STATUS.md`
 - `LINTING_FIX_SUMMARY.md`
@@ -46,17 +49,20 @@
 - `SETUP_NOW.md`
 
 #### Billy/Invoice Docs (→ `docs/billy/`)
+
 - `FAKTURA_RAPPORT_2025-10-20.md`
 - `HOTFIX_INVOICE_STATES.md`
 - `INVOICE_STATUS_2025-10-20.md`
 - `invoice-sample.json`
 
 #### Product Analysis (→ `docs/analysis/`)
+
 - `PRODUCT_CLEANUP_EXECUTION.md`
 - `PRODUCT_CLEANUP_PLAN.md`
 - `product-usage-analysis.csv`
 
 #### Claude/AI Integration (→ `docs/ai-integration/`)
+
 - `AI_ASSISTANT_PLAYBOOK.md`
 - `CLAUDE_AUTHENTICATION_FIX.md`
 - `CLAUDE_PHASE1_FINAL_REPORT.md`
@@ -67,25 +73,30 @@
 - `claude-desktop-config.json` (→ `docs/examples/`)
 
 #### Terminal/PowerShell (→ `docs/troubleshooting/`)
+
 - `KIRO_TERMINAL_EXPLANATION.md`
 - `POWERSHELL7_SETUP_GUIDE.md`
 - `TERMINAL_DIAGNOSTIC_REPORT.md`
 - `TERMINAL_FIX_GUIDE.md`
 
 #### Cleanup Complete Markers (→ `docs/completed/`)
+
 - `MD022_SETUP_COMPLETE.md`
 - `MCP_STANDARD_CLEANUP_COMPLETE.md`
 
 #### Getting Started (→ `docs/` direkte)
+
 - `MASTER_INDEX.md`
 - `NEXT_STEPS_FOR_JONAS.md`
 - `START_HERE.md`
 - `ROADMAP.md`
 
 #### Release Notes (→ `docs/releases/`)
+
 - `RELEASE_NOTES_v1.4.1.md`
 
 #### TekupVault Integration (→ `docs/integrations/tekupvault/`)
+
 - `tekupvault/TEKUPVAULT_INTEGRATION.md`
 - `tekupvault/TEKUPVAULT_REQUIREMENTS_FROM_BILLY.md`
 - `tekupvault/test-tekupvault-search.ps1`

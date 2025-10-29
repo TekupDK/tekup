@@ -1,59 +1,1 @@
-# 🔧 Fix: GOOGLE_PRIVATE_KEY Format Issue\n\n\n\n## ❌ Problem Identificeret\n\n\n\n**Error fra Render logs:**
-\n\n```json
-{
-  "level":50,
-  "error":{
-    "library":"DECODER routines",
-    "reason":"unsupported",
-    "code":"ERR_OSSL_UNSUPPORTED"
-  },
-  "msg":"Failed to process lead"
-}\n\n```
-
-**Root Cause:** `GOOGLE_PRIVATE_KEY` environment variable er **forkert formateret** på Render. OpenSSL kan ikke decode private key.\n\n\n\n## ✅ Korrekt Format\n\n\n\nDin private key skal være formatted **PRÆCIS sådan**:
-\n\n```
------BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC...\n...\n-----END PRIVATE KEY-----\n\n\n```
-
-**Vigtigt:**
-\n\n- ✅ `\n` bruges for newlines (NOT faktiske newlines)\n\n- ✅ HELE key string skal være på ÉN linje\n\n- ✅ Ingen quotes omkring værdi (eller kun ydre quotes)\n\n- ✅ Ingen ekstra backslashes (`\\n` er forkert, skal være `\n`)\n\n\n\n## 🚀 Fix Steps\n\n\n\n### Step 1: Hent korrekt key fra lokal .env\n\n\n\n```powershell\n\n# PowerShell - Read local key\n\n$envContent = Get-Content ".env" -Raw\n\nif ($envContent -match 'GOOGLE_PRIVATE_KEY="(-----BEGIN PRIVATE KEY-----.*?-----END PRIVATE KEY-----)"') {\n\n    $key = $matches[1]
-    Write-Host "✅ Key found, copy this to clipboard:" -ForegroundColor Green
-    $key | Set-Clipboard
-    Write-Host "Key copied to clipboard!" -ForegroundColor Cyan
-} else {
-    Write-Host "❌ Key not found in .env" -ForegroundColor Red
-}\n\n```
-\n\n### Step 2: Opdater Render Environment Variable\n\n\n\n1. Gå til: <https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg/env>\n\n2. Find: **GOOGLE_PRIVATE_KEY**\n\n3. Klik **Edit**\n\n4. **VIGTIGT:** Paste den FULDE key value (inklusive `-----BEGIN` og `-----END`)\n\n5. **Format check:**
-   - Skal være ÉN lang linje\n\n   - Skal have `\n` characters (ikke faktiske newlines)\n\n   - Skal starte med `-----BEGIN PRIVATE KEY-----\n`\n\n   - Skal slutte med `\n-----END PRIVATE KEY-----\n`\n\n6. Klik **Save**\n\n7. **RESTART SERVICE** (ikke rebuild - kun restart!)\n\n\n\n### Step 3: Verify Fix\n\n\n\nEfter restart (30 sekunder), test endpoint:
-\n\n```powershell
-$body = @{emailBody="Test fra kontakt@firma.dk"} | ConvertTo-Json
-Invoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/leads/process" `
-  -Method Post -Body $body -ContentType "application/json"\n\n```
-
-**Expected:**
-\n\n- ✅ Returns 200 OK (ikke 500)\n\n- ✅ Logs viser IKKE "ERR_OSSL_UNSUPPORTED"\n\n- ✅ Response contains parsed lead data\n\n\n\n## 🔍 Alternative Fix: Use Base64 Encoded Key\n\n\n\nHvis ovenstående ikke virker, encode key som base64:
-\n\n```powershell\n\n# Encode key\n\n$key = (Get-Content ".env" | Select-String "GOOGLE_PRIVATE_KEY").ToString()\n\n$key = $key -replace 'GOOGLE_PRIVATE_KEY="(.*)"', '$1'
-$bytes = [System.Text.Encoding]::UTF8.GetBytes($key)
-$base64 = [Convert]::ToBase64String($bytes)
-Write-Host "Base64 encoded key:"
-Write-Host $base64\n\n```
-
-Derefter opdater backend kode til at decode:
-\n\n```typescript
-// src/config.ts
-const privateKey = process.env.GOOGLE_PRIVATE_KEY_BASE64
-  ? Buffer.from(process.env.GOOGLE_PRIVATE_KEY_BASE64, 'base64').toString('utf-8')
-  : process.env.GOOGLE_PRIVATE_KEY;\n\n```
-\n\n## 📊 Common Mistakes\n\n\n\n| ❌ Forkert | ✅ Korrekt |
-|-----------|----------|
-| `\\n` (double backslash) | `\n` (single backslash) |
-| Multi-line værdi | Single-line værdi |
-| Mangler `-----BEGIN`/`-----END` | Inkluderer headers |
-| Har ekstra spaces | Ingen spaces |
-| Har quotes inden i value | Kun ydre quotes (eller ingen) |
-\n\n## 🎯 Quick Verification Checklist\n\n\n\nEfter Render opdatering:
-\n\n- [ ] Environment variable saved\n\n- [ ] Service restarted (NOT rebuild)\n\n- [ ] Test `/api/leads/process` - returns 200\n\n- [ ] Check logs - NO "ERR_OSSL_UNSUPPORTED" errors\n\n- [ ] Gmail API calls working\n\n- [ ] Calendar API calls working\n\n
----
-
-**Priority:** 🔴 CRITICAL - Blocker for all AI features
-**ETA:** 5 min (just restart service, no rebuild needed)
-**Impact:** Fixes both Gmail + Calendar API issues
+# 🔧 Fix: GOOGLE_PRIVATE_KEY Format Issue\n\n\n\n## ❌ Problem Identificeret\n\n\n\n**Error fra Render logs:**\n\n```json{  "level":50,  "error":{    "library":"DECODER routines",    "reason":"unsupported",    "code":"ERR_OSSL_UNSUPPORTED"  },  "msg":"Failed to process lead"}\n\n```**Root Cause:** `GOOGLE_PRIVATE_KEY` environment variable er **forkert formateret** på Render. OpenSSL kan ikke decode private key.\n\n\n\n## ✅ Korrekt Format\n\n\n\nDin private key skal være formatted **PRÆCIS sådan**:\n\n```-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC...\n...\n-----END PRIVATE KEY-----\n\n\n```**Vigtigt:**\n\n- ✅ `\n` bruges for newlines (NOT faktiske newlines)\n\n- ✅ HELE key string skal være på ÉN linje\n\n- ✅ Ingen quotes omkring værdi (eller kun ydre quotes)\n\n- ✅ Ingen ekstra backslashes (`\\n` er forkert, skal være `\n`)\n\n\n\n## 🚀 Fix Steps\n\n\n\n### Step 1: Hent korrekt key fra lokal .env\n\n\n\n```powershell\n\n# PowerShell - Read local key\n\n$envContent = Get-Content ".env" -Raw\n\nif ($envContent -match 'GOOGLE_PRIVATE_KEY="(-----BEGIN PRIVATE KEY-----.*?-----END PRIVATE KEY-----)"') {\n\n    $key = $matches[1]    Write-Host "✅ Key found, copy this to clipboard:" -ForegroundColor Green    $key | Set-Clipboard    Write-Host "Key copied to clipboard!" -ForegroundColor Cyan} else {    Write-Host "❌ Key not found in .env" -ForegroundColor Red}\n\n```\n\n### Step 2: Opdater Render Environment Variable\n\n\n\n1. Gå til: <https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg/env>\n\n2. Find: **GOOGLE_PRIVATE_KEY**\n\n3. Klik **Edit**\n\n4. **VIGTIGT:** Paste den FULDE key value (inklusive `-----BEGIN` og `-----END`)\n\n5. **Format check:**- Skal være ÉN lang linje\n\n   - Skal have `\n` characters (ikke faktiske newlines)\n\n   - Skal starte med `-----BEGIN PRIVATE KEY-----\n`\n\n   - Skal slutte med `\n-----END PRIVATE KEY-----\n`\n\n6. Klik **Save**\n\n7. **RESTART SERVICE** (ikke rebuild - kun restart!)\n\n\n\n### Step 3: Verify Fix\n\n\n\nEfter restart (30 sekunder), test endpoint:\n\n```powershell$body = @{emailBody="Test fra kontakt@firma.dk"} | ConvertTo-JsonInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/leads/process" `  -Method Post -Body $body -ContentType "application/json"\n\n```**Expected:**\n\n- ✅ Returns 200 OK (ikke 500)\n\n- ✅ Logs viser IKKE "ERR_OSSL_UNSUPPORTED"\n\n- ✅ Response contains parsed lead data\n\n\n\n## 🔍 Alternative Fix: Use Base64 Encoded Key\n\n\n\nHvis ovenstående ikke virker, encode key som base64:\n\n```powershell\n\n# Encode key\n\n$key = (Get-Content ".env" | Select-String "GOOGLE_PRIVATE_KEY").ToString()\n\n$key = $key -replace 'GOOGLE_PRIVATE_KEY="(.*)"', '$1'$bytes = [System.Text.Encoding]::UTF8.GetBytes($key)$base64 = [Convert]::ToBase64String($bytes)Write-Host "Base64 encoded key:"Write-Host $base64\n\n```Derefter opdater backend kode til at decode:\n\n```typescript// src/config.tsconst privateKey = process.env.GOOGLE_PRIVATE_KEY_BASE64  ? Buffer.from(process.env.GOOGLE_PRIVATE_KEY_BASE64, 'base64').toString('utf-8')  : process.env.GOOGLE_PRIVATE_KEY;\n\n```\n\n## 📊 Common Mistakes\n\n\n\n| ❌ Forkert | ✅ Korrekt ||-----------|----------|| `\\n` (double backslash) | `\n` (single backslash) || Multi-line værdi | Single-line værdi || Mangler `-----BEGIN`/`-----END` | Inkluderer headers || Har ekstra spaces | Ingen spaces || Har quotes inden i value | Kun ydre quotes (eller ingen) |\n\n## 🎯 Quick Verification Checklist\n\n\n\nEfter Render opdatering:\n\n- [ ] Environment variable saved\n\n- [ ] Service restarted (NOT rebuild)\n\n- [ ] Test `/api/leads/process` - returns 200\n\n- [ ] Check logs - NO "ERR_OSSL_UNSUPPORTED" errors\n\n- [ ] Gmail API calls working\n\n- [ ] Calendar API calls working\n\n---**Priority:** 🔴 CRITICAL - Blocker for all AI features**ETA:** 5 min (just restart service, no rebuild needed)**Impact:** Fixes both Gmail + Calendar API issues

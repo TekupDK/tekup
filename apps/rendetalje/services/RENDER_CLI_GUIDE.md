@@ -3,6 +3,7 @@
 ## Hvad Er Render CLI?
 
 Render CLI er et kommandolinjeværktøj der giver dig mulighed for at:
+
 - Deploy services direkte fra terminalen
 - Opdatere environment variables
 - Se logs i real-time
@@ -20,7 +21,7 @@ npm install -g @render-tools/cli
 render --version
 ```
 
-### Alternative Metoder:
+### Alternative Metoder
 
 **Via Scoop:**
 ```powershell
@@ -248,9 +249,9 @@ render services list
 
 Hvis du **IKKE** vil bruge CLI, kan du gøre alt via web dashboard:
 
-1. **Environment Variables**: https://dashboard.render.com → Service → Environment
-2. **Deployments**: https://dashboard.render.com → Service → Manual Deploy
-3. **Logs**: https://dashboard.render.com → Service → Logs
+1. **Environment Variables**: <https://dashboard.render.com> → Service → Environment
+2. **Deployments**: <https://dashboard.render.com> → Service → Manual Deploy
+3. **Logs**: <https://dashboard.render.com> → Service → Logs
 
 ## Hvornår Skal Du Bruge CLI vs Dashboard?
 
@@ -265,11 +266,13 @@ Hvis du **IKKE** vil bruge CLI, kan du gøre alt via web dashboard:
 ## Anbefaling for Rendetalje
 
 **Start med Dashboard** for initial setup:
+
 - Nemmere at se alle options
 - God overview
 - Less steep learning curve
 
 **Brug CLI til**:
+
 - Daglige deployments
 - Hurtige env updates
 - Debugging med real-time logs
@@ -300,10 +303,10 @@ render services --help
 
 ## Ressourcer
 
-- **Render CLI Docs**: https://render.com/docs/cli
-- **GitHub Repo**: https://github.com/render-oss/cli
-- **API Reference**: https://api-docs.render.com/
+- **Render CLI Docs**: <https://render.com/docs/cli>
+- **GitHub Repo**: <https://github.com/render-oss/cli>
+- **API Reference**: <https://api-docs.render.com/>
 
 ---
 
-**💡 TIP:** Du behøver IKKE CLI for at følge monitoring implementationen. Alt kan gøres via Render Dashboard på https://dashboard.render.com
+**💡 TIP:** Du behøver IKKE CLI for at følge monitoring implementationen. Alt kan gøres via Render Dashboard på <https://dashboard.render.com>

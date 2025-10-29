@@ -27,6 +27,7 @@ Dette dokument beskriver det nye system til 1:1 Google Calendar-synkronisering o
 **Filsti:** `src/services/calendarSyncService.ts`
 
 **Funktioner:**
+
 - ✅ **Bidirektional synkronisering** mellem Google Calendar og RenOS database
 - ✅ **Unidirektional synkronisering** (Google → DB eller DB → Google)
 - ✅ **Automatisk oprettelse** af bookinger fra Google Calendar events
@@ -35,6 +36,7 @@ Dette dokument beskriver det nye system til 1:1 Google Calendar-synkronisering o
 - ✅ **Sync status tracking** og rapportering
 
 **API Endpoints:**
+
 - `POST /api/calendar-sync/sync` - Fuldt synkronisering
 - `GET /api/calendar-sync/status` - Sync status
 - `POST /api/calendar-sync/sync-google-to-db` - Google → Database
@@ -45,6 +47,7 @@ Dette dokument beskriver det nye system til 1:1 Google Calendar-synkronisering o
 **Filsti:** `src/services/enhancedCustomerImportService.ts`
 
 **Funktioner:**
+
 - ✅ **CSV og JSON import** med validering
 - ✅ **Automatisk kundeoprettelse** med duplicate detection
 - ✅ **Booking oprettelse** med Google Calendar integration
@@ -53,6 +56,7 @@ Dette dokument beskriver det nye system til 1:1 Google Calendar-synkronisering o
 - ✅ **Export funktionalitet** til CSV
 
 **API Endpoints:**
+
 - `POST /api/customer-import/import` - JSON import
 - `POST /api/customer-import/import-csv` - CSV import
 - `GET /api/customer-import/export` - Export til CSV
@@ -297,6 +301,7 @@ CUSTOMER_IMPORT_VALIDATE_EMAIL=true
 ### Database Schema
 
 Systemet bruger eksisterende Prisma schema med følgende modeller:
+
 - `Customer` - Kunde data
 - `Booking` - Booking data med calendar integration
 - `Analytics` - Sync status tracking
@@ -338,11 +343,13 @@ npm run customer:import-stats statistics
 ## 📈 Performance
 
 ### Calendar Sync
+
 - **Processing time:** ~2-5 sekunder per 100 events
 - **Memory usage:** ~50MB for 1000 events
 - **Database queries:** Optimized med batching
 
 ### Customer Import
+
 - **Processing time:** ~100ms per customer
 - **Batch size:** 50 customers per batch (konfigurerbar)
 - **Memory usage:** ~10MB per 1000 customers
@@ -350,11 +357,13 @@ npm run customer:import-stats statistics
 ## 🔍 Monitoring
 
 ### Logs
+
 - Alle operationer logges med structured logging
 - Error tracking og performance metrics
 - Sync status og import statistikker
 
 ### Health Checks
+
 - Database connection status
 - Google Calendar API status
 - Sync status og last sync time

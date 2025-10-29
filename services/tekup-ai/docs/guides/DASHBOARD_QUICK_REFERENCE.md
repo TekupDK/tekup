@@ -21,11 +21,13 @@
 ## 🚀 Quick Access
 
 ### Production Dashboard
+
 ```
 https://your-render-app.onrender.com/dashboard
 ```
 
 ### Local Development
+
 ```bash
 npm run dev:all
 # Dashboard: http://localhost:5173
@@ -73,6 +75,7 @@ curl /api/dashboard/rate-limits/history
 ## 💡 Common Questions
 
 ### How often does data refresh?
+
 - System Safety: 30s
 - Conflicts: 30s
 - Email Quality: 30s
@@ -80,15 +83,19 @@ curl /api/dashboard/rate-limits/history
 - Rate Limits: 30s
 
 ### Can I export data?
+
 Not yet - planned for Phase 3. Current workaround: Copy from API responses.
 
 ### Is it real-time?
+
 Polling-based (30-60s intervals). Real-time WebSocket planned for Phase 3.
 
 ### Mobile support?
+
 ✅ Yes - fully responsive design works on all devices.
 
 ### How do I test locally?
+
 ```bash
 npm run dev:all
 # Generate test data via Prisma Studio
@@ -111,16 +118,19 @@ npm run db:studio
 ## 🐛 Troubleshooting
 
 ### Widgets not loading?
+
 1. Check backend: `npm run dev`
 2. Verify API_BASE in `client/.env`
 3. Check browser console for errors
 
 ### Empty widgets?
+
 1. Generate test data: `npm run db:studio`
 2. Wait for auto-refresh (30-60s)
 3. Check database queries in logs
 
 ### Stale data?
+
 Normal - 30-60s polling interval. Force refresh by reloading page.
 
 ---
@@ -149,6 +159,7 @@ Normal - 30-60s polling interval. Force refresh by reloading page.
 ---
 
 **Quick Links:**
+
 - 📊 [Full Docs](DASHBOARD_MONITORING.md)
 - 📝 [Release Notes](../UPDATE_NOTES.md)
 - 🏗️ [Architecture](../README.md)

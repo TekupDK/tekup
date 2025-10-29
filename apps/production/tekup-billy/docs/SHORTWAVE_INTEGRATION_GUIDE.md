@@ -1,4 +1,4 @@
-# 📧 Shortwave Integration Guide - Tekup-Billy MCP
+﻿# 📧 Shortwave Integration Guide - Tekup-Billy MCP
 
 ## Overview
 
@@ -472,7 +472,7 @@ Forward Billy invoice PDFs to Shortwave, then:
 - Check health: <https://tekup-billy.onrender.com/health>
 - Review logs in Render.com dashboard
 - Test endpoint manually with curl
-- GitHub issues: <https://github.com/JonasAbde/Tekup-Billy/issues>
+- GitHub issues: <https://github.com/TekupDK/Tekup-Billy/issues>
 
 **Issues with Shortwave:**
 

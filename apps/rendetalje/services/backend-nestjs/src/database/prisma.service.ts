@@ -1,19 +1,33 @@
-﻿import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from "@nestjs/common";
+﻿import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  Logger,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { PrismaClient } from "@tekup/database/node_modules/@prisma/client";
+import { PrismaClient } from "@prisma/client";
+
+// Make PrismaService behave exactly like PrismaClient
+type PrismaServiceType = PrismaClient & PrismaService;
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   private readonly logger = new Logger(PrismaService.name);
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(configService: ConfigService) {
     super({
       datasources: {
         db: {
           url: configService.get<string>("DATABASE_URL"),
         },
       },
-      log: process.env.NODE_ENV === "development" ? ["query", "info", "warn", "error"] : ["error"],
+      log:
+        process.env.NODE_ENV === "development"
+          ? ["query", "info", "warn", "error"]
+          : ["error"],
     });
   }
 
@@ -36,7 +50,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     }
   }
 
-  get client() {
-    return this;
+  get client(): PrismaClient {
+    return this as PrismaClient;
   }
 }

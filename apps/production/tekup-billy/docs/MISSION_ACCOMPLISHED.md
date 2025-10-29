@@ -1,4 +1,4 @@
-# 🎉 MISSION ACCOMPLISHED: Claude.ai Web Integration
+﻿# 🎉 MISSION ACCOMPLISHED: Claude.ai Web Integration
 
 **Dato:** 11. Oktober 2025  
 **Projekt:** Tekup-Billy MCP Server  
@@ -411,8 +411,8 @@ Billy.dk accounting workflows er nu tilgængelige direkte i Claude.ai Web, Claud
 - Discovery: <https://tekup-billy.onrender.com/.well-known/mcp.json>
 
 **GitHub:**
-- Repo: <https://github.com/JonasAbde/Tekup-Billy>
-- Issues: <https://github.com/JonasAbde/Tekup-Billy/issues>
+- Repo: <https://github.com/TekupDK/Tekup-Billy>
+- Issues: <https://github.com/TekupDK/Tekup-Billy/issues>
 - Latest Commit: `526e37c`
 
 **Documentation:**

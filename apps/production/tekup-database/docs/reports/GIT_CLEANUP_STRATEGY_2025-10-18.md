@@ -20,6 +20,7 @@
 | **tekup-cloud-dashboard** | main | 1 | Modified | 🟢 LAV | Commit package-lock |
 
 **Clean repositories (ingen action):**
+
 - ✅ renos-frontend
 - ✅ tekup-ai-assistant  
 - ✅ tekup-unified-docs
@@ -29,7 +30,8 @@
 ## 🔴 KRITISK: Tekup-org (1,058 filer)
 
 ### Problem Analyse
-- **1,048+ deletions** fra `apps/agentscope-backend/venv/` 
+
+- **1,048+ deletions** fra `apps/agentscope-backend/venv/`
 - Python virtual environment tracked i git (MAJOR NO-NO)
 - README.md modified (legitimate change)
 - Blocker for alle andre git operationer
@@ -37,12 +39,14 @@
 ### Løsning: 3-trins cleanup
 
 #### Step 1: Backup current state
+
 ```powershell
 cd "c:\Users\empir\Tekup-org"
 git stash push -m "Backup before venv cleanup - 2025-10-18"
 ```
 
 #### Step 2: Update .gitignore
+
 ```powershell
 # Add to .gitignore hvis ikke allerede der
 echo "`n# Python virtual environments" >> .gitignore
@@ -55,6 +59,7 @@ echo "__pycache__/" >> .gitignore
 ```
 
 #### Step 3: Remove tracked venv files
+
 ```powershell
 # Remove venv from git tracking (NOT from disk)
 git rm -r --cached apps/agentscope-backend/venv/
@@ -76,6 +81,7 @@ git commit -m "docs: Update README.md"
 ```
 
 #### Step 4: Verify cleanup
+
 ```powershell
 git status --short | Measure-Object
 # Should show ~0 files (or only legitimate changes)
@@ -90,6 +96,7 @@ git status --short | Measure-Object
 ### 1. TekupVault (5 filer)
 
 **Ændringer:**
+
 - `packages/vault-core/src/config.ts` (Modified)
 - 4x nye dokumentationsfiler (Untracked)
 
@@ -317,21 +324,25 @@ git push origin main
 ## 🎯 Eksekverings Rækkefølge
 
 ### Phase 1: KRITISK (Gør NU)
+
 1. ✅ **Tekup-org venv cleanup** (1,058 → ~1 filer)
    - Blocker for alt andet
    - Størst risiko for merge conflicts
 
 ### Phase 2: HØJ PRIORITET (I dag)
+
 2. ✅ **TekupVault docs** (5 → 0 filer)
    - Aktiv udvikling, vigtig dokumentation
 3. ✅ **Tekup Google AI feature** (71 → 0 filer)
    - Feature branch klar til merge
 
 ### Phase 3: MEDIUM PRIORITET (I dag/i morgen)
+
 4. ✅ **agent-orchestrator initial** (24 → 0 filer)
 5. ✅ **RendetaljeOS initial** (24 → 0 filer)
 
 ### Phase 4: LAV PRIORITET (Når tid tillader)
+
 6. ✅ **renos-backend** (2 → 0 filer)
 7. ✅ **Tekup-Billy** (2 → 0 filer)
 8. ✅ **tekup-cloud-dashboard** (1 → 0 filer)
@@ -443,18 +454,21 @@ cd "c:\Users\empir"
 
 ## ⚠️ Advarsler & Best Practices
 
-### Før du starter:
+### Før du starter
+
 1. ✅ **Backup alle repos** (eller brug git stash)
 2. ✅ **Review changes** før commit (brug `git diff`)
 3. ✅ **Test at projekter virker** efter cleanup
 
-### Under cleanup:
+### Under cleanup
+
 - 🚫 **Commit aldrig venv/, node_modules/, .env**
 - ✅ **Brug .gitignore** for auto-generated files
 - ✅ **Write descriptive commit messages**
 - ✅ **Commit related changes together**
 
-### Efter cleanup:
+### Efter cleanup
+
 - ✅ **Push til remote** (hvis konfigureret)
 - ✅ **Verify git status** i alle repos
 - ✅ **Update team** hvis shared repositories
@@ -463,7 +477,8 @@ cd "c:\Users\empir"
 
 ## 📊 Forventet Resultat
 
-### Før cleanup:
+### Før cleanup
+
 ```
 Total uncommitted: 1,187 files
 - Tekup-org: 1,058 files (venv pollution)
@@ -476,7 +491,8 @@ Total uncommitted: 1,187 files
 - tekup-cloud-dashboard: 1 file
 ```
 
-### Efter cleanup:
+### Efter cleanup
+
 ```
 Total uncommitted: 0 files ✅
 - All repos clean
@@ -491,12 +507,14 @@ Total uncommitted: 0 files ✅
 ## 🎓 Lærings Punkter
 
 ### Hvad gik galt?
+
 1. **Python venv tracked** - Aldrig commit virtual environments
 2. **Initial commits missing** - 2 repos uden første commit
 3. **Feature branch ikke merged** - Frontend redesign klar men ikke deployed
 4. **Dokumentation ikke committed** - Vigtig session documentation ubeskyttet
 
 ### Hvordan undgår vi dette fremover?
+
 1. ✅ **Always add .gitignore** før første commit
 2. ✅ **Use pre-commit hooks** for validation
 3. ✅ **Regular git status checks** (daily/weekly)

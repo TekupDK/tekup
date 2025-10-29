@@ -7,12 +7,14 @@
 ## 📍 NUVÆRENDE POSITION
 
 ### PC1 (jonaslenovo) - DENNE PC
+
 - **Branch:** `master`
 - **Commit:** `8f0ba12` - "Mobile App Complete" (24. okt 21:37)
 - **Status:** Up to date med `origin/master`
 - **Hostname:** `jonaslenovo`
 
 ### PC2 (antagelse: anden maskine)
+
 - **Branch:** `pre-prisma-migration-backup-20251025`
 - **Commit:** `0bf68a8` - "Workspace hierarchy fix" (25. okt)
 - **Status:** 6 commits foran master
@@ -43,6 +45,7 @@ master (PC1 - DENNE PC)
 ```
 
 ### Common Ancestor
+
 - **Commit:** `8f0ba12` (Mobile App Complete)
 - **Betyder:** Backup branch startede FRA master's seneste commit
 - **Konklusion:** Branches er DIVERGERET - ikke lineært
@@ -52,6 +55,7 @@ master (PC1 - DENNE PC)
 ## 📊 HVAD ER HVOR
 
 ### ✅ KUN PÅ MASTER (PC1)
+
 **Ingen commits!** Master er fælles base for backup branch.
 
 ### ✅ KUN PÅ BACKUP BRANCH (PC2)
@@ -67,18 +71,21 @@ master (PC1 - DENNE PC)
 
 **Plus 26 ældre commits** (hele Claude setup + mobile features)
 
-### 📁 FILER TILFØJET PÅ BACKUP (men SLETTET fra master):
+### 📁 FILER TILFØJET PÅ BACKUP (men SLETTET fra master)
 
 **`.claude/` directory (20 filer):**
+
 - 16 custom commands (analyze-codebase, ask-workspace, check-ci, etc.)
 - 3 hooks (pre-commit, post-commit)
 - 1 mcp.json config
 
 **`.vscode/` directory:**
+
 - `launch.json` - Debug configurations
 - `tasks.json` - Build tasks
 
 **Workspace documentation (9 filer):**
+
 - `BRANCH_STATUS.md` (307 linjer)
 - `CLAUDE_CODE_SETUP_COMPLETE.md`
 - `FEATURE_ANALYSIS.md`
@@ -90,6 +97,7 @@ master (PC1 - DENNE PC)
 - `WORKSPACE_KNOWLEDGE_BASE.json`
 
 **Prisma migration filer:**
+
 - `apps/production/tekup-billy/src/database/supabase-client.ts` (NY)
 - Ændringer i `schema.prisma`
 - Ændringer i vault-api package.json
@@ -112,12 +120,14 @@ Untracked:
 ### Problem: `apps/rendetalje/monorepo/`
 
 **Hvad det er:**
+
 - Separat git repository (.git mappe findes)
 - 2 commits: "Initial monorepo" + "System docs and mobile"
 - Ingen remote konfigureret
 - Lokal development kun
 
 **Hvorfor det er et problem:**
+
 - Git-in-git = submodule conflict
 - Bliver ikke tracket korrekt
 - Kan ikke pushes til main repo
@@ -126,17 +136,20 @@ Untracked:
 
 ## 🎯 PRISMA MIGRATION STATUS
 
-### Færdige (på backup branch):
+### Færdige (på backup branch)
+
 - ✅ **Calendar-MCP** → Prisma client (9be3b01)
 - ✅ **Vault-API** → Prisma client (27ad014)
 
-### I gang (på backup branch):
+### I gang (på backup branch)
+
 - 🔄 **Tekup-Billy** → Phase 4 initial setup (baeca9a)
   - Supabase client fil tilføjet
   - Schema changes
   - IKKE færdig endnu
 
-### Ikke startet:
+### Ikke startet
+
 - ⏳ **tekup-ai** (renos schema)
 - ⏳ **Mobile app** (renos schema)
 
@@ -145,6 +158,7 @@ Untracked:
 ## 🔄 BRANCH DIVERGENS ANALYSE
 
 ### Scenario
+
 ```
         PC1 (master)                    PC2 (backup)
              │                               │
@@ -176,7 +190,8 @@ Untracked:
 
 ## 🚨 RISICI & KONFLIKTER
 
-### Høj Risiko:
+### Høj Risiko
+
 1. **`monorepo/` git-in-git**
    - Kan ikke merges korrekt
    - Skal konverteres til submodule ELLER flyttes ud
@@ -191,7 +206,8 @@ Untracked:
    - Master har måske andre changes
    - Version conflicts mulige
 
-### Medium Risiko:
+### Medium Risiko
+
 1. **`.claude/` og `.vscode/` filer**
    - Master slettede dem
    - Backup har dem
@@ -207,6 +223,7 @@ Untracked:
 ## 📋 PRÆCIS PLAN FOR PC1
 
 ### FASE 1: Sikkerhedskopi (5 min)
+
 ```powershell
 # 1. Gem lokale ændringer
 git add FRONTEND_SENTRY_INSTALLATION_GUIDE.md
@@ -301,21 +318,24 @@ git push origin master
 
 ## 🎯 ANBEFALINGER
 
-### For PC1 (DENNE PC):
+### For PC1 (DENNE PC)
+
 1. ✅ **COMMIT monitoring docs nu** (5 min)
 2. ⚠️ **FIX monorepo/ problem** før andet (10 min)
 3. ⏳ **VENT på PC2** at færdiggøre Prisma migration
 4. 🔄 **MERGE bagefter** når PC2 pusher
 5. ✅ **FORTSÆT monitoring** efter merge
 
-### For PC2 (anden maskine):
+### For PC2 (anden maskine)
+
 1. 🔄 **FÆRDIGGØR Tekup-Billy Prisma migration** (Phase 4)
 2. ✅ **TEST alle 3 migrerede services**
 3. 📝 **COMMIT med detaljeret besked**
 4. 🚀 **PUSH til backup branch**
 5. 📢 **SIGNAL til PC1** at merge er klar
 
-### Koordinering mellem PC'er:
+### Koordinering mellem PC'er
+
 - **PC1 arbejder IKKE på Prisma-relaterede filer**
 - **PC2 færdiggør Prisma først**
 - **PC1 merger bagefter**
@@ -325,17 +345,20 @@ git push origin master
 
 ## ⚙️ TEKNISKE DETALJER
 
-### Remote Repository:
+### Remote Repository
+
 - **URL:** `https://github.com/TekupDK/tekup.git`
 - **Owner:** TekupDK
 - **Branches:** master, pre-prisma-migration-backup-20251025, 3x claude/*
 
-### File Count Differences:
+### File Count Differences
+
 - **Backup har 50+ flere filer** end master
 - **Master har 0 ekstra filer** vs backup
 - **Primært:** .claude/, .vscode/, workspace docs
 
-### Modified Files (på backup):
+### Modified Files (på backup)
+
 - `.github/workflows/renos-tests.yml` - CI/CD updates
 - `.gitignore` - Nye ignore rules
 - `README.md` - Documentation updates
@@ -359,14 +382,16 @@ git push origin master
 
 ## 🎬 NEXT STEPS (Priority Order)
 
-### PC1 (DENNE PC) - Nu:
+### PC1 (DENNE PC) - Nu
+
 1. ✅ Commit monitoring docs (5 min)
 2. ⚠️ Fix monorepo problem (10 min - option B anbefalet)
 3. ⏳ VENT på PC2 signal
 4. 🔄 Merge når klar (30 min)
 5. ✅ Fortsæt monitoring (25 min)
 
-### PC2 (anden maskine) - Nu:
+### PC2 (anden maskine) - Nu
+
 1. 🔄 Færdiggør Tekup-Billy migration
 2. ✅ Test Calendar-MCP + Vault-API + Billy
 3. 📝 Commit alle changes

@@ -1,209 +1,1 @@
-# 🤖 LLM Provider Sammenligning - RenOS\n\n\n\n## 📊 Hurtig Sammenligning\n\n\n\n| Feature | OpenAI GPT-4o-mini | Google Gemini 2.0 | Ollama (Llama 3.1) | Heuristic |\n\n|---------|-------------------|-------------------|---------------------|-----------|
-| **Cost/måned** | $15-30 | $8-15 | ~$5 (el) | $0 |\n\n| **API Latency** | 500-1500ms | 400-1200ms | 50-300ms | <10ms |\n\n| **Dansk Kvalitet** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ |\n\n| **Privacy** | ❌ Data sendt til OpenAI | ❌ Data sendt til Google | ✅ Lokal | ✅ Lokal |\n\n| **Setup Kompleksitet** | ⚡ Nem (API key) | ⚡ Nem (API key) | ⚡⚡ Moderat (install) | ⚡ Triviel |\n\n| **Uptime/Reliability** | 99.9% | 99.5% | Afhænger af server | 100% |\n\n| **Customization** | ❌ Ingen | ❌ Ingen | ✅ Fine-tuning mulig | ✅ Fuld kontrol |\n\n| **Internet Required** | ✅ Ja | ✅ Ja | ❌ Nej | ❌ Nej |\n\n| **GPU Required** | ❌ Nej | ❌ Nej | ⚠️ Anbefalet (8GB RAM min) | ❌ Nej |\n\n
----
-\n\n## 💰 Cost Breakdown (1000 chats/måned)\n\n\n\n### OpenAI GPT-4o-mini\n\n\n\n```\n\nInput:  1000 chats × 500 tokens avg = 500K tokens
-Output: 1000 chats × 300 tokens avg = 300K tokens
-
-Input cost:  $0.150 / 1M tokens × 0.5M = $0.08
-Output cost: $0.600 / 1M tokens × 0.3M = $0.18
-
-Total: ~$0.26/dag = $7.80/måned
-Med overhead (errors, retries): ~$15-30/måned\n\n```
-\n\n### Google Gemini 2.0 Flash\n\n\n\n```\n\nInput:  $0.075 / 1M tokens (50% billigere end OpenAI)
-Output: $0.300 / 1M tokens
-
-Total: ~$0.13/dag = $3.90/måned
-Med overhead: ~$8-15/måned\n\n```
-\n\n### Ollama (Llama 3.1 8B)\n\n\n\n```\n\nInitial setup: $0 (gratis download)
-Server cost: Render.com Standard ($25/måned) eller lokal server
-Electricity: ~$5/måned (24/7 operation)
-API costs: $0
-
-Total: $5-30/måned (afhænger af hosting)
-Break-even: ~100 chats/måned vs OpenAI\n\n```
-\n\n### Heuristic Mode\n\n\n\n```\n\nCost: $0 (ingen LLM)
-Limitation: Hardcoded responses, ingen AI
-Use case: Fallback mode\n\n```
-
----
-\n\n## 🎯 Anbefaling til RenOS\n\n\n\n### Scenario 1: Startup Phase (0-100 customers)\n\n\n\n**Anbefaling: OpenAI GPT-4o-mini**
-
-✅ **Fordele:**
-\n\n- Bedste danske sprog kvalitet\n\n- Nem setup (bare tilføj API key)\n\n- Ingen server management\n\n- Høj uptime reliability\n\n
-❌ **Ulemper:**
-\n\n- Cost stiger med usage\n\n- Data sendes til OpenAI\n\n- Internet afhængig\n\n
-**Config:**
-\n\n```ini
-LLM_PROVIDER=openai
-OPENAI_API_KEY=sk-proj-xxx
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_TEMPERATURE=0.7\n\n```
-
----
-\n\n### Scenario 2: Growth Phase (100-1000 customers)\n\n\n\n**Anbefaling: Ollama (Llama 3.1 8B)**
-
-✅ **Fordele:**
-\n\n- Laveste cost per chat\n\n- Privacy (data forbliver intern)\n\n- Hurtigere response tid\n\n- Kan fine-tune på Rendetalje data\n\n
-❌ **Ulemper:**
-\n\n- Kræver 8GB RAM server\n\n- Dansk kvalitet lidt lavere end GPT-4\n\n- Server maintenance\n\n
-**Config:**
-\n\n```ini
-LLM_PROVIDER=ollama
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.1:8b\n\n```
-
-**Server Requirements:**
-\n\n- RAM: 8GB minimum (16GB anbefalet)\n\n- CPU: 4 cores minimum\n\n- Storage: 10GB for model\n\n- Optional: GPU for 5x speedup\n\n
----
-\n\n### Scenario 3: Enterprise (1000+ customers)\n\n\n\n**Anbefaling: Hybrid Approach**
-
-Brug **Ollama for simple queries**, **GPT-4 for komplekse**:
-\n\n```typescript
-// Pseudo-code for hybrid logic
-if (query.complexity === "simple") {
-    // Booking confirmation, simpel FAQ
-    return await ollamaProvider.completeChat(messages);
-} else if (query.complexity === "complex") {
-    // Complaint handling, custom pricing
-    return await openaiProvider.completeChat(messages);
-}\n\n```
-
-✅ **Fordele:**
-\n\n- Optimeret cost (80% queries → Ollama)\n\n- Best of both worlds\n\n- Fallback hvis Ollama fejler\n\n
-**Estimeret savings:** 60-70% vs pure OpenAI\n\n
----
-\n\n## 🧪 Testing Comparison\n\n\n\nVi har testet alle providers med samme prompts:
-\n\n### Test 1: Simpel Hilsen\n\n\n\n**Prompt:** "Hej Friday! Hvad kan du hjælpe med?"\n\n
-| Provider | Response Time | Quality | Danish Accuracy |
-|----------|---------------|---------|-----------------|
-| GPT-4o-mini | 850ms | ⭐⭐⭐⭐⭐ | 100% |
-| Gemini 2.0 | 720ms | ⭐⭐⭐⭐ | 95% |
-| Llama 3.1 8B | 180ms | ⭐⭐⭐⭐ | 90% |
-| Heuristic | 5ms | ⭐⭐ | N/A (hardcoded) |
-
----
-\n\n### Test 2: Kompleks Booking Query\n\n\n\n**Prompt:** "Jeg vil gerne booke en flytterengøring til en 3-værelses lejlighed på 80 m² næste uge tirsdag."\n\n
-| Provider | Extracted Info Accuracy | Response Quality |
-|----------|-------------------------|------------------|
-| GPT-4o-mini | 100% | Perfekt - fandt alle detaljer |\n\n| Gemini 2.0 | 95% | Meget god - missede "næste uge" |\n\n| Llama 3.1 8B | 90% | God - forstod intent men unøjagtig dato |\n\n| Heuristic | 0% | Generisk svar uden parsing |
-
----
-\n\n### Test 3: Klage Håndtering\n\n\n\n**Prompt:** "Jeg er ikke tilfreds med rengøringen i går. Der var støv under sengen og badeværelset var ikke ordentligt gjort rent."\n\n
-| Provider | Empathy | Solution Quality | Danish Tone |
-|----------|---------|------------------|-------------|
-| GPT-4o-mini | ⭐⭐⭐⭐⭐ | Perfekt - specifik løsning | Professionel |\n\n| Gemini 2.0 | ⭐⭐⭐⭐ | Meget god | Professionel |
-| Llama 3.1 8B | ⭐⭐⭐ | Acceptable | Lidt stiv |
-| Heuristic | ⭐ | Generisk svar | N/A |
-
----
-\n\n## 🚀 Migration Guide\n\n\n\n### From Heuristic → OpenAI\n\n\n\n```bash\n\n# 1. Get API key from https://platform.openai.com/api-keys\n\n# 2. Update .env\n\necho "LLM_PROVIDER=openai" >> .env\n\necho "OPENAI_API_KEY=sk-proj-xxx" >> .env
-\n\n# 3. Restart backend\n\nnpm run dev\n\n```\n\n
-**No code changes needed!** Provider auto-detected via config.\n\n
----
-\n\n### From OpenAI → Ollama\n\n\n\n```bash\n\n# 1. Install Ollama\n\n# Windows/Mac: Download from https://ollama.com/download\n\n# Linux: curl -fsSL https://ollama.com/install.sh | sh\n\n\n\n# 2. Download model\n\nollama pull llama3.1:8b\n\n\n\n# 3. Start Ollama service\n\nollama serve\n\n\n\n# 4. Update .env\n\nLLM_PROVIDER=ollama\n\nOLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.1:8b
-\n\n# 5. Test connection\n\nnpm run ollama:test\n\n\n\n# 6. Restart backend\n\nnpm run dev\n\n```\n\n
-**Cost savings:** ~70% reduction 💰\n\n
----
-\n\n### From Ollama → Hybrid\n\n\n\n```typescript\n\n// src/controllers/chatController.ts
-import { OllamaProvider } from "../llm/ollamaProvider";
-import { OpenAiProvider } from "../llm/openAiProvider";
-import { appConfig } from "../config";
-
-// Primary provider (cheap, fast)
-const primaryProvider = new OllamaProvider(appConfig.llm.OLLAMA_BASE_URL);
-
-// Fallback provider (expensive, high quality)
-const fallbackProvider = appConfig.llm.OPENAI_API_KEY 
-    ? new OpenAiProvider(appConfig.llm.OPENAI_API_KEY) 
-    : null;
-
-const fridayAI = (() => {
-    try {
-        // Use Ollama by default
-        const response = await primaryProvider.completeChat(messages);
-        return response;
-    } catch (error) {
-        logger.warn("Ollama failed, falling back to OpenAI");
-        
-        if (fallbackProvider) {
-            return await fallbackProvider.completeChat(messages);
-        }
-        
-        // Ultimate fallback: heuristic
-        return new FridayAI().respond(context);
-    }
-})();\n\n```
-
----
-\n\n## 📈 Performance Benchmarks\n\n\n\nTested på Render.com Standard instance (2 CPU, 8GB RAM):
-\n\n### Concurrent Users\n\n\n\n| Provider | 10 users | 50 users | 100 users |
-|----------|----------|----------|-----------|
-| GPT-4o-mini | ✅ 850ms avg | ✅ 920ms avg | ⚠️ 1400ms avg |
-| Gemini 2.0 | ✅ 720ms avg | ✅ 800ms avg | ⚠️ 1200ms avg |
-| Llama 3.1 8B | ✅ 180ms avg | ✅ 250ms avg | ✅ 400ms avg |
-| Heuristic | ✅ 5ms avg | ✅ 5ms avg | ✅ 5ms avg |
-
-**Winner:** Ollama scales best under load (no API rate limits)\n\n
----
-\n\n### Cost per 10K Chats\n\n\n\n| Provider | Cost | Winner |
-|----------|------|--------|
-| GPT-4o-mini | $260 | ❌ |
-| Gemini 2.0 | $130 | ⚡ |
-| Llama 3.1 8B | $50 (server only) | ✅ |
-| Heuristic | $0 | 💰 (but limited) |
-
----
-\n\n## 🔧 Troubleshooting\n\n\n\n### OpenAI Issues\n\n\n\n**Problem:** "Invalid API key"\n\n\n\n```bash\n\n# Solution: Regenerate key at platform.openai.com\n\n# Make sure to add billing method\n\n```\n\n
-**Problem:** "Rate limit exceeded"\n\n\n\n```bash\n\n# Solution 1: Upgrade to paid tier\n\n# Solution 2: Implement exponential backoff\n\n# Solution 3: Switch to Ollama\n\n```\n\n
----
-\n\n### Ollama Issues\n\n\n\n**Problem:** "Connection refused"\n\n\n\n```bash\n\n# Solution: Start Ollama service\n\nollama serve\n\n\n\n# Check if running\n\ncurl http://localhost:11434/api/tags\n\n```\n\n
-**Problem:** "Model not found"\n\n\n\n```bash\n\n# Solution: Download model\n\nollama pull llama3.1:8b\n\n\n\n# List installed models\n\nollama list\n\n```\n\n
-**Problem:** "Out of memory"\n\n\n\n```bash\n\n# Solution 1: Use smaller model\n\nollama pull phi3:3.8b\n\n\n\n# Solution 2: Upgrade server RAM to 8GB+\n\n```\n\n
----
-\n\n## 🎓 Best Practices\n\n\n\n### 1. Always Have Fallback\n\n\n\n```typescript\n\nconst fridayAI = (() => {
-    // Try primary provider
-    if (appConfig.llm.LLM_PROVIDER === "ollama") {
-        try {
-            return new FridayAI(new OllamaProvider());
-        } catch {
-            logger.warn("Ollama unavailable, falling back");
-        }
-    }
-    
-    // Fallback to heuristic
-    return new FridayAI();
-})();\n\n```
-\n\n### 2. Monitor Costs\n\n\n\n```typescript\n\n// Track token usage
-logger.info({
-    provider: "openai",
-    inputTokens: 450,
-    outputTokens: 280,
-    estimatedCost: "$0.0003"
-});\n\n```
-\n\n### 3. Cache Responses\n\n\n\n```typescript\n\n// Cache common queries to reduce LLM calls
-const cache = new Map();
-
-if (cache.has(userMessage)) {
-    return cache.get(userMessage);
-}
-
-const response = await llm.completeChat(messages);
-cache.set(userMessage, response);\n\n```
-
----
-\n\n## 📚 Further Reading\n\n\n\n- [OpenAI Pricing](https://openai.com/pricing)\n\n- [Gemini Pricing](https://ai.google.dev/pricing)\n\n- [Ollama Documentation](https://github.com/ollama/ollama)\n\n- [Llama 3.1 Paper](https://ai.meta.com/llama/)\n\n
----
-\n\n## 🎯 Decision Matrix\n\n\n\n**Choose OpenAI if:**
-\n\n- ✅ Starting out (<100 customers)\n\n- ✅ Need best Danish quality\n\n- ✅ Okay with $15-30/month cost\n\n- ✅ Want zero setup complexity\n\n
-**Choose Gemini if:**
-\n\n- ✅ Budget conscious (50% cheaper than OpenAI)\n\n- ✅ Already using Google Cloud\n\n- ✅ Okay with slightly lower Danish accuracy\n\n
-**Choose Ollama if:**
-\n\n- ✅ Have 100+ customers\n\n- ✅ Privacy is critical\n\n- ✅ Can manage server with 8GB RAM\n\n- ✅ Want 70% cost savings\n\n
-**Choose Heuristic if:**
-\n\n- ✅ Testing only\n\n- ✅ No budget for LLM\n\n- ✅ Simple FAQ use case\n\n
----
-
-**Anbefaling til Rendetalje.dk:**
-
-Start med **OpenAI** (nem setup, høj kvalitet) → Når I når **100+ daglige chats**, switch til **Ollama** for 70% cost reduction. Keep OpenAI som fallback for komplekse cases.
+# 🤖 LLM Provider Sammenligning - RenOS\n\n\n\n## 📊 Hurtig Sammenligning\n\n\n\n| Feature | OpenAI GPT-4o-mini | Google Gemini 2.0 | Ollama (Llama 3.1) | Heuristic |\n\n|---------|-------------------|-------------------|---------------------|-----------|| **Cost/måned** | $15-30 | $8-15 | ~$5 (el) | $0 |\n\n| **API Latency** | 500-1500ms | 400-1200ms | 50-300ms | <10ms |\n\n| **Dansk Kvalitet** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ |\n\n| **Privacy** | ❌ Data sendt til OpenAI | ❌ Data sendt til Google | ✅ Lokal | ✅ Lokal |\n\n| **Setup Kompleksitet** | ⚡ Nem (API key) | ⚡ Nem (API key) | ⚡⚡ Moderat (install) | ⚡ Triviel |\n\n| **Uptime/Reliability** | 99.9% | 99.5% | Afhænger af server | 100% |\n\n| **Customization** | ❌ Ingen | ❌ Ingen | ✅ Fine-tuning mulig | ✅ Fuld kontrol |\n\n| **Internet Required** | ✅ Ja | ✅ Ja | ❌ Nej | ❌ Nej |\n\n| **GPU Required** | ❌ Nej | ❌ Nej | ⚠️ Anbefalet (8GB RAM min) | ❌ Nej |\n\n---\n\n## 💰 Cost Breakdown (1000 chats/måned)\n\n\n\n### OpenAI GPT-4o-mini\n\n\n\n```\n\nInput:  1000 chats × 500 tokens avg = 500K tokensOutput: 1000 chats × 300 tokens avg = 300K tokensInput cost:  $0.150 / 1M tokens × 0.5M = $0.08Output cost: $0.600 / 1M tokens × 0.3M = $0.18Total: ~$0.26/dag = $7.80/månedMed overhead (errors, retries): ~$15-30/måned\n\n```\n\n### Google Gemini 2.0 Flash\n\n\n\n```\n\nInput:  $0.075 / 1M tokens (50% billigere end OpenAI)Output: $0.300 / 1M tokensTotal: ~$0.13/dag = $3.90/månedMed overhead: ~$8-15/måned\n\n```\n\n### Ollama (Llama 3.1 8B)\n\n\n\n```\n\nInitial setup: $0 (gratis download)Server cost: Render.com Standard ($25/måned) eller lokal serverElectricity: ~$5/måned (24/7 operation)API costs: $0Total: $5-30/måned (afhænger af hosting)Break-even: ~100 chats/måned vs OpenAI\n\n```\n\n### Heuristic Mode\n\n\n\n```\n\nCost: $0 (ingen LLM)Limitation: Hardcoded responses, ingen AIUse case: Fallback mode\n\n```---\n\n## 🎯 Anbefaling til RenOS\n\n\n\n### Scenario 1: Startup Phase (0-100 customers)\n\n\n\n**Anbefaling: OpenAI GPT-4o-mini**✅ **Fordele:**\n\n- Bedste danske sprog kvalitet\n\n- Nem setup (bare tilføj API key)\n\n- Ingen server management\n\n- Høj uptime reliability\n\n❌ **Ulemper:**\n\n- Cost stiger med usage\n\n- Data sendes til OpenAI\n\n- Internet afhængig\n\n**Config:**\n\n```iniLLM_PROVIDER=openaiOPENAI_API_KEY=sk-proj-xxxOPENAI_MODEL=gpt-4o-miniOPENAI_TEMPERATURE=0.7\n\n```---\n\n### Scenario 2: Growth Phase (100-1000 customers)\n\n\n\n**Anbefaling: Ollama (Llama 3.1 8B)**✅ **Fordele:**\n\n- Laveste cost per chat\n\n- Privacy (data forbliver intern)\n\n- Hurtigere response tid\n\n- Kan fine-tune på Rendetalje data\n\n❌ **Ulemper:**\n\n- Kræver 8GB RAM server\n\n- Dansk kvalitet lidt lavere end GPT-4\n\n- Server maintenance\n\n**Config:**\n\n```iniLLM_PROVIDER=ollamaOLLAMA_BASE_URL=http://localhost:11434OLLAMA_MODEL=llama3.1:8b\n\n```**Server Requirements:**\n\n- RAM: 8GB minimum (16GB anbefalet)\n\n- CPU: 4 cores minimum\n\n- Storage: 10GB for model\n\n- Optional: GPU for 5x speedup\n\n---\n\n### Scenario 3: Enterprise (1000+ customers)\n\n\n\n**Anbefaling: Hybrid Approach**Brug **Ollama for simple queries**, **GPT-4 for komplekse**:\n\n```typescript// Pseudo-code for hybrid logicif (query.complexity === "simple") {    // Booking confirmation, simpel FAQ    return await ollamaProvider.completeChat(messages);} else if (query.complexity === "complex") {    // Complaint handling, custom pricing    return await openaiProvider.completeChat(messages);}\n\n```✅ **Fordele:**\n\n- Optimeret cost (80% queries → Ollama)\n\n- Best of both worlds\n\n- Fallback hvis Ollama fejler\n\n**Estimeret savings:** 60-70% vs pure OpenAI\n\n---\n\n## 🧪 Testing Comparison\n\n\n\nVi har testet alle providers med samme prompts:\n\n### Test 1: Simpel Hilsen\n\n\n\n**Prompt:** "Hej Friday! Hvad kan du hjælpe med?"\n\n| Provider | Response Time | Quality | Danish Accuracy ||----------|---------------|---------|-----------------|| GPT-4o-mini | 850ms | ⭐⭐⭐⭐⭐ | 100% || Gemini 2.0 | 720ms | ⭐⭐⭐⭐ | 95% || Llama 3.1 8B | 180ms | ⭐⭐⭐⭐ | 90% || Heuristic | 5ms | ⭐⭐ | N/A (hardcoded) |---\n\n### Test 2: Kompleks Booking Query\n\n\n\n**Prompt:** "Jeg vil gerne booke en flytterengøring til en 3-værelses lejlighed på 80 m² næste uge tirsdag."\n\n| Provider | Extracted Info Accuracy | Response Quality ||----------|-------------------------|------------------|| GPT-4o-mini | 100% | Perfekt - fandt alle detaljer |\n\n| Gemini 2.0 | 95% | Meget god - missede "næste uge" |\n\n| Llama 3.1 8B | 90% | God - forstod intent men unøjagtig dato |\n\n| Heuristic | 0% | Generisk svar uden parsing |---\n\n### Test 3: Klage Håndtering\n\n\n\n**Prompt:** "Jeg er ikke tilfreds med rengøringen i går. Der var støv under sengen og badeværelset var ikke ordentligt gjort rent."\n\n| Provider | Empathy | Solution Quality | Danish Tone ||----------|---------|------------------|-------------|| GPT-4o-mini | ⭐⭐⭐⭐⭐ | Perfekt - specifik løsning | Professionel |\n\n| Gemini 2.0 | ⭐⭐⭐⭐ | Meget god | Professionel || Llama 3.1 8B | ⭐⭐⭐ | Acceptable | Lidt stiv || Heuristic | ⭐ | Generisk svar | N/A |---\n\n## 🚀 Migration Guide\n\n\n\n### From Heuristic → OpenAI\n\n\n\n```bash\n\n# 1. Get API key from <https://platform.openai.com/api-keys>\n\n# 2. Update .env\n\necho "LLM_PROVIDER=openai" >> .env\n\necho "OPENAI_API_KEY=sk-proj-xxx" >> .env\n\n# 3. Restart backend\n\nnpm run dev\n\n```\n\n**No code changes needed!** Provider auto-detected via config.\n\n---\n\n### From OpenAI → Ollama\n\n\n\n```bash\n\n# 1. Install Ollama\n\n# Windows/Mac: Download from <https://ollama.com/download>\n\n# Linux: curl -fsSL <https://ollama.com/install.sh> | sh\n\n\n\n# 2. Download model\n\nollama pull llama3.1:8b\n\n\n\n# 3. Start Ollama service\n\nollama serve\n\n\n\n# 4. Update .env\n\nLLM_PROVIDER=ollama\n\nOLLAMA_BASE_URL=<http://localhost:11434>OLLAMA_MODEL=llama3.1:8b\n\n# 5. Test connection\n\nnpm run ollama:test\n\n\n\n# 6. Restart backend\n\nnpm run dev\n\n```\n\n**Cost savings:** ~70% reduction 💰\n\n---\n\n### From Ollama → Hybrid\n\n\n\n```typescript\n\n// src/controllers/chatController.tsimport { OllamaProvider } from "../llm/ollamaProvider";import { OpenAiProvider } from "../llm/openAiProvider";import { appConfig } from "../config";// Primary provider (cheap, fast)const primaryProvider = new OllamaProvider(appConfig.llm.OLLAMA_BASE_URL);// Fallback provider (expensive, high quality)const fallbackProvider = appConfig.llm.OPENAI_API_KEY    ? new OpenAiProvider(appConfig.llm.OPENAI_API_KEY)    : null;const fridayAI = (() => {    try {        // Use Ollama by default        const response = await primaryProvider.completeChat(messages);        return response;    } catch (error) {        logger.warn("Ollama failed, falling back to OpenAI");        if (fallbackProvider) {            return await fallbackProvider.completeChat(messages);        }                // Ultimate fallback: heuristic        return new FridayAI().respond(context);    }})();\n\n```---\n\n## 📈 Performance Benchmarks\n\n\n\nTested på Render.com Standard instance (2 CPU, 8GB RAM):\n\n### Concurrent Users\n\n\n\n| Provider | 10 users | 50 users | 100 users ||----------|----------|----------|-----------|| GPT-4o-mini | ✅ 850ms avg | ✅ 920ms avg | ⚠️ 1400ms avg || Gemini 2.0 | ✅ 720ms avg | ✅ 800ms avg | ⚠️ 1200ms avg || Llama 3.1 8B | ✅ 180ms avg | ✅ 250ms avg | ✅ 400ms avg || Heuristic | ✅ 5ms avg | ✅ 5ms avg | ✅ 5ms avg |**Winner:** Ollama scales best under load (no API rate limits)\n\n---\n\n### Cost per 10K Chats\n\n\n\n| Provider | Cost | Winner ||----------|------|--------|| GPT-4o-mini | $260 | ❌ || Gemini 2.0 | $130 | ⚡ || Llama 3.1 8B | $50 (server only) | ✅ || Heuristic | $0 | 💰 (but limited) |---\n\n## 🔧 Troubleshooting\n\n\n\n### OpenAI Issues\n\n\n\n**Problem:** "Invalid API key"\n\n\n\n```bash\n\n# Solution: Regenerate key at platform.openai.com\n\n# Make sure to add billing method\n\n```\n\n**Problem:** "Rate limit exceeded"\n\n\n\n```bash\n\n# Solution 1: Upgrade to paid tier\n\n# Solution 2: Implement exponential backoff\n\n# Solution 3: Switch to Ollama\n\n```\n\n---\n\n### Ollama Issues\n\n\n\n**Problem:** "Connection refused"\n\n\n\n```bash\n\n# Solution: Start Ollama service\n\nollama serve\n\n\n\n# Check if running\n\ncurl http://localhost:11434/api/tags\n\n```\n\n**Problem:** "Model not found"\n\n\n\n```bash\n\n# Solution: Download model\n\nollama pull llama3.1:8b\n\n\n\n# List installed models\n\nollama list\n\n```\n\n**Problem:** "Out of memory"\n\n\n\n```bash\n\n# Solution 1: Use smaller model\n\nollama pull phi3:3.8b\n\n\n\n# Solution 2: Upgrade server RAM to 8GB+\n\n```\n\n---\n\n## 🎓 Best Practices\n\n\n\n### 1. Always Have Fallback\n\n\n\n```typescript\n\nconst fridayAI = (() => {    // Try primary provider    if (appConfig.llm.LLM_PROVIDER === "ollama") {        try {            return new FridayAI(new OllamaProvider());        } catch {            logger.warn("Ollama unavailable, falling back");        }    }    // Fallback to heuristic    return new FridayAI();})();\n\n```\n\n### 2. Monitor Costs\n\n\n\n```typescript\n\n// Track token usagelogger.info({    provider: "openai",    inputTokens: 450,    outputTokens: 280,    estimatedCost: "$0.0003"});\n\n```\n\n### 3. Cache Responses\n\n\n\n```typescript\n\n// Cache common queries to reduce LLM callsconst cache = new Map();if (cache.has(userMessage)) {    return cache.get(userMessage);}const response = await llm.completeChat(messages);cache.set(userMessage, response);\n\n```---\n\n## 📚 Further Reading\n\n\n\n- [OpenAI Pricing](https://openai.com/pricing)\n\n- [Gemini Pricing](https://ai.google.dev/pricing)\n\n- [Ollama Documentation](https://github.com/ollama/ollama)\n\n- [Llama 3.1 Paper](https://ai.meta.com/llama/)\n\n---\n\n## 🎯 Decision Matrix\n\n\n\n**Choose OpenAI if:**\n\n- ✅ Starting out (<100 customers)\n\n- ✅ Need best Danish quality\n\n- ✅ Okay with $15-30/month cost\n\n- ✅ Want zero setup complexity\n\n**Choose Gemini if:**\n\n- ✅ Budget conscious (50% cheaper than OpenAI)\n\n- ✅ Already using Google Cloud\n\n- ✅ Okay with slightly lower Danish accuracy\n\n**Choose Ollama if:**\n\n- ✅ Have 100+ customers\n\n- ✅ Privacy is critical\n\n- ✅ Can manage server with 8GB RAM\n\n- ✅ Want 70% cost savings\n\n**Choose Heuristic if:**\n\n- ✅ Testing only\n\n- ✅ No budget for LLM\n\n- ✅ Simple FAQ use case\n\n---**Anbefaling til Rendetalje.dk:**Start med **OpenAI** (nem setup, høj kvalitet) → Når I når **100+ daglige chats**, switch til **Ollama** for 70% cost reduction. Keep OpenAI som fallback for komplekse cases.

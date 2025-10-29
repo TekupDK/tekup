@@ -9,9 +9,11 @@ This server enables AI assistants to intelligently search, analyze, and understa
 ## Tools
 
 ### 1. `find_code`
+
 Search for code files by description or functionality.
 
 **Input:**
+
 - `query` (string, required): Search query describing the code you're looking for
 - `filePattern` (string, optional): Glob pattern to filter files (e.g., `**/*.ts` for TypeScript only)
 - `limit` (number, optional): Maximum results (1-20, default: 5)
@@ -28,9 +30,11 @@ Search for code files by description or functionality.
 **Returns:** Array of files with relevance scores, code snippets, and summaries.
 
 ### 2. `analyze_file`
+
 Get detailed insights about a specific file's structure, dependencies, and components.
 
 **Input:**
+
 - `filePath` (string, required): Relative path to the file
 
 **Example:**
@@ -43,9 +47,11 @@ Get detailed insights about a specific file's structure, dependencies, and compo
 **Returns:** File analysis including lines, size, dependencies, and structural summary.
 
 ### 3. `find_similar_code`
+
 Find code files similar to a given snippet. Useful for finding patterns or refactoring opportunities.
 
 **Input:**
+
 - `codeSnippet` (string, required): Code snippet to find similar code for
 - `filePattern` (string, optional): Glob pattern to filter files
 - `limit` (number, optional): Maximum results (1-10, default: 3)
@@ -61,9 +67,11 @@ Find code files similar to a given snippet. Useful for finding patterns or refac
 **Returns:** Files with similar code patterns.
 
 ### 4. `get_file_dependencies`
+
 Analyze and list all imports/dependencies of a file.
 
 **Input:**
+
 - `filePath` (string, required): Relative path to the file
 
 **Example:**
@@ -78,6 +86,7 @@ Analyze and list all imports/dependencies of a file.
 ## Environment Variables
 
 ### Required
+
 - `CODE_SEARCH_ROOT`: Root directory to search for code files. Defaults to current working directory.
 
 ## Supported File Types
@@ -110,24 +119,28 @@ Add to your MCP client configuration (e.g., `.kilocode/cli/mcp.json`):
 ## Use Cases
 
 ### 1. Code Discovery
+
 "Find all authentication-related middleware in the backend"
 ```typescript
 find_code({ query: "authentication middleware", filePattern: "apps/backend/**/*.ts" })
 ```
 
 ### 2. Refactoring
+
 "Find all files that use the old database connection pattern"
 ```typescript
 find_similar_code({ codeSnippet: "const db = require('./db'); db.connect();" })
 ```
 
 ### 3. Understanding Dependencies
+
 "What does the main API file depend on?"
 ```typescript
 get_file_dependencies({ filePath: "apps/backend/src/main.ts" })
 ```
 
 ### 4. File Analysis
+
 "Analyze the structure of the user service"
 ```typescript
 analyze_file({ filePath: "apps/backend/src/services/user.service.ts" })

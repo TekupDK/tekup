@@ -1,0 +1,166 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database (Local Development)
+  postgres:
+    image: postgres:15-alpine
+    container_name: rendetalje-postgres
+    environment:
+      POSTGRES_DB: rendetalje
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: local_password_2025
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # pgAdmin4 - SQL Editor and Database Management
+  pgadmin:
+    image: dpage/pgadmin4:7.8
+    container_name: rendetalje-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@rendetalje.dk
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./docker/pgadmin-servers.json:/pgadmin4/servers.json
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: rendetalje-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Backend Service (NestJS)
+  backend:
+    build:
+      context: ./backend-nestjs
+      dockerfile: Dockerfile
+    container_name: rendetalje-backend
+    environment:
+      NODE_ENV: development
+      PORT: "3001"
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:local_password_2025@postgres:5432/rendetalje}
+      REDIS_URL: redis://redis:6379
+      SUPABASE_URL: ${SUPABASE_URL:-https://oaevagdgrasfppbrxbey.supabase.co}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
+      JWT_SECRET: ${JWT_SECRET:-development-jwt-secret-change-in-production}
+      LOG_LEVEL: info
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend-nestjs:/app
+      - /app/node_modules
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: sh -c "npm run prisma:generate && npm run start:dev"
+
+  # Frontend Service (NextJS)
+  frontend:
+    build:
+      context: ./frontend-nextjs
+      dockerfile: Dockerfile.dev
+    container_name: rendetalje-frontend
+    environment:
+      NODE_ENV: development
+      PORT: "3002"
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      NEXT_PUBLIC_SUPABASE_URL: ${SUPABASE_URL:-https://oaevagdgrasfppbrxbey.supabase.co}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./frontend-nextjs:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+
+  # Rendetalje MCP Server
+  mcp:
+    build:
+      context: ./mcp
+      dockerfile: Dockerfile
+    container_name: rendetalje-mcp
+    environment:
+      NODE_ENV: development
+      PORT: "3003"
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:local_password_2025@postgres:5432/rendetalje}
+      SUPABASE_URL: ${SUPABASE_URL:-https://oaevagdgrasfppbrxbey.supabase.co}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./mcp:/app
+      - /app/node_modules
+    networks:
+      - rendetalje-network
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: sh -c "npm run dev"
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  rendetalje-network:
+    driver: bridge
+    name: rendetalje-network

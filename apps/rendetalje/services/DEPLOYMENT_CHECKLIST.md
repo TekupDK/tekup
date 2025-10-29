@@ -18,7 +18,7 @@
 
 ### **TRIN 1: Opret Sentry Konto (5 minutter)**
 
-1. Gå til **https://sentry.io/signup/**
+1. Gå til **<https://sentry.io/signup/>**
 2. Opret gratis konto (supports Google SSO)
 3. Opret **to projekter**:
    - **Backend Project**: Platform = Node.js
@@ -34,7 +34,7 @@
 
 ### **TRIN 2: Deploy Database Migration (3 minutter)**
 
-1. Gå til **https://supabase.com**
+1. Gå til **<https://supabase.com>**
 2. Vælg dit projekt → **SQL Editor**
 3. **Kopiér HELE indholdet** fra:
    ```
@@ -44,6 +44,7 @@
 5. ✅ Bekræft success: "Success. No rows returned"
 
 #### **Verificér Migration:**
+
 ```sql
 -- Kør dette i SQL Editor:
 SELECT 
@@ -58,12 +59,13 @@ WHERE table_name = 'application_logs';
 
 ### **TRIN 3: Tilføj Environment Variables til Render.com (5 minutter)**
 
-1. Gå til **https://dashboard.render.com**
+1. Gå til **<https://dashboard.render.com>**
 2. Vælg din **Backend Service**
 3. Gå til **Environment** tab
 4. Tilføj følgende nye variabler:
 
 #### **Backend Environment Variables:**
+
 ```bash
 # Sentry Configuration
 SENTRY_DSN=<din-backend-dsn-fra-trin-1>
@@ -78,6 +80,7 @@ LOG_LEVEL=info
 6. Tilføj følgende:
 
 #### **Frontend Environment Variables:**
+
 ```bash
 # Sentry Configuration (VIGTIGT: Skal starte med NEXT_PUBLIC_)
 NEXT_PUBLIC_SENTRY_DSN=<din-frontend-dsn-fra-trin-1>
@@ -117,6 +120,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ### **TRIN 5: Test Lokalt (5 minutter)**
 
 #### **Test Backend:**
+
 ```powershell
 # 1. Sæt miljøvariable (PowerShell)
 $env:SENTRY_DSN="<din-backend-dsn>"
@@ -136,11 +140,13 @@ curl http://localhost:3000/test-sentry
 ```
 
 #### **Verificér i Sentry:**
-1. Gå til **https://sentry.io**
+
+1. Gå til **<https://sentry.io>**
 2. Vælg **Backend Project** → **Issues**
 3. Du skulle se fejlen: "Test Sentry Error from /test-sentry"
 
 #### **Test Frontend:**
+
 ```powershell
 # 1. Opret .env.local fil i frontend directory
 cd apps/rendetalje/services/frontend-nextjs
@@ -159,6 +165,7 @@ npm run start
 ### **TRIN 6: Deploy til Production (3 minutter)**
 
 #### **Backend Deployment:**
+
 1. Commit kode til GitHub:
    ```powershell
    git add .
@@ -171,6 +178,7 @@ npm run start
 3. **Monitor deploy log** på Render dashboard
 
 #### **Frontend Deployment:**
+
 1. Push code (samme som ovenfor)
 2. Frontend deployes automatisk
 
@@ -178,11 +186,12 @@ npm run start
 
 ### **TRIN 7: Setup UptimeRobot (5 minutter)**
 
-1. Gå til **https://uptimerobot.com/signUp**
+1. Gå til **<https://uptimerobot.com/signUp>**
 2. Opret gratis konto (50 monitors inkluderet)
 3. Klik **Add New Monitor**
 
 #### **Monitor 1: Backend Health Check**
+
 ```
 Monitor Type:    HTTP(s)
 Friendly Name:   Rendetalje Backend Health
@@ -192,6 +201,7 @@ Alert Contacts:  <din-email>
 ```
 
 #### **Monitor 2: Frontend Availability**
+
 ```
 Monitor Type:    HTTP(s)
 Friendly Name:   Rendetalje Frontend
@@ -207,11 +217,13 @@ Alert Contacts:  <din-email>
 ### **TRIN 8: Verificér Alt Virker (5 minutter)**
 
 #### **1. Check Sentry Dashboards:**
-- **Backend**: https://sentry.io → Backend Project → Issues
-- **Frontend**: https://sentry.io → Frontend Project → Issues
+
+- **Backend**: <https://sentry.io> → Backend Project → Issues
+- **Frontend**: <https://sentry.io> → Frontend Project → Issues
 - Begge skulle være tomme eller kun have test-fejl
 
 #### **2. Check Supabase Logs:**
+
 ```sql
 -- Gå til Supabase SQL Editor og kør:
 SELECT * FROM application_logs 
@@ -222,6 +234,7 @@ LIMIT 10;
 ```
 
 #### **3. Check UptimeRobot:**
+
 - Gå til dashboard → Du skulle se **two green monitors**
 
 #### **4. Test Error Tracking Live:**
@@ -238,6 +251,7 @@ curl https://<din-backend-url>/test-sentry
 ## 🎯 Success Kriterier
 
 ✅ **Alle checks er grønne:**
+
 - [ ] Sentry backend project modtager fejl
 - [ ] Sentry frontend project modtager fejl
 - [ ] Supabase `application_logs` tabel indeholder data
@@ -250,15 +264,18 @@ curl https://<din-backend-url>/test-sentry
 ## 📊 Hvad Du Nu Har
 
 ### **Dashboards:**
+
 - **Sentry**: Real-time error tracking + performance monitoring
 - **UptimeRobot**: Uptime stats + downtime alerts
 - **Supabase Logs**: Centralized logging med SQL queries
 
 ### **Alerting:**
+
 - Email når Sentry fanger en kritisk fejl
 - Email når backend/frontend er nede (UptimeRobot)
 
 ### **Costs:**
+
 - **Sentry Free**: 5,000 errors/måned
 - **UptimeRobot Free**: 50 monitors, 5-minute checks
 - **Supabase**: Inden for free tier (500MB database)
@@ -269,17 +286,22 @@ curl https://<din-backend-url>/test-sentry
 ## 🚨 Troubleshooting
 
 ### **Problem: "Sentry not configured" i /health**
-**Løsning:** 
+
+**Løsning:**
+
 - Check at `SENTRY_DSN` er sat korrekt i Render environment variables
 - Restart backend service på Render
 
 ### **Problem: Ingen fejl i Sentry**
+
 **Løsning:**
+
 - Verificér DSN nøgle er korrekt
 - Check browser console for Sentry init fejl
 - Test med `/test-sentry` endpoint
 
 ### **Problem: Database migration fejler**
+
 **Løsning:**
 ```sql
 -- Drop tabellen og kør migration igen:
@@ -288,7 +310,9 @@ DROP TABLE IF EXISTS application_logs CASCADE;
 ```
 
 ### **Problem: Winston logger virker ikke**
+
 **Løsning:**
+
 - Check at `SUPABASE_SERVICE_ROLE_KEY` er sat (IKKE den offentlige anon key)
 - Check `LOG_LEVEL` environment variable (default er 'info')
 
@@ -296,9 +320,9 @@ DROP TABLE IF EXISTS application_logs CASCADE;
 
 ## 📞 Support Resources
 
-- **Sentry Docs**: https://docs.sentry.io/platforms/node/
-- **Winston Docs**: https://github.com/winstonjs/winston
-- **UptimeRobot Docs**: https://uptimerobot.com/api/
+- **Sentry Docs**: <https://docs.sentry.io/platforms/node/>
+- **Winston Docs**: <https://github.com/winstonjs/winston>
+- **UptimeRobot Docs**: <https://uptimerobot.com/api/>
 
 ---
 

@@ -1,18 +1,71 @@
-aa# 🚀 RenOS Implementation Plan - Manglende Features\n\n\n\n**Dato:** 2. oktober 2025  
+aa# 🚀 RenOS Implementation Plan - Manglende Features
+\n\n
+\n\n**Dato:** 2. oktober 2025  
 **Status:** Ready to implement  
-**Estimated Total Time:** 15-20 timer\n\n
+**Estimated Total Time:** 15-20 timer
+\n\n
 ---
-\n\n## 📋 Todo List Overview\n\n\n\n1. ✅ **Environment Variables** - 10 min → GIVER 85% FUNCTIONALITY\n\n2. 🔄 **Email Approval Workflow** - 6-8 timer\n\n3. 🔄 **Calendar Booking UI** - 6-8 timer\n\n4. 🔄 **Quote Generation UI** - 3-4 timer\n\n
----
-\n\n## 1️⃣ QUICK FIX: Environment Variables (10 min)\n\n\n\n### Hvad Dette Fixer\n\n- ✅ Customer 360 email tråde vises\n\n- ✅ Calendar booking virker\n\n- ✅ Auto-response sender live emails (ikke dry-run)\n\n\n\n### Step-by-Step Guide\n\n\n\n#### A. Login til Render Dashboard\n\n1. Gå til: https://dashboard.render.com\n\n2. Find "tekup-renos" service (backend)\n\n3. Klik på servicen
-\n\n#### B. Opdater Environment Variables\n\n1. Klik "Environment" tab i venstre sidebar\n\n2. Find eller tilføj disse variabler:
-\n\n```bash\n\n# Critical Fix #1: Enable Live Mode\n\nRUN_MODE=production\n\n\n\n# Critical Fix #2: Enable Calendar Features (DEDICATED RenOS CALENDAR)\n\nGOOGLE_CALENDAR_ID=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com\n\n\n\n# ✅ PERFEKT SETUP:\n\n# - Dedicated "RenOS Automatisk Booking" kalender\n\n# - Auto-accept enabled for non-conflicting invitations\n\n# - Shared with empire1266@gmail.com + info@rendetalje.dk\n\n# - Email notifications configured\n\n# - Timezone: Copenhagen (GMT+02:00)\n\n\n\n# Verify These Exist (fra tidligere):\n\nGOOGLE_PROJECT_ID=renos-465008\n\nGOOGLE_CLIENT_EMAIL=renos@renos-465008.iam.gserviceaccount.com\n\nGOOGLE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
-GOOGLE_IMPERSONATED_USER=info@rendetalje.dk\n\n```
-\n\n3. Klik "Save Changes"\n\n4. Vent ~2 minutter på auto-redeploy
-\n\n#### C. Kør Email Ingest (VIGTIG!)\n\nEfter redeploy, åbn i browser:\n\n\n\n```
-https://tekup-renos.onrender.com/api/dashboard/email-ingest/stats\n\n```
 
-**Forventet Output:**\n\n```json
+\n\n## 📋 Todo List Overview
+\n\n
+\n\n1. ✅ **Environment Variables** - 10 min → GIVER 85% FUNCTIONALITY
+\n\n2. 🔄 **Email Approval Workflow** - 6-8 timer
+\n\n3. 🔄 **Calendar Booking UI** - 6-8 timer
+\n\n4. 🔄 **Quote Generation UI** - 3-4 timer
+\n\n
+---
+
+\n\n## 1️⃣ QUICK FIX: Environment Variables (10 min)
+\n\n
+\n\n### Hvad Dette Fixer
+\n\n- ✅ Customer 360 email tråde vises
+\n\n- ✅ Calendar booking virker
+\n\n- ✅ Auto-response sender live emails (ikke dry-run)
+\n\n
+\n\n### Step-by-Step Guide
+\n\n
+\n\n#### A. Login til Render Dashboard
+\n\n1. Gå til: <https://dashboard.render.com>
+\n\n2. Find "tekup-renos" service (backend)
+\n\n3. Klik på servicen
+
+\n\n#### B. Opdater Environment Variables
+\n\n1. Klik "Environment" tab i venstre sidebar
+\n\n2. Find eller tilføj disse variabler:
+
+\n\n```bash
+\n\n# Critical Fix #1: Enable Live Mode
+\n\nRUN_MODE=production
+\n\n
+\n\n# Critical Fix #2: Enable Calendar Features (DEDICATED RenOS CALENDAR)
+\n\nGOOGLE_CALENDAR_ID=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com
+\n\n
+\n\n# ✅ PERFEKT SETUP:
+\n\n# - Dedicated "RenOS Automatisk Booking" kalender
+\n\n# - Auto-accept enabled for non-conflicting invitations
+\n\n# - Shared with empire1266@gmail.com + info@rendetalje.dk
+\n\n# - Email notifications configured
+\n\n# - Timezone: Copenhagen (GMT+02:00)
+\n\n
+\n\n# Verify These Exist (fra tidligere):
+\n\nGOOGLE_PROJECT_ID=renos-465008
+\n\nGOOGLE_CLIENT_EMAIL=renos@renos-465008.iam.gserviceaccount.com
+\n\nGOOGLE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+GOOGLE_IMPERSONATED_USER=info@rendetalje.dk
+\n\n```
+
+\n\n3. Klik "Save Changes"
+\n\n4. Vent ~2 minutter på auto-redeploy
+
+\n\n#### C. Kør Email Ingest (VIGTIG!)
+\n\nEfter redeploy, åbn i browser:
+\n\n
+\n\n```
+https://tekup-renos.onrender.com/api/dashboard/email-ingest/stats
+\n\n```
+
+**Forventet Output:**
+\n\n```json
 {
   "latestRun": {
     "status": "completed",
@@ -22,19 +75,37 @@ https://tekup-renos.onrender.com/api/dashboard/email-ingest/stats\n\n```
   "totalThreads": 150,
   "matchedThreads": 120,
   "unmatchedThreads": 30
-}\n\n```
-\n\n#### D. Verificer Customer 360\n\n1. Gå til: https://tekup-renos-1.onrender.com\n\n2. Klik "Customer 360"\n\n3. Vælg en kunde\n\n4. Du skulle nu se deres email tråde! 🎉
+}
+\n\n```
+
+\n\n#### D. Verificer Customer 360
+\n\n1. Gå til: <https://tekup-renos-1.onrender.com>
+\n\n2. Klik "Customer 360"
+\n\n3. Vælg en kunde
+\n\n4. Du skulle nu se deres email tråde! 🎉
 
 ---
-\n\n## 2️⃣ Email Approval Workflow (6-8 timer)\n\n\n\n### Overview\n\nAI-genererede emails skal godkendes manuelt før afsendelse.\n\n\n\n### Backend Implementation\n\n\n\n#### Step 1: Create API Routes (2 timer)\n\n\n\n**File: `src/api/emailApprovalRoutes.ts`**
-\n\n```typescript
+
+\n\n## 2️⃣ Email Approval Workflow (6-8 timer)
+\n\n
+\n\n### Overview
+\n\nAI-genererede emails skal godkendes manuelt før afsendelse.
+\n\n
+\n\n### Backend Implementation
+\n\n
+\n\n#### Step 1: Create API Routes (2 timer)
+\n\n
+\n\n**File: `src/api/emailApprovalRoutes.ts`**
+
+\n\n```typescript
 import { Router } from "express";
 import { prisma } from "../services/databaseService";
 import { gmailService } from "../services/gmailService";
 
 const router = Router();
 
-// GET /api/email-approval/pending - List all pending emails\n\nrouter.get("/pending", async (req, res) => {
+// GET /api/email-approval/pending - List all pending emails
+\n\nrouter.get("/pending", async (req, res) => {
   const pendingEmails = await prisma.emailResponse.findMany({
     where: { status: "pending" },
     include: {
@@ -50,7 +121,8 @@ const router = Router();
   res.json(pendingEmails);
 });
 
-// POST /api/email-approval/:id/approve - Approve and send email\n\nrouter.post("/:id/approve", async (req, res) => {
+// POST /api/email-approval/:id/approve - Approve and send email
+\n\nrouter.post("/:id/approve", async (req, res) => {
   const { id } = req.params;
 
   // Get email response
@@ -84,7 +156,8 @@ const router = Router();
   res.json({ success: true, messageId: result.messageId });
 });
 
-// POST /api/email-approval/:id/reject - Reject email\n\nrouter.post("/:id/reject", async (req, res) => {
+// POST /api/email-approval/:id/reject - Reject email
+\n\nrouter.post("/:id/reject", async (req, res) => {
   const { id } = req.params;
   const { reason } = req.body;
 
@@ -99,7 +172,8 @@ const router = Router();
   res.json({ success: true });
 });
 
-// PUT /api/email-approval/:id/edit - Edit email before approval\n\nrouter.put("/:id/edit", async (req, res) => {
+// PUT /api/email-approval/:id/edit - Edit email before approval
+\n\nrouter.put("/:id/edit", async (req, res) => {
   const { id } = req.params;
   const { subject, body } = req.body;
 
@@ -111,20 +185,27 @@ const router = Router();
   res.json(updated);
 });
 
-export default router;\n\n```
+export default router;
+\n\n```
 
 **Tilføj til `src/server.ts`:**
-\n\n```typescript
+
+\n\n```typescript
 import emailApprovalRouter from "./api/emailApprovalRoutes";
 
 // ... existing routes ...
-app.use("/api/email-approval", emailApprovalRouter);\n\n```
+app.use("/api/email-approval", emailApprovalRouter);
+\n\n```
 
 ---
-\n\n#### Step 2: Update Prisma Schema (hvis nødvendigt)\n\n\n\n**File: `prisma/schema.prisma`**
+
+\n\n#### Step 2: Update Prisma Schema (hvis nødvendigt)
+\n\n
+\n\n**File: `prisma/schema.prisma`**
 
 Verificer at `EmailResponse` model har disse felter:
-\n\n```prisma
+
+\n\n```prisma
 model EmailResponse {
   id              String   @id @default(cuid())
   leadId          String
@@ -144,14 +225,23 @@ model EmailResponse {
 
   @@index([leadId])
   @@index([status])
-}\n\n```
+}
+\n\n```
 
-Kør migration:\n\n```bash
-npx prisma db push\n\n```
+Kør migration:
+\n\n```bash
+npx prisma db push
+\n\n```
 
 ---
-\n\n### Frontend Implementation\n\n\n\n#### Step 3: Create Email Approval Component (3-4 timer)\n\n\n\n**File: `client/src/components/EmailApproval.tsx`**
-\n\n```typescript
+
+\n\n### Frontend Implementation
+\n\n
+\n\n#### Step 3: Create Email Approval Component (3-4 timer)
+\n\n
+\n\n**File: `client/src/components/EmailApproval.tsx`**
+
+\n\n```typescript
 import { useState, useEffect } from "react";
 import { Mail, Check, X, Edit2, Clock } from "lucide-react";
 
@@ -237,7 +327,8 @@ export default function EmailApproval() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Email List */}\n\n        <div className="space-y-3">
+        {/* Email List */}
+\n\n        <div className="space-y-3">
           {pendingEmails.map((email) => (
             <div
               key={email.id}
@@ -277,7 +368,8 @@ export default function EmailApproval() {
           )}
         </div>
 
-        {/* Email Preview/Edit */}\n\n        {selectedEmail && (
+        {/* Email Preview/Edit */}
+\n\n        {selectedEmail && (
           <div className="border rounded-lg p-6 bg-white">
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -365,18 +457,25 @@ export default function EmailApproval() {
       </div>
     </div>
   );
-}\n\n```
+}
+\n\n```
 
 ---
-\n\n#### Step 4: Add Route to App (5 min)\n\n\n\n**File: `client/src/App.tsx`**
-\n\n```typescript
+
+\n\n#### Step 4: Add Route to App (5 min)
+\n\n
+\n\n**File: `client/src/App.tsx`**
+
+\n\n```typescript
 import EmailApproval from "./components/EmailApproval";
 
 // ... in Routes ...
-<Route path="/email-approval" element={<EmailApproval />} />\n\n```
+<Route path="/email-approval" element={<EmailApproval />} />
+\n\n```
 
 **File: `client/src/components/Layout.tsx`**
-\n\n```typescript
+
+\n\n```typescript
 // Add to navigation
 <Link to="/email-approval" className="...">
   <Mail className="w-5 h-5" />
@@ -386,21 +485,28 @@ import EmailApproval from "./components/EmailApproval";
       {pendingCount}
     </span>
   )}
-</Link>\n\n```
+</Link>
+\n\n```
 
 ---
-\n\n#### Step 5: Update Lead Monitor (1 time)\n\n\n\n**File: `src/services/leadMonitor.ts`**
+
+\n\n#### Step 5: Update Lead Monitor (1 time)
+\n\n
+\n\n**File: `src/services/leadMonitor.ts`**
 
 Ændre auto-send logik til at oprette pending emails i stedet:
-\n\n```typescript
+
+\n\n```typescript
 // BEFORE:
 await emailAutoResponseService.sendResponse(lead);
 
 // AFTER:
-await emailAutoResponseService.createPendingResponse(lead);\n\n```
+await emailAutoResponseService.createPendingResponse(lead);
+\n\n```
 
 **File: `src/services/emailAutoResponseService.ts`**
-\n\n```typescript
+
+\n\n```typescript
 async createPendingResponse(lead: ParsedLead): Promise<EmailResponse> {
   const emailContent = await this.generateResponse(lead);
 
@@ -414,18 +520,28 @@ async createPendingResponse(lead: ParsedLead): Promise<EmailResponse> {
       aiModel: "gemini-2.0-flash-exp",
     },
   });
-}\n\n```
+}
+\n\n```
 
 ---
-\n\n## 3️⃣ Calendar Booking UI (6-8 timer)\n\n\n\n### Backend Implementation\n\n\n\n#### Step 1: Create Booking API Routes (3 timer)\n\n\n\n**File: `src/api/bookingRoutes.ts`**
-\n\n```typescript
+
+\n\n## 3️⃣ Calendar Booking UI (6-8 timer)
+\n\n
+\n\n### Backend Implementation
+\n\n
+\n\n#### Step 1: Create Booking API Routes (3 timer)
+\n\n
+\n\n**File: `src/api/bookingRoutes.ts`**
+
+\n\n```typescript
 import { Router } from "express";
 import { prisma } from "../services/databaseService";
 import { calendarService } from "../services/calendarService";
 
 const router = Router();
 
-// GET /api/bookings - List all bookings\n\nrouter.get("/", async (req, res) => {
+// GET /api/bookings - List all bookings
+\n\nrouter.get("/", async (req, res) => {
   const bookings = await prisma.booking.findMany({
     include: {
       customer: true,
@@ -437,7 +553,8 @@ const router = Router();
   res.json(bookings);
 });
 
-// POST /api/bookings - Create new booking\n\nrouter.post("/", async (req, res) => {
+// POST /api/bookings - Create new booking
+\n\nrouter.post("/", async (req, res) => {
   const { customerId, leadId, scheduledAt, estimatedDuration, serviceType, address } = req.body;
 
   // Check availability
@@ -452,7 +569,8 @@ const router = Router();
 
   // Create calendar event
   const event = await calendarService.createEvent({
-    summary: `Rengøring - ${serviceType}`,\n\n    location: address,
+    summary: `Rengøring - ${serviceType}`,
+\n\n    location: address,
     start: new Date(scheduledAt),
     duration: estimatedDuration,
   });
@@ -478,7 +596,8 @@ const router = Router();
   res.json(booking);
 });
 
-// PUT /api/bookings/:id - Update booking\n\nrouter.put("/:id", async (req, res) => {
+// PUT /api/bookings/:id - Update booking
+\n\nrouter.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { scheduledAt, estimatedDuration, status } = req.body;
 
@@ -509,7 +628,8 @@ const router = Router();
   res.json(updated);
 });
 
-// DELETE /api/bookings/:id - Cancel booking\n\nrouter.delete("/:id", async (req, res) => {
+// DELETE /api/bookings/:id - Cancel booking
+\n\nrouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   const booking = await prisma.booking.findUnique({ where: { id } });
@@ -531,7 +651,8 @@ const router = Router();
   res.json({ success: true });
 });
 
-// GET /api/bookings/availability/:date - Check availability for date\n\nrouter.get("/availability/:date", async (req, res) => {
+// GET /api/bookings/availability/:date - Check availability for date
+\n\nrouter.get("/availability/:date", async (req, res) => {
   const { date } = req.params;
   const targetDate = new Date(date);
 
@@ -540,17 +661,26 @@ const router = Router();
   res.json({ date, slots });
 });
 
-export default router;\n\n```
+export default router;
+\n\n```
 
 **Tilføj til `src/server.ts`:**
-\n\n```typescript
+
+\n\n```typescript
 import bookingRouter from "./api/bookingRoutes";
 
-app.use("/api/bookings", bookingRouter);\n\n```
+app.use("/api/bookings", bookingRouter);
+\n\n```
 
 ---
-\n\n### Frontend Implementation\n\n\n\n#### Step 2: Create Booking Modal Component (3-4 timer)\n\n\n\n**File: `client/src/components/BookingModal.tsx`**
-\n\n```typescript
+
+\n\n### Frontend Implementation
+\n\n
+\n\n#### Step 2: Create Booking Modal Component (3-4 timer)
+\n\n
+\n\n**File: `client/src/components/BookingModal.tsx`**
+
+\n\n```typescript
 import { useState, useEffect } from "react";
 import { Calendar, Clock, MapPin, User } from "lucide-react";
 
@@ -637,7 +767,8 @@ export default function BookingModal({
         <h2 className="text-2xl font-bold mb-6">Opret Booking</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Customer Selector */}\n\n          <div>
+          {/* Customer Selector */}
+\n\n          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <User className="w-4 h-4 inline mr-2" />
               Kunde
@@ -657,7 +788,8 @@ export default function BookingModal({
             </select>
           </div>
 
-          {/* Date Picker */}\n\n          <div>
+          {/* Date Picker */}
+\n\n          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Calendar className="w-4 h-4 inline mr-2" />
               Dato
@@ -671,7 +803,8 @@ export default function BookingModal({
             />
           </div>
 
-          {/* Available Time Slots */}\n\n          {availableSlots.length > 0 && (
+          {/* Available Time Slots */}
+\n\n          {availableSlots.length > 0 && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Clock className="w-4 h-4 inline mr-2" />
@@ -696,7 +829,8 @@ export default function BookingModal({
             </div>
           )}
 
-          {/* Manual Time Input */}\n\n          <div>
+          {/* Manual Time Input */}
+\n\n          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Eller indtast tidspunkt manuelt
             </label>
@@ -709,7 +843,8 @@ export default function BookingModal({
             />
           </div>
 
-          {/* Duration */}\n\n          <div>
+          {/* Duration */}
+\n\n          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Estimeret varighed (minutter)
             </label>
@@ -726,7 +861,8 @@ export default function BookingModal({
             </select>
           </div>
 
-          {/* Service Type */}\n\n          <div>
+          {/* Service Type */}
+\n\n          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Ydelse
             </label>
@@ -743,7 +879,8 @@ export default function BookingModal({
             </select>
           </div>
 
-          {/* Address */}\n\n          <div>
+          {/* Address */}
+\n\n          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <MapPin className="w-4 h-4 inline mr-2" />
               Adresse
@@ -758,7 +895,8 @@ export default function BookingModal({
             />
           </div>
 
-          {/* Actions */}\n\n          <div className="flex gap-3 pt-4">
+          {/* Actions */}
+\n\n          <div className="flex gap-3 pt-4">
             <button
               type="submit"
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -777,11 +915,16 @@ export default function BookingModal({
       </div>
     </div>
   );
-}\n\n```
+}
+\n\n```
 
 ---
-\n\n#### Step 3: Add to Bookings Page (30 min)\n\n\n\n**File: `client/src/components/Bookings.tsx`**
-\n\n```typescript
+
+\n\n#### Step 3: Add to Bookings Page (30 min)
+\n\n
+\n\n**File: `client/src/components/Bookings.tsx`**
+
+\n\n```typescript
 import { useState } from "react";
 import BookingModal from "./BookingModal";
 import { Plus, Calendar, Clock, MapPin } from "lucide-react";
@@ -813,7 +956,8 @@ export default function Bookings() {
         </button>
       </div>
 
-      {/* Booking List */}\n\n      <div className="space-y-3">
+      {/* Booking List */}
+\n\n      <div className="space-y-3">
         {bookings.map((booking: any) => (
           <div key={booking.id} className="border rounded-lg p-4">
             <div className="flex items-start justify-between">
@@ -862,20 +1006,101 @@ export default function Bookings() {
       />
     </div>
   );
-}\n\n```
+}
+\n\n```
 
 ---
-\n\n## 🎯 Implementation Timeline\n\n\n\n### Day 1 (2-3 timer)\n\n- ✅ Environment variables fix (10 min)\n\n- ✅ Email approval backend API (2 timer)\n\n- ✅ Test email approval endpoints\n\n\n\n### Day 2 (4-5 timer)\n\n- ✅ Email approval frontend UI (3-4 timer)\n\n- ✅ Integration testing\n\n- ✅ Update lead monitor\n\n\n\n### Day 3 (3-4 timer)\n\n- ✅ Booking backend API (3 timer)\n\n- ✅ Test booking endpoints\n\n\n\n### Day 4 (3-4 timer)\n\n- ✅ Booking frontend UI (3 timer)\n\n- ✅ Integration testing\n\n\n\n### Day 5 (2 timer)\n\n- ✅ Quote management UI (optional)\n\n- ✅ Final testing & deployment\n\n
+
+\n\n## 🎯 Implementation Timeline
+\n\n
+\n\n### Day 1 (2-3 timer)
+\n\n- ✅ Environment variables fix (10 min)
+\n\n- ✅ Email approval backend API (2 timer)
+\n\n- ✅ Test email approval endpoints
+\n\n
+\n\n### Day 2 (4-5 timer)
+\n\n- ✅ Email approval frontend UI (3-4 timer)
+\n\n- ✅ Integration testing
+\n\n- ✅ Update lead monitor
+\n\n
+\n\n### Day 3 (3-4 timer)
+\n\n- ✅ Booking backend API (3 timer)
+\n\n- ✅ Test booking endpoints
+\n\n
+\n\n### Day 4 (3-4 timer)
+\n\n- ✅ Booking frontend UI (3 timer)
+\n\n- ✅ Integration testing
+\n\n
+\n\n### Day 5 (2 timer)
+\n\n- ✅ Quote management UI (optional)
+\n\n- ✅ Final testing & deployment
+\n\n
 ---
-\n\n## ✅ Testing Checklist\n\n\n\n### Email Approval\n\n- [ ] Pending emails vises i UI\n\n- [ ] Approve sender email via Gmail\n\n- [ ] Reject markerer email som rejected\n\n- [ ] Edit opdaterer email content\n\n- [ ] Badge viser antal pending emails\n\n\n\n### Calendar Booking\n\n- [ ] Create booking opretter calendar event\n\n- [ ] Availability check fungerer\n\n- [ ] Time slots vises korrekt\n\n- [ ] Update booking opdaterer calendar\n\n- [ ] Delete booking fjerner calendar event\n\n
+
+\n\n## ✅ Testing Checklist
+\n\n
+\n\n### Email Approval
+\n\n- [ ] Pending emails vises i UI
+\n\n- [ ] Approve sender email via Gmail
+\n\n- [ ] Reject markerer email som rejected
+\n\n- [ ] Edit opdaterer email content
+\n\n- [ ] Badge viser antal pending emails
+\n\n
+\n\n### Calendar Booking
+\n\n- [ ] Create booking opretter calendar event
+\n\n- [ ] Availability check fungerer
+\n\n- [ ] Time slots vises korrekt
+\n\n- [ ] Update booking opdaterer calendar
+\n\n- [ ] Delete booking fjerner calendar event
+\n\n
 ---
-\n\n## 🚀 Deployment Steps\n\n\n\n### 1. Backend Changes\n\n```bash\n\ngit add -A
+
+\n\n## 🚀 Deployment Steps
+\n\n
+\n\n### 1. Backend Changes
+\n\n```bash
+\n\ngit add -A
 git commit -m "feat: Add email approval and booking UI features"
-git push origin main\n\n```
-\n\n### 2. Wait for Render Deploy (~3 min)\n\n\n\n### 3. Test Environment Variables\n\n```bash\n\n# Verify RUN_MODE=production\n\ncurl https://tekup-renos.onrender.com/health\n\n\n\n# Run email ingest\n\ncurl https://tekup-renos.onrender.com/api/dashboard/email-ingest/stats\n\n```\n\n\n\n### 4. Test New Endpoints\n\n```bash\n\n# Email approval\n\ncurl https://tekup-renos.onrender.com/api/email-approval/pending\n\n\n\n# Bookings\n\ncurl https://tekup-renos.onrender.com/api/bookings\n\n```\n\n\n\n### 5. Verify Frontend\n\n- Open https://tekup-renos-1.onrender.com\n\n- Navigate to "Email Godkendelse"\n\n- Navigate to "Bookinger"\n\n- Test all features\n\n
+git push origin main
+\n\n```
+
+\n\n### 2. Wait for Render Deploy (~3 min)
+\n\n
+\n\n### 3. Test Environment Variables
+\n\n```bash
+\n\n# Verify RUN_MODE=production
+\n\ncurl https://tekup-renos.onrender.com/health
+\n\n
+\n\n# Run email ingest
+\n\ncurl https://tekup-renos.onrender.com/api/dashboard/email-ingest/stats
+\n\n```
+\n\n
+\n\n### 4. Test New Endpoints
+\n\n```bash
+\n\n# Email approval
+\n\ncurl https://tekup-renos.onrender.com/api/email-approval/pending
+\n\n
+\n\n# Bookings
+\n\ncurl https://tekup-renos.onrender.com/api/bookings
+\n\n```
+\n\n
+\n\n### 5. Verify Frontend
+\n\n- Open <https://tekup-renos-1.onrender.com>
+\n\n- Navigate to "Email Godkendelse"
+\n\n- Navigate to "Bookinger"
+\n\n- Test all features
+\n\n
 ---
-\n\n## 📚 Documentation to Update\n\n\n\nAfter implementation:
-\n\n1. **Update README.md** - Add new features section\n\n2. **Create USER_GUIDE.md** - Step-by-step for team\n\n3. **Update API docs** - New endpoints\n\n4. **Create VIDEO_TUTORIAL.md** - Screen recordings (optional)\n\n
+
+\n\n## 📚 Documentation to Update
+\n\n
+\n\nAfter implementation:
+
+\n\n1. **Update README.md** - Add new features section
+\n\n2. **Create USER_GUIDE.md** - Step-by-step for team
+\n\n3. **Update API docs** - New endpoints
+\n\n4. **Create VIDEO_TUTORIAL.md** - Screen recordings (optional)
+\n\n
 ---
 
 **Ready to start?** Jeg kan begynde at implementere features eller guide dig gennem env var fix først! 🚀

@@ -1,4 +1,4 @@
-# 🚀 Quick Test Reference Card
+﻿# 🚀 Quick Test Reference Card
 
 **Version:** 1.4.1  
 **Updated:** 20. Oktober 2025
@@ -211,8 +211,8 @@ Invoke-RestMethod https://tekup-billy.onrender.com/health/summary
 - Database Setup: `docs/operations/SUPABASE_CACHING_SETUP.md`
 
 **GitHub:**
-- Repo: <https://github.com/JonasAbde/Tekup-Billy>
-- Issues: <https://github.com/JonasAbde/Tekup-Billy/issues>
+- Repo: <https://github.com/TekupDK/Tekup-Billy>
+- Issues: <https://github.com/TekupDK/Tekup-Billy/issues>
 
 ---
 

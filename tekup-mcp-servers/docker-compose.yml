@@ -274,3 +274,7 @@ networks:
   tekup-mcp-network:
     name: tekup-mcp-network
     driver: bridge
+    internal: false
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16

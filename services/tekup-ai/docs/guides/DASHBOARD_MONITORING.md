@@ -11,6 +11,7 @@ Komplet real-time monitoring dashboard til RenOS systemet. 5 intelligente widget
 **Deployment Status:** ✅ Deployed to production (Render.com)
 
 **Commits:**
+
 - `4fd5c71` - Email Quality Monitor
 - `f6271dc` - Follow-Up Tracker  
 - `bb4787a` - Rate Limit Monitor
@@ -20,6 +21,7 @@ Komplet real-time monitoring dashboard til RenOS systemet. 5 intelligente widget
 ## 🏗️ Architecture
 
 ### Backend API Layer
+
 **File:** `src/api/dashboardRoutes.ts` (+690 lines)
 
 Alle endpoints følger standard pattern:
@@ -38,9 +40,11 @@ router.get("/endpoint", (_req: Request, res: Response) => {
 ```
 
 ### Frontend Component Layer
+
 **Directory:** `client/src/components/`
 
 Alle komponenter følger standard structure:
+
 - TypeScript interfaces for API responses
 - useState + useEffect hooks for data loading
 - Auto-refresh via setInterval
@@ -54,9 +58,11 @@ Alle komponenter følger standard structure:
 **File:** `client/src/components/SystemStatus.tsx` (270+ lines)
 
 ### Purpose
+
 KRITISK sikkerhedsovervågning - viser om auto-send features er aktiveret.
 
 ### Features
+
 - ✅ Real-time run mode (LIVE vs DRY-RUN)
 - ✅ Feature toggle status (AUTO_RESPONSE, FOLLOW_UP, ESCALATION)
 - ✅ Risk level calculation (SAFE/CAUTION/DANGER)
@@ -64,6 +70,7 @@ KRITISK sikkerhedsovervågning - viser om auto-send features er aktiveret.
 - ✅ Auto-refresh every 30 seconds
 
 ### Backend Endpoint
+
 ```http
 GET /api/dashboard/environment/status
 
@@ -87,6 +94,7 @@ Response:
 ```
 
 ### Risk Calculation Logic
+
 ```typescript
 if (isLiveMode) {
     if (autoResponseEnabled) {
@@ -103,6 +111,7 @@ if (isLiveMode) {
 ```
 
 ### UI Components
+
 - 🔴 DANGER banner (red) - Auto-response enabled in live mode
 - 🟡 CAUTION banner (yellow) - Follow-up enabled in live mode
 - 🟢 SAFE banner (green) - All disabled or dry-run mode
@@ -116,9 +125,11 @@ if (isLiveMode) {
 **File:** `client/src/components/ConflictMonitor.tsx` (310 lines)
 
 ### Purpose
+
 Real-time tracking af konflikter (double bookings, duplicate quotes, etc.)
 
 ### Features
+
 - ✅ Recent escalations list med severity badges
 - ✅ Stats overview (total, critical, high, resolution rate)
 - ✅ Click-to-view detail modal
@@ -128,6 +139,7 @@ Real-time tracking af konflikter (double bookings, duplicate quotes, etc.)
 ### Backend Endpoints
 
 #### Get Recent Escalations
+
 ```http
 GET /api/dashboard/escalations/recent?limit=10
 
@@ -159,6 +171,7 @@ Response:
 ```
 
 #### Get Statistics
+
 ```http
 GET /api/dashboard/escalations/stats?period=30
 
@@ -181,6 +194,7 @@ Response:
 ```
 
 #### Resolve Escalation
+
 ```http
 POST /api/dashboard/escalations/:id/resolve
 
@@ -197,6 +211,7 @@ Response:
 ```
 
 ### Severity Classification
+
 - 🔴 **Critical** (90-100) - Immediate action required
 - 🟠 **High** (70-89) - Urgent attention needed
 - 🟡 **Medium** (50-69) - Review within 24h
@@ -209,9 +224,11 @@ Response:
 **File:** `client/src/components/EmailQualityMonitor.tsx` (534 lines)
 
 ### Purpose
+
 Live monitoring af email kvalitetsproblemer før de sendes.
 
 ### Features
+
 - ✅ Quality score display (90%+ green, 70-89% yellow, <70% red)
 - ✅ Recent problematic emails list
 - ✅ Stats overview (total checked, critical issues, 7-day trend)
@@ -221,6 +238,7 @@ Live monitoring af email kvalitetsproblemer før de sendes.
 ### Backend Endpoints
 
 #### Get Recent Problems
+
 ```http
 GET /api/dashboard/email-quality/recent
 
@@ -255,6 +273,7 @@ Response:
 ```
 
 #### Get Statistics
+
 ```http
 GET /api/dashboard/email-quality/stats
 
@@ -301,6 +320,7 @@ Response:
    - Error: "Emne-linje er tom eller for kort"
 
 ### Integration with emailGateway
+
 ```typescript
 // src/services/emailGateway.ts
 function validateEmailQuality(request: EmailSendRequest): EmailQualityCheck {
@@ -324,9 +344,11 @@ function validateEmailQuality(request: EmailSendRequest): EmailQualityCheck {
 **File:** `client/src/components/FollowUpTracker.tsx` (622 lines)
 
 ### Purpose
+
 Tracking af leads der kræver follow-up emails.
 
 ### Features
+
 - ✅ Pending leads list med urgency indicators
 - ✅ Success rate tracking (30-day conversion)
 - ✅ Attempt breakdown (1st, 2nd, 3rd+ attempts)
@@ -336,6 +358,7 @@ Tracking af leads der kræver follow-up emails.
 ### Backend Endpoints
 
 #### Get Pending Follow-Ups
+
 ```http
 GET /api/dashboard/follow-ups/pending
 
@@ -366,6 +389,7 @@ Response:
 ```
 
 #### Get Statistics
+
 ```http
 GET /api/dashboard/follow-ups/stats
 
@@ -390,6 +414,7 @@ Response:
 ```
 
 ### Urgency Classification
+
 ```typescript
 let urgency: 'high' | 'medium' | 'low' = 'low';
 if (daysSinceContact >= 10) urgency = 'high';     // 10+ days - URGENT
@@ -398,6 +423,7 @@ else urgency = 'low';                               // <7 days - Monitor
 ```
 
 ### Follow-Up Schedule
+
 From `src/types/followUp.ts`:
 ```typescript
 export const FOLLOW_UP_SCHEDULE: FollowUpSchedule[] = [
@@ -410,6 +436,7 @@ export const MAX_FOLLOW_UP_ATTEMPTS = 3;
 ```
 
 ### Database Schema
+
 ```prisma
 model Lead {
   followUpAttempts  Int       @default(0)
@@ -426,9 +453,11 @@ model Lead {
 **File:** `client/src/components/RateLimitMonitor.tsx` (468 lines)
 
 ### Purpose
+
 Monitor email sending rate limits og preventer overload.
 
 ### Features
+
 - ✅ Per-service rate limit status med progress bars
 - ✅ 24-hour history chart
 - ✅ Summary stats (total sent, remaining, peak hour)
@@ -438,6 +467,7 @@ Monitor email sending rate limits og preventer overload.
 ### Backend Endpoints
 
 #### Get Current Status
+
 ```http
 GET /api/dashboard/rate-limits/status
 
@@ -485,6 +515,7 @@ Response:
 ```
 
 #### Get 24-Hour History
+
 ```http
 GET /api/dashboard/rate-limits/history
 
@@ -562,6 +593,7 @@ function checkRateLimit(source: string): boolean {
 ```
 
 ### Tracked Services
+
 1. `email-auto-response` - Auto-generated lead responses
 2. `follow-up-service` - Automated follow-up emails
 3. `quote-service` - Quote generation emails
@@ -569,6 +601,7 @@ function checkRateLimit(source: string): boolean {
 5. `escalation-service` - Escalation notifications
 
 ### Status Classification
+
 - ✅ **OK** (0-79%) - Normal operation
 - ⚠️ **WARNING** (80-99%) - Approaching limit
 - 🚫 **BLOCKED** (100%) - Limit reached
@@ -578,6 +611,7 @@ function checkRateLimit(source: string): boolean {
 ## 🎨 UI/UX Design Patterns
 
 ### Color Coding System
+
 ```typescript
 // Severity/Status Colors
 const getStatusColor = (status: string) => {
@@ -597,6 +631,7 @@ const getStatusColor = (status: string) => {
 ```
 
 ### Icon System
+
 ```typescript
 import { 
     AlertTriangle,  // Warnings, critical issues
@@ -610,6 +645,7 @@ import {
 ```
 
 ### Auto-Refresh Pattern
+
 ```typescript
 useEffect(() => {
     void loadData();
@@ -620,6 +656,7 @@ useEffect(() => {
 ```
 
 ### Modal Pattern
+
 ```typescript
 {selectedItem && (
     <div
@@ -669,6 +706,7 @@ useEffect(() => {
 ## 📊 Performance Metrics
 
 ### Backend Response Times
+
 - Environment Status: ~10ms (config read)
 - Escalations: ~50ms (DB query + join)
 - Email Quality: ~100ms (DB query + regex checks)
@@ -676,11 +714,13 @@ useEffect(() => {
 - Rate Limits: ~5ms (in-memory map read)
 
 ### Frontend Render Times
+
 - Initial Load: <500ms
 - Auto-Refresh: <200ms
 - Modal Open: <50ms
 
 ### Database Queries
+
 All queries use indexes and limits:
 ```typescript
 await prisma.model.findMany({
@@ -695,6 +735,7 @@ await prisma.model.findMany({
 ## 🧪 Testing
 
 ### Backend Testing
+
 ```bash
 # Test API endpoints
 curl http://localhost:3000/api/dashboard/environment/status
@@ -705,6 +746,7 @@ curl http://localhost:3000/api/dashboard/rate-limits/status
 ```
 
 ### Frontend Testing
+
 ```bash
 # Start dev server
 cd client
@@ -715,6 +757,7 @@ http://localhost:5173
 ```
 
 ### Integration Testing
+
 ```typescript
 // tests/dashboard/endpoints.test.ts
 describe('Dashboard Endpoints', () => {
@@ -732,6 +775,7 @@ describe('Dashboard Endpoints', () => {
 ## 🚀 Deployment
 
 ### Build Process
+
 ```bash
 # Backend build
 npm run build
@@ -742,6 +786,7 @@ npm run build
 ```
 
 ### Environment Variables Required
+
 ```env
 # Required for dashboard
 DATABASE_URL=postgresql://...
@@ -752,6 +797,7 @@ ESCALATION_ENABLED=true
 ```
 
 ### Render.com Configuration
+
 - ✅ Auto-deploy on push to main branch
 - ✅ Backend: Node.js 20.x, npm run build + npm start
 - ✅ Frontend: Static site, npm run build (client/)
@@ -771,6 +817,7 @@ lg:grid-cols-4          /* Large desktop: 4 columns */
 ```
 
 Tested on:
+
 - ✅ iPhone 13 Pro (390x844)
 - ✅ iPad Air (820x1180)
 - ✅ Desktop 1920x1080
@@ -780,12 +827,14 @@ Tested on:
 ## 🔐 Security
 
 ### API Security
+
 - No authentication required (internal dashboard)
 - Read-only endpoints (except resolve escalation)
 - Rate limiting via emailGateway
 - SQL injection protected (Prisma parameterized queries)
 
 ### Data Privacy
+
 - No customer data exposed in logs
 - Email previews truncated to 200 chars
 - Sensitive data masked in error messages
@@ -795,6 +844,7 @@ Tested on:
 ## 📈 Future Enhancements
 
 ### Phase 2 Ideas
+
 1. **Real-time WebSocket Updates** - Replace polling with live updates
 2. **Advanced Analytics** - Charts with Recharts/Chart.js
 3. **Export Functionality** - Download reports as PDF/CSV
@@ -809,12 +859,14 @@ Tested on:
 ## 🐛 Known Issues
 
 ### Current Limitations
+
 1. **No Real-time Updates** - Uses polling (30-60s intervals)
 2. **No Historical Charts** - Only current stats shown
 3. **Limited Filtering** - No date range selection
 4. **No Export** - Can't download reports
 
 ### Workarounds
+
 - Polling interval can be adjusted per widget
 - Use browser dev tools to inspect raw API responses
 - Database queries can be run via Prisma Studio
@@ -824,6 +876,7 @@ Tested on:
 ## 📞 Support
 
 ### Debugging Commands
+
 ```bash
 # Check backend logs
 npm run dev

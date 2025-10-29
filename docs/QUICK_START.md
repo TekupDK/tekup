@@ -3,6 +3,7 @@
 ## 🎯 Latest Updates
 
 ### Major Consolidation Complete (October 23, 2025)
+
 - ✅ **Rendetalje Ecosystem** unified under `apps/rendetalje/`
 - ✅ **tekup-chat** migration completed (zero TypeScript errors)
 - ✅ **Master workspace** created: `Tekup-Portfolio.code-workspace`
@@ -62,6 +63,7 @@ Tekup/
 ## 🔑 External Projects (Linked in Workspace)
 
 These remain in `C:\Users\empir\`:
+
 - **tekup-ai** - AI monorepo (@tekup/ai-chat, ai-vault, ai-agents)
 - **tekup-database** - Central database
 - **TekupVault** - Knowledge layer
@@ -125,17 +127,20 @@ cd C:\Users\empir\Tekup\tekup-secrets
 ## 🔄 Git Workflow
 
 ### Pull Latest Changes
+
 ```powershell
 cd C:\Users\empir\Tekup
 git pull origin master
 ```
 
 ### Check Status
+
 ```powershell
 git status
 ```
 
 ### Commit Changes
+
 ```powershell
 git add .
 git commit -m "Description of changes"
@@ -145,26 +150,31 @@ git push origin master
 ## 🎓 Key Concepts
 
 ### Workspace vs Monorepo
+
 - **Workspace**: Multi-root VS Code workspace (`Tekup-Portfolio.code-workspace`)
 - **Monorepo**: Single Git repo with multiple packages (`apps/rendetalje/monorepo/`)
 
 ### Development vs Production
+
 - **Development**: `apps/rendetalje/monorepo/` - Turborepo for active development
 - **Production**: `apps/rendetalje/services/` - Deployed services (calendar-mcp, etc.)
 
 ### Archive vs Active
+
 - **Archive**: `archive/` - Completed migrations, historical reference
 - **Active**: `apps/` and external projects - Current development
 
 ## 🚨 Important Notes
 
 ### For New Contributors
+
 1. **Always open** `Tekup-Portfolio.code-workspace` (not individual folders)
 2. **Check** `tekup-secrets/` for environment variables
 3. **Read** `docs/SESSION_REPORT_2025-10-23.md` for context
 4. **Never commit** `.env` files (use `.env.template`)
 
 ### Security
+
 - GitHub token redacted in docs (use local `.env`)
 - Push Protection enabled - will block exposed secrets
 - All sensitive data in `tekup-secrets/` (not tracked)
@@ -198,20 +208,24 @@ After syncing on PC2:
 ## 🆘 Troubleshooting
 
 ### "apps/rendetalje not found"
+
 ```powershell
 git submodule update --init --recursive
 ```
 
 ### "Too many files" warning
+
 Normal - Rendetalje contains 142k files. VS Code may take a moment to index.
 
 ### "Cannot find module @tekup/*"
+
 ```powershell
 cd C:\Users\empir\tekup-ai
 pnpm install
 ```
 
 ### Workspace doesn't load
+
 ```powershell
 code C:\Users\empir\Tekup\Tekup-Portfolio.code-workspace
 ```

@@ -361,8 +361,8 @@ if (status !== 'granted') {
 
 ### Support Channels
 
-- **Technical Issues**: dev@rendetalje.dk
-- **User Support**: support@rendetalje.dk
+- **Technical Issues**: <dev@rendetalje.dk>
+- **User Support**: <support@rendetalje.dk>
 - **Emergency**: +45 XX XX XX XX
 
 ---
@@ -409,4 +409,4 @@ if (status !== 'granted') {
 **Mobile App Documentation opdateret**: 22. Oktober 2025  
 **Version**: 1.0.0  
 **Platform**: iOS & Android  
-**Support**: dev@rendetalje.dk
+**Support**: <dev@rendetalje.dk>

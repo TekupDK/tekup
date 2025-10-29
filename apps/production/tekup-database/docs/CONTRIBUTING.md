@@ -52,6 +52,7 @@ git commit -m "feat: beskrivelse af ændring"
 ```
 
 **Commit Message Format:**
+
 - `feat:` - Ny funktionalitet
 - `fix:` - Bug fix
 - `docs:` - Dokumentation
@@ -170,6 +171,7 @@ pnpm test
 ### Update Documentation for Changes
 
 **Always update:**
+
 - README.md (if adding major features)
 - API_REFERENCE.md (for new client methods)
 - SCHEMA_DESIGN.md (for schema changes)
@@ -195,6 +197,7 @@ const similarity = calculateCosineSimilarity(a, b);
 ### Adding New Schema
 
 1. **Add to `prisma/schema.prisma`:**
+
 ```prisma
 model NewModel {
   id        String   @id @default(cuid())
@@ -206,11 +209,13 @@ model NewModel {
 ```
 
 2. **Generate migration:**
+
 ```bash
 pnpm prisma migrate dev --name add_new_model
 ```
 
 3. **Create client helper:**
+
 ```typescript
 // src/client/schema-name.ts
 export const schemaClient = {
@@ -356,6 +361,7 @@ Other approaches you've thought about
 ## 🎉 Recognition
 
 Contributors will be added to:
+
 - README.md contributors section
 - GitHub contributors page
 - Release notes

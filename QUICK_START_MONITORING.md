@@ -8,6 +8,7 @@
 ## ✅ COMPLETED
 
 ### 1. Backend Sentry Setup
+
 - ✅ Installed `@sentry/node` og `@sentry/profiling-node`
 - ✅ Created `SentryInterceptor` for automatic error catching
 - ✅ Updated `main.ts` med Sentry initialization
@@ -15,6 +16,7 @@
 - ✅ Enhanced `/health` endpoint med service status
 
 ### 2. Database Schema
+
 - ✅ Created `004_application_logs.sql` migration
 - ✅ Table, indexes, RLS policies, views, functions ready
 
@@ -25,20 +27,20 @@
 ### Step 1: Get Sentry DSN (5 min)
 
 1. **Opret Sentry konto:**
-   - Go to: https://sentry.io/signup/
-   - Sign up med email: jonas@tekup.dk (eller din)
+   - Go to: <https://sentry.io/signup/>
+   - Sign up med email: <jonas@tekup.dk> (eller din)
    - Verify email
 
 2. **Create project:**
    - Name: `rendetalje-backend`
    - Platform: `Node.js`
    - Framework: `Express`
-   
+
 3. **Copy DSN:**
    ```
    Format: https://XXXXX@oXXXXXX.ingest.sentry.io/XXXXXXX
    ```
-   
+
 4. **Gentag for frontend:**
    - Name: `rendetalje-frontend`
    - Platform: `Next.js`
@@ -50,7 +52,7 @@
 
 **Option A: Via Supabase Dashboard (Recommended)**
 
-1. Go to: https://supabase.com/dashboard
+1. Go to: <https://supabase.com/dashboard>
 2. Select project: `oaevagdgrasfppbrxbey`
 3. Click "SQL Editor"
 4. Copy entire content of `apps/rendetalje/services/database/migrations/004_application_logs.sql`
@@ -89,7 +91,7 @@ SELECT * FROM recent_errors;
 
 ### Step 3: Configure Render Environment Variables (10 min)
 
-**Go to:** https://dashboard.render.com/
+**Go to:** <https://dashboard.render.com/>
 
 **For `rendetalje-backend` service:**
 
@@ -152,7 +154,7 @@ curl http://localhost:3001/test-sentry
 ### Step 5: Setup UptimeRobot (10 min)
 
 1. **Create account:**
-   - Go to: https://uptimerobot.com/signUp
+   - Go to: <https://uptimerobot.com/signUp>
    - Sign up (gratis for 50 monitors)
 
 2. **Add monitors:**
@@ -238,11 +240,13 @@ SELECT * FROM recent_errors;
 ```
 
 **Sentry dashboard:**
-- Go to: https://sentry.io/organizations/YOUR_ORG/issues/
+
+- Go to: <https://sentry.io/organizations/YOUR_ORG/issues/>
 - Should see test error from Step 4
 
 **UptimeRobot:**
-- Go to: https://uptimerobot.com/dashboard
+
+- Go to: <https://uptimerobot.com/dashboard>
 - All monitors should be green (Up)
 
 ---
@@ -250,6 +254,7 @@ SELECT * FROM recent_errors;
 ## 🚨 TROUBLESHOOTING
 
 ### Backend won't start
+
 ```powershell
 # Check for TypeScript errors:
 npm run build
@@ -262,6 +267,7 @@ cat .env.local
 ```
 
 ### Sentry not capturing errors
+
 ```powershell
 # 1. Check DSN is set:
 curl http://localhost:3001/health | jq .services.sentry
@@ -272,6 +278,7 @@ curl http://localhost:3001/test-sentry
 ```
 
 ### Database migration failed
+
 ```sql
 -- Check if table exists:
 SELECT table_name FROM information_schema.tables 
@@ -287,12 +294,14 @@ DROP TABLE IF EXISTS application_logs CASCADE;
 ## 📈 NEXT PHASE (Efter alt virker)
 
 ### Week 2: Winston Logging
+
 - Install Winston
 - Create Supabase transport
 - Integrate med existing services
 - Test log aggregation
 
 ### Week 3: Admin Dashboard
+
 - Build logs viewer component
 - Display recent errors from Sentry API
 - Show uptime stats from UptimeRobot API
@@ -324,10 +333,10 @@ TOTAL: $0/month ✅
 
 ## 🔗 USEFUL LINKS
 
-- **Sentry Dashboard**: https://sentry.io/
-- **UptimeRobot**: https://uptimerobot.com/dashboard
-- **Render Services**: https://dashboard.render.com/
-- **Supabase Project**: https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey
+- **Sentry Dashboard**: <https://sentry.io/>
+- **UptimeRobot**: <https://uptimerobot.com/dashboard>
+- **Render Services**: <https://dashboard.render.com/>
+- **Supabase Project**: <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey>
 
 ---
 

@@ -1,4 +1,4 @@
-# Universal MCP Plugin - Cross-Platform Integration Guide
+﻿# Universal MCP Plugin - Cross-Platform Integration Guide
 
 **Server:** Tekup-Billy MCP Server  
 **Status:** ✅ Production Ready  
@@ -380,7 +380,7 @@ curl https://tekup-billy.onrender.com/api/v1/tools \
 
 **Support:**
 
-- GitHub Issues: <https://github.com/JonasAbde/Tekup-Billy/issues>
+- GitHub Issues: <https://github.com/TekupDK/Tekup-Billy/issues>
 - Email: <support@tekup.dk>
 
 ---

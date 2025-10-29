@@ -375,9 +375,9 @@ npm run test        # All tests with coverage
 
 ## Links
 
-- **Repository**: https://github.com/TekupDK/tekup
-- **CI/CD Pipeline**: https://github.com/TekupDK/tekup/actions
-- **Issue Tracker**: https://github.com/TekupDK/tekup/issues
+- **Repository**: <https://github.com/TekupDK/tekup>
+- **CI/CD Pipeline**: <https://github.com/TekupDK/tekup/actions>
+- **Issue Tracker**: <https://github.com/TekupDK/tekup/issues>
 - **Documentation**: [README.md](./README.md), [TESTING.md](./TESTING.md)
 
 ---

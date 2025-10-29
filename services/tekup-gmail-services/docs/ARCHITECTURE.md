@@ -55,6 +55,7 @@ gmail-automation/
 ```
 
 **Key Features:**
+
 - PDF attachment forwarding
 - Google Photos receipt OCR
 - Economic API invoice posting
@@ -62,6 +63,7 @@ gmail-automation/
 - Scheduled automation
 
 **Tech Stack:**
+
 - Python 3.8+
 - Google API Client
 - PIL/Tesseract (OCR)
@@ -85,6 +87,7 @@ gmail-mcp-server/
 ```
 
 **Key Features:**
+
 - MCP protocol implementation
 - Filter CRUD operations
 - Label management
@@ -92,12 +95,14 @@ gmail-mcp-server/
 - AI integration endpoints
 
 **Tech Stack:**
+
 - Node.js 18+
 - TypeScript
 - MCP SDK
 - Gmail API
 
 **Ports:**
+
 - Default: 3010
 - Configurable via environment
 
@@ -126,6 +131,7 @@ renos-gmail-services/
 ```
 
 **Key Features:**
+
 - AI email generation (Gemini 2.0)
 - Lead monitoring & parsing
 - Email approval workflow
@@ -134,6 +140,7 @@ renos-gmail-services/
 - Customer database sync
 
 **Tech Stack:**
+
 - Node.js 18+
 - TypeScript
 - Express
@@ -142,6 +149,7 @@ renos-gmail-services/
 - Gmail API
 
 **Ports:**
+
 - Default: 3011
 - Configurable via environment
 
@@ -176,16 +184,19 @@ All three services integrate with Gmail API but serve different purposes:
 ### Data Flow
 
 #### 1. Email Forwarding Flow (Python)
+
 ```
 Gmail → Fetch PDFs → Check duplicates → Forward to Economic → Mark processed
 ```
 
 #### 2. MCP Server Flow (Node.js)
+
 ```
 AI Agent → MCP Request → Filter/Label Operation → Gmail API → Response
 ```
 
 #### 3. AI Email Flow (TypeScript)
+
 ```
 Gmail → Lead detection → AI generation → Approval → Send → Database log
 ```
@@ -195,11 +206,13 @@ Gmail → Lead detection → AI generation → Approval → Send → Database lo
 ## 🔐 Authentication
 
 ### Service Accounts (Python & TypeScript)
+
 - Domain-wide delegation
 - Service account JSON credentials
 - Impersonation of user accounts
 
 ### OAuth2 (MCP Server)
+
 - Auto-authentication flow
 - Token refresh
 - Multi-account support
@@ -223,10 +236,11 @@ services:
 ```
 
 ### Shared Resources
-- **Volumes:** 
+
+- **Volumes:**
   - config/google-credentials (shared)
   - logs/ (shared)
-- **Networks:** 
+- **Networks:**
   - tekup-gmail-network (bridge)
 
 ---
@@ -234,28 +248,31 @@ services:
 ## 📊 Data Storage
 
 ### Python Service
-- **Local:** 
+
+- **Local:**
   - Token files (token.json, token.pickle)
   - Log files
-- **External:** 
+- **External:**
   - Economic API (invoices)
   - Google Photos API (receipts)
 
 ### MCP Server
-- **Local:** 
+
+- **Local:**
   - Filter/label cache
   - Session tokens
-- **External:** 
+- **External:**
   - Gmail API (real-time)
 
 ### TypeScript Service
+
 - **Database:** Supabase PostgreSQL
   - Customers
   - Email logs
   - Lead tracking
   - Approval queue
 - **Cache:** Redis (optional)
-- **External:** 
+- **External:**
   - Gmail API
   - OpenAI API
   - Gemini API
@@ -265,16 +282,19 @@ services:
 ## 🔄 Workflow Patterns
 
 ### 1. Scheduled Automation (Python)
+
 ```
 Cron → Gmail check → Process → Forward → Log → Sleep
 ```
 
 ### 2. Event-Driven (MCP)
+
 ```
 AI request → MCP parse → Execute → Return result
 ```
 
 ### 3. Reactive (TypeScript)
+
 ```
 Gmail webhook → Parse → AI process → Action → Database
 ```
@@ -284,12 +304,14 @@ Gmail webhook → Parse → AI process → Action → Database
 ## 🛡️ Security
 
 ### Authentication Layers
+
 1. **Google OAuth2** - User authentication
 2. **Service Accounts** - Server-to-server auth
 3. **API Keys** - External service auth (Economic, AI)
 4. **Environment Variables** - Secret management
 
 ### Data Protection
+
 - Credentials in config/ (gitignored)
 - Environment variables for secrets
 - No hardcoded credentials
@@ -300,11 +322,13 @@ Gmail webhook → Parse → AI process → Action → Database
 ## 📈 Scalability
 
 ### Current Limits
+
 - **Python:** Single-threaded scheduler
 - **MCP:** Stateless (easily scalable)
 - **TypeScript:** Express server (horizontal scaling possible)
 
 ### Scaling Options
+
 1. **Python:** Multi-process with Celery
 2. **MCP:** Load balancer + multiple instances
 3. **TypeScript:** PM2 cluster mode or Kubernetes
@@ -314,6 +338,7 @@ Gmail webhook → Parse → AI process → Action → Database
 ## 🔧 Configuration
 
 ### Environment-Based
+
 All services use environment variables for configuration:
 
 ```
@@ -325,6 +350,7 @@ SUPABASE_URL
 ```
 
 ### Service-Specific
+
 Each service has its own configuration needs documented in their respective README files.
 
 ---
@@ -356,16 +382,19 @@ Each service has its own configuration needs documented in their respective READ
 ## 🚀 Deployment Architecture
 
 ### Development
+
 ```
 Local → Docker Compose → All 3 services → Localhost testing
 ```
 
 ### Production
+
 ```
 GitHub → CI/CD → Docker Registry → Cloud Platform → Services
 ```
 
 **Recommended Platforms:**
+
 - Render.com (current standard)
 - Google Cloud Run
 - AWS ECS
@@ -384,7 +413,4 @@ GitHub → CI/CD → Docker Registry → Cloud Platform → Services
 
 **Last Updated:** 22. Oktober 2025  
 **Architecture Version:** 1.0.0
-
-
-
 

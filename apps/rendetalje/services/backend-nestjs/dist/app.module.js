@@ -20,6 +20,7 @@ const quality_module_1 = require("./quality/quality.module");
 const realtime_module_1 = require("./realtime/realtime.module");
 const security_module_1 = require("./security/security.module");
 const ai_friday_module_1 = require("./ai-friday/ai-friday.module");
+const subcontractors_module_1 = require("./subcontractors/subcontractors.module");
 const database_module_1 = require("./database/database.module");
 const health_module_1 = require("./health/health.module");
 const configuration_1 = require("./config/configuration");
@@ -52,6 +53,7 @@ exports.AppModule = AppModule = __decorate([
             realtime_module_1.RealtimeModule,
             security_module_1.SecurityModule,
             ai_friday_module_1.AiFridayModule,
+            subcontractors_module_1.SubcontractorsModule,
         ],
     })
 ], AppModule);

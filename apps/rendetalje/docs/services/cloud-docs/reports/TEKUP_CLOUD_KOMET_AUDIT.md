@@ -1,4 +1,5 @@
 # Tekup-Cloud - Komet Audit Report
+
 **Generated:** 22. Oktober 2025, kl. 05:45 CET  
 **Audit Type:** Rapid Deep-Dive Analysis  
 **Focus:** Repository Structure, Purpose Clarity, Issues & Recommendations
@@ -12,6 +13,7 @@
 ### Health Score: 6.5/10 (C)
 
 **Key Findings:**
+
 - ✅ **PRIMARY PROJECT**: renos-calendar-mcp (Dockerized, well-structured)
 - ⚠️ **CONFUSION**: Backend + Frontend formål uklart
 - 🔴 **DUPLICATE**: RendetaljeOS-Mobile er duplicate af ../RendetaljeOS/-Mobile
@@ -29,6 +31,7 @@
 **Health:** 7.5/10 (B+)
 
 **Hvad er det:**
+
 - RenOS Calendar Intelligence system
 - 5 AI tools (booking validation, conflict checking, overtime tracking, etc.)
 - HTTP REST API (MCP protocol)
@@ -46,6 +49,7 @@ renos-calendar-mcp/
 ```
 
 **Teknologi:**
+
 - TypeScript + Node.js 18
 - Express + MCP SDK
 - LangChain (conversation handling)
@@ -53,6 +57,7 @@ renos-calendar-mcp/
 - Jest + Supertest (testing)
 
 **Status:**
+
 - ✅ Port configuration system complete
 - ✅ Docker Compose ready
 - ✅ Environment key management
@@ -79,6 +84,7 @@ renos-calendar-mcp/
 ```
 
 **Teknologi:**
+
 - NestJS 10.0.0 (moderne Node.js framework)
 - Supabase integration
 - JWT authentication
@@ -103,6 +109,7 @@ backend/
 ```
 
 **Issues:**
+
 - ⚠️ **DUPLICATE?** Samme navn som `../RendetaljeOS/apps/backend`
 - ⚠️ Dependency `@tekup/database` peger på `file:../../../tekup-database` (findes ikke?)
 - ⚠️ README.md i root beskriver RendetaljeOS (forvirrende)
@@ -132,6 +139,7 @@ backend/
 ```
 
 **Teknologi:**
+
 - Next.js 15.0.0 (nyeste version)
 - React 18.2.0
 - Supabase Auth Helpers
@@ -140,6 +148,7 @@ backend/
 - React Hook Form + Zod validation
 
 **Issues:**
+
 - ⚠️ **DUPLICATE?** Samme navn som `../RendetaljeOS/apps/frontend`
 - ⚠️ Mangler src/ filer (kun package.json?)
 - ⚠️ README.md beskriver RendetaljeOS monorepo
@@ -155,6 +164,7 @@ backend/
 **Health:** N/A (duplicate)
 
 **Hvad er det:**
+
 - Complete copy of RendetaljeOS mobile app
 - 186 files total
 - React Native / Expo app
@@ -174,6 +184,7 @@ RendetaljeOS-Mobile/
 ```
 
 **Features:**
+
 - AI Insights Dashboard
 - Customer management
 - Lead management
@@ -185,6 +196,7 @@ RendetaljeOS-Mobile/
 - Security & GDPR compliance
 
 **Issues:**
+
 - 🔴 **CONFIRMED DUPLICATE** of `../RendetaljeOS/-Mobile/`
 - ⚠️ Contains sub-folder `RendetaljeOS-Mobile/RendetaljeOS-Mobile/` (recursive duplicate!)
 - ⚠️ 186 files wasted (50+ MB duplicate)
@@ -236,6 +248,7 @@ PORT_*.md (5 files)
 ```
 
 **Categories:**
+
 - Reports (AUDIT, ANALYSIS, SUMMARY)
 - Plans (IMPLEMENTATION, ACTION)
 - Status (COMPLETE, STATUS)
@@ -277,6 +290,7 @@ Untracked Folders:
 ### README.md Analysis
 
 **Current Content:**
+
 - Describes "RendetaljeOS" - Complete operations management system
 - Talks about Owner, Employee, Customer portals
 - Mentions NestJS backend + Next.js frontend
@@ -305,9 +319,11 @@ Untracked Folders:
 ## 🚨 CRITICAL ISSUES
 
 ### 1. 🔴 Identity Crisis
+
 **Problem:** Repository navn er "Tekup-Cloud", men package.json + README siger "RendetaljeOS"
 
 **Evidence:**
+
 - Git repo folder: `Tekup-Cloud`
 - Package name: `"rendetaljeos"`
 - README title: `# RendetaljeOS`
@@ -317,20 +333,24 @@ Untracked Folders:
 **Impact:** Massive confusion about projektets formål
 
 **Fix:**
+
 - Option A: Rename til RendetaljeOS (git mv entire folder)
 - Option B: Update README + package.json til reflect "Tekup-Cloud workspace"
 
 ---
 
 ### 2. 🔴 RendetaljeOS-Mobile Duplicate
+
 **Problem:** 186 files duplicated fra `../RendetaljeOS/-Mobile/`
 
 **Evidence:**
+
 - Same package.json
 - Same files structure
 - Recursive sub-folder (`RendetaljeOS-Mobile/RendetaljeOS-Mobile/`)
 
 **Impact:**
+
 - 50+ MB wasted storage
 - Confusion about canonical source
 - Potential sync issues
@@ -340,15 +360,18 @@ Untracked Folders:
 ---
 
 ### 3. ⚠️ Backend/Frontend Purpose Unclear
+
 **Problem:** Mangler src/ filer, kun package.json
 
 **Questions:**
+
 - Er de scaffolding templates?
 - Er de work-in-progress?
 - Er de duplicates af `../RendetaljeOS/apps/`?
 - Er de separate projekter?
 
 **Evidence:**
+
 - Package.json eksisterer
 - Dependency `@tekup/database` peger på non-existent path
 - Ingen src/ files found
@@ -358,9 +381,11 @@ Untracked Folders:
 ---
 
 ### 4. 🔴 Documentation Clutter
+
 **Problem:** 50+ untracked markdown files i root
 
 **Impact:**
+
 - Difficult navigation
 - Git status cluttered
 - No clear organization
@@ -381,6 +406,7 @@ docs/
 ### Immediate Actions (Today - 2 hours)
 
 #### 1. Delete RendetaljeOS-Mobile Duplicate (5 min)
+
 ```bash
 cd C:\Users\empir\Tekup-Cloud
 Remove-Item -Recurse -Force RendetaljeOS-Mobile
@@ -389,6 +415,7 @@ git commit -m "chore: remove duplicate RendetaljeOS-Mobile folder"
 ```
 
 #### 2. Organize Documentation (30 min)
+
 ```bash
 # Create folder structure
 mkdir -p docs/reports docs/plans docs/status docs/technical
@@ -406,6 +433,7 @@ echo "docs/reports/*_DRAFT.md" >> .gitignore
 ```
 
 #### 3. Fix README.md (15 min)
+
 ```markdown
 # Tekup-Cloud
 
@@ -451,9 +479,11 @@ npm run docker:up
 See individual project READMEs for details.
 
 ## 🔗 Related Repositories
+
 - [RendetaljeOS](../RendetaljeOS) - Complete RendetaljeOS monorepo
 - [Tekup-Billy](../Tekup-Billy) - Billy.dk MCP integration
 - [TekupVault](../TekupVault) - Knowledge management system
+
 ```
 
 #### 4. Investigate Backend/Frontend (30 min)
@@ -472,6 +502,7 @@ ls src/  # Does this exist?
 ```
 
 #### 5. Update package.json (5 min)
+
 ```json
 {
   "name": "tekup-cloud",
@@ -491,6 +522,7 @@ ls src/  # Does this exist?
 ```
 
 #### 6. Commit All Changes (10 min)
+
 ```bash
 git add .
 git commit -m "chore: organize Tekup-Cloud workspace structure
@@ -508,12 +540,15 @@ git push origin main
 ### Short-Term Actions (Next 7 Days - 4 hours)
 
 #### 7. Clarify Backend/Frontend Purpose
+
 **Options:**
+
 - If duplicates → Delete
 - If WIP → Document status in README
 - If separate → Complete implementation
 
 #### 8. Create Workspace Documentation Index
+
 Create `WORKSPACE_INDEX.md`:
 ```markdown
 # Tekup-Cloud Workspace Index
@@ -557,6 +592,7 @@ Create `WORKSPACE_INDEX.md`:
 ## 🎯 FINAL VERDICT
 
 **Tekup-Cloud** har en **identity crisis**:
+
 - Navnet siger "Tekup-Cloud"
 - Package.json siger "rendetaljeos"
 - README beskriver RendetaljeOS
@@ -567,6 +603,7 @@ Create `WORKSPACE_INDEX.md`:
 **Solution Path:**
 
 ### Option A: Rename to RendetaljeOS-Workspace ✅ RECOMMENDED
+
 ```bash
 # Rename entire folder
 cd C:\Users\empir
@@ -578,12 +615,14 @@ git remote set-url origin https://github.com/your-org/rendetaljeos-workspace.git
 ```
 
 ### Option B: Clean Up & Clarify as Tekup-Cloud
+
 - Delete duplicates (RendetaljeOS-Mobile, backend?, frontend?)
 - Update README to describe workspace
 - Update package.json name
 - Keep only unique projects (renos-calendar-mcp, shared)
 
 ### Option C: Merge into RendetaljeOS Monorepo
+
 - Move renos-calendar-mcp to `../RendetaljeOS/apps/calendar-mcp`
 - Delete Tekup-Cloud entirely
 - Consolidate all RenOS projects into one monorepo
@@ -593,6 +632,7 @@ git remote set-url origin https://github.com/your-org/rendetaljeos-workspace.git
 ## 📋 ACTION CHECKLIST
 
 ### Critical (Today)
+
 - [ ] Delete `RendetaljeOS-Mobile/` duplicate
 - [ ] Organize 50+ documentation files into `docs/`
 - [ ] Update README.md to reflect actual structure
@@ -600,12 +640,14 @@ git remote set-url origin https://github.com/your-org/rendetaljeos-workspace.git
 - [ ] Commit all changes to git
 
 ### High (This Week)
+
 - [ ] Decide on repository identity (Option A, B, or C above)
 - [ ] Update package.json name to match decision
 - [ ] Create workspace documentation index
 - [ ] Deploy renos-calendar-mcp to Render
 
 ### Medium (This Month)
+
 - [ ] Complete or remove backend/frontend folders
 - [ ] Set up workspace-level scripts
 - [ ] Add CI/CD for renos-calendar-mcp
@@ -617,6 +659,7 @@ git remote set-url origin https://github.com/your-org/rendetaljeos-workspace.git
 **Tekup-Cloud Health Score:** 6.5/10 (C)
 
 **Key Issues:**
+
 1. 🔴 Identity crisis (name mismatch)
 2. 🔴 RendetaljeOS-Mobile duplicate (186 files)
 3. ⚠️ Backend/Frontend purpose unclear
@@ -631,4 +674,3 @@ git remote set-url origin https://github.com/your-org/rendetaljeos-workspace.git
 
 **Audit Complete** ✅  
 **Recommendation:** Follow Option A (Rename to RendetaljeOS-Workspace) for clearest identity
-

@@ -62,3 +62,4 @@ reports/
 GIT_HEALTH_REPORT_*.md
 GIT_ANALYSIS_*.md
 GIT_STATUS_REPORT.json
+apps/rendetalje/services/backend-nestjs/.env

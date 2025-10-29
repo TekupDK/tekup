@@ -11,7 +11,9 @@
 ## 📦 Hvad Er Leveret
 
 ### **1. Backend Monitoring (NestJS)**
+
 ✅ **Sentry Error Tracking:**
+
 - Installeret `@sentry/node` + `@sentry/profiling-node`
 - SentryInterceptor med automatic error catching
 - Sanitization af passwords, tokens, API keys
@@ -19,12 +21,14 @@
 - Test endpoint: `/test-sentry`
 
 ✅ **Winston Logger:**
+
 - CustomLoggerService med Supabase integration
 - Strukturerede JSON logs
 - Automatisk write til `application_logs` tabel
 - LoggerModule tilføjet til AppModule
 
 **Filer modificeret:**
+
 - `src/main.ts` - Sentry initialization
 - `src/common/sentry/sentry.interceptor.ts` - NEW
 - `src/common/logger/custom-logger.service.ts` - NEW
@@ -35,7 +39,9 @@
 ---
 
 ### **2. Frontend Monitoring (Next.js)**
+
 ✅ **Sentry Error Tracking:**
+
 - Installeret `@sentry/nextjs`
 - Client-side tracking med Session Replay
 - Server-side tracking
@@ -43,12 +49,14 @@
 - Error filtering (network errors, hydration errors)
 
 ✅ **Error Boundary:**
+
 - React component med Sentry integration
 - User-friendly dansk fallback UI
 - "Prøv igen" og "Tilbage til forsiden" buttons
 - useErrorHandler hook til functional components
 
 **Filer oprettet:**
+
 - `sentry.client.config.ts` - Browser tracking
 - `sentry.server.config.ts` - Server tracking
 - `sentry.edge.config.ts` - Edge tracking
@@ -58,7 +66,9 @@
 ---
 
 ### **3. Database Infrastructure**
+
 ✅ **Application Logs Schema:**
+
 - `application_logs` tabel med BIGSERIAL id
 - 6 indexes for performance (timestamp, level, service, user_id, composite, GIN full-text)
 - Row Level Security (RLS) policies
@@ -67,12 +77,15 @@
 - 30-dages automatisk retention
 
 **Fil:**
+
 - `database/migrations/004_application_logs.sql` (250+ linjer, production-ready)
 
 ---
 
 ### **4. Dokumentation**
+
 ✅ **Comprehensive Guides:**
+
 1. **DEPLOYMENT_CHECKLIST.md** - Step-by-step bruger guide (30-35 min)
 2. **README_MONITORING.md** - Overview og quick reference
 3. **MONITORING_IMPLEMENTATION_COMPLETE.md** - Teknisk reference (400+ linjer)
@@ -84,6 +97,7 @@
 ## 💻 Installation Summary
 
 ### **Backend:**
+
 ```powershell
 ✅ npm install @sentry/node @sentry/profiling-node
 ✅ npm install winston @supabase/supabase-js
@@ -93,6 +107,7 @@ Vulnerabilities: 19 (5 low, 14 moderate) - non-critical, eksisterende
 ```
 
 ### **Frontend:**
+
 ```powershell
 ✅ npm install @sentry/nextjs
 
@@ -107,7 +122,7 @@ Vulnerabilities: 0 🎉
 ### **Action Items:**
 
 1. **Opret Sentry Konto (5 min)**
-   - Gå til https://sentry.io/signup/
+   - Gå til <https://sentry.io/signup/>
    - Opret backend + frontend projekter
    - Kopiér DSN nøgler
 
@@ -134,7 +149,7 @@ Vulnerabilities: 0 🎉
    ```
 
 6. **Setup UptimeRobot (5 min)**
-   - https://uptimerobot.com
+   - <https://uptimerobot.com>
    - Add monitors for backend + frontend
 
 **📖 Følg: `DEPLOYMENT_CHECKLIST.md` for detaljer**
@@ -183,6 +198,7 @@ Tekup-Monorepo/
 ## 🎯 Success Metrics
 
 ### **Hvad Du Nu Har:**
+
 ✅ Automatic error catching (backend + frontend)  
 ✅ Centralized logging i PostgreSQL  
 ✅ Health check endpoint  
@@ -195,7 +211,9 @@ Tekup-Monorepo/
 ✅ Automatisk cleanup (30-dages retention)
 
 ### **Cost:**
+
 💰 **$0/måned** (alle free tiers)
+
 - Sentry: 5,000 errors/måned gratis
 - UptimeRobot: 50 monitors gratis
 - Supabase: Inden for eksisterende plan
@@ -205,6 +223,7 @@ Tekup-Monorepo/
 ## 🧪 Test Det Nu
 
 ### **Lokalt:**
+
 ```powershell
 # Backend:
 $env:SENTRY_DSN="<få-fra-sentry.io>"
@@ -220,6 +239,7 @@ npm run start
 ```
 
 ### **Efter Production Deploy:**
+
 ```powershell
 # Health check
 curl https://your-backend.onrender.com/health
@@ -235,13 +255,15 @@ curl https://your-backend.onrender.com/test-sentry
 ## 📊 Dashboards
 
 ### **Sentry:**
-- **URL**: https://sentry.io/organizations/[din-org]/issues/
+
+- **URL**: <https://sentry.io/organizations/[din-org]/issues/>
 - Real-time error feed
 - Stack traces
 - Session replays
 - Performance metrics
 
 ### **Supabase:**
+
 ```sql
 -- Recent errors:
 SELECT * FROM recent_errors;
@@ -256,7 +278,8 @@ LIMIT 50;
 ```
 
 ### **UptimeRobot:**
-- **URL**: https://uptimerobot.com/dashboard
+
+- **URL**: <https://uptimerobot.com/dashboard>
 - Uptime percentage
 - Response times
 - Downtime alerts
@@ -266,6 +289,7 @@ LIMIT 50;
 ## ⚠️ Known Issues
 
 ### **app.module.ts TypeScript Errors:**
+
 ```
 Cannot find module './modules/auth/auth.module'
 (og 9 andre lignende fejl)
@@ -288,17 +312,20 @@ Cannot find module './modules/auth/auth.module'
 ## 🎓 Hvad Du Har Lært
 
 ### **Om Din Infrastruktur:**
+
 - Render.com + Supabase er et **godt setup** for startup/MVP
 - Det der manglede var **observability** (ikke infrastrukturen)
 - Nu har du enterprise-grade monitoring for $0
 
 ### **Om Logging:**
+
 - Logs skal være **strukturerede** (JSON)
 - Logs skal have **context** (user_id, service, metadata)
 - Logs skal **gemmes centraliseret** (ikke spredt)
 - Logs skal **ryddes automatisk** (retention policies)
 
 ### **Om Error Tracking:**
+
 - Errors skal **sanitizes** (fjern passwords, tokens)
 - Errors skal have **context** (user, request, environment)
 - Errors skal **alertes** (email, Slack)
@@ -309,6 +336,7 @@ Cannot find module './modules/auth/auth.module'
 ## 📞 Support
 
 **Hvis du får problemer:**
+
 1. Check `DEPLOYMENT_CHECKLIST.md` → Troubleshooting section
 2. Læs `MONITORING_IMPLEMENTATION_COMPLETE.md` → Teknisk detaljer
 3. Spørg AI - jeg har fuld kontekst over hele implementationen!
@@ -329,9 +357,9 @@ Cannot find module './modules/auth/auth.module'
 
 ---
 
-## 🚀 Ready to Deploy!
+## 🚀 Ready to Deploy
 
-**Næste Action:** 
+**Næste Action:**
 ```bash
 git add .
 git commit -m "feat: Add comprehensive monitoring system with Sentry + Winston"

@@ -1,4 +1,4 @@
-# Changelog
+﻿# Changelog
 
 Alle væsentlige ændringer til dette projekt dokumenteres i denne fil.
 
@@ -8,6 +8,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [Unreleased]
 
 ### Planlagt
+
 - RenOS backend MCP integration  
 - Google Workspace integration
 - Automatisk system monitoring
@@ -18,6 +19,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [1.3.0] - 2025-10-16
 
 ### Tilføjet
+
 - 🎉 **Billy.dk MCP Client** - Production-ready integration (MAJOR!)
   - TypeScript client med 1,100+ linjer kode
   - Type-safe wrappers for 25+ Billy tools
@@ -48,6 +50,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - Learning path dokumenteret
 
 ### Ændret
+
 - ⬆️ Phase 2 (AI Infrastructure) - 70% → 100% complete
   - Qwen 2.5 Coder 14B installeret og testet (97% score)
   - 3 AI modeller nu tilgængelige
@@ -59,6 +62,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - 📝 Opdateret mkdocs navigation med Billy integration section
 
 ### Dokumentation
+
 - 12 nye dokumenter oprettet (~4,000 linjer)
 - 5 analyse rapporter (multi-repo deep dive)
 - Complete integration guides
@@ -69,6 +73,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [1.2.0] - 2025-10-16
 
 ### Tilføjet
+
 - ✨ **Open WebUI Setup** - Komplet Docker-baseret chat interface
   - Docker Compose konfiguration til Open WebUI
   - PowerShell management scripts (`manage-docker.ps1`)
@@ -79,11 +84,13 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - 📊 **Git Repository Report** - Omfattende repository analyse
 
 ### Ændret
+
 - 📝 Opdateret mkdocs navigation til at inkludere nye guides
 - 📝 Opdateret SETUP.md med Open WebUI instruktioner
 - 📝 Tilføjet Open WebUI til systemarkitekturen
 
 ### Commit Reference
+
 - `c92f169` - docs: Add GitHub Pages setup guide
 - `945f46d` - docs: Update mkdocs navigation to include new guides
 - `ac774a8` - docs: Add comprehensive session report
@@ -99,6 +106,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [1.1.0] - 2025-10-15
 
 ### Tilføjet
+
 - 🎨 **MkDocs Dokumentationssite**
   - Material Theme med mørk/lys tilstand
   - Fuld-tekst søgning
@@ -111,10 +119,12 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - 📚 **MCP Web Scraper Guide** - Omfattende vejledning til MCP setup
 
 ### Ændret
+
 - 🔧 Rettet MkDocs stier og flyttet eksempler til docs mappe
 - 📁 Organiseret dokumentationsstruktur
 
 ### Commit Reference
+
 - `8f536c6` - fix: correct MkDocs paths and move examples to docs folder
 - `deb2b91` - feat: add MkDocs documentation with Material theme
 - `bab42aa` - feat: Add installation status tracking and download monitor script
@@ -124,6 +134,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [1.0.0] - 2025-10-15
 
 ### Tilføjet
+
 - 📚 **Komplet Phase 1 Dokumentation**
   - SETUP.md - Installationsguide
   - ARCHITECTURE.md - Systemdesign og arkitektur
@@ -146,6 +157,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/guides/daily-workflow.md` - Trin-for-trin daglig guide
 
 ### Commit Reference
+
 - `d2e8eeb` - docs: Complete Phase 1 documentation
 
 ---
@@ -153,6 +165,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [0.1.0] - 2025-10-15
 
 ### Tilføjet
+
 - 🎉 **Initial Project Setup**
   - Grundlæggende mappestruktur
   - README.md med projektoverblik
@@ -165,6 +178,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `/examples/` - Brugseksempler
 
 ### Commit Reference
+
 - `ec8f759` - chore: initial project structure
 
 ---
@@ -172,6 +186,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## Projekt Faser
 
 ### ✅ Phase 1: Foundation & Documentation (FÆRDIG)
+
 - Omfattende dokumentation
 - MkDocs site med Material theme
 - API dokumentation
@@ -179,6 +194,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Brugseksempler
 
 ### 🔄 Phase 2: AI Infrastructure Setup (I GANG)
+
 - ✅ Ollama server installeret
 - ✅ Open WebUI Docker setup
 - ✅ MCP Web Scraper implementeret
@@ -186,12 +202,14 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - ⏳ Chat interface valg og konfiguration
 
 ### ⏳ Phase 3: Integration (PLANLAGT)
+
 - Billy.dk MCP integration
 - RenOS integration
 - Google Workspace sync
 - Automatiserede workflows
 
 ### ⏳ Phase 4: Advanced Features (PLANLAGT)
+
 - TekupVault chat arkivering
 - System monitoring dashboards
 - Avancerede AI assistenter
@@ -214,9 +232,9 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## Links
 
-- **Repository:** [github.com/JonasAbde/tekup-ai-assistant](https://github.com/JonasAbde/tekup-ai-assistant)
-- **Dokumentation:** Kør `python -m mkdocs serve` og besøg http://localhost:8000
-- **Issues:** [GitHub Issues](https://github.com/JonasAbde/tekup-ai-assistant/issues)
+- **Repository:** [github.com/TekupDK/tekup-ai-assistant](https://github.com/TekupDK/tekup-ai-assistant)
+- **Dokumentation:** Kør `python -m mkdocs serve` og besøg <http://localhost:8000>
+- **Issues:** [GitHub Issues](https://github.com/TekupDK/tekup-ai-assistant/issues)
 
 ---
 

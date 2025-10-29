@@ -12,4 +12,7 @@ export declare class AuthController {
     getProfile(req: any): Promise<User>;
     updateProfile(req: any, updateProfileDto: UpdateProfileDto): Promise<User>;
     changePassword(req: any, changePasswordDto: ChangePasswordDto): Promise<void>;
+    logout(req: any): Promise<{
+        message: string;
+    }>;
 }

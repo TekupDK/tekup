@@ -1,4 +1,4 @@
-# 🎉 Version 1.2.0 - Optional Supabase Integration
+﻿# 🎉 Version 1.2.0 - Optional Supabase Integration
 
 **Release Date:** October 13, 2025  
 **Type:** Minor Release (Feature Addition)  
@@ -71,7 +71,7 @@ Version 1.2.0 makes Supabase integration **optional** instead of required. The s
 
 ```bash
 # Clone and install
-git clone https://github.com/JonasAbde/Tekup-Billy.git
+git clone https://github.com/TekupDK/Tekup-Billy.git
 cd Tekup-Billy
 npm install
 
@@ -265,9 +265,9 @@ npm run dev:http   # HTTP API
 This release has been thoroughly tested and no issues have been identified.
 
 If you encounter any problems:
-1. Check [GitHub Issues](https://github.com/JonasAbde/Tekup-Billy/issues)
+1. Check [GitHub Issues](https://github.com/TekupDK/Tekup-Billy/issues)
 2. Open a new issue with details
-3. Contact: Jonas Abde (@JonasAbde)
+3. Contact: Jonas Abde (@TekupDK)
 
 ---
 
@@ -304,11 +304,11 @@ v1.2.0 (2025-10-13)
 
 ## 🔗 Links
 
-- **GitHub Repository:** <https://github.com/JonasAbde/Tekup-Billy>
-- **Tag v1.2.0:** <https://github.com/JonasAbde/Tekup-Billy/releases/tag/v1.2.0>
-- **Commit:** <https://github.com/JonasAbde/Tekup-Billy/commit/cece18d>
+- **GitHub Repository:** <https://github.com/TekupDK/Tekup-Billy>
+- **Tag v1.2.0:** <https://github.com/TekupDK/Tekup-Billy/releases/tag/v1.2.0>
+- **Commit:** <https://github.com/TekupDK/Tekup-Billy/commit/cece18d>
 - **Live Server:** <https://tekup-billy.onrender.com>
-- **Documentation:** <https://github.com/JonasAbde/Tekup-Billy/tree/main/docs>
+- **Documentation:** <https://github.com/TekupDK/Tekup-Billy/tree/main/docs>
 
 ---
 
@@ -325,11 +325,11 @@ v1.2.0 (2025-10-13)
 
 - ⭐ Star the repo for updates
 - 👀 Watch for new releases
-- 📢 Follow [@JonasAbde](https://github.com/JonasAbde)
+- 📢 Follow [@TekupDK](https://github.com/JonasAbde)
 
 ---
 
-**Full Changelog:** [v1.1.0...v1.2.0](https://github.com/JonasAbde/Tekup-Billy/compare/v1.1.0...v1.2.0)
+**Full Changelog:** [v1.1.0...v1.2.0](https://github.com/TekupDK/Tekup-Billy/compare/v1.1.0...v1.2.0)
 
 **Install:** `npm install @tekup/billy-mcp@1.2.0`
 

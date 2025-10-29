@@ -19,12 +19,14 @@ Thank you for contributing to Tekup! This document provides guidelines for devel
 ## 🚀 Development Setup
 
 ### **Prerequisites**
+
 - Node.js 18+ and pnpm 8+
 - PostgreSQL 14+
 - Docker (for local services)
 - Git
 
 ### **Initial Setup**
+
 ```bash
 # Navigate to workspace
 cd c:\Users\empir\Tekup
@@ -43,7 +45,9 @@ pnpm prisma migrate dev
 ```
 
 ### **Project-Specific Setup**
+
 Each project has its own README with setup instructions:
+
 - `apps/production/tekup-vault/README.md`
 - `apps/web/rendetalje-os/README.md`
 - `services/tekup-ai/README.md`
@@ -71,6 +75,7 @@ Tekup/
 ## 🎨 Coding Standards
 
 ### **TypeScript**
+
 - ✅ Use TypeScript strict mode
 - ✅ Define interfaces for all data structures
 - ✅ Use meaningful variable/function names
@@ -88,6 +93,7 @@ async function getCustomer(id: string): Promise<Customer> {
 ```
 
 ### **Code Style**
+
 - **Formatter:** Prettier (config in `/configs/prettier`)
 - **Linter:** ESLint (config in `/configs/eslint`)
 - **Line length:** 100 characters max
@@ -106,6 +112,7 @@ pnpm lint:fix
 ```
 
 ### **Naming Conventions**
+
 - **Files:** `kebab-case.ts`
 - **Components:** `PascalCase.tsx`
 - **Functions:** `camelCase()`
@@ -117,6 +124,7 @@ pnpm lint:fix
 ## 🔄 Git Workflow
 
 ### **Branch Naming**
+
 ```
 feature/add-customer-api
 bugfix/fix-login-redirect
@@ -126,6 +134,7 @@ docs/update-api-documentation
 ```
 
 ### **Commit Messages**
+
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
@@ -185,6 +194,7 @@ git commit -m "docs(workspace): update README with new structure"
 ## 🧪 Testing
 
 ### **Test Structure**
+
 ```
 project/
 ├── src/
@@ -199,6 +209,7 @@ project/
 ```
 
 ### **Running Tests**
+
 ```bash
 # Run all tests
 pnpm test
@@ -216,11 +227,13 @@ pnpm test:coverage
 ```
 
 ### **Test Coverage Requirements**
+
 - **Unit tests:** 80%+ coverage
 - **Integration tests:** Critical paths covered
 - **E2E tests:** Main user flows covered
 
 ### **Writing Tests**
+
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { getCustomer } from './customer.service';
@@ -245,16 +258,19 @@ describe('CustomerService', () => {
 ## 📚 Documentation
 
 ### **Code Documentation**
+
 - Add JSDoc comments for public APIs
 - Document complex logic with inline comments
 - Update README when adding new features
 
 ### **API Documentation**
+
 - Use OpenAPI/Swagger for REST APIs
 - Document all endpoints, parameters, responses
 - Include example requests/responses
 
 ### **Architecture Documentation**
+
 - Update `/docs/architecture/` for major changes
 - Create ADRs (Architecture Decision Records)
 - Document integration points
@@ -264,6 +280,7 @@ describe('CustomerService', () => {
 ## 🚀 Deployment
 
 ### **Local Development**
+
 ```bash
 # Start development server
 pnpm dev
@@ -276,15 +293,18 @@ pnpm start
 ```
 
 ### **Staging Deployment**
+
 - Automatic deployment on push to `develop` branch
 - Test thoroughly before merging to `main`
 
 ### **Production Deployment**
+
 - Merge to `main` branch
 - Automatic deployment via GitHub Actions
 - Monitor services after deployment
 
 ### **Rollback Procedure**
+
 ```bash
 # Revert to previous version
 git revert <commit-hash>
@@ -298,7 +318,7 @@ git push origin main
 ## ❓ Questions?
 
 - **Technical questions:** Create GitHub issue
-- **Urgent issues:** Contact @JonasAbde
+- **Urgent issues:** Create GitHub issue with 'urgent' label
 - **Documentation:** Check `/docs/` folder
 
 ---
@@ -306,6 +326,7 @@ git push origin main
 ## 📝 Code Review Checklist
 
 Before submitting PR, ensure:
+
 - [ ] Code follows style guide
 - [ ] Tests are added/updated
 - [ ] Documentation is updated

@@ -5,6 +5,7 @@
 This guide gets you using the Render MCP Server in under 5 minutes.
 
 ### Prerequisites
+
 - GitHub Copilot or Cursor IDE installed
 - Access to Render Dashboard for RenOS project
 - Permission to create API keys
@@ -128,20 +129,24 @@ Now you can use natural language to manage Render infrastructure. Try these:
 ## 🆘 Troubleshooting
 
 ### "No MCP server configured" Error
+
 - **Check**: MCP config file exists and has correct syntax
 - **Verify**: API key is correct (no extra spaces)
 - **Try**: Restart your IDE completely
 
 ### "Unauthorized" Error
+
 - **Check**: API key is valid (go to Render dashboard)
 - **Try**: Regenerate API key and update config
 - **Verify**: No extra characters in the Authorization header
 
 ### "Workspace not found" Error
+
 - **Check**: You've set the workspace with `"Set my Render workspace to rendetalje"`
 - **Verify**: You have access to the `rendetalje` workspace in Render
 
 ### Commands Not Working
+
 - **Ensure**: You're using natural language, not exact commands
 - **Try**: Be more specific (e.g., "Show logs for tekup-renos from the last hour")
 - **Check**: Full documentation in `docs/RENDER_MCP_INTEGRATION.md`

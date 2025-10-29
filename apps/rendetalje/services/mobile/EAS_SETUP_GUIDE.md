@@ -5,7 +5,7 @@
 Before you can build your app with EAS (Expo Application Services), you need:
 
 1. **Expo Account**
-   - Sign up at https://expo.dev
+   - Sign up at <https://expo.dev>
    - Remember your username
 
 2. **EAS CLI**
@@ -47,7 +47,7 @@ Update the following fields in `app.json`:
 
 OR
 
-1. Go to https://expo.dev
+1. Go to <https://expo.dev>
 2. Create a new project
 3. Copy the project ID from the project settings
 
@@ -61,6 +61,7 @@ eas init
 ```
 
 This will:
+
 - Create/update `eas.json` configuration
 - Link your project to EAS
 - Set up build profiles
@@ -170,18 +171,23 @@ eas update:rollback --branch production
 ## Common Issues & Solutions
 
 ### Issue: "No project ID found"
+
 **Solution:** Run `eas init` or add project ID to `app.json`
 
 ### Issue: "Not logged in"
+
 **Solution:** Run `eas login`
 
 ### Issue: "Build failed"
-**Solution:** Check the build logs at https://expo.dev/accounts/[your-username]/projects/[project-name]/builds
+
+**Solution:** Check the build logs at <https://expo.dev/accounts/[your-username]/projects/[project-name]/builds>
 
 ### Issue: "Apple credentials not configured"
+
 **Solution:** Run `eas credentials` to configure Apple Developer credentials
 
 ### Issue: "Android keystore not found"
+
 **Solution:** EAS will automatically generate one for you on first build
 
 ---
@@ -225,7 +231,8 @@ jobs:
 ```
 
 **Setup:**
-1. Go to https://expo.dev/accounts/[username]/settings/access-tokens
+
+1. Go to <https://expo.dev/accounts/[username]/settings/access-tokens>
 2. Create a new token
 3. Add it as `EXPO_TOKEN` secret in GitHub repository settings
 
@@ -288,17 +295,19 @@ eas build:cancel [build-id]
 ## Cost & Limits
 
 **Free Tier:**
+
 - 30 builds/month
 - Basic support
 - Public projects
 
 **Production Plan ($99/month):**
+
 - Unlimited builds
 - Priority support
 - Private projects
 - Dedicated build servers
 
-**Note:** Check current pricing at https://expo.dev/pricing
+**Note:** Check current pricing at <https://expo.dev/pricing>
 
 ---
 
@@ -328,12 +337,12 @@ eas build:cancel [build-id]
 
 ## Support & Resources
 
-- **EAS Documentation:** https://docs.expo.dev/eas/
-- **EAS Build:** https://docs.expo.dev/build/introduction/
-- **EAS Submit:** https://docs.expo.dev/submit/introduction/
-- **EAS Update:** https://docs.expo.dev/eas-update/introduction/
-- **Expo Forums:** https://forums.expo.dev/
-- **Discord:** https://chat.expo.dev/
+- **EAS Documentation:** <https://docs.expo.dev/eas/>
+- **EAS Build:** <https://docs.expo.dev/build/introduction/>
+- **EAS Submit:** <https://docs.expo.dev/submit/introduction/>
+- **EAS Update:** <https://docs.expo.dev/eas-update/introduction/>
+- **Expo Forums:** <https://forums.expo.dev/>
+- **Discord:** <https://chat.expo.dev/>
 
 ---
 

@@ -20,7 +20,7 @@ Sikkerhedspolitik for Tekup Database.
 
 ### Reporting Process
 
-1. **Email:** jonas@tekup.com
+1. **Email:** <jonas@tekup.com>
 2. **Subject:** "Security Vulnerability - Tekup Database"
 3. **Include:**
    - Description of vulnerability
@@ -213,6 +213,7 @@ export async function logAudit(data: {
 ### Data at Rest
 
 **PostgreSQL:**
+
 - Use encrypted disk volumes (Azure, AWS, Render.com provides this)
 - Enable transparent data encryption
 
@@ -378,7 +379,7 @@ export async function cleanupOldLogs(retentionDays: number) {
 
 ## 📞 Contact
 
-**Security Team:** jonas@tekup.com  
+**Security Team:** <jonas@tekup.com>  
 **PGP Key:** [Available on request]  
 **Response Time:** 48 hours maximum
 

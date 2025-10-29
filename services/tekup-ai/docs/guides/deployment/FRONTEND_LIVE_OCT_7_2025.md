@@ -1,4 +1,4 @@
-# Frontend Deployment Success - October 7, 2025
+﻿# Frontend Deployment Success - October 7, 2025
 
 **Status:** ✅ LIVE  
 **Deployment Time:** October 7, 2025 at 23:07 GMT+2  
@@ -8,9 +8,11 @@
 ## 🎯 Problem Løst
 
 ### Issue
+
 Frontend viste blank side på <www.renos.dk>
 
 ### Root Cause
+
 ```
 Publish Directory: client/dist  ❌ (forkert)
 Root Directory: client
@@ -19,6 +21,7 @@ Render ledte efter: client/client/dist (findes ikke!)
 ```
 
 ### Fix
+
 ```
 Publish Directory: dist  ✅ (korrekt)
 Root Directory: client
@@ -54,7 +57,7 @@ dist/assets/Dashboard-GFJBafRi.js       61.23 kB │ gzip:  11.25 kB
 Service: tekup-renos-frontend (Static Site)
 Service ID: srv-d3e057nfte5s73f2naqg
 
-Repository: https://github.com/JonasAbde/tekup-renos
+Repository: https://github.com/TekupDK/tekup-renos
 Branch: main
 Root Directory: client
 Build Command: npm run build
@@ -87,6 +90,7 @@ $response.Content -match "/assets/"
 ## 🎯 Next Steps
 
 ### 1. Test Authentication Flow
+
 ```
 1. Open https://www.renos.dk
 2. Click "Continue with Google"
@@ -95,12 +99,14 @@ $response.Content -match "/assets/"
 ```
 
 ### 2. Verify Environment Variables
+
 ```
 Render Dashboard → tekup-renos-frontend → Environment
 Check: VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
 ```
 
 ### 3. Complete Google OAuth Setup
+
 ```
 1. Enter credentials in Clerk Dashboard
 2. Publish OAuth consent screen
@@ -108,6 +114,7 @@ Check: VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
 ```
 
 ### 4. Monitor for Errors
+
 ```
 Browser Console (F12) → Check for:
 - Clerk initialization errors

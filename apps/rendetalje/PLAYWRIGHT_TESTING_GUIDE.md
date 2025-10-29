@@ -385,12 +385,12 @@ Get-Process -Name node | Stop-Process
 
 ## 📚 Resources
 
-- **Playwright Docs:** https://playwright.dev/
-- **Selectors Guide:** https://playwright.dev/docs/selectors
-- **Best Practices:** https://playwright.dev/docs/best-practices
+- **Playwright Docs:** <https://playwright.dev/>
+- **Selectors Guide:** <https://playwright.dev/docs/selectors>
+- **Best Practices:** <https://playwright.dev/docs/best-practices>
 - **VS Code Extension:** Playwright Test for VSCode
 
-## 🎉 Ready to Test!
+## 🎉 Ready to Test
 
 Nu kan I teste hele systemet automatisk uden eksterne AI browsere. Playwright kører i jeres eget miljø med fuld kontrol.
 

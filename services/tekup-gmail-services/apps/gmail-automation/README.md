@@ -170,6 +170,7 @@ The system provides comprehensive logging and monitoring:
 ### Code Style
 
 This project uses:
+
 - **Black** for code formatting
 - **isort** for import sorting
 - **flake8** for linting
@@ -246,7 +247,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Documentation**: [GitHub Wiki](https://github.com/tekup/tekup-gmail-automation/wiki)
 - **Issues**: [GitHub Issues](https://github.com/tekup/tekup-gmail-automation/issues)
-- **Email**: info@tekup.dk
+- **Email**: <info@tekup.dk>
 
 ## 🏷️ Version History
 

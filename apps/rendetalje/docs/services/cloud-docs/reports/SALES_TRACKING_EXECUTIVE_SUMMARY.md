@@ -15,11 +15,13 @@
 ### The Problem
 
 Tekup operates three distinct business units with different service offerings:
+
 - **Rendetalje**: Cleaning services (residential & commercial)
 - **Tekup**: IT consulting and software development
 - **Foodtruck Fiesta**: Event catering and food services
 
 **Current Pain Points:**
+
 1. Sales tracked manually in disconnected spreadsheets and email
 2. No unified view of business performance across units
 3. Leads fall through cracks due to poor follow-up tracking
@@ -31,6 +33,7 @@ Tekup operates three distinct business units with different service offerings:
 ### The Solution
 
 A unified web-based internal tool that:
+
 - ✅ Centralizes all sales data in one system
 - ✅ Automates invoice generation via Billy.dk integration
 - ✅ Tracks leads from inquiry to sale conversion
@@ -57,6 +60,7 @@ A unified web-based internal tool that:
 
 **Before**: Sales performance unclear, decisions based on gut feeling  
 **After**: Data-driven insights with:
+
 - Revenue trends by business unit
 - Customer lifetime value analysis
 - Service profitability metrics
@@ -79,6 +83,7 @@ A unified web-based internal tool that:
 ### Core Functionality
 
 **Phase 1: Foundation (Weeks 1-4)**
+
 - Sales management (create, track, update sales)
 - Customer database with relationship history
 - Service catalog per business unit
@@ -86,6 +91,7 @@ A unified web-based internal tool that:
 - Staff authentication and access control
 
 **Phase 2: Lead Management (Weeks 5-8)**
+
 - Lead capture from email, phone, website
 - Lead qualification workflow
 - Follow-up tracking and reminders
@@ -93,6 +99,7 @@ A unified web-based internal tool that:
 - Multi-organization support (all 3 units)
 
 **Phase 3: Automation (Weeks 9-12)**
+
 - Auto-generate Billy.dk invoices
 - Sync payment status from Billy
 - Google Calendar integration for scheduling
@@ -100,6 +107,7 @@ A unified web-based internal tool that:
 - Mobile-responsive interface
 
 **Phase 4: Analytics (Weeks 13-16)**
+
 - Executive dashboard with KPIs
 - Sales trend analysis
 - Customer lifetime value reports
@@ -148,6 +156,7 @@ A unified web-based internal tool that:
 **Hosting**: Render.com (Frankfurt, EU)
 
 **Why These Choices:**
+
 - Consistent with existing Tekup technology portfolio
 - Modern, scalable, and maintainable
 - Strong TypeScript support throughout
@@ -157,6 +166,7 @@ A unified web-based internal tool that:
 ### Architecture Approach
 
 **Multi-tenant Single Database**
+
 - All three business units share infrastructure
 - Logical data separation by organization ID
 - Row-level security for data isolation
@@ -165,6 +175,7 @@ A unified web-based internal tool that:
 
 **NOT a SaaS Product**
 This is an internal operational tool, which simplifies:
+
 - No public signup or billing system needed
 - No multi-tenant infrastructure complexity
 - Internal authentication only
@@ -216,18 +227,21 @@ Weeks 13-16: Analytics & Optimization
 ### Phased Rollout Strategy
 
 **Week 4: Rendetalje Pilot**
+
 - Launch to Rendetalje team only
 - 1 week of parallel operation with existing process
 - Gather feedback and fix issues
 - Validate core functionality
 
 **Week 8: Full Rollout**
+
 - Onboard Tekup and Foodtruck Fiesta
 - Train all staff members
 - Monitor adoption and usage
 - Continuous improvement based on feedback
 
 **Week 16: Production Launch**
+
 - All features complete
 - All three organizations live
 - Full automation enabled
@@ -242,6 +256,7 @@ Weeks 13-16: Analytics & Optimization
 **Team Recommendation**: 1-2 Full-Stack Developers
 
 **Skills Required**:
+
 - TypeScript/JavaScript (React, Node.js)
 - Database design (PostgreSQL, Prisma)
 - REST API development
@@ -413,24 +428,28 @@ Weeks 13-16: Analytics & Optimization
 ### Affected Teams & Roles
 
 **Rendetalje Team**
+
 - Primary users from day 1
 - Track cleaning service bookings
 - Manage customer relationships
 - Generate invoices
 
 **Tekup Team**
+
 - Track IT consulting projects
 - Manage client contracts
 - Monitor project pipeline
 - Time tracking integration (future)
 
 **Foodtruck Fiesta Team**
+
 - Event booking management
 - Catering quote generation
 - Menu customization tracking
 - Event calendar coordination
 
 **Management/Leadership**
+
 - Real-time business intelligence
 - Cross-organization insights
 - Data-driven decision making
@@ -439,6 +458,7 @@ Weeks 13-16: Analytics & Optimization
 ### Change Management Plan
 
 **Communication Strategy**:
+
 1. **Week -2**: Announce project and benefits to all staff
 2. **Week 0**: Demo preview to key stakeholders
 3. **Week 2**: Hands-on training sessions
@@ -446,6 +466,7 @@ Weeks 13-16: Analytics & Optimization
 5. **Week 8**: Full launch with ongoing support
 
 **Training Approach**:
+
 - Live training sessions (2 hours per team)
 - Video tutorials for self-paced learning
 - Written user guide with screenshots
@@ -453,6 +474,7 @@ Weeks 13-16: Analytics & Optimization
 - Dedicated support channel (Slack/email)
 
 **Success Factors**:
+
 - Executive sponsorship and visible support
 - Early involvement of end users in design
 - Clear communication of benefits
@@ -500,4 +522,4 @@ With a clear 16-week implementation plan, proven technology stack, and phased ro
 
 **Contact**:  
 Project Lead: Tekup Development Team  
-Email: dev@tekup.dk
+Email: <dev@tekup.dk>

@@ -1,7 +1,7 @@
-# Tekup-Billy MCP Server
+﻿# Tekup-Billy MCP Server
 
-[![CI/CD Pipeline](https://github.com/JonasAbde/Tekup-Billy/actions/workflows/ci.yml/badge.svg)](https://github.com/JonasAbde/Tekup-Billy/actions/workflows/ci.yml)
-[![CodeQL Security](https://github.com/JonasAbde/Tekup-Billy/actions/workflows/codeql.yml/badge.svg)](https://github.com/JonasAbde/Tekup-Billy/actions/workflows/codeql.yml)
+[![CI/CD Pipeline](https://github.com/TekupDK/Tekup-Billy/actions/workflows/ci.yml/badge.svg)](https://github.com/TekupDK/Tekup-Billy/actions/workflows/ci.yml)
+[![CodeQL Security](https://github.com/TekupDK/Tekup-Billy/actions/workflows/codeql.yml/badge.svg)](https://github.com/TekupDK/Tekup-Billy/actions/workflows/codeql.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
@@ -504,7 +504,7 @@ Komplet dokumentation er organiseret i `docs/` mappen:
 
 **Status:** ✅ OPERATIONAL (Updated: 17. Oktober 2025)
 
-- **Repository:** <https://github.com/JonasAbde/TekupVault> (Private)
+- **Repository:** <https://github.com/TekupDK/TekupVault> (Private)
 - **API:** <https://tekupvault.onrender.com>
 - **Sync:** Hver 6. time (GitHub → TekupVault)
 - **Indexeret:** 188 filer fra Tekup-Billy + 875 fra andre Tekup repos
@@ -546,8 +546,8 @@ curl https://tekupvault.onrender.com/api/sync-status
 
 **Related Projects:**
 
-- [renos-backend](https://github.com/JonasAbde/renos-backend) - TypeScript + Prisma (607 files indexed)
-- [renos-frontend](https://github.com/JonasAbde/renos-frontend) - React + Vite (268 files indexed)
+- [renos-backend](https://github.com/TekupDK/renos-backend) - TypeScript + Prisma (607 files indexed)
+- [renos-frontend](https://github.com/TekupDK/renos-frontend) - React + Vite (268 files indexed)
 
 ## 📊 Status
 

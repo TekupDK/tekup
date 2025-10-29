@@ -10,6 +10,7 @@
 ### **Option 1: Supabase** ☁️ (Current Plan)
 
 **Hvad det er:**
+
 - Open-source Firebase alternativ
 - Managed PostgreSQL med extras (Auth, Storage, Realtime)
 - Built-in pgvector support
@@ -33,6 +34,7 @@ Pro tier:
 ```
 
 **Pros:**
+
 - ✅ FREE tier dækker vores behov nu
 - ✅ pgvector support (for TekupVault embeddings)
 - ✅ Auto backups daily
@@ -43,11 +45,13 @@ Pro tier:
 - ✅ Vi bruger det allerede (2 projekter)
 
 **Cons:**
+
 - ❌ Vendor lock-in (men det er bare Postgres)
 - ❌ Cost ved scale ($25/mdr Pro tier)
 - ❌ Network latency (cloud only)
 
 **Nuværende brug:**
+
 - TekupVault: 1 projekt (Paris)
 - RenOS + Billy: 1 projekt (Frankfurt)
 
@@ -56,6 +60,7 @@ Pro tier:
 ### **Option 2: Render.com PostgreSQL** 🎨
 
 **Hvad det er:**
+
 - Managed PostgreSQL fra Render.com
 - Samme provider som vores web services
 - Simple deployment
@@ -81,6 +86,7 @@ Pro:
 ```
 
 **Pros:**
+
 - ✅ Same provider som web services (simplere)
 - ✅ EU regions (Frankfurt)
 - ✅ Auto backups
@@ -88,6 +94,7 @@ Pro:
 - ✅ Direct connection (low latency)
 
 **Cons:**
+
 - ❌ INGEN FREE tier ($7/mdr minimum)
 - ❌ pgvector support ukendt
 - ❌ Ingen built-in Auth/Realtime
@@ -101,6 +108,7 @@ Pro:
 ### **Option 3: Railway.app** 🚂
 
 **Hvad det er:**
+
 - Developer-first platform
 - Managed PostgreSQL
 - Auto-scaling
@@ -121,12 +129,14 @@ Pro:
 ```
 
 **Pros:**
+
 - ✅ Developer-friendly
 - ✅ Auto-scaling
 - ✅ Nice CLI tools
 - ✅ PostgreSQL extensions support
 
 **Cons:**
+
 - ❌ Ingen rigtig free tier
 - ❌ Pricing kan være uforudsigelig
 - ❌ Mindre etableret end andre
@@ -137,6 +147,7 @@ Pro:
 ### **Option 4: Neon** ⚡
 
 **Hvad det er:**
+
 - Serverless Postgres
 - Instant branching (database branches!)
 - Auto-scaling to zero
@@ -157,6 +168,7 @@ Pro:
 ```
 
 **Pros:**
+
 - ✅ FREE tier med real Postgres
 - ✅ Database branching (cool for testing)
 - ✅ Serverless (scales to zero)
@@ -164,6 +176,7 @@ Pro:
 - ✅ EU regions
 
 **Cons:**
+
 - ❌ 512 MB limit (tight)
 - ❌ Auto-suspend kan være irriterende
 - ❌ Ingen pgvector? (skal verificeres)
@@ -174,6 +187,7 @@ Pro:
 ### **Option 5: PlanetScale** 🌍
 
 **Hvad det er:**
+
 - Serverless MySQL (NOT PostgreSQL!)
 - Database branching workflow
 
@@ -191,11 +205,13 @@ Scaler:
 ```
 
 **Pros:**
+
 - ✅ Generous free tier
 - ✅ Amazing branching workflow
 - ✅ Auto-scaling
 
 **Cons:**
+
 - ❌ MySQL (vi bruger Postgres overalt!)
 - ❌ Skal rewrite alle schemas
 - ❌ Ingen pgvector support
@@ -208,6 +224,7 @@ Scaler:
 ### **Option 6: Aiven** 🦅
 
 **Hvad det er:**
+
 - Multi-cloud managed databases
 - Enterprise-grade
 - EU-baseret (Finland)
@@ -226,12 +243,14 @@ Business:
 ```
 
 **Pros:**
+
 - ✅ EU-baseret (GDPR++)
 - ✅ Multi-cloud (AWS, GCP, Azure)
 - ✅ Enterprise features
 - ✅ PostgreSQL extensions
 
 **Cons:**
+
 - ❌ DYRE ($55/mdr minimum)
 - ❌ Overkill for vores behov
 - ❌ Ingen free tier
@@ -243,6 +262,7 @@ Business:
 ### **Option 7: AWS RDS** ☁️
 
 **Hvad det er:**
+
 - Amazon Relational Database Service
 - Managed PostgreSQL
 
@@ -262,6 +282,7 @@ After free tier:
 ```
 
 **Pros:**
+
 - ✅ Industry standard
 - ✅ Massiv ecosystem
 - ✅ Full control
@@ -269,6 +290,7 @@ After free tier:
 - ✅ Alle PostgreSQL extensions
 
 **Cons:**
+
 - ❌ Kompleks setup
 - ❌ Dyrt efter free tier
 - ❌ Kræver AWS ekspertise
@@ -281,6 +303,7 @@ After free tier:
 ### **Option 8: Google Cloud SQL** 🔵
 
 **Hvad det er:**
+
 - Google's managed PostgreSQL
 - Similar til AWS RDS
 
@@ -298,12 +321,14 @@ Standard:
 ```
 
 **Pros:**
+
 - ✅ Google infrastructure
 - ✅ EU regions
 - ✅ Good performance
 - ✅ PostgreSQL 16
 
 **Cons:**
+
 - ❌ Ingen free tier
 - ❌ Kompleks pricing
 - ❌ Overkill for os
@@ -313,6 +338,7 @@ Standard:
 ### **Option 9: DigitalOcean Managed Databases** 🌊
 
 **Hvad det er:**
+
 - Simple managed PostgreSQL
 - Developer-friendly
 
@@ -329,12 +355,14 @@ Professional:
 ```
 
 **Pros:**
+
 - ✅ Simple pricing
 - ✅ Developer-friendly
 - ✅ EU regions (Frankfurt)
 - ✅ Good docs
 
 **Cons:**
+
 - ❌ Ingen free tier
 - ❌ $15/mdr minimum
 - ❌ Mindre features end Supabase
@@ -344,6 +372,7 @@ Professional:
 ### **Option 10: Self-Hosted (Docker)** 🐳 (What we did!)
 
 **Hvad det er:**
+
 - Kør PostgreSQL selv i Docker
 - Full kontrol
 
@@ -360,6 +389,7 @@ Production (VPS):
 ```
 
 **Pros:**
+
 - ✅ FREE for development
 - ✅ Full kontrol
 - ✅ Billigst for production ($5/mdr)
@@ -368,6 +398,7 @@ Production (VPS):
 - ✅ Vi har det allerede! (tekup-database)
 
 **Cons:**
+
 - ❌ Manual backups
 - ❌ Manual scaling
 - ❌ Manual security updates
@@ -376,6 +407,7 @@ Production (VPS):
 - ❌ Downtime ved reboot
 
 **Nuværende status:**
+
 - ✅ tekup-database køre i Docker
 - ✅ 53 tabeller deployed
 - ✅ Virker lokalt
@@ -402,6 +434,7 @@ Production (VPS):
 ## 🎯 Anbefaling Baseret På Vores Behov
 
 ### **Vores Requirements:**
+
 1. ✅ PostgreSQL 16 (vi bruger Prisma schemas)
 2. ✅ pgvector support (TekupVault embeddings)
 3. ✅ EU region (GDPR, latency til DK)
@@ -413,6 +446,7 @@ Production (VPS):
 ### **Top 3 Muligheder:**
 
 #### 🥇 **#1: Supabase** (WINNER)
+
 ```
 Nuværende plan ✅
 
@@ -435,6 +469,7 @@ Anbefaling: FORTSÆT MED SUPABASE
 ```
 
 #### 🥈 **#2: Hybrid (Supabase + Self-hosted)**
+
 ```
 Ny ide: BEST OF BOTH WORLDS
 
@@ -460,6 +495,7 @@ Anbefaling: GOD KOMPROMIS
 ```
 
 #### 🥉 **#3: Full Self-hosted**
+
 ```
 All-in på Docker/VPS
 
@@ -507,11 +543,13 @@ DEVELOPMENT (Local machines):
 ```
 
 **Setup:**
+
 1. **Production:** Deploy schemas til Supabase (Frankfurt RenOS projekt)
 2. **Development:** Brug tekup-database Docker lokalt
 3. **Sync:** Prisma migrations køre på begge
 
 **Benefits:**
+
 - ✅ Best of both worlds
 - ✅ Production: Managed & reliable
 - ✅ Development: Fast & offline
@@ -523,6 +561,7 @@ DEVELOPMENT (Local machines):
 ## 🚀 Konklusion
 
 **Fortsæt med Supabase fordi:**
+
 1. Vi bruger det allerede (2 projekter)
 2. FREE tier dækker os perfekt NU
 3. pgvector support (kritisk for TekupVault)

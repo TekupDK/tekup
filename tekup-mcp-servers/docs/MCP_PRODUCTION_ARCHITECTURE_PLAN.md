@@ -17,6 +17,7 @@ Baseret på analyse af eksisterende Tekup MCP servere (tekup-billy, tekup-vault)
 ## ✅ PROVEN: Hvad virker allerede
 
 ### 1. Tekup-Billy MCP (Production siden okt 2024)
+
 - **Platform:** Render.com
 - **Transport:** HTTP + stdio
 - **Tools:** 13 Billy.dk integrations
@@ -31,6 +32,7 @@ Baseret på analyse af eksisterende Tekup MCP servere (tekup-billy, tekup-vault)
 **Bevis:** `https://tekup-billy.onrender.com` - Live production traffic
 
 ### 2. TekupVault MCP (Production)
+
 - **Platform:** Render.com
 - **Transport:** HTTP
 - **Tools:** 6 semantic search tools
@@ -41,6 +43,7 @@ Baseret på analyse af eksisterende Tekup MCP servere (tekup-billy, tekup-vault)
   - No auth on MCP endpoint (per spec)
 
 ### 3. RenOS Calendar MCP (Development)
+
 - **Integration:** Google Calendar API
 - **Auth:** OAuth2 with service account
 - **Proof:** Complex enterprise integrations mulige
@@ -55,11 +58,12 @@ Baseret på analyse af eksisterende Tekup MCP servere (tekup-billy, tekup-vault)
 
 ```
 knowledge-mcp.onrender.com     ← Søg i dokumentation
-code-intelligence-mcp.onrender.com  ← Kode søgning  
+code-intelligence-mcp.onrender.com  ← Kode søgning
 database-mcp.onrender.com      ← Supabase queries
 ```
 
 **Existing servers fortsætter:**
+
 ```
 tekup-billy.onrender.com       ← Billy.dk integration
 tekupvault.onrender.com        ← Semantic search
@@ -68,6 +72,7 @@ tekupvault.onrender.com        ← Semantic search
 ### Phase 2: Gateway (Uge 3-4)
 
 **Byg MCP Gateway service:**
+
 ```typescript
 // mcp-gateway.tekup.dk
 Express app der:
@@ -80,6 +85,7 @@ Express app der:
 ```
 
 **Benefits:**
+
 - Single endpoint for alle MCP servere
 - Centraliseret monitoring
 - Failover capability
@@ -90,6 +96,7 @@ Express app der:
 **Integrer MCP i Tekup apps:**
 
 1. **Tekup Dashboard (Next.js)**
+
 ```tsx
 <AIAssistant
   mcpServers={["knowledge", "database", "billy"]}
@@ -98,6 +105,7 @@ Express app der:
 ```
 
 2. **RenOS Mobile**
+
 ```typescript
 // AI quick actions
 "Find invoices for Client X" → Database MCP
@@ -106,6 +114,7 @@ Express app der:
 ```
 
 3. **Tekup API**
+
 ```typescript
 // Backend AI features
 POST /api/ai/query
@@ -120,6 +129,7 @@ POST /api/ai/query
 ## 📊 SCALABILITY ANALYSIS
 
 ### Current Capacity (Per Server)
+
 ```
 Requests/second: 10-50
 Concurrent: 5-10
@@ -130,6 +140,7 @@ Uptime: 99.5%+ (tekup-billy proven)
 ### Scaling Strategy
 
 **Horizontal:**
+
 ```yaml
 # Render.com scaling
 knowledge-mcp:
@@ -139,6 +150,7 @@ knowledge-mcp:
 ```
 
 **Caching:**
+
 ```typescript
 // Redis cache layer
 - Document search results: 15 min TTL
@@ -147,6 +159,7 @@ knowledge-mcp:
 ```
 
 **Load Balancing:**
+
 ```
 MCP Gateway → Round-robin across instances
 Health check every 30s
@@ -158,15 +171,17 @@ Remove unhealthy instances
 ## 🔒 SECURITY CONSIDERATIONS
 
 ### 1. Authentication
+
 ```typescript
 // MCP Gateway authenticates requests
-Authorization: Bearer <tekup_api_key>
+Authorization: Bearer<tekup_api_key>;
 
 // Individual servers no auth (per MCP spec)
 // Gateway handles security
 ```
 
 ### 2. Data Access
+
 ```typescript
 // Database MCP: Read-only queries
 // Row Level Security enabled
@@ -174,6 +189,7 @@ Authorization: Bearer <tekup_api_key>
 ```
 
 ### 3. Audit Logging
+
 ```sql
 -- All MCP requests logged
 CREATE TABLE mcp_audit_logs (
@@ -194,6 +210,7 @@ CREATE TABLE mcp_audit_logs (
 ### Infrastructure Costs (Monthly)
 
 **Render.com (5 MCP servere):**
+
 ```
 knowledge-mcp:           $7-15
 code-intelligence-mcp:   $7-15
@@ -206,6 +223,7 @@ Total:                   $65-90/month
 ```
 
 **External Services:**
+
 ```
 Supabase: $25/month (existing)
 OpenAI API: ~$50/month (usage-based)
@@ -217,6 +235,7 @@ Total:                   $145/month
 **Grand Total:** ~$210-235/month
 
 ### ROI Calculation
+
 ```
 Cost: $235/month = $2,820/year
 
@@ -234,6 +253,7 @@ ROI: ($48,000 - $2,820) / $2,820 = 1,602%
 ## 📈 PERFORMANCE TARGETS
 
 ### Phase 1 (MVP)
+
 ```
 Response time: <1s (p95)
 Uptime: >99%
@@ -242,6 +262,7 @@ Concurrent users: 5-10
 ```
 
 ### Phase 2 (Scaled)
+
 ```
 Response time: <500ms (p95)
 Uptime: >99.5%
@@ -250,6 +271,7 @@ Concurrent users: 50-100
 ```
 
 ### Phase 3 (Production)
+
 ```
 Response time: <300ms (p95)
 Uptime: >99.9%
@@ -262,32 +284,40 @@ Concurrent users: 500+
 ## 🚨 RISK MITIGATION
 
 ### Risk 1: MCP Server Downtime
+
 **Impact:** High  
 **Mitigation:**
+
 - Multiple instances per server
 - Health checks + auto-restart
 - Fallback to cached data
 - Gateway redirects to healthy instances
 
 ### Risk 2: Rate Limiting (OpenAI, Supabase)
+
 **Impact:** Medium  
 **Mitigation:**
+
 - Request queuing
 - Exponential backoff
 - Cache aggressively
 - Multiple API keys (rotation)
 
 ### Risk 3: Cost Overruns
+
 **Impact:** Low  
 **Mitigation:**
+
 - Set Render.com spending limits
 - Monitor API usage daily
 - Alert på $200/month threshold
 - Scale down unused servers
 
 ### Risk 4: Security Breach
+
 **Impact:** Critical  
 **Mitigation:**
+
 - All credentials in tekup-secrets
 - Environment variables only
 - Audit logging on all requests
@@ -299,6 +329,7 @@ Concurrent users: 500+
 ## 📋 IMPLEMENTATION CHECKLIST
 
 ### Phase 1: Deploy to Render ✅ Code Ready
+
 - [ ] Create Render.com services (3 new)
 - [ ] Configure environment variables
 - [ ] Deploy from GitHub (auto-deploy on push)
@@ -306,6 +337,7 @@ Concurrent users: 500+
 - [ ] Configure custom domains
 
 ### Phase 2: Build Gateway
+
 - [ ] Create mcp-gateway repository
 - [ ] Implement Express.js server
 - [ ] Add load balancing logic
@@ -314,6 +346,7 @@ Concurrent users: 500+
 - [ ] Deploy to Render.com
 
 ### Phase 3: Integration
+
 - [ ] Update Tekup Dashboard
 - [ ] Add AI assistant component
 - [ ] Integrate with RenOS mobile
@@ -321,6 +354,7 @@ Concurrent users: 500+
 - [ ] Add documentation
 
 ### Phase 4: Monitoring
+
 - [ ] Setup Prometheus metrics
 - [ ] Create Grafana dashboards
 - [ ] Configure Sentry alerts
@@ -332,23 +366,27 @@ Concurrent users: 500+
 ## 🎯 SUCCESS METRICS
 
 ### Week 1
+
 - ✅ All 3 servers deployed
 - ✅ Health checks passing
 - ✅ Basic tool tests working
 
 ### Month 1
+
 - ✅ Gateway operational
 - ✅ 10+ daily active users
 - ✅ <1s avg response time
 - ✅ >99% uptime
 
 ### Month 3
+
 - ✅ Integrated in 2+ apps
 - ✅ 50+ daily active users
 - ✅ <500ms avg response time
 - ✅ Positive user feedback
 
 ### Month 6
+
 - ✅ All 7 planned servers live
 - ✅ 200+ daily active users
 - ✅ $40k+ time savings achieved
@@ -359,18 +397,21 @@ Concurrent users: 500+
 ## 🔄 NEXT STEPS
 
 ### Immediate (This Week)
+
 1. Review and approve this architecture plan
 2. Create GitHub issues for each phase
 3. Setup Render.com accounts/projects
 4. Prepare deployment configs
 
 ### Week 2
+
 1. Deploy knowledge-mcp
 2. Deploy code-intelligence-mcp
 3. Deploy database-mcp
 4. Integration testing
 
 ### Week 3-4
+
 1. Build MCP Gateway
 2. Deploy gateway
 3. Create monitoring dashboards

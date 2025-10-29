@@ -39,11 +39,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 ## Phase 2 Module Breakdown
 
 ### Phase 2.1: CustomersModule ✅
+
 **Duration:** ~1 hour  
 **Endpoints:** 5  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `CustomersService` (185 lines) - Full CRUD with Prisma
 - `CustomersController` (5 endpoints)
   - POST /customers - Create customer
@@ -53,10 +55,12 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - DELETE /customers/:id - Soft delete
 
 **Prisma Model:** `RenosCustomer`
+
 - Fields: id, organizationId, name, email, phone, address, city, postalCode, totalJobs, averageRating, notes, isActive, createdAt, updatedAt
 - Indexes: organizationId, email, isActive, city
 
 **Key Features:**
+
 - Pagination support (default 20 per page)
 - Full-text search on name, email, phone
 - City filtering
@@ -66,11 +70,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 ---
 
 ### Phase 2.2: LeadsModule (JobsModule renamed) ✅
+
 **Duration:** ~1.5 hours  
 **Endpoints:** 8  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `LeadsService` (312 lines) - Advanced lead management
 - `LeadsController` (8 endpoints)
   - POST /leads - Create lead
@@ -83,11 +89,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - POST /leads/:id/follow-up - Schedule follow-up action
 
 **Prisma Model:** `RenosLead`
+
 - Fields: id, organizationId, source, status, priority, contactName, email, phone, serviceType, address, city, estimatedValue, probability, assignedTo, scheduledFollowUp, notes, enrichmentData, score, lastContactedAt, createdAt, updatedAt
 - Indexes: organizationId, status, priority, assignedTo, scheduledFollowUp, lastContactedAt
 - Enums: LeadSource, LeadStatus, LeadPriority
 
 **Key Features:**
+
 - Lead scoring algorithm (contact quality + timeline + value + engagement)
 - AI-powered enrichment (company info, contact validation)
 - Automated follow-up scheduling
@@ -99,11 +107,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 ---
 
 ### Phase 2.3: AuthModule ✅
+
 **Duration:** ~1 hour  
 **Endpoints:** 6  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `AuthService` (278 lines) - JWT authentication + bcrypt hashing
 - `AuthController` (6 endpoints)
   - POST /auth/register - User registration
@@ -114,11 +124,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - POST /auth/change-password - Change password
 
 **Prisma Model:** `RenosUser`
+
 - Fields: id, email, passwordHash, name, phone, role, organizationId, isActive, emailVerified, lastLoginAt, createdAt, updatedAt
 - Indexes: email (unique), organizationId, isActive
 - Enums: UserRole (OWNER, ADMIN, EMPLOYEE, CUSTOMER)
 
 **Key Features:**
+
 - JWT tokens (15-minute expiry for access, 7-day for refresh)
 - bcrypt password hashing (12 rounds)
 - Role-based access control (RBAC)
@@ -128,6 +140,7 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 - User profile management
 
 **Security:**
+
 - JwtAuthGuard for protected routes
 - RolesGuard for role-based access
 - @Roles() decorator for endpoint-level control
@@ -136,11 +149,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 ---
 
 ### Phase 2.4: TeamModule ✅
+
 **Duration:** ~1.5 hours  
 **Endpoints:** 14  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `TeamService` (425 lines) - Team member + time entry management
 - `TeamController` (14 endpoints)
   
@@ -165,10 +180,12 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - DELETE /team/time-entries/:id - Delete entry
 
 **Prisma Models:**
+
 - `RenosTeamMember` (12 fields, 4 indexes)
 - `RenosTimeEntry` (13 fields, 6 indexes)
 
 **Key Features:**
+
 - Hourly rate management
 - Schedule tracking with date ranges
 - Performance metrics (hours worked, jobs completed, avg rating)
@@ -180,11 +197,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 ---
 
 ### Phase 2.5: TimeTrackingModule ✅
+
 **Duration:** ~45 minutes  
 **Endpoints:** 6  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `TimeTrackingService` (298 lines) - Time corrections + overtime reports
 - `TimeTrackingController` (6 endpoints)
   - GET /time-tracking/corrections - List corrections
@@ -195,11 +214,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - GET /time-tracking/overtime-report - Generate overtime report
 
 **Prisma Model:** `RenosTimeCorrection`
+
 - Fields: id, organizationId, timeEntryId, teamMemberId, originalStart, originalEnd, correctedStart, correctedEnd, reason, status, reviewedBy, reviewedAt, comments, createdAt, updatedAt
 - Indexes: organizationId, teamMemberId, status, timeEntryId
 - Enum: TimeCorrectionStatus (PENDING, APPROVED, REJECTED)
 
 **Key Features:**
+
 - Time correction workflow (submit → approve/reject)
 - Overtime calculation (hours > 37/week in Denmark)
 - Date range filtering
@@ -211,11 +232,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 ---
 
 ### Phase 2.6: GDPRModule ✅
+
 **Duration:** ~1.5 hours  
 **Endpoints:** 10  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `GdprService` (512 lines) - GDPR compliance engine
 - `GdprController` (10 endpoints)
   
@@ -240,12 +263,14 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - POST /gdpr/process-deletions - Process pending deletions (Admin only)
 
 **Prisma Models:**
+
 - `RenosGdprDataExport` (8 fields, 4 indexes)
 - `RenosGdprConsent` (7 fields, 3 indexes)
 - `RenosGdprDataDeletion` (9 fields, 4 indexes)
 - `RenosGdprAuditLog` (10 fields, 5 indexes)
 
 **Key Features:**
+
 - Async data export (JSON format)
 - 2-step deletion confirmation (24-hour grace period)
 - Consent tracking per user
@@ -256,6 +281,7 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 - Export includes: profile, bookings, time entries, consent records
 
 **Compliance:**
+
 - GDPR Article 15 (Right to Access) ✅
 - GDPR Article 17 (Right to Erasure) ✅
 - GDPR Article 20 (Right to Portability) ✅
@@ -264,11 +290,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 ---
 
 ### Phase 2.7: QualityModule ✅
+
 **Duration:** ~2 hours  
 **Endpoints:** 24  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `QualityService` (687 lines) - Quality control system
 - `QualityController` (24 endpoints)
   
@@ -302,11 +330,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - GET /quality/checklists/analytics - Checklist usage analytics
 
 **Prisma Models:**
+
 - `RenosQualityChecklist` (9 fields, 4 indexes)
 - `RenosQualityAssessment` (12 fields, 6 indexes)
 - `RenosQualityPhoto` (11 fields, 5 indexes)
 
 **Key Features:**
+
 - Service-specific checklists (window cleaning, deep clean, etc.)
 - Versioning support for checklist updates
 - Photo documentation with metadata
@@ -318,6 +348,7 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 - Photo organization by job/date
 
 **Service Types:**
+
 - Window Cleaning
 - Deep Clean
 - Standard Clean
@@ -327,11 +358,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 ---
 
 ### Phase 2.8: RealTimeModule ✅
+
 **Duration:** ~1.5 hours  
 **Endpoints:** 13 (12 REST + 1 WebSocket gateway)  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `RealtimeService` (445 lines) - Real-time notifications + WebSocket
 - `RealtimeGateway` (WebSocket) - Socket.IO gateway
 - `RealtimeController` (13 endpoints)
@@ -362,11 +395,13 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - presence:typing - Typing indicator
 
 **Prisma Model:** `RenosNotification`
+
 - Fields: id, userId, organizationId, type, title, message, data, read, readAt, createdAt
 - Indexes: userId, organizationId, read, createdAt
 - Enum: NotificationType (JOB_ASSIGNED, JOB_UPDATED, MESSAGE_RECEIVED, TEAM_UPDATE, SYSTEM_ALERT)
 
 **Key Features:**
+
 - Socket.IO WebSocket integration
 - Real-time push notifications
 - Room-based broadcasting (jobs, users, organizations)
@@ -378,17 +413,20 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 - Automatic reconnection
 
 **Prisma Fix Applied:**
+
 - Fixed `RenosNotification.userId` from optional to required
 - Resolved migration issue with database schema
 
 ---
 
 ### Phase 2.9: SecurityModule ✅
+
 **Duration:** ~40 minutes  
 **Endpoints:** 6  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `AuditService` (293 lines) - Security audit + event tracking
 - `SecurityController` (6 endpoints)
   - GET /security/audit-logs - Query audit logs
@@ -399,6 +437,7 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - GET /security/statistics - Security statistics (Admin)
 
 **Prisma Models:**
+
 - `RenosAuditLog` (11 fields, 5 indexes)
   - Fields: id, organizationId, userId, action, entityType, entityId, oldValues, newValues, ipAddress, userAgent, createdAt
   
@@ -407,6 +446,7 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - Severity levels: low, medium, high, critical
 
 **Key Features:**
+
 - Complete audit trail for all CRUD operations
 - Security event tracking with severity levels
 - Event resolution workflow
@@ -417,6 +457,7 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 - Owner/Admin only access
 
 **Use Cases:**
+
 - Compliance auditing (SOC 2, ISO 27001)
 - Security incident response
 - User activity monitoring
@@ -424,17 +465,20 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 - Forensic analysis
 
 **Environment Configuration:**
+
 - Added JWT_SECRET (min 32 chars) validation
 - Added ENCRYPTION_KEY (min 32 chars) validation
 
 ---
 
 ### Phase 2.10: AiFridayModule ✅
+
 **Duration:** ~45 minutes  
 **Endpoints:** 12  
 **Status:** COMPLETE
 
 **Implementation:**
+
 - `ChatSessionsService` (371 lines) - Chat session management
 - `AiFridayService` (418 lines) - External AI API integration
 - `AiFridayController` (12 endpoints)
@@ -459,6 +503,7 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - GET /ai-friday/health - Service health check (Admin)
 
 **Prisma Models:**
+
 - `RenosChatSession` (9 fields, 3 indexes)
   - Fields: id, userId, organizationId, context, title, metadata, createdAt, updatedAt
   
@@ -466,6 +511,7 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
   - Fields: id, sessionId, role, content, metadata, createdAt
 
 **Key Features:**
+
 - Context-aware AI prompts (adapts to user role)
 - Conversation history tracking
 - Streaming SSE responses for real-time chat
@@ -476,17 +522,20 @@ Successfully migrated **10 NestJS modules** from Supabase to Prisma ORM, impleme
 - External AI Friday API integration (configurable)
 
 **Context-Aware Prompts:**
+
 - Owner: Full business overview, financials, KPIs
 - Admin: Job management, team scheduling, reports
 - Employee: Assigned jobs, time tracking, procedures
 - Customer: Bookings, service history, communication
 
 **TODOs:**
+
 - Configure external AI Friday API URL + API key
 - Implement job/customer context lookups (commented out)
 - Implement AI actions (search_jobs, search_customers, create_job)
 
 **Dependencies:**
+
 - HttpModule for external API (60s timeout, 2 retries)
 - LeadsModule, CustomersModule, TeamModule for context
 
@@ -518,16 +567,19 @@ generator client {
 ### Authentication & Authorization
 
 **Strategy:** JWT + Refresh Tokens
+
 - Access token: 15-minute expiry
 - Refresh token: 7-day expiry
 - bcrypt hashing: 12 rounds
 
 **Guards:**
+
 - `JwtAuthGuard` - Validates JWT on protected routes
 - `RolesGuard` - Enforces role-based access
 - `@Roles()` decorator - Endpoint-level role requirements
 
 **Roles Hierarchy:**
+
 1. **OWNER** - Full system access
 2. **ADMIN** - Administrative functions
 3. **EMPLOYEE** - Operational tasks
@@ -536,6 +588,7 @@ generator client {
 ### API Design Patterns
 
 **RESTful Conventions:**
+
 - GET - Read resources
 - POST - Create resources
 - PATCH - Update resources (partial)
@@ -578,16 +631,19 @@ GET /api/v1/customers?search=john&city=copenhagen
 ### Code Quality
 
 **TypeScript:**
+
 - Strict mode enabled
 - Zero compilation errors
 - Full type safety with Prisma-generated types
 
 **Linting:**
+
 - ESLint configured
 - Prettier for code formatting
 - Pre-commit hooks (planned)
 
 **Testing:**
+
 - E2E test stubs created
 - Integration tests planned
 - Unit tests for services (planned)
@@ -722,6 +778,7 @@ CMD ["node", "dist/main.js"]
 ```
 
 **Health Checks:**
+
 - GET /api/v1/health - Application health
 - GET /api/v1/health/db - Database connectivity
 
@@ -757,7 +814,7 @@ CMD ["node", "dist/main.js"]
 
 3. **API Documentation**
    - Swagger/OpenAPI (auto-generated)
-   - Available at: http://localhost:3000/docs
+   - Available at: <http://localhost:3000/docs>
 
 ### Code Comments
 
@@ -998,4 +1055,4 @@ Phase 2 successfully migrated the entire RendetaljeOS backend from Supabase to P
 **Report Generated:** October 24, 2025  
 **Author:** AI Development Assistant (Autonomous)  
 **Project:** RendetaljeOS Backend  
-**Repository:** https://github.com/TekupDK/tekup
+**Repository:** <https://github.com/TekupDK/tekup>

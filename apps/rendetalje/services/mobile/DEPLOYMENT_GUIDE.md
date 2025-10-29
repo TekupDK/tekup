@@ -50,7 +50,7 @@ eas login
 
 ### 1. **Configure App Credentials**
 
-#### Update `app.json`:
+#### Update `app.json`
 
 ```json
 {
@@ -70,7 +70,7 @@ eas login
 }
 ```
 
-#### Update `eas.json`:
+#### Update `eas.json`
 
 ```json
 {
@@ -92,14 +92,14 @@ eas login
 
 ### 2. **Create App Icons & Assets**
 
-#### Required Assets:
+#### Required Assets
 
 - **App Icon**: 1024x1024 PNG (iOS & Android)
 - **Splash Screen**: 1242x2436 PNG
 - **Adaptive Icon**: 1024x1024 PNG (Android)
 - **Notification Icon**: 96x96 PNG
 
-#### Generate Assets:
+#### Generate Assets
 
 ```bash
 # Create assets directory
@@ -114,7 +114,7 @@ mkdir -p mobile/assets
 
 ### 3. **Environment Configuration**
 
-#### Create `.env.production`:
+#### Create `.env.production`
 
 ```bash
 # API Configuration
@@ -156,14 +156,14 @@ eas submit --platform ios --profile production
 
 ### 3. **App Store Connect Configuration**
 
-#### App Information:
+#### App Information
 
 - **Name**: RendetaljeOS
 - **Subtitle**: Operations Management
 - **Category**: Business
 - **Content Rating**: 4+ (No objectionable content)
 
-#### App Description:
+#### App Description
 
 ```
 RendetaljeOS er den komplette mobile løsning for Rendetalje.dk medarbejdere.
@@ -185,13 +185,13 @@ PERFEKT TIL:
 Kræver RendetaljeOS account fra din arbejdsgiver.
 ```
 
-#### Keywords:
+#### Keywords
 
 ```
 rendetalje, cleaning, operations, management, time tracking, GPS, offline, jobs
 ```
 
-#### Screenshots:
+#### Screenshots
 
 - **6.7" Display**: 1290x2796 (iPhone 14 Pro Max)
 - **6.5" Display**: 1242x2688 (iPhone 11 Pro Max)
@@ -227,7 +227,7 @@ eas submit --platform android --profile production
 
 ### 3. **Google Play Console Configuration**
 
-#### App Details:
+#### App Details
 
 - **App Name**: RendetaljeOS
 - **Short Description**: Operations management for cleaning services
@@ -263,31 +263,31 @@ Kræver RendetaljeOS account fra din arbejdsgiver for at bruge appen.
 Kontakt support@rendetalje.dk for hjælp eller spørgsmål.
 ```
 
-#### Category & Tags:
+#### Category & Tags
 
 - **Category**: Business
 - **Tags**: business, productivity, operations, cleaning, management
 
-#### Content Rating:
+#### Content Rating
 
 - **Target Audience**: Business users
 - **Content Rating**: Everyone
 
 ### 4. **Store Listing Assets**
 
-#### Screenshots (Required):
+#### Screenshots (Required)
 
 - **Phone**: 1080x1920 (minimum 2, maximum 8)
 - **7" Tablet**: 1200x1920 (minimum 1, maximum 8)
 - **10" Tablet**: 1600x2560 (minimum 1, maximum 8)
 
-#### Feature Graphic:
+#### Feature Graphic
 
 - **Size**: 1024x500
 - **Format**: PNG or JPG
 - **Content**: App logo + key features
 
-#### App Icon:
+#### App Icon
 
 - **Size**: 512x512
 - **Format**: PNG
@@ -299,7 +299,7 @@ Kontakt support@rendetalje.dk for hjælp eller spørgsmål.
 
 ### 1. **GitHub Actions Workflow**
 
-#### Create `.github/workflows/mobile-deploy.yml`:
+#### Create `.github/workflows/mobile-deploy.yml`
 
 ```yaml
 name: 📱 Deploy Mobile App
@@ -354,7 +354,7 @@ jobs:
 
 ### 2. **Environment Secrets**
 
-#### Add to GitHub Secrets:
+#### Add to GitHub Secrets
 
 ```bash
 EXPO_TOKEN=your-expo-access-token
@@ -389,9 +389,9 @@ GOOGLE_SERVICE_ACCOUNT_KEY=your-google-service-account-json
 
 ## 🔧 Troubleshooting
 
-### Common Build Issues:
+### Common Build Issues
 
-#### iOS Build Failures:
+#### iOS Build Failures
 
 ```bash
 # Clear Expo cache
@@ -404,7 +404,7 @@ expo r -c
 eas build --platform ios --profile production --clear-cache
 ```
 
-#### Android Build Failures:
+#### Android Build Failures
 
 ```bash
 # Clear cache and rebuild
@@ -414,7 +414,7 @@ eas build --platform android --profile production --clear-cache
 # Edit app.json: "versionCode": 2
 ```
 
-#### Submission Issues:
+#### Submission Issues
 
 ```bash
 # Check submission status
@@ -428,7 +428,7 @@ eas submit --platform ios --profile production --latest
 
 ## 📅 Deployment Checklist
 
-### Pre-Deployment:
+### Pre-Deployment
 
 - [ ] App icons and assets created
 - [ ] Environment variables configured
@@ -436,7 +436,7 @@ eas submit --platform ios --profile production --latest
 - [ ] Google Play Console account setup
 - [ ] App descriptions and metadata prepared
 
-### iOS Deployment:
+### iOS Deployment
 
 - [ ] Build iOS app with EAS
 - [ ] Submit to App Store Connect
@@ -445,7 +445,7 @@ eas submit --platform ios --profile production --latest
 - [ ] Submit for review
 - [ ] Monitor review status
 
-### Android Deployment:
+### Android Deployment
 
 - [ ] Build Android AAB with EAS
 - [ ] Submit to Google Play Console
@@ -454,7 +454,7 @@ eas submit --platform ios --profile production --latest
 - [ ] Submit for review
 - [ ] Monitor review status
 
-### Post-Deployment:
+### Post-Deployment
 
 - [ ] Monitor app performance
 - [ ] Track user feedback
@@ -477,4 +477,4 @@ eas submit --platform ios --profile production --latest
 
 **Deployment Guide opdateret**: 22. Oktober 2025  
 **Version**: 1.0.0  
-**Support**: dev@rendetalje.dk
+**Support**: <dev@rendetalje.dk>

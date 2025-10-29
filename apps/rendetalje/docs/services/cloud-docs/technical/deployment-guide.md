@@ -24,12 +24,14 @@ This guide covers the deployment of RendetaljeOS to production environments usin
 ## Prerequisites
 
 ### Required Accounts
+
 - [Render.com](https://render.com) account
 - [Supabase](https://supabase.com) account
 - [GitHub](https://github.com) repository
 - [Expo](https://expo.dev) account (for mobile app)
 
 ### Required Tools
+
 - Node.js 18+ and npm
 - Git
 - Docker (for local development)
@@ -42,6 +44,7 @@ This guide covers the deployment of RendetaljeOS to production environments usin
 Create the following environment files:
 
 #### Backend (.env.production)
+
 ```bash
 # Database
 DATABASE_URL=postgresql://postgres:[password]@[host]:5432/[database]
@@ -88,6 +91,7 @@ RATE_LIMIT_LIMIT=1000
 ```
 
 #### Frontend (.env.production)
+
 ```bash
 # API
 NEXT_PUBLIC_API_URL=https://api.rendetalje.dk
@@ -661,4 +665,4 @@ supabase storage download --recursive customer-documents ./backups/documents/
 
 ---
 
-*For deployment support, contact: devops@rendetalje.dk*
+*For deployment support, contact: <devops@rendetalje.dk>*

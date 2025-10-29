@@ -9,9 +9,10 @@
 
 ### **Er renos-backend og renos-frontend separate eller del af RendetaljeOS?**
 
-**Svar:** **BEGGE DELE!** 
+**Svar:** **BEGGE DELE!**
 
 Det er en **monorepo migration** hvor:
+
 - `renos-backend` og `renos-frontend` var **originale standalone repos**
 - De blev **migreret ind** i `RendetaljeOS` monorepo den **16. Oktober 2025**
 - De originale repos eksisterer stadig lokalt som **separate standalone repos**
@@ -68,6 +69,7 @@ Status: ✅ COMPLETED
 ### **Hvad blev migreret:**
 
 **Backend (apps/backend):**
+
 - ✅ Full source code from renos-backend
 - ✅ Prisma schema with complete database models
 - ✅ Express API with all routes and controllers
@@ -80,6 +82,7 @@ Status: ✅ COMPLETED
 - ✅ All dependencies (965 packages)
 
 **Frontend (apps/frontend):**
+
 - ✅ Full React application from renos-frontend
 - ✅ Radix UI components + Tailwind CSS
 - ✅ Multi-agent system
@@ -98,6 +101,7 @@ Status: ✅ COMPLETED
 Based on documentation:
 
 **RendetaljeOS Monorepo is the PRIMARY version:**
+
 - ✅ Fully operational (as of Oct 16, 2025)
 - ✅ 965 packages installed
 - ✅ Both apps running (frontend: 3001, backend: 3000)
@@ -105,6 +109,7 @@ Based on documentation:
 - ✅ Environment variables configured
 
 **Standalone repos status: UNCLEAR**
+
 - May still be used for development
 - Or kept as backups
 - Need to verify git activity
@@ -195,6 +200,7 @@ Du har **3 aktive Rendetalje-relaterede repo setups**:
 If RendetaljeOS is the new primary:
 
 **Action:**
+
 - Continue development in `RendetaljeOS/`
 - Keep standalone repos as backups
 - Eventually deprecate standalone repos
@@ -205,6 +211,7 @@ If RendetaljeOS is the new primary:
 If standalone repos are still primary:
 
 **Action:**
+
 - Clarify which version to use
 - Sync changes between standalone and monorepo
 - Or abandon monorepo experiment
@@ -216,6 +223,7 @@ If both are active:
 **Risk:** Code divergence, confusion, double maintenance
 
 **Action:**
+
 - Choose ONE as source of truth
 - Archive or delete the other
 
@@ -250,6 +258,7 @@ git log --oneline -10
 **Du har IKKE duplicates i traditionel forstand.**
 
 Du har en **monorepo migration in progress** hvor:
+
 - Standalone repos er **originale kilder** (GitHub)
 - RendetaljeOS monorepo er **nye unified struktur** (local dev)
 - Begge eksisterer samtidigt (transitional state)
@@ -259,4 +268,3 @@ Du har en **monorepo migration in progress** hvor:
 ---
 
 **Documentation Complete** ✅
-

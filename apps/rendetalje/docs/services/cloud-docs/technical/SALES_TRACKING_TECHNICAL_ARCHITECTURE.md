@@ -5,6 +5,7 @@
 This document details the technical architecture of the Internal Sales Tracking System for Tekup's three business units. The system uses a modern three-tier architecture with NestJS backend, Next.js frontend, and PostgreSQL database, deployed on Render.com infrastructure.
 
 **Key Architecture Principles:**
+
 - Multi-tenant single database with logical isolation
 - Microservices-ready monolith pattern
 - API-first design with REST endpoints
@@ -1059,6 +1060,7 @@ Before:                      After:
 ## Technology Stack Summary
 
 ### Backend
+
 - **Runtime**: Node.js 20 LTS
 - **Framework**: NestJS 10.x
 - **Language**: TypeScript 5.x
@@ -1070,6 +1072,7 @@ Before:                      After:
 - **Testing**: Jest, Supertest
 
 ### Frontend
+
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript 5.x
 - **UI Library**: React 18
@@ -1080,6 +1083,7 @@ Before:                      After:
 - **Testing**: Jest, React Testing Library
 
 ### Infrastructure
+
 - **Hosting**: Render.com (Frankfurt)
 - **Database**: Supabase (managed PostgreSQL)
 - **Cache**: Redis (Render managed)

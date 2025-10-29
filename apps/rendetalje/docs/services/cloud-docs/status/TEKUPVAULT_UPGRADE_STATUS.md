@@ -1,4 +1,4 @@
-# 🎉 TekupVault Upgrade til Starter Plan - Status
+﻿# 🎉 TekupVault Upgrade til Starter Plan - Status
 
 **Tidspunkt**: 17. Oktober 2025, 04:35 AM  
 **Status**: ✅ **DEPLOYING NOW**  
@@ -9,9 +9,10 @@
 ## 📊 Current Deploy Status
 
 ### Build Progress
+
 ```
 ==> Using Node.js version 25.0.0
-==> Cloning from https://github.com/JonasAbde/TekupVault
+==> Cloning from https://github.com/TekupDK/TekupVault
 ==> Running build command 'pnpm install --frozen-lockfile --prod=false && pnpm build'
 
 ✅ Uploaded build: 103MB in 8s
@@ -28,6 +29,7 @@ Cached packages:
 ```
 
 ### Latest Commit
+
 ```
 0654cd3 - feat: Implement MCP HTTP Server for TekupVault
 
@@ -44,6 +46,7 @@ Key Features:
 ## ✅ Fordele ved Starter Plan
 
 ### Before (Free Plan)
+
 ❌ Spins down after 15 min inactivity  
 ❌ 50+ second cold start delay  
 ❌ 502 errors på første requests  
@@ -51,6 +54,7 @@ Key Features:
 ❌ Begrænsede compute resources
 
 ### After (Starter Plan - $7/mo)
+
 ✅ **Always-on** - ingen hibernation  
 ✅ **Instant response** - 0-5ms latency  
 ✅ **Reliable MCP endpoint** for AI apps  
@@ -62,6 +66,7 @@ Key Features:
 ## 🚀 Næste Skridt Efter Deploy
 
 ### 1. Verificer Service Health (2-3 min)
+
 Vent til deploy er færdig, derefter:
 
 ```powershell
@@ -78,6 +83,7 @@ Invoke-RestMethod https://tekupvault.onrender.com/health | ConvertTo-Json
 ```
 
 ### 2. Test MCP Discovery Endpoint
+
 ```powershell
 # Hent MCP configuration
 Invoke-RestMethod https://tekupvault.onrender.com/.well-known/mcp.json | ConvertTo-Json -Depth 5
@@ -86,6 +92,7 @@ Invoke-RestMethod https://tekupvault.onrender.com/.well-known/mcp.json | Convert
 ```
 
 ### 3. Test Search Functionality
+
 ```powershell
 # Search knowledge base
 $body = @{
@@ -100,6 +107,7 @@ Invoke-RestMethod -Method POST `
 ```
 
 ### 4. Verificer Always-On Status
+
 ```powershell
 # Check response time (skal være konsistent, ingen cold starts)
 Measure-Command {
@@ -114,6 +122,7 @@ Measure-Command {
 ## 🔧 Integration med AI Apps
 
 ### ChatGPT Custom GPT
+
 1. Go to ChatGPT → "Explore GPTs" → "Create a GPT"
 2. I "Configure" tab:
    - Name: "TekupVault Knowledge Search"
@@ -123,6 +132,7 @@ Measure-Command {
    - Authentication: None (eller API key hvis implementeret)
 
 ### Claude Desktop (MCP)
+
 Opdater `claude_desktop_config.json`:
 ```json
 {
@@ -139,6 +149,7 @@ Opdater `claude_desktop_config.json`:
 ```
 
 ### Cursor / Windsurf MCP Config
+
 Opdater `.cursorrules` eller `mcp_config.json`:
 ```json
 {
@@ -156,15 +167,18 @@ Opdater `.cursorrules` eller `mcp_config.json`:
 ## 📊 Performance Expectations
 
 ### Startup Time
+
 - **Before**: 50-60 seconds (cold start)
 - **After**: 0-3 seconds (always warm)
 
 ### API Response Time
+
 - **Health check**: <10ms
 - **Search query**: 50-200ms (afhængig af complexity)
 - **Repository info**: <50ms
 
 ### Uptime
+
 - **Before**: ~40% (down when inactive)
 - **After**: 99.9% (always-on, kun restarts ved deploys)
 
@@ -173,6 +187,7 @@ Opdater `.cursorrules` eller `mcp_config.json`:
 ## 💰 Cost Breakdown
 
 ### Monthly Costs (Updated)
+
 | Service | Plan | Cost |
 |---------|------|------|
 | Tekup-Billy | Starter | $7/mo |
@@ -182,6 +197,7 @@ Opdater `.cursorrules` eller `mcp_config.json`:
 | **Total** | | **$21/mo** |
 
 ### Value Analysis
+
 - **3 always-on production services**
 - **1 free static site**
 - **Frankfurt region** (GDPR compliant)
@@ -209,7 +225,8 @@ Deploy er successful når:
 
 ## ⚠️ Troubleshooting
 
-### Hvis build fails:
+### Hvis build fails
+
 ```bash
 # Check logs i Render dashboard
 # Typiske issues:
@@ -219,14 +236,16 @@ Deploy er successful når:
 - Missing environment variables
 ```
 
-### Hvis service starter men MCP endpoint fails:
+### Hvis service starter men MCP endpoint fails
+
 ```bash
 # Verificer at .well-known directory eksisterer
 # Check at MCP routes er registreret
 # Verify CORS headers tillader AI app domains
 ```
 
-### Hvis search returnerer 0 results:
+### Hvis search returnerer 0 results
+
 ```bash
 # Check Supabase connection
 # Verify embeddings table populated
@@ -238,17 +257,19 @@ Deploy er successful når:
 ## 📈 Monitoring Plan
 
 ### Setup Uptime Monitoring (Anbefalet)
+
 1. **UptimeRobot** (gratis):
-   - Monitor: https://tekupvault.onrender.com/health
+   - Monitor: <https://tekupvault.onrender.com/health>
    - Interval: 5 min
    - Alerts: Email ved downtime
 
 2. **Render Built-in**:
    - Health checks: Aktiveret automatisk
    - Auto-restart: Enabled
-   - Notifications: Email til empire1266@gmail.com
+   - Notifications: Email til <empire1266@gmail.com>
 
 ### Log Monitoring
+
 ```powershell
 # Real-time logs via Render CLI
 npm install -g @render/cli
@@ -261,18 +282,21 @@ render logs -f tekupvault
 ## 🚀 Post-Deploy Actions
 
 ### Immediate (Efter deploy færdig)
+
 - [ ] Test health endpoint
 - [ ] Test MCP discovery endpoint
 - [ ] Verify response times
 - [ ] Check logs for errors
 
 ### This Week
+
 - [ ] Setup uptime monitoring (UptimeRobot)
 - [ ] Test AI app integrations (ChatGPT/Claude)
 - [ ] Run full GitHub sync
 - [ ] Update portfolio documentation
 
 ### This Month
+
 - [ ] Monitor usage patterns
 - [ ] Optimize search queries
 - [ ] Add more MCP tools hvis nødvendigt

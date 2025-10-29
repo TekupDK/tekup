@@ -33,6 +33,7 @@
 ## ⚠️ Port Conflicts Resolved
 
 ### Issue 1: Backend vs Frontend
+
 - **Problem**: Both tried to use port 3001
 - **Solution**:
   - Backend (NestJS): `3001` (Docker)
@@ -40,23 +41,28 @@
   - Playwright: Updated to use `3002`
 
 ### Issue 2: Calendar MCP Overlap
+
 - **Problem**: Calendar MCP used 3001 (conflicted with backend)
 - **Solution**: Calendar MCP moved to separate ports (3005, 3006)
 
 ## 📋 Configuration Files to Update
 
 ### Backend
+
 - `apps/rendetalje/services/backend-nestjs/src/main.ts` - Port 3001
 - `docker-compose.mobile.yml` - Backend service port 3001
 
 ### Frontend
+
 - `apps/rendetalje/services/frontend-nextjs/package.json` - Dev script with PORT=3002
 - `apps/rendetalje/services/frontend-nextjs/playwright.config.ts` - baseURL: `http://localhost:3002`
 
 ### Mobile
+
 - `docker-compose.mobile.yml` - Expo ports 8081, 19000-19002
 
 ### Testing
+
 - `apps/rendetalje/services/frontend-nextjs/playwright.config.ts`
 - `apps/rendetalje/services/TESTING.md`
 
@@ -101,6 +107,7 @@ netstat -ano | findstr "LISTENING"
 ## ⚡ Next Steps
 
 When adding new services:
+
 1. Check this file first
 2. Choose unused port from appropriate range
 3. Update this file

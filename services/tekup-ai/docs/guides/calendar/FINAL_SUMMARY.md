@@ -19,24 +19,28 @@ Vi har bygget et **intelligent kalender-nervesystem** der har lært fra 1000+ em
 ### 1. De 5 Killer Features
 
 #### 🔍 validate_booking_date
+
 - Stopper ugedag-konfusion ("28. oktober er mandag" → NEJ!)
 - Verificerer dato matcher ugedag
 - Blokerer weekend automatisk
 - Lærer kunders faste mønstre (Jes = kun mandage)
 
 #### 🚫 check_booking_conflicts
+
 - Detekterer dobbeltbookinger INDEN de sker
 - Real-time kalender-tjek
 - Team availability tracking
 - Fail-safe mode ved lav confidence
 
 #### 📄 auto_create_invoice
+
 - Automatisk faktura efter hver booking
 - Integration med Billy.dk MCP
 - Profit calculation (Jonas/Rawan vs Freelance)
 - Payment monitoring
 
 #### ⏰ track_overtime_risk
+
 - Live tracking af booking-varighed
 - **TVING popup** efter 1 time overtid
 - Voice alerts via Twilio
@@ -44,6 +48,7 @@ Vi har bygget et **intelligent kalender-nervesystem** der har lært fra 1000+ em
 - Lære mønstre: "Flytterengøring = +50% tid"
 
 #### 🧠 get_customer_memory
+
 - Lagrer adgangsinfo ("Jes: nøgle under potte")
 - Husker præferencer ("Tommy: træ med sæbespåner")
 - Kommunikationshistorie
@@ -72,6 +77,7 @@ Vi har bygget et **intelligent kalender-nervesystem** der har lært fra 1000+ em
 ### 4. Database (100%)
 
 ✅ **Supabase Schema**:
+
 - `customer_preferences` - Kunde intelligence
 - `booking_validations` - Validation logs
 - `overtime_logs` - Overtid tracking
@@ -103,6 +109,7 @@ Vi har bygget et **intelligent kalender-nervesystem** der har lært fra 1000+ em
 ### 7. Testing (100%)
 
 ✅ **Integration Tests**:
+
 - Date validation tests
 - Conflict detection tests
 - Invoice automation tests
@@ -120,6 +127,7 @@ Vi har bygget et **intelligent kalender-nervesystem** der har lært fra 1000+ em
 ### 8. Mobile Dashboard (100%)
 
 ✅ **React PWA**:
+
 - Real-time stats dashboard
 - Today's bookings view
 - Missing invoices alerts
@@ -131,6 +139,7 @@ Vi har bygget et **intelligent kalender-nervesystem** der har lært fra 1000+ em
 - Professional UI (TailwindCSS + Lucide icons)
 
 ✅ **Tech Stack**:
+
 - React 18
 - Vite
 - TailwindCSS
@@ -206,6 +215,7 @@ renos-calendar-mcp/
 ### ROI Forecast
 
 **Månedlige Besparelser**:
+
 - Ingen kalenderfejl: +3.000 kr
 - Alle fakturaer sendt: +5.000 kr
 - Bedre lead-konvertering: +10.000 kr
@@ -244,6 +254,7 @@ renos-calendar-mcp/
 ```
 
 **2. Render.com (10 min)**:
+
 - Connect GitHub repo
 - Deploy `renos-calendar-mcp`
 - Add environment variables
@@ -317,24 +328,28 @@ curl https://renos-calendar-mcp.onrender.com/health
 These are **NOT required** for launch, but nice-to-haves for Phase 2:
 
 ### Intelligence Layer
+
 - [ ] ML pattern learning (TensorFlow.js)
 - [ ] Churn prediction
 - [ ] Dynamic pricing engine
 - [ ] Sentiment analysis (customer emails)
 
 ### Automation
+
 - [ ] Auto-response til leads (via Shortwave)
 - [ ] Auto-rescheduling ved konflikter
 - [ ] Predictive scheduling
 - [ ] Smart team allocation
 
 ### Integrations
+
 - [ ] WhatsApp notifications
 - [ ] SMS customer confirmations
 - [ ] Calendar webhooks
 - [ ] Billy.dk sync automation
 
 ### Dashboard Features
+
 - [ ] Push notifications
 - [ ] Offline mode
 - [ ] Real-time updates (WebSockets)
@@ -421,6 +436,7 @@ These are **NOT required** for launch, but nice-to-haves for Phase 2:
 Dette er ikke bare en "calendar MCP" - det er **jeres Business Intelligence Command Center**.
 
 Det er et system der:
+
 - **Aldrig glemmer** en kunde-præference
 - **Aldrig sover** på kritiske alerts
 - **Altid lærer** fra nye mønstre
@@ -434,13 +450,13 @@ Det er bygget på **8 timers intensivt AI-arbejde**, baseret på **virkelige pro
 
 ---
 
-# 🚀 READY FOR PRODUCTION!
+# 🚀 READY FOR PRODUCTION
 
 **Next Step**: Deploy Supabase schema → Deploy Render → Deploy Vercel → GO LIVE! 🎉
 
 ---
 
-*Bygget med ❤️ af Tekup AI Assistant*  
-*21. oktober 2025*  
-*Version 0.1.0 - Phase 1 MVP Complete*
+_Bygget med ❤️ af Tekup AI Assistant_  
+_21. oktober 2025_  
+_Version 0.1.0 - Phase 1 MVP Complete_
 

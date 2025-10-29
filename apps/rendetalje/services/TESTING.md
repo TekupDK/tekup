@@ -73,7 +73,7 @@ Coverage reports are automatically uploaded to Codecov:
 - Frontend: `frontend-coverage`
 - Shared: `shared-coverage`
 
-View coverage at: https://codecov.io/gh/TekupDK/tekup
+View coverage at: <https://codecov.io/gh/TekupDK/tekup>
 
 ### Test Structure
 

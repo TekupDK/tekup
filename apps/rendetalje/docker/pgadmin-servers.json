@@ -1,0 +1,50 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Rendetalje Local Database",
+            "Group": "Local Development",
+            "Port": 5432,
+            "Host": "postgres",
+            "MaintenanceDB": "rendetalje",
+            "Username": "postgres",
+            "PassFile": "/var/lib/pgadmin/.pgpass",
+            "UseSSHTunnel": 0,
+            "SSHTunnelServer": "",
+            "SSHTunnelPort": 22,
+            "SSHTunnelUser": "",
+            "SSHTunnelHost": "",
+            "SSHTunnelPassword": "",
+            "Service": "",
+            "SSLCert": "",
+            "SSLKey": "",
+            "SSLRootCert": "",
+            "SSLCRL": "",
+            "SSLCompression": 1,
+            "TrySSL": "Prefer",
+            "Comment": "Local PostgreSQL database for Rendetalje development"
+        },
+        "2": {
+            "Name": "Rendetalje Supabase Cloud",
+            "Group": "Production",
+            "Port": 5432,
+            "Host": "db.oaevagdgrasfppbrxbey.supabase.co",
+            "MaintenanceDB": "postgres",
+            "Username": "postgres",
+            "PassFile": "/var/lib/pgadmin/.pgpass",
+            "UseSSHTunnel": 0,
+            "SSHTunnelServer": "",
+            "SSHTunnelPort": 22,
+            "SSHTunnelUser": "",
+            "SSHTunnelHost": "",
+            "SSHTunnelPassword": "",
+            "Service": "",
+            "SSLCert": "",
+            "SSLKey": "",
+            "SSLRootCert": "",
+            "SSLCRL": "",
+            "SSLCompression": 1,
+            "TrySSL": "Require",
+            "Comment": "Supabase PostgreSQL database for Rendetalje production"
+        }
+    }
+}

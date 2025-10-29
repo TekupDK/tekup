@@ -1,4 +1,5 @@
 # 🎯 RenOS Komplet System Specifikation
+
 \n\n
 \n\n**Version:** 1.0
 **Dato:** 2. oktober 2025
@@ -25,7 +26,8 @@
 \n\n**Morgen (30-60 min):**
 \n\n1. Åbn Shortwave → se "Leads" label
 \n\n2. For hver lead (5-10 min):
-   - Læs email manuelt
+
+- Læs email manuelt
 \n\n   - Søg "from:kunde@email.com" for duplicate
 \n\n   - Åbn Google Calendar
 \n\n   - Find 5 ledige tider manuelt
@@ -34,12 +36,13 @@
 \n\n   - Send email
 \n\n   - Flyt label manuelt
 \n\n
-**Problem:** 
+**Problem:**
 \n\n- 5-10 min × 15 leads = 75-150 min dagligt
 \n\n- Menneskelige fejl (glemmer duplicate check)
 \n\n- Ingen læring fra historik
 \n\n- Ingen automatisk status opdatering
 \n\n
+
 ---
 
 \n\n## 🚀 HVORDAN RENOS ÆNDRER DET
@@ -131,7 +134,7 @@ check_customer_duplicate(email: string): Promise<{
 
 **Eksempel:**
 \n\n```
-Lead kommer ind fra: kunde@example.com
+Lead kommer ind fra: <kunde@example.com>
 
 RenOS søger automatisk:
 ✓ Database: Findes denne email? → JA
@@ -285,7 +288,7 @@ Hej [Navn],
 
 Tak for din henvendelse via [kilde] 🌿
 
-Vi kan hjælpe med [service type] af din [boligtype] på ca. [størrelse] m² 
+Vi kan hjælpe med [service type] af din [boligtype] på ca. [størrelse] m²
 på [adresse].
 
 📏 Bolig: [størrelse] m² med [rum] rum
@@ -355,14 +358,14 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n- ✅ Auto-formatting med dit standard format:
 \n\n  ```
   🏠 FAST RENGØRING #3 - Nadia Møllebjerg
-\n\n  ```
+\n\n ```
 \n\n- ✅ Intelligent numbering:
 \n\n  - Tæller tidligere bookings for denne kunde
 \n\n  - Første booking → #1, anden → #2, etc.
 \n\n- ✅ Rich description med komplet info:
 \n\n  ```
   Kunde: Nadia Møllebjerg
-  Kontakt: nadia@example.com, +45 12 34 56 78
+  Kontakt: <nadia@example.com>, +45 12 34 56 78
   Adresse: Hovedgade 123, 8000 Aarhus C
   
   📊 RENGØRINGSHISTORIK:
@@ -446,6 +449,7 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n  ```
   Leads → Needs Reply → Venter på svar → I kalender → Finance → Afsluttet
   ```
+
 \n\n- ✅ Triggers:
 \n\n  - Nyt lead modtaget → "Leads"
 \n\n  - Tilbud draft godkendt → "Needs Reply"
@@ -523,27 +527,28 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n
 **Deliverables:**
 \n\n1. Email Management System
-   - Gmail API integration
+
+- Gmail API integration
 \n\n   - Inbox UI med label filtering
 \n\n   - Email search med advanced filters
 \n\n   - Thread view med fuld historik
 \n\n   - Email composition med templates
 \n\n
 \n\n2. Label Management
-   - Visual label UI (drag-drop)
+- Visual label UI (drag-drop)
 \n\n   - Automatic label creation
 \n\n   - Label progression automation
 \n\n   - Bulk label operations
 \n\n
 \n\n3. Calendar System
-   - Google Calendar sync
+- Google Calendar sync
 \n\n   - Visual week/day view
 \n\n   - Conflict detection
 \n\n   - Available slots finder
 \n\n   - Event creation med auto-formatting
 \n\n
 \n\n4. Customer Database
-   - Customer CRUD operations
+- Customer CRUD operations
 \n\n   - Full communication history
 \n\n   - Timeline view
 \n\n   - Quick stats
@@ -554,6 +559,7 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n- ✅ Kan finde ledige tider uden at åbne Google Calendar
 \n\n- ✅ Kan track kunder komplet i RenOS
 \n\n
+
 ---
 
 \n\n### SPRINT 2: Advanced Automation (2 uger)
@@ -562,25 +568,26 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n
 **Deliverables:**
 \n\n1. Duplicate Detection
-   - Automatic check ved nye leads
+
+- Automatic check ved nye leads
 \n\n   - Database + Gmail search
 \n\n   - Intelligent rules (7d, 30d)
 \n\n   - Warning system med historik
 \n\n
 \n\n2. Lead Information Extraction
-   - AI parsing af email body
+- AI parsing af email body
 \n\n   - Auto-extraction af size, rooms, service type, date, address
 \n\n   - Confidence scoring
 \n\n   - Manual review for low confidence
 \n\n
 \n\n3. Smart Price Estimation
-   - Historical booking analysis
+- Historical booking analysis
 \n\n   - Machine learning fra faktisk tidsforbrug
 \n\n   - Complexity factor beregning
 \n\n   - Price range generation
 \n\n
 \n\n4. Quote Generation
-   - Template-based med personalization
+- Template-based med personalization
 \n\n   - Lead source variation
 \n\n   - Automatic inclusion af tider + pris
 \n\n   - Draft approval workflow
@@ -591,6 +598,7 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n- ✅ Pris estimater inden for ±15% af faktisk
 \n\n- ✅ Quote generation tager < 30 sekunder
 \n\n
+
 ---
 
 \n\n### SPRINT 3: Conversation Intelligence (2 uger)
@@ -599,23 +607,24 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n
 **Deliverables:**
 \n\n1. Intent Classification
-   - AI model trænet på dine emails
+
+- AI model trænet på dine emails
 \n\n   - 6 intent types (booking, reschedule, price, question, decline, cancel)
 \n\n   - Confidence scoring
 \n\n
 \n\n2. Automatic Action Suggestions
-   - Foreslå næste handling baseret på intent
+- Foreslå næste handling baseret på intent
 \n\n   - Generate response drafts
 \n\n   - Extract relevant data (dates, times, prices)
 \n\n
 \n\n3. Automatic Booking Creation
-   - Detect booking acceptance
+- Detect booking acceptance
 \n\n   - Create calendar event automatisk
 \n\n   - Generate confirmation email
 \n\n   - Update customer status
 \n\n
 \n\n4. Status Progression
-   - Trigger-based status updates
+- Trigger-based status updates
 \n\n   - Automatic reminder scheduling
 \n\n   - Lost lead detection (ingen svar efter 3 opfølgninger)
 \n\n
@@ -625,6 +634,7 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n- ✅ Status progression 100% automatisk
 \n\n- ✅ Reminders sendes til tiden
 \n\n
+
 ---
 
 \n\n### SPRINT 4: Business Intelligence (2 uger)
@@ -633,24 +643,25 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n
 **Deliverables:**
 \n\n1. Real-time Analytics Dashboard
-   - Revenue tracking (måned, år)
+
+- Revenue tracking (måned, år)
 \n\n   - Conversion funnel visualization
 \n\n   - Lead source performance
 \n\n   - Top customers by revenue
 \n\n
 \n\n2. Customer Lifetime Value
-   - Automatic LTV calculation
+- Automatic LTV calculation
 \n\n   - Segmentation (fast vs engangskunder)
 \n\n   - Churn prediction
 \n\n   - Retention metrics
 \n\n
 \n\n3. Revenue Forecasting
-   - Bookings i kalenderen → forventet indtjening
+- Bookings i kalenderen → forventet indtjening
 \n\n   - Seasonal trend analysis
 \n\n   - Growth projections
 \n\n
 \n\n4. Time Estimation Learning
-   - Track estimate vs faktisk tidsforbrug
+- Track estimate vs faktisk tidsforbrug
 \n\n   - Automatic adjustment af future estimates
 \n\n   - Service type learning
 \n\n   - Property size correlations
@@ -661,6 +672,7 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n- ✅ Revenue forecast accuracy > 85%
 \n\n- ✅ Time estimates forbedres over tid
 \n\n
+
 ---
 
 \n\n### SPRINT 5: Multi-Tenant Platform (3 uger)
@@ -669,24 +681,25 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n
 **Deliverables:**
 \n\n1. Tenant Database Schema
-   - Tenant model med settings
+
+- Tenant model med settings
 \n\n   - Customer/Lead/Booking isolation
 \n\n   - Tenant-specific configurations
 \n\n
 \n\n2. Tenant Administration
-   - Tenant CRUD operations
+- Tenant CRUD operations
 \n\n   - Settings management UI
 \n\n   - Branding customization
 \n\n   - Integration setup (Gmail, Calendar, Billy.dk)
 \n\n
 \n\n3. Data Isolation & Security
-   - Row-level security
+- Row-level security
 \n\n   - API middleware for tenant filtering
 \n\n   - Cross-tenant access prevention
 \n\n   - Audit logging
 \n\n
 \n\n4. White-Label Functionality
-   - Tenant-specific email templates
+- Tenant-specific email templates
 \n\n   - Branded dashboard
 \n\n   - Custom domain support (nice-to-have)
 \n\n
@@ -696,6 +709,7 @@ analyze_customer_reply(emailBody: string): Promise<{
 \n\n- ✅ Branding customization fungerer
 \n\n- ✅ Ingen performance degradation med 10+ tenants
 \n\n
+
 ---
 
 \n\n## 📊 FEATURE SAMMENLIGNING
@@ -770,10 +784,4 @@ analyze_customer_reply(emailBody: string): Promise<{
 **Sidst opdateret:** 2. oktober 2025
 **Næste review:** Efter SPRINT 1 completion
 \n\n
-
-
-
-
-
-
 

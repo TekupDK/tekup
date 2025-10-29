@@ -12,6 +12,7 @@
 **Tekup** er en dansk softwarevirksomhed der bygger:
 
 ### **Produkter:**
+
 1. **RenOS** - Renoveringsstyring platform (mobile + web)
 2. **Tekup Dashboard** - Multi-tenant business platform
 3. **Billy Integration** - Automatiseret fakturering (tekup-billy MCP)
@@ -20,6 +21,7 @@
 6. **Calendar Intelligence** - Smart kalender integration
 
 ### **Tech Stack:**
+
 - **Frontend:** Next.js, React, React Native (Expo)
 - **Backend:** NestJS, Node.js, Express
 - **Database:** Supabase (PostgreSQL), Prisma ORM
@@ -72,6 +74,7 @@ Tekup/
 Du har **6 MCP servere** tilgængelige i Claude Code:
 
 ### **1. knowledge** 📚
+
 **Hvad:** Søg i Tekup's dokumentation  
 **Sti:** `tekup-mcp-servers/packages/knowledge-mcp/`  
 **Transport:** HTTP (`http://localhost:8051/mcp`)  
@@ -84,10 +87,12 @@ Du har **6 MCP servere** tilgængelige i Claude Code:
 ```
 
 ### **2. code-intelligence** 🔍
+
 **Hvad:** Find og analysér kode i Tekup  
 **Sti:** `tekup-mcp-servers/packages/code-intelligence-mcp/`  
 **Transport:** HTTP (`http://localhost:8052/mcp`)  
 **Tools:**
+
 - `find_code(query, filePattern, limit)` - Find kode semantisk
 - `analyze_file(filePath)` - Analysér fil struktur
 - `find_similar_code(codeSnippet)` - Find lignende patterns
@@ -99,10 +104,12 @@ Du har **6 MCP servere** tilgængelige i Claude Code:
 ```
 
 ### **3. database** 🗄️
+
 **Hvad:** Query Supabase database (read-only)  
 **Sti:** `tekup-mcp-servers/packages/database-mcp/`  
 **Transport:** HTTP (`http://localhost:8053/mcp`)  
 **Tools:**
+
 - `query_database(query)` - SQL queries
 - `get_schema()` - Se database struktur
 - `get_table_info(tableName)` - Table details
@@ -114,14 +121,17 @@ Du har **6 MCP servere** tilgængelige i Claude Code:
 ```
 
 ### **4. github** 🐙
+
 **Hvad:** GitHub API integration  
 **Tools:** create_issue, list_issues, create_pull_request, etc.
 
 ### **5. filesystem** 📁
+
 **Hvad:** Læs/skriv filer i %USERPROFILE%  
 **Tools:** read_file, write_file, list_directory, etc.
 
 ### **6. web-scraper** 🌐
+
 **Hvad:** Web scraping (Python)
 
 ---
@@ -129,9 +139,11 @@ Du har **6 MCP servere** tilgængelige i Claude Code:
 ## 🎯 HVAD VI LAVEDE I DAG (27. okt 2025)
 
 ### **Problem vi løste:**
+
 MCP servere fejlede i Kilo Code med "Connection closed" fordi de ikke kunne læse environment variables fra Windows.
 
 ### **Løsning:**
+
 1. ✅ Installeret `dotenv` i alle 3 nye MCP servere
 2. ✅ Opdateret kode til at loade `.env` fil fra `tekup-mcp-servers/.env`
 3. ✅ Oprettet `.env` med alle credentials:
@@ -145,6 +157,7 @@ MCP servere fejlede i Kilo Code med "Connection closed" fordi de ikke kunne læs
 6. ✅ Committed til git (commits: 9f8d0e6, af1b827)
 
 ### **Dokumentation oprettet:**
+
 - `MCP_PRODUCTION_ARCHITECTURE_PLAN.md` (393 linjer)
   - Deployment strategi for Render.com
   - Cost analysis ($21/måned for 3 servere)
@@ -156,6 +169,7 @@ MCP servere fejlede i Kilo Code med "Connection closed" fordi de ikke kunne læs
   - Ready to copy-paste til GitHub issue
 
 ### **Næste step:**
+
 Deploy de 3 servere til Render.com (venter på bruger)
 
 ---
@@ -163,12 +177,14 @@ Deploy de 3 servere til Render.com (venter på bruger)
 ## 📊 MCP ECOSYSTEM STATUS
 
 ### **Production (Live nu):**
+
 ```
 ✅ tekup-billy.onrender.com       13 tools | $15/mån
 ✅ tekupvault.onrender.com        6 tools  | $15/mån
 ```
 
 ### **Ready for deployment:**
+
 ```
 🟡 knowledge-mcp                  1 tool   | $7/mån
 🟡 code-intelligence-mcp          4 tools  | $7/mån
@@ -176,6 +192,7 @@ Deploy de 3 servere til Render.com (venter på bruger)
 ```
 
 ### **Planned (Phase 2-6):**
+
 ```
 ⏳ mcp-gateway                    Load balancer
 ⏳ deploy-mcp                     Render/Railway integration
@@ -188,6 +205,7 @@ Deploy de 3 servere til Render.com (venter på bruger)
 ## 🔐 SECURITY & CREDENTIALS
 
 ### **Environment Variables (Windows User level):**
+
 ```bash
 #### GitHub
 - **GITHUB_PERSONAL_ACCESS_TOKEN**: `github_pat_***` (stored in Windows User Environment Variables)
@@ -198,6 +216,7 @@ BILLY_ORGANIZATION_ID=pnDGvWAoQ5yGdXgY6ZNWIg
 ```
 
 ### **VIGTIG SIKKERHED:**
+
 - ⚠️ SUPABASE_SERVICE_ROLE_KEY mangler (skal hentes fra Supabase dashboard)
 - ✅ Alle credentials i environment variables (aldrig hardcoded)
 - ✅ Git history renset for gamle credentials (BFG Repo-Cleaner brugt i går)
@@ -211,6 +230,7 @@ BILLY_ORGANIZATION_ID=pnDGvWAoQ5yGdXgY6ZNWIg
 ### **Typiske opgaver:**
 
 #### **1. Dokumentations-søgning**
+
 ```
 Når bruger spørger: "Hvordan deployer vi MCP servere?"
 → Brug @knowledge search_knowledge query="MCP deployment"
@@ -219,6 +239,7 @@ Når bruger spørger: "Hvordan deployer vi MCP servere?"
 ```
 
 #### **2. Kode-analyse**
+
 ```
 Når bruger spørger: "Hvor håndterer vi Billy API calls?"
 → Brug @code-intelligence find_code query="Billy API integration"
@@ -227,6 +248,7 @@ Når bruger spørger: "Hvor håndterer vi Billy API calls?"
 ```
 
 #### **3. Database queries**
+
 ```
 Når bruger spørger: "Hvilke tabeller har vi i Supabase?"
 → Brug @database list_tables
@@ -235,6 +257,7 @@ Når bruger spørger: "Hvilke tabeller har vi i Supabase?"
 ```
 
 #### **4. GitHub operations**
+
 ```
 Når bruger beder: "Opret issue om X"
 → Brug @github create_issue
@@ -246,6 +269,7 @@ Når bruger beder: "Opret issue om X"
 ## 📚 VIGTIGE DOCS AT KENDE
 
 ### **MCP Related:**
+
 1. `tekup-mcp-servers/docs/MCP_PRODUCTION_ARCHITECTURE_PLAN.md`
    - **Hvad:** Komplet deployment plan
    - **Hvornår:** Når bruger spørger om deployment, cost, strategi
@@ -263,6 +287,7 @@ Når bruger beder: "Opret issue om X"
    - **Hvornår:** Business/strategic spørgsmål
 
 ### **Deployment Docs:**
+
 5. `apps/production/tekup-billy/docs/DEPLOYMENT_COMPLETE.md`
    - **Hvad:** Proven Render.com deployment (reference)
    - **Hvornår:** Deployment spørgsmål, architecture reference
@@ -333,6 +358,7 @@ Du er Tekup's AI development assistant. Din opgave er at:
 5. ✅ **Være proaktiv** - Foreslå forbedringer, catch issues tidligt
 
 ### **Vigtige principper:**
+
 - 🚀 **MCP-first:** Brug altid MCP tools før du svarer
 - 📚 **Docs-driven:** Find svar i dokumentation først
 - 🔒 **Security-aware:** Aldrig expose credentials
@@ -344,16 +370,17 @@ Du er Tekup's AI development assistant. Din opgave er at:
 ## 📞 KONTAKT INFO
 
 **Organisation:** TekupDK  
-**GitHub:** https://github.com/TekupDK/tekup  
+**GitHub:** <https://github.com/TekupDK/tekup>  
 **Primary Repo:** %USERPROFILE%\Tekup  
 **Active IDEs:** Kilo Code, VS Code, Claude Code  
 **MCP Config:** %APPDATA%\Claude\claude_desktop_config.json
 
 ---
 
-## ✅ READY TO GO!
+## ✅ READY TO GO
 
 Du har nu:
+
 - ✅ Adgang til 6 MCP servere
 - ✅ Fuld context om Tekup projektet
 - ✅ Dokumentation om alt vi har bygget
@@ -375,6 +402,4 @@ Hvis det virker, er du klar til at hjælpe med Tekup development! 🚀
 **Last Updated:** 27. oktober 2025 23:45  
 **Version:** 1.0.0  
 **For:** Claude Code AI Assistant
-
-
 

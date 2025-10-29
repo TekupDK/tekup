@@ -1,6 +1,6 @@
 # MCP Problem LØST - Status 27. Oktober 2025
 
-## 🎉 KRITISK PROBLEM LØST!
+## 🎉 KRITISK PROBLEM LØST
 
 **Status**: ✅ **PROBLEM LØST** - Fra 32 processer til kun 2!
 
@@ -17,6 +17,7 @@
 Genstart af PC lukkede ALLE de gamle MCP processer! 🔥
 
 De 32 processer kom fra:
+
 1. **Claude Desktop** - 6 servere kørte permanent
 2. **Cursor** - 8 servere kørte permanent  
 3. **Windsurf** - 5 servere kørte permanent
@@ -30,6 +31,7 @@ Alle disse processer var **zombier** fra tidligere sessioner som aldrig blev luk
 ### 🟢 Active Configs (Opdaterede i Denne Session)
 
 #### 1. Claude Desktop (`%APPDATA%\Claude\claude_desktop_config.json`)
+
 **Status**: ✅ Konfigureret med 6 servere
 ```json
 {
@@ -51,6 +53,7 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 **ACTION REQUIRED**: Denne token skal SLETTES og erstattes med environment variable!
 
 #### 2. Kilo Code CLI (`%USERPROFILE%\.kilocode\cli\mcp.json`)
+
 **Status**: ✅ Konfigureret med 4 servere
 ```json
 {
@@ -65,19 +68,24 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 **Comment i fil**: "All Tekup MCP servers now run in Docker - start with: cd C:/Users/empir/Tekup/tekup-mcp-servers && docker-compose up -d"
 
 #### 3. Cursor (`%USERPROFILE%\.cursor\mcp.json`)
+
 **Status**: ✅ Konfigureret med 7 servere
+
 - memory, sequential-thinking, github, filesystem (Tekup only)
 - tekup-billy (local node)
-- tekupvault (HTTP: https://tekupvault.onrender.com/mcp)
+- tekupvault (HTTP: <https://tekupvault.onrender.com/mcp>)
 - puppeteer
 
 #### 4. Windsurf (`%USERPROFILE%\.codeium\windsurf\mcp_config.json`)
+
 **Status**: ✅ Konfigureret med 5 servere
+
 - memory, sequential-thinking, puppeteer
 - filesystem (%USERPROFILE% - HELE brugermappen!)
 - tekup-billy (local node)
 
 #### 5. VS Code / GitHub Copilot (`%APPDATA%\Code\User\mcp.json`)
+
 **Status**: ✅ Konfigureret med 4 servere
 ```json
 {
@@ -94,14 +102,18 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 ### 🔵 Workspace-Specific Configs
 
 #### 6. Tekup Workspace - Claude (`%USERPROFILE%\Tekup\.claude\mcp.json`)
+
 **Status**: ✅ Konfigureret med 7 servere
+
 - memory, sequential-thinking, github, filesystem
 - tekup-billy, tekupvault (HTTP), puppeteer
 
 #### 7. Tekup Workspace - Kilo Code (`%USERPROFILE%\Tekup\.kilocode\mcp.json`)
+
 **Status**: ✅ Konfigureret med 4 servere (minimal)
 
 #### 8. Tekup Web Dashboard - Cursor (`%USERPROFILE%\Tekup\apps\web\tekup-cloud-dashboard\.cursor\mcp.json`)
+
 **Status**: ✅ Workspace-specific config
 
 ## Konfiguration Analyse
@@ -152,7 +164,8 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 **Token**: `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`
 
 **Handling**:
-1. ⚠️ **REVOKE token ASAP** på https://github.com/settings/tokens
+
+1. ⚠️ **REVOKE token ASAP** på <https://github.com/settings/tokens>
 2. Generer ny token
 3. Tilføj til Windows Environment Variables
 4. Opdater config til `"${GITHUB_PERSONAL_ACCESS_TOKEN}"`
@@ -160,6 +173,7 @@ GITHUB_PERSONAL_ACCESS_TOKEN: "github_pat_11BDCB62Q0gfc03u9lIDu1_..."
 ### 🚨 PROBLEM #2: Over-Permissive Filesystem Access
 
 Claude Desktop og Windsurf har adgang til `%USERPROFILE%` (HELE brugermappen):
+
 - Inkluderer passwords, SSH keys, credentials
 - Inkluderer AppData med tokens og cookies
 - Inkluderer Documents med private filer
@@ -173,6 +187,7 @@ Synlig i Claude Desktop config (selvom det er "anon" key er det stadig ikke best
 ## Docker Migration Status
 
 ### Nuværende Situation
+
 - **Tekup Custom Servers**: Kører LOKALT som Node.js processer
   - knowledge-mcp
   - code-intelligence-mcp
@@ -180,6 +195,7 @@ Synlig i Claude Desktop config (selvom det er "anon" key er det stadig ikke best
   - tekup-billy
 
 ### Docker Plan
+
 Comment i Kilo Code config nævner Docker:
 ```
 "All Tekup MCP servers now run in Docker - start with: cd C:/Users/empir/Tekup/tekup-mcp-servers && docker-compose up -d"
@@ -188,6 +204,7 @@ Comment i Kilo Code config nævner Docker:
 **Men**: Ingen Docker containers kører faktisk! Dette er en TODO/plan.
 
 ### Docker Migration Fordele
+
 1. ✅ **Single source of truth** - Én docker-compose.yml
 2. ✅ **Environment isolation** - Secrets i .env fil
 3. ✅ **Konsistent startup** - `docker-compose up -d`
@@ -197,22 +214,26 @@ Comment i Kilo Code config nævner Docker:
 ## Anbefalinger - Handlingsplan
 
 ### 🔥 AKUT (Nu - Sikkerhed)
+
 1. **REVOKE GitHub PAT token** - github_pat_11BDCB62Q0...
 2. Generer ny token med minimal scope (kun repo:read)
 3. Tilføj til Windows Environment Variables
 4. Fjern hardcoded token fra Claude Desktop config
 
 ### 📋 HØJ PRIORITET (I dag)
+
 5. Ændr filesystem scope i Claude Desktop til kun `%USERPROFILE%\Tekup`
 6. Ændr filesystem scope i Windsurf til kun `%USERPROFILE%\Tekup`
 7. Flyt Supabase credentials til environment variables
 
 ### 🐳 MEDIUM PRIORITET (Denne uge)
+
 8. Implementer Docker MCP Gateway (fra MCP_DOCKER_MIGRATION_PLAN.md)
 9. Konsolider ALLE custom Tekup servere til Docker
 10. Skab ÉN docker-compose.yml som single source of truth
 
 ### 📊 LAV PRIORITET (Næste uge)
+
 11. Standardiser alle IDE configs til samme servere
 12. Lav central dokumentation for hvilke servere gør hvad
 13. Set up monitoring for Docker MCP containers
@@ -220,19 +241,23 @@ Comment i Kilo Code config nævner Docker:
 ## Konklusioner
 
 ### ✅ Hvad Virker
+
 - **PC restart løste problemet**: 32 processer → 2 processer
 - **Alle IDE configs er opdaterede**: 8 config filer identificeret
 - **VS Code format dokumenteret**: Bruger `"servers"` ikke `"mcpServers"`
 - **Docker plan exists**: Klar til implementation
 
 ### ⚠️ Hvad Skal Fixes
+
 - **Exposed GitHub PAT**: KRITISK sikkerhedsproblem
 - **Over-broad filesystem access**: Sikkerhedsrisiko
 - **No Docker running**: Plan exists men ikke implementeret
 - **Inconsistent configs**: Forskellige servere i forskellige IDEs
 
 ### 🎯 Endelig Løsning
+
 Implementer Docker MCP Gateway så:
+
 1. **Alle** custom Tekup servere kører i Docker
 2. **Alle** IDEs connector til samme Docker setup
 3. **Én** docker-compose.yml fil som single source of truth
@@ -249,7 +274,7 @@ Implementer Docker MCP Gateway så:
 
 ## Next Steps
 
-**Immediate**: 
+**Immediate**:
 ```powershell
 # 1. Revoke old token
 # Gå til: https://github.com/settings/tokens
@@ -279,6 +304,4 @@ docker ps
 **Document Created**: 2025-10-27 12:30  
 **Status**: ✅ Problem SOLVED - From 32 processes to 2!  
 **Next Action**: REVOKE exposed GitHub PAT token ASAP
-
-
 

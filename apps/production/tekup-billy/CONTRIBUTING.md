@@ -1,4 +1,4 @@
-# Contributing to Tekup-Billy MCP Server
+﻿# Contributing to Tekup-Billy MCP Server
 
 Tak for din interesse i at bidrage til Tekup-Billy MCP Server! Dette dokument giver retningslinjer for at bidrage til projektet.
 
@@ -27,7 +27,7 @@ Tak for din interesse i at bidrage til Tekup-Billy MCP Server! Dette dokument gi
 1. **Clone repository**
 
 ```bash
-git clone https://github.com/JonasAbde/Tekup-Billy.git
+git clone https://github.com/TekupDK/Tekup-Billy.git
 cd Tekup-Billy
 ```
 

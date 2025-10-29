@@ -14,7 +14,7 @@
 
 ### 1. Opret Render.com Account
 
-Gå til https://render.com og sign up med GitHub.
+Gå til <https://render.com> og sign up med GitHub.
 
 ### 2. Opret New Web Service
 
@@ -96,6 +96,7 @@ VITE_API_URL=https://renos-calendar-mcp.onrender.com
 ### 4. Custom Domain (Optional)
 
 På Vercel Dashboard:
+
 - Settings → Domains
 - Add: `renos.rendetalje.dk`
 - Update DNS CNAME record
@@ -104,7 +105,7 @@ På Vercel Dashboard:
 
 ### 1. Log ind på Supabase
 
-https://supabase.com/dashboard
+<https://supabase.com/dashboard>
 
 ### 2. Vælg Project
 
@@ -117,6 +118,7 @@ Kopier indhold fra `docs/SUPABASE_SCHEMA.sql` og kør.
 ### 4. Verificér Tables
 
 Tjek at følgende tables eksisterer:
+
 - `customer_preferences`
 - `booking_validations`
 - `overtime_logs`
@@ -148,8 +150,8 @@ const allowedOrigins = [
 
 For real-time updates, configure webhooks:
 
-- Google Calendar: https://console.cloud.google.com/apis/credentials
-- Billy: https://www.billy.dk/api
+- Google Calendar: <https://console.cloud.google.com/apis/credentials>
+- Billy: <https://www.billy.dk/api>
 
 ## 📊 Monitoring & Logging
 
@@ -232,6 +234,7 @@ wrangler pages deploy dist/
 ### 1. Rate Limiting
 
 Allerede konfigureret i `http-server.ts`:
+
 - 100 requests per 15 min per IP
 
 ### 2. API Key Rotation
@@ -255,14 +258,17 @@ Render og Vercel har automatisk HTTPS.
 ### Common Issues
 
 **"Google Calendar API error"**
+
 - Verificer service account har calendar access
 - Check `GOOGLE_IMPERSONATED_USER` er korrekt
 
 **"Supabase connection timeout"**
+
 - Verificer `SUPABASE_SERVICE_KEY` (ikke ANON_KEY)
 - Check RLS policies er konfigureret korrekt
 
 **"Dashboard shows no data"**
+
 - Verificer `VITE_API_URL` peger til Render URL
 - Check CORS whitelist i backend
 
@@ -288,10 +294,10 @@ vercel rollback
 - [ ] Monitoring setup ✅
 - [ ] Error tracking active ✅
 
-## 🎉 Done!
+## 🎉 Done
 
-**MCP Server**: https://renos-calendar-mcp.onrender.com
-**Dashboard**: https://renos.vercel.app
+**MCP Server**: <https://renos-calendar-mcp.onrender.com>
+**Dashboard**: <https://renos.vercel.app>
 
 Test med:
 
@@ -306,4 +312,3 @@ curl https://renos-calendar-mcp.onrender.com/validate-booking-date \
 ```
 
 🚀 **RenOS Calendar Intelligence er nu LIVE!**
-

@@ -12,6 +12,7 @@
 ## 🚨 KALENDER FEJL ANALYSE
 
 ### ✅ MCP Server Status
+
 - **Server**: ✅ Kører på localhost:3001
 - **Health**: ⚠️ DEGRADED (konfiguration mangler)
 - **Database**: ❌ Ikke konfigureret
@@ -21,7 +22,8 @@
 
 ### 📊 Oktober 2025 Kalender Oversigt
 
-#### Ugedage i Oktober 2025:
+#### Ugedage i Oktober 2025
+
 - **1. oktober**: Onsdag (Uge 40)
 - **2. oktober**: Torsdag
 - **3. oktober**: Fredag
@@ -59,8 +61,10 @@
 ## 🔍 POTENTIELLE KALENDER FEJL
 
 ### 1. Ugedag Mismatch Fejl
+
 **Problem**: Kunder booker forkert ugedag
 **Eksempler**:
+
 - Kunde booker "mandag" men datoen er tirsdag
 - Kunde booker "fredag" men datoen er lørdag
 - Kunde booker "søndag" men datoen er mandag
@@ -76,8 +80,10 @@
 ```
 
 ### 2. Weekend Booking Fejl
+
 **Problem**: Kunder booker i weekend (lørdag/søndag)
 **Eksempler**:
+
 - 4. oktober (lørdag) - Weekend booking
 - 5. oktober (søndag) - Weekend booking
 - 11. oktober (lørdag) - Weekend booking
@@ -97,8 +103,10 @@
 ```
 
 ### 3. Dobbeltbooking Fejl
+
 **Problem**: Samme tidspunkt booket flere gange
 **Eksempler**:
+
 - 9:00-12:00 booket til både Kunde A og Kunde B
 - 13:00-16:00 booket til både Kunde C og Kunde D
 
@@ -112,8 +120,10 @@
 ```
 
 ### 4. Overtid Risiko
+
 **Problem**: Bookinger der kan resultere i overtid
 **Eksempler**:
+
 - 8:00-17:00 booking (9 timer) - Overtid risiko
 - 9:00-18:00 booking (9 timer) - Overtid risiko
 - 10:00-19:00 booking (9 timer) - Overtid risiko
@@ -129,8 +139,10 @@
 ```
 
 ### 5. Kunde Mønster Fejl
+
 **Problem**: Kunder booker uden for deres normale mønstre
 **Eksempler**:
+
 - Kunde der altid booker mandage, booker tirsdag
 - Kunde der altid booker morgen, booker eftermiddag
 - Kunde der altid booker 2 timer, booker 4 timer
@@ -148,6 +160,7 @@
 ## 🎯 RENOS CALENDAR MCP FEJL DETECTION
 
 ### 1. Dato/Ugedag Validering
+
 ```typescript
 // Test cases for oktober 2025
 const testCases = [
@@ -160,6 +173,7 @@ const testCases = [
 ```
 
 ### 2. Weekend Booking Blokering
+
 ```typescript
 // Weekend dates i oktober 2025
 const weekendDates = [
@@ -175,6 +189,7 @@ const weekendDates = [
 ```
 
 ### 3. Overtid Risiko Detektion
+
 ```typescript
 // Overtid scenarios
 const overtimeScenarios = [
@@ -190,22 +205,26 @@ const overtimeScenarios = [
 
 ## 📈 BUSINESS IMPACT ANALYSE
 
-### Fejl Kategorier i Oktober 2025:
+### Fejl Kategorier i Oktober 2025
 
 #### 1. **Kritiske Fejl** (Høj prioritet)
+
 - **Ugedag Mismatch**: 5-10% af alle bookinger
 - **Dobbeltbooking**: 2-5% af alle bookinger
 - **Weekend Booking**: 3-8% af alle bookinger
 
 #### 2. **Moderate Fejl** (Medium prioritet)
+
 - **Overtid Risiko**: 15-20% af alle bookinger
 - **Kunde Mønster Brud**: 10-15% af alle bookinger
 
 #### 3. **Lave Fejl** (Lav prioritet)
+
 - **Tid Mismatch**: 5-10% af alle bookinger
 - **Lokation Mismatch**: 3-5% af alle bookinger
 
-### Økonomisk Impact:
+### Økonomisk Impact
+
 - **Tabt Omsætning**: €2,000-5,000/måned
 - **Kunde Utilfredshed**: 25-30% af kunder
 - **Team Stress**: 40-50% øget arbejdsbyrde
@@ -216,6 +235,7 @@ const overtimeScenarios = [
 ## 🚀 RENOS CALENDAR MCP LØSNINGER
 
 ### 1. Automatisk Fejl Detektion
+
 ```typescript
 // Real-time validation
 const validation = await mcp.validateBookingDate({
@@ -234,6 +254,7 @@ if (!validation.valid) {
 ```
 
 ### 2. Preventiv Blokering
+
 ```typescript
 // Weekend booking blokering
 const conflictCheck = await mcp.checkBookingConflicts({
@@ -248,6 +269,7 @@ if (conflictCheck.blocked) {
 ```
 
 ### 3. Overtid Overvågning
+
 ```typescript
 // Real-time overtid tracking
 const overtimeRisk = await mcp.trackOvertimeRisk({
@@ -266,6 +288,7 @@ if (overtimeRisk.riskLevel === "HIGH") {
 ```
 
 ### 4. Kunde Intelligence
+
 ```typescript
 // Kunde mønster analyse
 const customerMemory = await mcp.getCustomerMemory({
@@ -286,7 +309,8 @@ if (customerMemory.patternViolation) {
 
 ## 📊 OKTOBER 2025 STATISTIKKER
 
-### Ugedag Fordeling:
+### Ugedag Fordeling
+
 - **Mandage**: 6 dage (6, 13, 20, 27)
 - **Tirsdage**: 5 dage (7, 14, 21, 28)
 - **Onsdage**: 5 dage (1, 8, 15, 22, 29)
@@ -295,12 +319,14 @@ if (customerMemory.patternViolation) {
 - **Lørdage**: 4 dage (4, 11, 18, 25)
 - **Søndage**: 4 dage (5, 12, 19, 26)
 
-### Weekend Dage:
+### Weekend Dage
+
 - **Lørdage**: 4 dage (4, 11, 18, 25)
 - **Søndage**: 4 dage (5, 12, 19, 26)
 - **Total Weekend**: 8 dage (25.8% af måneden)
 
-### Arbejdsdage:
+### Arbejdsdage
+
 - **Mandag-Fredag**: 23 dage (74.2% af måneden)
 
 ---
@@ -308,6 +334,7 @@ if (customerMemory.patternViolation) {
 ## 🎯 NÆSTE SKRIDT
 
 ### 1. Konfigurer MCP Server
+
 ```bash
 # Sæt environment variables
 export SUPABASE_URL="https://oaevagdgrasfppbrxbey.supabase.co"
@@ -317,6 +344,7 @@ export GOOGLE_PRIVATE_KEY="your_private_key"
 ```
 
 ### 2. Test Alle Tools
+
 ```bash
 # Test dato validering
 curl -X POST http://localhost:3001/validate-booking \
@@ -330,6 +358,7 @@ curl -X POST http://localhost:3001/check-conflicts \
 ```
 
 ### 3. Deploy til Production
+
 ```bash
 # Deploy til Render.com
 ./scripts/deploy-all.ps1
@@ -344,14 +373,16 @@ curl -X POST http://localhost:3001/check-conflicts \
 
 **RenOS Calendar MCP er klar til at detektere og forhindre alle kalender fejl i oktober 2025!**
 
-### ✅ Implementerede Løsninger:
+### ✅ Implementerede Løsninger
+
 1. **Dato/Ugedag Validering** - Forhindrer ugedag mismatch
 2. **Weekend Booking Blokering** - Forhindrer weekend bookinger
 3. **Dobbeltbooking Detektion** - Forhindrer konflikter
 4. **Overtid Overvågning** - Real-time overtid alerts
 5. **Kunde Intelligence** - Lærer kunde mønstre
 
-### 📈 Forventet Forbedring:
+### 📈 Forventet Forbedring
+
 - **90% færre booking fejl**
 - **100% weekend booking blokering**
 - **Real-time overtid alerts**
@@ -365,4 +396,3 @@ curl -X POST http://localhost:3001/check-conflicts \
 *Analyse Genereret: 21. Oktober 2025, 12:50*  
 *MCP Status: ✅ OPERATIV*  
 *Kalender Analyse: ✅ KOMPLET*
-

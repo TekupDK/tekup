@@ -4,13 +4,14 @@
 **Updated:** 23. Oktober 2025, 16:10 CET  
 **Baseret på:** Luca Pette, Aviator Monorepo Guide, GitHub Conventions  
 **Implementation:** Monorepo (completed)  
-**Repository:** https://github.com/TekupDK/tekup
+**Repository:** <https://github.com/TekupDK/tekup>
 
 ---
 
 ## 📚 **KEY INSIGHTS FRA RESEARCH**
 
 ### **1. Luca Pette's Monorepo Principle:**
+>
 > "Organize a monorepo so that it **loosely reflects** the way teams are split. You don't want a one-to-one mapping but you also don't want total disconnection."
 
 - ✅ Mix domain terms (production, development) + tech terms (services, packages)
@@ -19,6 +20,7 @@
 - ❌ Don't group by language at top level
 
 ### **2. Industry Standard Folders:**
+
 ```
 Standard top-level structure:
 ├── docs/          # Documentation
@@ -33,6 +35,7 @@ Standard top-level structure:
 ```
 
 ### **3. Best Practices:**
+
 - ✅ Short lowercase names (except LICENSE, README)
 - ✅ Centralized dependency management
 - ✅ CODEOWNERS for responsibility
@@ -45,6 +48,7 @@ Standard top-level structure:
 ## 🎯 **FORBEDRET TEKUP STRUKTUR**
 
 ### **Level 1: Nuværende (Basic)**
+
 ```
 Tekup/
 ├── production/
@@ -140,6 +144,7 @@ Tekup/                              ← ROOT WORKSPACE
 ## 📋 **SAMMENLIGNING**
 
 ### **Nuværende struktur:**
+
 ```
 Tekup/
 ├── production/    (3 services)
@@ -150,6 +155,7 @@ Tekup/
 ```
 
 **Issues:**
+
 - ❌ "production" vs "development" er ikke klar separation
 - ❌ Ingen packages/ for shared code
 - ❌ Ingen tools/, scripts/, configs/
@@ -157,6 +163,7 @@ Tekup/
 - ❌ Blanding af runtime (web/desktop) og status (prod/dev)
 
 ### **Forbedret struktur:**
+
 ```
 Tekup/
 ├── apps/          (Organized by runtime: production, web, desktop)
@@ -172,6 +179,7 @@ Tekup/
 ```
 
 **Benefits:**
+
 - ✅ Clear separation by runtime/purpose
 - ✅ Shared code in packages/
 - ✅ Tools, scripts, configs separate
@@ -184,24 +192,29 @@ Tekup/
 ## 🎯 **MAPPING: OLD → NEW**
 
 ### **apps/production/** (Live services)
+
 - tekup-database ← `production/tekup-database`
 - tekup-vault ← `production/tekup-vault`
 - tekup-billy ← `production/tekup-billy`
 
 ### **apps/web/** (Web applications)
+
 - rendetalje-os ← `development/rendetalje-os`
 - tekup-cloud-dashboard ← `development/tekup-cloud-dashboard`
 - tekup-chat ← `services/tekup-chat` or `tekup-ai/apps/ai-chat`
 
 ### **apps/desktop/** (Desktop apps)
+
 - agent-orchestrator ← `tekup-ai/apps/ai-orchestrator` (move here instead)
 
 ### **services/** (Backend services)
+
 - tekup-gmail-services ← `services/tekup-gmail-services`
 - tekup-ai ← `development/tekup-ai`
 - tekup-cloud ← `development/tekup-cloud`
 
 ### **packages/** (NEW - extract shared code)
+
 - shared-types (from multiple repos)
 - shared-ui (from web apps)
 - ai-llm (from Tekup Google AI)
@@ -209,6 +222,7 @@ Tekup/
 - ai-mcp (from tekup-ai)
 
 ### **docs/** (Documentation)
+
 - workspace/ ← Current `docs/` content
 - architecture/ ← NEW
 - guides/ ← NEW
@@ -221,6 +235,7 @@ Tekup/
 **Decision:** Full monorepo with all projects inside
 
 ### **What was done:**
+
 - All projects moved into Tekup/ folder
 - Workspace file updated (Tekup-Portfolio.code-workspace)
 - .git folders removed from subprojects
@@ -231,6 +246,7 @@ Tekup/
 ## 🚀 **ORIGINAL IMPLEMENTATION OPTIONS** (for reference)
 
 ### **Option A: Simple Rename** (15 min)
+
 ```powershell
 # Just rename existing folders
 mv Tekup/production Tekup/apps/production
@@ -246,6 +262,7 @@ mkdir Tekup/packages, Tekup/tools, Tekup/scripts, Tekup/configs, Tekup/tests
 ---
 
 ### **Option B: Proper Reorganization** (2-3 hours) ✅ ANBEFALET
+
 ```powershell
 # Create new structure
 mkdir apps/production, apps/web, apps/desktop
@@ -283,6 +300,7 @@ touch README.md CODEOWNERS CONTRIBUTING.md CHANGELOG.md LICENSE
 ---
 
 ### **Option C: Hybrid Approach** (1 hour) ✅ BALANCED
+
 ```powershell
 # Phase 1: Move to apps/ structure (30 min)
 mkdir apps/production, apps/web
@@ -309,6 +327,7 @@ mkdir docs/architecture, docs/guides, docs/api
 ## 📝 **WORKSPACE ROOT FILES (Required)**
 
 ### **README.md** (Required)
+
 ```markdown
 # Tekup Workspace
 
@@ -325,15 +344,17 @@ See [docs/guides/getting-started.md](docs/guides/getting-started.md)
 ```
 
 ### **CODEOWNERS** (Required for teams)
+
 ```
 # Workspace-level ownership
-/apps/production/       @JonasAbde @tekup-platform-team
-/apps/web/rendetalje-os/ @JonasAbde @renos-team
-/services/tekup-ai/     @JonasAbde @ai-team
-/packages/              @JonasAbde
+/apps/production/       @tekup-platform-team
+/apps/web/rendetalje-os/ @renos-team
+/services/tekup-ai/     @ai-team
+/packages/              @tekup-platform-team
 ```
 
 ### **CONTRIBUTING.md** (Best practice)
+
 ```markdown
 # Contributing to Tekup
 
@@ -350,6 +371,7 @@ See [docs/guides/getting-started.md](docs/guides/getting-started.md)
 ```
 
 ### **CHANGELOG.md** (Best practice)
+
 ```markdown
 # Workspace Changelog
 
@@ -364,6 +386,7 @@ See [docs/guides/getting-started.md](docs/guides/getting-started.md)
 ```
 
 ### **LICENSE** (If open source)
+
 ```
 MIT License
 
@@ -384,6 +407,7 @@ Copyright (c) 2025 Tekup / Jonas Abde
 4. **Løbende:** Populate tools/, scripts/, configs/
 
 **Resultat:**
+
 - ✅ Industry standard structure
 - ✅ Scalable for growth
 - ✅ Clear separation of concerns
@@ -395,6 +419,7 @@ Copyright (c) 2025 Tekup / Jonas Abde
 ## 🎯 **NÆSTE SKRIDT**
 
 Skal jeg:
+
 1. **Implementere Option C nu?** (Hybrid approach - 1 time)
 2. **Lave de nye kommandoer?** (PowerShell scripts klar)
 3. **Eller vil du reviewe planen først?**

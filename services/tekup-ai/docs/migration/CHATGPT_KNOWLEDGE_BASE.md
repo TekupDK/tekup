@@ -1,8 +1,8 @@
-# TekupVault - ChatGPT Knowledge Base
+﻿# TekupVault - ChatGPT Knowledge Base
 
 > **Sidst opdateret**: 2025-10-17  
 > **Version**: 1.0.0  
-> **Production Status**: 🟢 LIVE (https://tekupvault.onrender.com)
+> **Production Status**: 🟢 LIVE (<https://tekupvault.onrender.com>)
 
 ---
 
@@ -11,15 +11,17 @@
 **TekupVault** er Tekup Portfolio's centrale intelligente knowledge layer - et TypeScript monorepo (pnpm + Turborepo) der automatisk konsoliderer, indekserer og enabler semantisk søgning på tværs af alle Tekup Portfolio repositories.
 
 ### Production URLs
+
 - **API**: `https://tekupvault.onrender.com`
 - **Health Check**: `https://tekupvault.onrender.com/health`
 - **Region**: Frankfurt (Render.com)
 - **Status**: Live med 31/31 kritiske tests passing
 
 ### Synkroniserede Repositories
-1. `JonasAbde/renos-backend` (TypeScript backend, Prisma, PostgreSQL)
-2. `JonasAbde/renos-frontend` (React 18 + TypeScript, Vite, Tailwind)
-3. `JonasAbde/Tekup-Billy` (MCP HTTP server for Billy.dk)
+
+1. `TekupDK/renos-backend` (TypeScript backend, Prisma, PostgreSQL)
+2. `TekupDK/renos-frontend` (React 18 + TypeScript, Vite, Tailwind)
+3. `TekupDK/Tekup-Billy` (MCP HTTP server for Billy.dk)
 
 ---
 
@@ -63,7 +65,7 @@ TekupVault (Turborepo + pnpm workspaces)
 CREATE TABLE vault_documents (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   source TEXT NOT NULL,              -- 'github', 'render', etc.
-  repository TEXT NOT NULL,          -- 'JonasAbde/renos-backend'
+  repository TEXT NOT NULL,          -- 'TekupDK/renos-backend'
   path TEXT NOT NULL,                -- 'src/auth/login.ts'
   content TEXT NOT NULL,             -- File content (text only)
   metadata JSONB DEFAULT '{}'::jsonb,
@@ -129,6 +131,7 @@ CREATE OR REPLACE FUNCTION match_documents(
 ## 🔌 API Reference
 
 ### Authentication
+
 All `/api/*` endpoints require `X-API-Key` header (except `/health`).
 
 ### POST /api/search
@@ -147,7 +150,7 @@ Content-Type: application/json
   "query": "How do I authenticate users?",
   "limit": 10,
   "threshold": 0.7,
-  "repository": "JonasAbde/renos-backend"  // Optional filter
+  "repository": "TekupDK/renos-backend"  // Optional filter
 }
 ```
 
@@ -160,7 +163,7 @@ Content-Type: application/json
       "document": {
         "id": "uuid",
         "source": "github",
-        "repository": "JonasAbde/renos-backend",
+        "repository": "TekupDK/renos-backend",
         "path": "src/auth/login.ts",
         "content": "// Authentication logic...",
         "similarity": 0.92
@@ -185,7 +188,7 @@ Content-Type: application/json
     {
       "id": "uuid",
       "source": "github",
-      "repository": "JonasAbde/renos-backend",
+      "repository": "TekupDK/renos-backend",
       "status": "success",
       "last_sync_at": "2025-10-17T12:00:00Z",
       "error_message": null
@@ -213,6 +216,7 @@ Content-Type: application/json
 **MCP HTTP Transport** for AI integration (ChatGPT, Claude, Cursor).
 
 **Available Tools**:
+
 - `search_knowledge`: Semantic search
 - `get_sync_status`: Repository sync status
 - `list_repositories`: List synced repositories
@@ -223,11 +227,13 @@ Content-Type: application/json
 ## 🔐 Security
 
 ### Authentication & Authorization
+
 - **API Key**: Required for `/api/search` via `X-API-Key` header
 - **Webhook HMAC**: SHA-256 signature verification for GitHub webhooks
 - **RLS Policies**: Row Level Security in Supabase (Phase 2)
 
 ### Security Headers (Helmet)
+
 ```javascript
 helmet({
   contentSecurityPolicy: {
@@ -244,6 +250,7 @@ helmet({
 ```
 
 ### CORS Configuration
+
 ```javascript
 cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
@@ -253,10 +260,12 @@ cors({
 ```
 
 ### Rate Limiting
+
 - **Search Endpoint**: 100 requests / 15 minutes per IP
 - **Webhook Endpoint**: 10 requests / minute per IP
 
 ### Input Validation (Zod)
+
 ```typescript
 const SearchRequestSchema = z.object({
   query: z.string().min(1).max(1000),
@@ -271,12 +280,14 @@ const SearchRequestSchema = z.object({
 ## 🧪 Testing Strategy
 
 ### Test Coverage
+
 **Total**: 150+ test cases across 14 categories  
 **Unit Tests**: 125+ implemented (Vitest)  
 **Integration Tests**: 5 scenarios  
 **Critical Tests Passing**: 31/31 (100%)
 
 ### Unit Test Files
+
 ```
 apps/vault-api/__tests__/
 ├── api.test.ts              # Core API tests (3 tests)
@@ -297,6 +308,7 @@ packages/vault-ingest/__tests__/
 ```
 
 ### Integration Test Scenarios
+
 ```
 test-scenarios/
 ├── 01-search-quality-test.mjs       # Search quality & relevance
@@ -308,6 +320,7 @@ test-scenarios/
 ```
 
 ### Running Tests
+
 ```bash
 # Unit tests
 pnpm test
@@ -393,6 +406,7 @@ SENTRY_DSN=https://...@sentry.io/...
 ## 📦 Tech Stack
 
 ### Backend
+
 - **Runtime**: Node.js 18 (LTS)
 - **Framework**: Express 4.18+
 - **Language**: TypeScript 5.3+
@@ -400,29 +414,34 @@ SENTRY_DSN=https://...@sentry.io/...
 - **ORM**: Supabase Client (PostgreSQL)
 
 ### AI & Search
+
 - **Embeddings**: OpenAI text-embedding-ada-002 (1536 dimensions)
 - **Vector Search**: pgvector with IVFFlat index (cosine similarity)
 - **Similarity Threshold**: Default 0.7 (70%)
 
 ### External Integrations
+
 - **GitHub**: Octokit (REST API v3)
 - **Supabase**: PostgreSQL database + Row Level Security
 - **OpenAI**: Embeddings API
 - **Sentry**: Error tracking (optional)
 
 ### Build & Package Management
+
 - **Monorepo**: Turborepo 1.11+
 - **Package Manager**: pnpm 8.15+
 - **Build Tool**: TypeScript Compiler (tsc)
 - **Task Runner**: Turborepo pipelines
 
 ### Testing
+
 - **Unit Tests**: Vitest 2.1+
 - **API Tests**: Supertest
 - **Mocking**: Vitest vi.fn()
 - **Coverage**: Built-in Vitest coverage
 
 ### Security
+
 - **Headers**: Helmet
 - **CORS**: cors middleware
 - **Rate Limiting**: express-rate-limit
@@ -430,6 +449,7 @@ SENTRY_DSN=https://...@sentry.io/...
 - **Logging**: Pino (structured JSON logs)
 
 ### Deployment
+
 - **Platform**: Render.com
 - **CI/CD**: GitHub Actions (recommended)
 - **Health Checks**: 5-second intervals
@@ -440,7 +460,9 @@ SENTRY_DSN=https://...@sentry.io/...
 ## 🔄 GitHub Sync Logic
 
 ### Synced File Types
+
 **✅ Included**:
+
 - `.ts`, `.tsx`, `.js`, `.jsx` (source code)
 - `.md`, `.mdx` (documentation)
 - `.json`, `.yaml`, `.yml` (configuration)
@@ -448,6 +470,7 @@ SENTRY_DSN=https://...@sentry.io/...
 - `.sql` (database scripts)
 
 **❌ Excluded** (binary files):
+
 - Images: `.png`, `.jpg`, `.gif`, `.svg`, `.ico`
 - Fonts: `.woff`, `.woff2`, `.ttf`, `.eot`
 - Media: `.mp4`, `.mp3`, `.wav`
@@ -455,11 +478,13 @@ SENTRY_DSN=https://...@sentry.io/...
 - PDFs: `.pdf`
 
 ### Sync Frequency
+
 - **Automatic**: Every 6 hours (vault-worker cron)
 - **Manual**: GitHub webhook on push events
 - **Incremental**: Only updates changed files (SHA comparison)
 
 ### Sync Process
+
 1. Fetch repository tree from GitHub API
 2. Filter out binary files
 3. Compare SHA with existing documents
@@ -473,9 +498,10 @@ SENTRY_DSN=https://...@sentry.io/...
 ## 🎯 Development Workflow
 
 ### Local Setup
+
 ```bash
 # Clone repository
-git clone https://github.com/JonasAbde/TekupVault.git
+git clone https://github.com/TekupDK/TekupVault.git
 cd TekupVault
 
 # Install dependencies
@@ -500,6 +526,7 @@ pnpm dev
 ```
 
 ### Package Scripts
+
 ```bash
 pnpm dev       # Start all apps in watch mode
 pnpm build     # Build all packages incrementally
@@ -509,12 +536,14 @@ pnpm clean     # Remove all dist/ folders
 ```
 
 ### Code Style
+
 - **TypeScript Strict Mode**: Enabled
 - **ESLint**: Configured with TypeScript rules
 - **Prettier**: Not configured (use default formatting)
 - **Naming**: camelCase for variables, PascalCase for types
 
 ### Git Workflow
+
 1. Create feature branch: `feat/description` or `fix/description`
 2. Make changes
 3. Run `pnpm test` (ensure tests pass)
@@ -527,12 +556,14 @@ pnpm clean     # Remove all dist/ folders
 ## 📊 Performance Optimizations
 
 ### Phase 2 Improvements (Implemented)
+
 - **Parallel Repository Syncing**: 3x faster (Promise.all)
 - **Batch Embedding Upserts**: 10x faster (bulk inserts)
 - **IVFFlat Index**: Fast similarity search on large datasets
 - **Connection Pooling**: Supabase handles connection management
 
 ### Performance Targets
+
 - **Health Check**: < 1ms response time ✅
 - **Search Endpoint**: < 100ms average (excluding OpenAI API) ✅
 - **Webhook Processing**: < 500ms (async queue) ✅
@@ -543,28 +574,37 @@ pnpm clean     # Remove all dist/ folders
 ## 🐛 Common Issues & Troubleshooting
 
 ### Issue: "Missing or invalid environment variables"
+
 **Solution**: Ensure all required env vars are set in `.env` or Render dashboard.
 
 ### Issue: "Database connection failed"
-**Solution**: 
+
+**Solution**:
+
 - Check `DATABASE_URL` format
 - Verify network access to Supabase
 - Check Supabase project status
 
 ### Issue: "OpenAI API rate limit"
+
 **Solution**:
+
 - Upgrade OpenAI plan
 - Implement exponential backoff (already in code)
 - Reduce embedding generation frequency
 
 ### Issue: "GitHub webhook not triggering"
+
 **Solution**:
+
 - Verify webhook URL in GitHub settings
 - Check `GITHUB_WEBHOOK_SECRET` matches
 - Inspect webhook delivery logs in GitHub
 
 ### Issue: "Search returns no results"
+
 **Solution**:
+
 - Check if documents are synced: `GET /api/sync-status`
 - Verify embeddings are generated (check `vault_embeddings` table)
 - Lower similarity threshold (try 0.5 instead of 0.7)
@@ -574,6 +614,7 @@ pnpm clean     # Remove all dist/ folders
 ## 📚 Important File Paths
 
 ### Configuration
+
 - `render.yaml` - Render.com deployment config
 - `package.json` - Root workspace config
 - `turbo.json` - Turborepo pipeline config
@@ -581,6 +622,7 @@ pnpm clean     # Remove all dist/ folders
 - `.env.example` / `docs/ENV.example` - Environment variable template
 
 ### Source Code
+
 - `apps/vault-api/src/index.ts` - API entry point
 - `apps/vault-worker/src/index.ts` - Worker entry point
 - `packages/vault-core/src/types.ts` - Shared types
@@ -589,6 +631,7 @@ pnpm clean     # Remove all dist/ folders
 - `packages/vault-search/src/embeddings.ts` - Embedding service
 
 ### Documentation
+
 - `README.md` - Project overview
 - `docs/FINAL_STATUS_2025-10-17.md` - Latest status report
 - `docs/API_DOCS.md` - Complete API documentation
@@ -602,6 +645,7 @@ pnpm clean     # Remove all dist/ folders
 ## 🎯 Project Status Summary
 
 ### ✅ Phase 1 - Security & Testing (Completed)
+
 - API key authentication
 - Rate limiting
 - CORS restrictions
@@ -612,6 +656,7 @@ pnpm clean     # Remove all dist/ folders
 - Comprehensive documentation
 
 ### ✅ Phase 2 - Performance & Validation (Completed)
+
 - Row Level Security (RLS) policies
 - Enhanced input validation
 - Sentry error tracking
@@ -619,6 +664,7 @@ pnpm clean     # Remove all dist/ folders
 - Batch embedding upserts (10x faster)
 
 ### ✅ Phase 3 - MCP Integration (Completed)
+
 - MCP HTTP Transport (2025-03-26 spec)
 - 4 MCP tools: search_knowledge, get_sync_status, list_repositories, get_repository_info
 - /.well-known/mcp.json discovery endpoint
@@ -626,6 +672,7 @@ pnpm clean     # Remove all dist/ folders
 - Integration examples (ChatGPT, Claude, Cursor)
 
 ### 🔜 Phase 4 - Planned
+
 - Supabase schema introspection
 - Render deployment log ingestion
 - Web UI (React + Tailwind)
@@ -724,6 +771,7 @@ TekupVault implements the **Model Context Protocol (MCP)** for direct integratio
 ## 💡 Best Practices
 
 ### When Adding New Features
+
 1. Define types in `packages/vault-core/src/types.ts`
 2. Add Zod validation schemas in `packages/vault-core/src/config.ts`
 3. Write unit tests first (TDD approach)
@@ -731,12 +779,14 @@ TekupVault implements the **Model Context Protocol (MCP)** for direct integratio
 5. Update test documentation in `docs/TEST_CASES.md`
 
 ### When Fixing Bugs
+
 1. Write a failing test that reproduces the bug
 2. Fix the bug
 3. Ensure test passes
 4. Update `docs/CHANGELOG.md`
 
 ### When Deploying
+
 1. Run `pnpm test` locally
 2. Ensure all tests pass
 3. Push to `main` branch
@@ -749,7 +799,7 @@ TekupVault implements the **Model Context Protocol (MCP)** for direct integratio
 
 **Project Owner**: Jonas Abde  
 **Organization**: Tekup Portfolio (Private)  
-**Repository**: `JonasAbde/TekupVault` (Private)
+**Repository**: `TekupDK/TekupVault` (Private)
 
 For questions or issues, contact project owner directly.
 

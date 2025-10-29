@@ -1,4 +1,4 @@
-# ChatGPT Custom Connector Setup Guide
+﻿# ChatGPT Custom Connector Setup Guide
 
 **Billy MCP Server for ChatGPT**  
 **Status:** ✅ Ready to Use  
@@ -280,7 +280,7 @@ ChatGPT ↔️ Billy MCP Server ↔️ Billy.dk API
 - Discovery: <https://tekup-billy.onrender.com/.well-known/mcp.json>
 
 **Support:**
-- GitHub Issues: <https://github.com/JonasAbde/Tekup-Billy/issues>
+- GitHub Issues: <https://github.com/TekupDK/Tekup-Billy/issues>
 - Email: <support@tekup.dk>
 
 ---

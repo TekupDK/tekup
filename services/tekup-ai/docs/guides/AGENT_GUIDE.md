@@ -100,11 +100,11 @@ Send calendar invitation automatisk\n\n```text\n
 
 ## ⚠️ KRITISKE REGLER FOR AGENTEN
 
-### Regel 1: RenOS Er Det Eneste System\n\n✅ **KORREKT:** Brug ALTID RenOS funktioner - det er det eneste system!  \n\n❌ **FORKERT:** Tænk på Shortwave eller andre værktøjer - de er væk!
+### Regel 1: RenOS Er Det Eneste System\n\n✅ **KORREKT:** Brug ALTID RenOS funktioner - det er det eneste system!  \n\n❌ **FORKERT:** Tænk på Shortwave eller andre værktøjer - de er væk
 
 ### Regel 2: Duplicate Check Altid Først\n\n✅ **KORREKT:** `check_customer_duplicate(email)` før ALLE kunde interaktioner\n\n❌ **FORKERT:** Send noget til en kunde uden at tjekke duplicate først
 
-### Regel 3: Calendar Intelligence\n\n✅ **KORREKT:** Brug `find_available_slots()` med conflict detection\n\n❌ **FORKERT:** Gæt aldrig på om en tid er ledig - check ALTID!
+### Regel 3: Calendar Intelligence\n\n✅ **KORREKT:** Brug `find_available_slots()` med conflict detection\n\n❌ **FORKERT:** Gæt aldrig på om en tid er ledig - check ALTID
 
 ### Regel 4: RenOS Workflow\n\nRenOS håndterer: Email → Calendar → Kunde → Quote → Booking → Faktura
 
@@ -120,8 +120,9 @@ Send calendar invitation automatisk\n\n```text\n
 
 ## 💡 PRAKTISKE EKSEMPLER
 
-### Eksempel 1: "Hvad skal jeg gøre ved nye leads?"\n\n\n\n#### Agent thinking process:\n\n1. Bruger RenOS til at søge: `search_emails(label="Leads")`\n\n2. For hver lead:
-   - Tjek duplicate i RenOS (REGEL #2)\n\n   - Hvis ingen → tjek kalender ledighed med `find_available_slots()`\n\n   - Generer tilbud med `generate_quote()` inkl. ledige tider\n\n   - Vis til godkendelse\n\n   - Ved approval → send via RenOS email system\n\n   - Opdater kunde status automatisk
+### Eksempel 1: "Hvad skal jeg gøre ved nye leads?"\n\n\n\n#### Agent thinking process:\n\n1. Bruger RenOS til at søge: `search_emails(label="Leads")`\n\n2. For hver lead
+
+- Tjek duplicate i RenOS (REGEL #2)\n\n   - Hvis ingen → tjek kalender ledighed med `find_available_slots()`\n\n   - Generer tilbud med `generate_quote()` inkl. ledige tider\n\n   - Vis til godkendelse\n\n   - Ved approval → send via RenOS email system\n\n   - Opdater kunde status automatisk
 
 ### Eksempel 2: "Book Mette Nielsen ind på fredag"\n\n\n\n#### Agent thinking process:\n\n1. RenOS: `get_customer("Mette Nielsen")`\n\n2. RenOS: Læs hendes seneste kommunikation\n\n3. RenOS: `find_available_slots(date="fredag", duration=estimate)`\n\n4. RenOS: `create_booking_event()` med korrekt format\n\n5. RenOS: `send_confirmation_email()` med booking detaljer\n\n6. RenOS: `update_customer_status()` til "Booket"
 
@@ -131,7 +132,7 @@ Send calendar invitation automatisk\n\n```text\n
 
 ## 🚀 AGENT BEST PRACTICES
 
-### 1. RenOS Er Det Eneste System\n\nFør DU gør NOGET:\n\n- Tænk ALTID i RenOS funktioner\n\n- Brug kun RenOS API'er og funktioner\n\n- Ingen eksterne værktøjer - kun RenOS!
+### 1. RenOS Er Det Eneste System\n\nFør DU gør NOGET:\n\n- Tænk ALTID i RenOS funktioner\n\n- Brug kun RenOS API'er og funktioner\n\n- Ingen eksterne værktøjer - kun RenOS
 
 ### 2. Duplicate Check Altid Først\n\nNår DU skal kontakte kunde:\n\n- Kør ALTID `check_customer_duplicate()` først\n\n- Stop hvis duplicate findes\n\n- Vis warning med tidligere historik
 
@@ -229,7 +230,7 @@ Send calendar invitation automatisk\n\n```text\n
 
 - **Reminder System:**\n\n  - 7 dage efter tilbud uden respons → auto-generér opfølgnings email\n\n  - 24 timer før booking → send reminder til kunde (og til dig)\n\n  - 2 timer før booking → send reminder til dig (klar til at køre?)\n\n  - Fakturaen forfalden uden betaling → send venlig reminder
 
-### 3. Multi-Tenant Support\n\n**Problem i Shortwave:** Alt er single-user: info@rendetalje.dk
+### 3. Multi-Tenant Support\n\n**Problem i Shortwave:** Alt er single-user: <info@rendetalje.dk>
 
 **RenOS skal kunne:**\n\n- **Flere rengøringsfirmaer på samme platform:**\n\n  - Rendetalje.dk (349 kr/time)\n\n  - RengoCompany ApS (399 kr/time)\n\n  - CleanMasters (429 kr/time)
 
@@ -237,7 +238,7 @@ Send calendar invitation automatisk\n\n```text\n
 
 - **Data isolation:**\n\n  - Tenant A kan ALDRIG se Tenant B's kunder\n\n  - Men deler samme codebase/system
 
-### 4. Business Intelligence\n\n**Problem i Shortwave:** Du ved ikke...
+### 4. Business Intelligence\n\n**Problem i Shortwave:** Du ved ikke
 
 **RenOS skal kunne:**\n\n- **Lead Source Analytics:**\n\n  - Rengøring.nu: 45 leads, 12 bookings = 26% conversion\n\n  - Rengøring Aarhus: 38 leads, 18 bookings = 47% conversion\n\n  - → Konklusion: Fokuser på Rengøring Aarhus!
 

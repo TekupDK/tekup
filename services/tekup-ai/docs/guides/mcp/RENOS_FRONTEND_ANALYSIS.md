@@ -11,6 +11,7 @@
 **Pattern:** Component-Based Architecture (React) + Feature-Sliced Design
 
 ### Tech Stack
+
 - **Framework:** React 19.0 (cutting edge!)
 - **Bundler:** Vite 6.3
 - **UI Library:** Radix UI (20+ components)
@@ -63,6 +64,7 @@ src/
 ## 🎯 Key Patterns
 
 ### API Client Pattern
+
 **Class-based with Interceptors:**
 ```typescript
 export class RenOSApiClient {
@@ -102,6 +104,7 @@ export class RenOSApiClient {
 ```
 
 **Pattern Strengths:**
+
 - Centralized error handling
 - Automatic auth injection
 - User-friendly toast notifications
@@ -109,15 +112,19 @@ export class RenOSApiClient {
 - Single client instance
 
 ### Component Organization
+
 **Feature-Based:**
+
 - `components/customers/` - Customer-related components
 - `components/bookings/` - Booking components
 - `components/emails/` - Email components
 
 **Shared UI:**
+
 - `components/ui/` - Reusable Radix UI components (40+)
 
 ### Custom Hooks Pattern
+
 **API State Management:**
 ```typescript
 // useCustomers.ts
@@ -136,6 +143,7 @@ export function useRealtimeLeads() {
 ```
 
 ### Error Handling
+
 - **Axios Interceptor:** Catch all API errors
 - **Toast Notifications:** User-friendly messages
 - **Error Boundary:** React Error Boundary component
@@ -146,6 +154,7 @@ export function useRealtimeLeads() {
 ## 🤖 AI Agents (!!)
 
 **Notable:** Frontend har AI agent system!
+
 - `agents/communication-hub.ts`
 - `agents/orchestrator.ts`
 
@@ -163,6 +172,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 ## 💡 Key Takeaways for AI Assistant
 
 ### Must Adopt
+
 1. **Class-Based API Client:** RenOSApiClient pattern
 2. **Toast Notifications:** User feedback for operations
 3. **Axios Interceptors:** Centralized auth + error handling
@@ -170,6 +180,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 5. **Radix UI:** Professional component library
 
 ### TypeScript Patterns
+
 - Strict mode enabled
 - Generic type parameters on API methods
 - Interface-based prop typing

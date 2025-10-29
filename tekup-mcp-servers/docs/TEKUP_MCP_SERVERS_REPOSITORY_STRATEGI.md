@@ -44,12 +44,14 @@
 ## 🏗️ REPOSITORY STRUKTUR
 
 ### GitHub Repository
+
 **Navn:** `tekup-mcp-servers`  
 **Organization:** TekupDK  
 **URL:** `https://github.com/TekupDK/tekup-mcp-servers`  
 **Visibility:** Private (kan open source senere)
 
 ### Repository Structure
+
 ```
 tekup-mcp-servers/
 ├── .github/
@@ -128,6 +130,7 @@ tekup-mcp-servers/
 ## 📦 MONOREPO SETUP MED PNPM WORKSPACES
 
 ### Root package.json
+
 ```json
 {
   "name": "@tekup/mcp-servers",
@@ -160,6 +163,7 @@ tekup-mcp-servers/
 ```
 
 ### pnpm-workspace.yaml
+
 ```yaml
 packages:
   - 'packages/*'
@@ -167,6 +171,7 @@ packages:
 ```
 
 ### turbo.json (Optional - for parallel builds)
+
 ```json
 {
   "$schema": "https://turbo.build/schema.json",
@@ -210,6 +215,7 @@ git commit -m "feat: add tekup-mcp-servers as submodule"
 ```
 
 ### Tekup Monorepo Structure (After)
+
 ```
 Tekup/
 ├── apps/
@@ -239,6 +245,7 @@ Tekup/
 ```
 
 ### Update Tekup Root package.json
+
 ```json
 {
   "workspaces": [
@@ -257,6 +264,7 @@ Tekup/
 ### Update IDE Configs to Use Submodule
 
 #### VS Code (C:\Users\empir\AppData\Roaming\Code\User\mcp.json)
+
 ```json
 {
   "servers": {
@@ -283,6 +291,7 @@ Tekup/
 ```
 
 #### Kilo Code (Tekup/.kilocode/mcp.json)
+
 ```json
 {
   "mcpServers": {
@@ -418,8 +427,10 @@ jobs:
 ## 📝 PACKAGE PUBLISHING STRATEGI
 
 ### NPM Organization
+
 **Organization:** `@tekup`  
 **Packages:**
+
 - `@tekup/mcp-base`
 - `@tekup/knowledge-mcp`
 - `@tekup/client-mcp`
@@ -427,6 +438,7 @@ jobs:
 - etc.
 
 ### Package.json Example (knowledge-mcp)
+
 ```json
 {
   "name": "@tekup/knowledge-mcp",
@@ -472,6 +484,7 @@ jobs:
 ```
 
 ### Installation for External Use
+
 ```bash
 # Install globally
 npm install -g @tekup/knowledge-mcp
@@ -493,6 +506,7 @@ npx @tekup/knowledge-mcp
 ## 🔐 SECRETS MANAGEMENT
 
 ### Add to tekup-secrets/config/mcp.env
+
 ```bash
 # MCP Server Infrastructure
 PINECONE_API_KEY=your-pinecone-key
@@ -514,6 +528,7 @@ RENDER_API_TOKEN=your-render-token
 ```
 
 ### .env.example in mcp-servers repo
+
 ```bash
 # Copy this to .env and fill in your values
 
@@ -541,7 +556,7 @@ RENDER_API_TOKEN=
 
 ### Step 1: Create GitHub Repository (5 min)
 
-1. Go to https://github.com/organizations/TekupDK/repositories/new
+1. Go to <https://github.com/organizations/TekupDK/repositories/new>
 2. Repository name: `tekup-mcp-servers`
 3. Description: "Custom MCP servers for AI-powered development workflows"
 4. Visibility: Private
@@ -697,6 +712,7 @@ git submodule update --init --recursive
 ## 🎯 BENEFITS RECAP
 
 ### Technical Benefits
+
 1. **Modularity** - Clear separation
 2. **Versioning** - Independent releases
 3. **Testing** - Isolated test suite
@@ -704,6 +720,7 @@ git submodule update --init --recursive
 5. **Documentation** - Dedicated docs
 
 ### Business Benefits
+
 1. **Reusability** - Use across projects
 2. **Scalability** - Easy to add servers
 3. **Maintainability** - Clear ownership
@@ -711,6 +728,7 @@ git submodule update --init --recursive
 5. **Open Source Potential** - Easy to share
 
 ### Team Benefits
+
 1. **Focus** - Dedicated repository
 2. **Collaboration** - Clear contribution process
 3. **Learning** - Good practice for team
@@ -751,6 +769,7 @@ This repository strategy is part of the **Tekup MCP Servers Project**. See relat
 ### Version 1.0.0 (26. oktober 2025)
 
 #### Designed
+
 - **Git Submodule Architecture** (following tekup-secrets pattern)
 - **PNPM Workspace Monorepo** structure
 - **Repository Structure** with packages/, shared/, docs/, scripts/
@@ -758,12 +777,14 @@ This repository strategy is part of the **Tekup MCP Servers Project**. See relat
 - **CI/CD Pipeline** workflows (ci.yml, publish.yml, deploy.yml)
 
 #### Defined
+
 - **Repository:** TekupDK/tekup-mcp-servers
 - **Integration Location:** Tekup/mcp-servers/
 - **NPM Organization:** @tekup
 - **Publishing Strategy:** Individual packages (@tekup/knowledge-mcp, etc.)
 
 #### Provided
+
 - **Complete PNPM workspace config** (pnpm-workspace.yaml, root package.json)
 - **Turbo.json** for parallel builds
 - **Submodule integration steps** for Tekup monorepo
@@ -771,6 +792,7 @@ This repository strategy is part of the **Tekup MCP Servers Project**. See relat
 - **Team onboarding guide** for submodule workflow
 
 #### Benefits
+
 - Independent versioning from main monorepo
 - Reusable across projects
 - Separate CI/CD pipelines
@@ -783,6 +805,7 @@ This repository strategy is part of the **Tekup MCP Servers Project**. See relat
 ## 🤔 BESLUTNINGER
 
 **Skal jeg:**
+
 1. ✅ **Oprette GitHub repository** nu?
 2. ✅ **Setup base structure** med PNPM workspace?
 3. ✅ **Create base MCP server class** som template?
@@ -790,6 +813,7 @@ This repository strategy is part of the **Tekup MCP Servers Project**. See relat
 5. ✅ **Setup CI/CD workflows**?
 
 **Eller skal vi først:**
+
 - 🤔 Diskutere repository naming?
 - 🤔 Review struktur decisions?
 - 🤔 Beslutte NPM organization navn?

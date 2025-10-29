@@ -26,6 +26,7 @@ RenOS bruger **Clerk.com** som authentication provider med Google OAuth som prim
 **Status:** ✅ Active & Published
 
 #### Scopes
+
 ```
 openid                                        # Basic authentication
 https://www.googleapis.com/auth/userinfo.email    # User email address
@@ -33,15 +34,18 @@ https://www.googleapis.com/auth/userinfo.profile  # User name & profile picture
 ```
 
 #### Configuration Settings
+
 - **Account selector:** Always shown (better UX for multi-account users)
 - **Email subaddresses:** Blocked (prevents spam via `user+tag@gmail.com`)
 - **Sign-up & Sign-in:** Enabled (users can create accounts)
 - **Custom credentials:** Enabled (required for production)
 
 #### Verification Status
+
 ⚠️ **Unverified** - Users see "This app isn't verified" warning ved login.
 
 **To remove warning:**
+
 1. Submit app for Google verification: <https://console.cloud.google.com/apis/credentials/consent>
 2. Requirements:
    - Privacy policy URL (<https://renos.dk/privacy>)
@@ -50,6 +54,7 @@ https://www.googleapis.com/auth/userinfo.profile  # User name & profile picture
    - Developer verification (takes 3-7 days)
 
 #### OAuth Consent Screen
+
 ```
 App name: RenOS
 User support email: info@rendetalje.dk
@@ -75,6 +80,7 @@ clerk.renos.dk
 **Dashboard:** <https://dashboard.clerk.com>
 
 **SDK Versions:**
+
 - Frontend: `@clerk/clerk-react` (configured in `client/src/main.tsx`)
 - Backend: `@clerk/express` (configured in `src/middleware/clerkMiddleware.ts`)
 
@@ -126,6 +132,7 @@ clerk.renos.dk
 ### Session Management
 
 **Token Storage:**
+
 - Frontend: `__session` cookie (HttpOnly, Secure, SameSite=Lax)
 - Backend: Validated via `@clerk/express` middleware
 
@@ -190,6 +197,7 @@ POST /api/chat               # AI Assistant chat
 ### 1. Google Cloud Console Setup
 
 #### Create OAuth Client ID
+
 ```
 1. Go to: https://console.cloud.google.com/apis/credentials?project=renos-ai-agent
 2. Click "CREATE CREDENTIALS" → "OAuth client ID"
@@ -204,6 +212,7 @@ POST /api/chat               # AI Assistant chat
 ```
 
 #### Configure OAuth Consent Screen
+
 ```
 1. Go to: https://console.cloud.google.com/apis/credentials/consent
 2. User Type: External (allow all Gmail users)
@@ -219,6 +228,7 @@ POST /api/chat               # AI Assistant chat
 ### 2. Clerk Dashboard Setup
 
 #### Add Google OAuth Provider
+
 ```
 1. Go to: https://dashboard.clerk.com
 2. Configure → Social Connections → Google
@@ -234,6 +244,7 @@ POST /api/chat               # AI Assistant chat
 ```
 
 #### Configure Clerk Settings
+
 ```
 1. Configure → Email, Phone, Username
    - Email: Required
@@ -271,6 +282,7 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
 ### 4. Test Authentication
 
 #### Local Testing (Development)
+
 ```powershell
 # Start both backend + frontend
 npm run dev:all
@@ -283,6 +295,7 @@ Start-Process http://localhost:5173
 ```
 
 #### Production Testing
+
 ```powershell
 # Open production URL
 Start-Process https://renos.dk
@@ -295,6 +308,7 @@ Start-Process https://renos.dk
 ## 🚨 Troubleshooting
 
 ### "Redirect URI mismatch"
+
 **Problem:** URI in Google Console doesn't match Clerk callback URL
 
 **Fix:**
@@ -306,6 +320,7 @@ Start-Process https://renos.dk
 ```
 
 ### "OAuth is restricted"
+
 **Problem:** OAuth consent screen not published
 
 **Fix:**
@@ -316,6 +331,7 @@ Start-Process https://renos.dk
 ```
 
 ### "This app isn't verified"
+
 **Problem:** App not verified by Google (normal for new apps)
 
 **Fix (Temporary - for testing):**
@@ -335,6 +351,7 @@ Start-Process https://renos.dk
 ```
 
 ### "Access blocked: Authorization Error"
+
 **Problem:** Missing scopes in consent screen
 
 **Fix:**
@@ -348,6 +365,7 @@ Start-Process https://renos.dk
 ```
 
 ### "Invalid client"
+
 **Problem:** Wrong Client ID or Secret
 
 **Fix:**
@@ -360,6 +378,7 @@ Start-Process https://renos.dk
 ```
 
 ### Session not persisting after refresh
+
 **Problem:** Cookie configuration incorrect
 
 **Fix:**
@@ -376,6 +395,7 @@ Start-Process https://renos.dk
 ## 📊 Monitoring & Analytics
 
 ### Clerk Dashboard Metrics
+
 ```
 1. Go to: https://dashboard.clerk.com/apps/<app-id>/dashboard
 2. View:
@@ -386,6 +406,7 @@ Start-Process https://renos.dk
 ```
 
 ### Google Cloud Console Metrics
+
 ```
 1. Go to: https://console.cloud.google.com/apis/dashboard
 2. Select API: Google+ API
@@ -416,24 +437,28 @@ npm run dev  # Logs output to console
 ## 🔒 Security Best Practices
 
 ### Credentials Management
+
 - ✅ Client Secret gemt i password manager (1Password/LastPass)
 - ✅ Never commit secrets to Git
 - ✅ Use environment variables for all sensitive data
 - ✅ Rotate secrets every 90 days
 
 ### Session Security
+
 - ✅ HttpOnly cookies (prevents XSS access)
 - ✅ Secure flag (HTTPS only)
 - ✅ SameSite=Lax (prevents CSRF)
 - ✅ 7-day expiration with auto-refresh
 
 ### API Protection
+
 - ✅ All `/api/*` routes require authentication
 - ✅ CORS configured for `renos.dk` only
 - ✅ Rate limiting on login endpoints
 - ✅ Webhook signature verification
 
 ### Compliance
+
 - ⚠️ **TODO:** Create GDPR-compliant privacy policy
 - ⚠️ **TODO:** Add user data deletion workflow
 - ⚠️ **TODO:** Implement audit logging for data access
@@ -441,17 +466,20 @@ npm run dev  # Logs output to console
 ## 📚 Resources
 
 ### Official Documentation
+
 - **Clerk Docs:** <https://clerk.com/docs>
 - **Clerk React SDK:** <https://clerk.com/docs/references/react/overview>
 - **Clerk Express SDK:** <https://clerk.com/docs/references/backend/overview>
 - **Google OAuth:** <https://developers.google.com/identity/protocols/oauth2>
 
 ### Internal Documentation
+
 - **Setup Checklist:** `docs/SETUP_CHECKLIST.md`
 - **Troubleshooting Auth:** `docs/TROUBLESHOOTING_AUTH.md`
 - **Security Guide:** `SECURITY.md`
 
 ### Support
+
 - **Clerk Support:** <support@clerk.com>
 - **Google Cloud Support:** <https://console.cloud.google.com/support>
 - **RenOS Team:** <info@rendetalje.dk>
@@ -459,6 +487,7 @@ npm run dev  # Logs output to console
 ---
 
 **Next Steps:**
+
 1. ✅ OAuth setup complete
 2. ⚠️ Create privacy policy page (`/privacy`)
 3. ⚠️ Create terms of service page (`/terms`)

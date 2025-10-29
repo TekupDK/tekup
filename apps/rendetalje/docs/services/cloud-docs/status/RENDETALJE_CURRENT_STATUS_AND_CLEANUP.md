@@ -1,4 +1,5 @@
-# Rendetalje - Nuværende Status & Clean Up Plan
+﻿# Rendetalje - Nuværende Status & Clean Up Plan
+
 **Generated:** 22. Oktober 2025, kl. 06:45 CET  
 **Decision:** Option A (RendetaljeOS Primary) ✅ ALREADY ACTIVE
 
@@ -171,12 +172,12 @@ cd C:\Users\empir\RendetaljeOS
 cd apps/backend
 git remote -v
 # If empty, add:
-git remote add origin https://github.com/JonasAbde/renos-backend.git
+git remote add origin https://github.com/TekupDK/renos-backend.git
 
 cd ../frontend
 git remote -v
 # If empty, add:
-git remote add origin https://github.com/JonasAbde/renos-frontend.git
+git remote add origin https://github.com/TekupDK/renos-frontend.git
 ```
 
 **Note:** Dette kræver at apps/ er git submodules eller separate git repos.
@@ -185,18 +186,18 @@ git remote add origin https://github.com/JonasAbde/renos-frontend.git
 
 ## 📋 CLEAN UP CHECKLIST
 
-### Immediate (5 min):
+### Immediate (5 min)
 
 - [ ] Delete `Tekup-Cloud/RendetaljeOS-Mobile/` duplicate
 - [ ] Archive `Tekup Google AI` legacy folder
 
-### Today (15 min):
+### Today (15 min)
 
 - [ ] Organize Tekup-Cloud documentation into folders
 - [ ] Commit untracked files in RendetaljeOS
 - [ ] Update RendetaljeOS README with workflow
 
-### This Week (30 min):
+### This Week (30 min)
 
 - [ ] Setup git remotes for direct push (if desired)
 - [ ] Verify all environment variables are set
@@ -249,6 +250,7 @@ git push origin main
 ```
 
 **Kun 2 clean up actions:**
+
 - 🔴 Delete duplicate RendetaljeOS-Mobile
 - 🔴 Archive legacy Tekup Google AI
 
@@ -257,12 +259,14 @@ git push origin main
 ## 🎯 KONKLUSION
 
 **Nuværende situation:**
+
 - ✅ RendetaljeOS monorepo er ALLEREDE primary
 - ✅ Workflow er ALLEREDE Option A
 - ✅ Standalone repos eksisterer som GitHub sources
 - ✅ Alt kører som det skal!
 
 **Næste skridt:**
+
 1. Ryd op (delete duplicates, organize docs)
 2. Fortsæt udvikling i RendetaljeOS
 3. Nyd monorepo benefits! 🎉
@@ -271,4 +275,3 @@ git push origin main
 
 **Status:** Ready to continue development ✅  
 **Action Required:** Clean up (5-15 min) + Continue coding 🚀
-

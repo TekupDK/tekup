@@ -1,11 +1,19 @@
 # TekupDK Master Port Allocation
-**Last Updated**: 2025-10-24
+
+**Last Updated**: 2025-10-29
 **Scope**: Entire TekupDK workspace
 **Purpose**: Prevent port conflicts across all services and projects
+
+**Phase 1 Implementation Status**: ✅ COMPLETED
+- Fixed critical Calendar MCP port conflicts (3001→3003, 6379→6378)
+- Updated docker-compose.yml with new port assignments
+- Created environment variable configuration (.env.ports)
+- Master port registry document updated with implementation details
 
 ## 🎯 Port Allocation Summary
 
 ### Rendetalje Services (Main Docker Compose)
+
 | Port | Service | Container | Status |
 |------|---------|-----------|--------|
 | **3001** | Backend API (NestJS) | `rendetalje-backend` | ✅ Active |
@@ -17,25 +25,29 @@
 | **19002** | Expo Web Interface | `rendetalje-mobile-expo` | ✅ Active |
 
 ### Rendetalje Frontend (Local Dev)
+
 | Port | Service | Technology | Status |
 |------|---------|------------|--------|
 | **3002** | Frontend Dev Server | Next.js | 📝 Reserved |
 
 ### Calendar MCP Services (Separate Compose)
+
 | Port | Service | Container | Status |
 |------|---------|-----------|--------|
-| **3001** | MCP Server API | `calendar-mcp-server` | ⚠️ **CONFLICT** |
+| **3003** | MCP Server API | `calendar-mcp-server` | ✅ **FIXED** |
 | **3005** | Chatbot | `calendar-chatbot` | ✅ Active |
 | **3006** | Dashboard | `calendar-dashboard` | ✅ Active |
-| **6379** | Redis | `calendar-redis` | ⚠️ **CONFLICT** |
+| **6378** | Redis | `calendar-redis` | ✅ **FIXED** |
 
 ### Testing Infrastructure
+
 | Port | Service | Purpose | Status |
 |------|---------|---------|--------|
 | **5433** | PostgreSQL Test | Test DB (Mobile) | 📝 Reserved |
 | **6380** | Redis Test | Test Cache | 📝 Reserved |
 
 ### GitHub Actions CI/CD
+
 | Port | Service | Context | Status |
 |------|---------|---------|--------|
 | **3000** | Playwright Tests | CI Pipeline | ⚙️ CI Only |
@@ -43,25 +55,24 @@
 
 ## ⚠️ CRITICAL PORT CONFLICTS
 
-### Conflict 1: Port 3001
-**Problem**: Both Backend API and Calendar MCP Server use port 3001
-**Impact**: Cannot run both services simultaneously
-**Solution Options**:
-1. **Recommended**: Move Calendar MCP to port 3003
-2. Run services in separate networks
-3. Use environment variable override
+### Conflict 1: Port 3001 ✅ RESOLVED
 
-### Conflict 2: Port 6379
-**Problem**: Both main Redis and Calendar Redis use port 6379
+**Problem**: Both Backend API and Calendar MCP Server used port 3001
+**Impact**: Cannot run both services simultaneously
+**Solution Applied**: Moved Calendar MCP to port 3003
+**Status**: ✅ Fixed - Calendar MCP now uses port 3003
+
+### Conflict 2: Port 6379 ✅ RESOLVED
+
+**Problem**: Both main Redis and Calendar Redis used port 6379
 **Impact**: Redis connection conflicts
-**Solution Options**:
-1. **Recommended**: Move Calendar Redis to port 6378
-2. Use Redis namespace prefixes
-3. Run in separate Docker networks
+**Solution Applied**: Moved Calendar Redis to port 6378
+**Status**: ✅ Fixed - Calendar Redis now uses port 6378
 
 ## 🔧 Recommended Port Reassignment
 
 ### Calendar MCP Services (NEW)
+
 ```yaml
 # docker-compose.yml
 services:
@@ -75,6 +86,7 @@ services:
 ```
 
 ### Updated Port Table (After Fix)
+
 | Port | Service | Project | Container |
 |------|---------|---------|-----------|
 | 3001 | Backend API | Rendetalje | `rendetalje-backend` |
@@ -93,6 +105,7 @@ services:
 ## 📋 Port Ranges by Category
 
 ### Application Servers (3000-3099)
+
 - **3000**: Reserved for frontend tests (CI)
 - **3001**: Backend API (Rendetalje)
 - **3002**: Frontend Dev (Rendetalje)
@@ -102,17 +115,20 @@ services:
 - **3010-3099**: Available
 
 ### Databases (5000-5999)
+
 - **5432**: PostgreSQL Production (Rendetalje)
 - **5433**: PostgreSQL Test (Rendetalje Mobile)
 - **5434-5999**: Available
 
 ### Cache/Queue (6000-6999)
+
 - **6378**: Redis (Calendar) - **NEW**
 - **6379**: Redis Production (Rendetalje)
 - **6380**: Redis Test (Rendetalje)
 - **6381-6999**: Available
 
 ### Mobile/Dev Tools (8000-8999, 19000-19999)
+
 - **8081**: Expo Metro Bundler
 - **19000**: Expo DevTools
 - **19001**: Expo Metro Bundler Alt
@@ -121,6 +137,7 @@ services:
 ## 🔍 How to Check Port Usage
 
 ### Windows PowerShell
+
 ```powershell
 # Check specific port
 netstat -ano | findstr ":3001"
@@ -134,6 +151,7 @@ Stop-Process -Id $proc.Id -Force
 ```
 
 ### Docker
+
 ```bash
 # Check all running containers
 docker ps
@@ -150,40 +168,47 @@ docker network ls
 ### When Changing Ports
 
 #### Backend (Port 3001)
+
 - `apps/rendetalje/services/backend-nestjs/src/main.ts`
 - `docker-compose.mobile.yml` - backend service
 - All CORS configurations
 
 #### Frontend (Port 3002)
+
 - `apps/rendetalje/services/frontend-nextjs/package.json`
 - `apps/rendetalje/services/frontend-nextjs/playwright.config.ts`
 - `apps/rendetalje/services/frontend-nextjs/next.config.js`
 - `.github/workflows/renos-tests.yml`
 
 #### Calendar MCP (Port 3003)
+
 - `apps/rendetalje/services/calendar-mcp/docker-compose.yml`
 - `apps/rendetalje/services/calendar-mcp/chatbot/src/services/PluginManager.ts`
 - `apps/rendetalje/services/calendar-mcp/dashboard/src/api.ts`
 - All health check URLs
 
 #### Mobile (Ports 8081, 19000-19002)
+
 - `apps/rendetalje/services/mobile/src/services/api.ts`
 - `docker-compose.mobile.yml` - mobile service
 
 ## ⚡ Action Items
 
-### Immediate (Priority 1)
-- [ ] Fix Calendar MCP port conflict (3001 → 3003)
-- [ ] Fix Calendar Redis port conflict (6379 → 6378)
+### Immediate (Priority 1) ✅ COMPLETED
+
+- [x] Fix Calendar MCP port conflict (3001 → 3003)
+- [x] Fix Calendar Redis port conflict (6379 → 6378)
 - [ ] Update Playwright config (3001 → 3002)
 - [ ] Test all services start without conflicts
 
 ### Short Term (Priority 2)
+
 - [ ] Update all documentation with correct ports
 - [ ] Add port validation to CI/CD pipeline
 - [ ] Create `scripts/check-ports.sh` utility
 
 ### Long Term (Priority 3)
+
 - [ ] Implement service discovery (avoid hardcoded ports)
 - [ ] Use Docker networking for service communication
 - [ ] Document port allocation in README files

@@ -7,12 +7,14 @@ Denne guide viser hvordan du integrerer RenOS Calendar MCP med Shortwave.ai for 
 ## 1. Shortwave.ai Setup
 
 ### Opret Shortwave.ai Account
+
 1. Gå til [shortwave.ai](https://shortwave.ai)
 2. Opret account med din business email
 3. Verificer email adresse
 4. Setup workspace for RenOS
 
 ### Shortwave.ai API Access
+
 ```bash
 # Shortwave.ai API endpoints
 SHORTWAVE_API_URL=https://api.shortwave.ai/v1
@@ -23,6 +25,7 @@ SHORTWAVE_WORKSPACE_ID=your_workspace_id
 ## 2. MCP Server Integration
 
 ### Start MCP Server med Shortwave Support
+
 ```bash
 # Start MCP server
 cd C:\Users\empir\Tekup-Cloud\renos-calendar-mcp
@@ -35,6 +38,7 @@ curl -X POST http://localhost:3001/shortwave/connect \
 ```
 
 ### Shortwave.ai MCP Tools
+
 ```typescript
 // Available Shortwave.ai tools
 const shortwaveTools = [
@@ -50,6 +54,7 @@ const shortwaveTools = [
 ## 3. Email Analysis Workflow
 
 ### Automatisk Email Analyse
+
 ```typescript
 // Analyse indgående emails
 const emailAnalysis = await analyzeEmailContent({
@@ -77,6 +82,7 @@ const emailAnalysis = await analyzeEmailContent({
 ## 4. MCP Server Configuration
 
 ### Shortwave.ai MCP Tools
+
 ```typescript
 // MCP tools for Shortwave.ai integration
 export const shortwaveTools = [
@@ -100,6 +106,7 @@ export const shortwaveTools = [
 ## 5. Usage Examples
 
 ### In Cursor/Claude with Shortwave.ai
+
 ```
 User: "Analyser den seneste email fra kunde@example.com"
 
@@ -123,6 +130,7 @@ Result:
 ## 6. Environment Variables
 
 ### Shortwave.ai Configuration
+
 ```bash
 # Shortwave.ai configuration
 SHORTWAVE_API_KEY=your_shortwave_api_key
@@ -139,6 +147,7 @@ CUSTOMER_INTELLIGENCE_ENABLED=true
 ## 7. Testing
 
 ### Test Shortwave.ai Connection
+
 ```bash
 # Test API connection
 curl -X POST http://localhost:3001/shortwave/test \
@@ -158,6 +167,7 @@ curl -X POST http://localhost:3001/shortwave/analyze \
 ## 8. Production Deployment
 
 ### Deploy with Shortwave.ai Support
+
 ```bash
 # Deploy with Shortwave.ai integration
 ./scripts/deploy-all.ps1

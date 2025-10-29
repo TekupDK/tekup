@@ -1,4 +1,4 @@
-# ✅ Tekup-Billy MCP Server - Opdateret Status
+﻿# ✅ Tekup-Billy MCP Server - Opdateret Status
 
 **Dato:** 11. Oktober 2025  
 **Version:** 1.0.0  
@@ -202,7 +202,7 @@ Baseret på officiel Anthropic dokumentation har vi bekræftet at **Tekup-Billy 
 🔄 **ChatGPT** (Untested men klar)
 
 **Server:** <https://tekup-billy.onrender.com>  
-**GitHub:** <https://github.com/JonasAbde/Tekup-Billy>  
+**GitHub:** <https://github.com/TekupDK/Tekup-Billy>  
 **Status:** Production Ready 🚀
 
 ---
@@ -217,8 +217,8 @@ Baseret på officiel Anthropic dokumentation har vi bekræftet at **Tekup-Billy 
 
 **GitHub:**
 
-- Issues: <https://github.com/JonasAbde/Tekup-Billy/issues>
-- Discussions: <https://github.com/JonasAbde/Tekup-Billy/discussions>
+- Issues: <https://github.com/TekupDK/Tekup-Billy/issues>
+- Discussions: <https://github.com/TekupDK/Tekup-Billy/discussions>
 
 **Email:**
 

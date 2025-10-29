@@ -18,6 +18,7 @@
 ## Usage Timeline
 
 ### Morning Session (11:00-11:30)
+
 **Activity:** Invoice approval and product catalog browsing  
 - 11:10 - 11:11: Invoice approval workflow (4 calls)
 - 11:17 - 11:23: Product catalog browsing (6 calls)
@@ -25,6 +26,7 @@
 - **Pattern:** Manual invoice management via PowerShell scripts
 
 ### Evening Session 1 (19:39-19:45) - HEAVY USAGE
+
 **Activity:** Invoice analysis for product usage report  
 - 19:39 - 19:40: Invoice list fetching (5 calls)
 - 19:41 - 19:43: Sample invoice analysis (10 calls)
@@ -40,6 +42,7 @@
 - **Impact:** Minimal - only last 10 invoices failed, 88% success rate
 
 ### Evening Session 2 (20:55-20:58)
+
 **Activity:** Dashboard/overview queries  
 - 20:55: Multiple list operations + revenue calculation
 - 20:58: Customer browsing
@@ -47,6 +50,7 @@
 - **Pattern:** Exploratory data queries
 
 ### Evening Session 3 (21:47)
+
 **Activity:** Authentication test  
 - 21:47: Auth validation + customer list
 - **Tools used:** `validate_auth`, `list_customers`
@@ -148,29 +152,34 @@
 ## Key Insights & Findings
 
 ### 1. **All Usage is You (PowerShell)**
+
 - **100% of MCP calls today were from YOUR PowerShell scripts**
 - No AI integrations (Shortwave, ChatGPT, Claude) used the MCP server today
 - Pattern: Manual data analysis and reporting via command-line automation
 
 ### 2. **Invoice Analysis Dominance**
+
 - **79% of all tool calls** (107/136) were `get_invoice`
 - Single use case: "Analyze all invoices to find product usage patterns"
 - Executed at 19:43-45 (2 minutes of intense querying)
 - **Result:** Discovered 57/68 products actively used in real invoices
 
 ### 3. **Rate Limiting is Working**
+
 - **13 requests blocked** when exceeding 100 req/min limit
 - Happened during automated batch processing (expected)
 - Did NOT impact overall analysis (88% of invoices processed successfully)
 - **Recommendation:** Add 600ms delay between requests in scripts (currently 300ms)
 
 ### 4. **Tool Coverage Low**
+
 - **Only 8 out of 32 tools used** (25% coverage)
 - Heavily focused on READ operations (list, get)
 - No CREATE/UPDATE operations today (no customer/product changes)
 - **Interpretation:** MCP used for analysis, not for data entry
 
 ### 5. **Performance is Excellent**
+
 - Average 110ms response time (target: <200ms)
 - Consistent performance across all tools
 - No timeouts or 5xx errors
@@ -263,6 +272,7 @@ All today's usage came from your manual PowerShell automation scripts.
 ### Log Retrieval Method
 
 **Render CLI:**
+
 ```powershell
 .\render-cli\cli_v2.4.2.exe logs --resources srv-d3kk30t6ubrc73e1qon0 --type request --output json --limit 1000
 ```

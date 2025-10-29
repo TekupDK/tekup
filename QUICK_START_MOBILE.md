@@ -6,17 +6,20 @@
 
 ## Step 1: Start Docker Stack
 
-### Windows:
+### Windows
+
 ```powershell
 .\start-mobile.ps1
 ```
 
-### Mac/Linux:
+### Mac/Linux
+
 ```bash
 ./start-mobile.sh
 ```
 
-### Eller manuelt:
+### Eller manuelt
+
 ```bash
 # Find din IP (Windows)
 ipconfig
@@ -33,12 +36,14 @@ docker-compose -f docker-compose.mobile.yml up
 
 ## Step 2: Åbn Expo Go på Dine Phones
 
-### iPhone 16 Pro:
+### iPhone 16 Pro
+
 1. Download **Expo Go** fra App Store
 2. Åbn app'en
 3. Scan QR kode fra terminalen
 
-### Samsung Galaxy Z Fold 7:
+### Samsung Galaxy Z Fold 7
+
 1. Download **Expo Go** fra Google Play
 2. Åbn app'en
 3. Scan QR kode fra terminalen
@@ -47,11 +52,11 @@ docker-compose -f docker-compose.mobile.yml up
 ```
 exp://192.168.1.100:19000
 ```
-*(Brug din egen IP)*
+_(Brug din egen IP)_
 
 ---
 
-## Step 3: App Starter!
+## Step 3: App Starter
 
 **Det er det! App'en loader og starter på begge phones** 🎉
 
@@ -71,9 +76,11 @@ exp://192.168.1.100:19000
 ## 🔧 Udvikling
 
 ### Live Reload
+
 Rediger kode i VS Code → App reloader automatisk på phone! 🔥
 
 ### Stop Stack
+
 ```bash
 # CTRL+C i terminal
 
@@ -82,6 +89,7 @@ docker-compose -f docker-compose.mobile.yml down
 ```
 
 ### View Logs
+
 ```bash
 docker-compose -f docker-compose.mobile.yml logs -f mobile
 docker-compose -f docker-compose.mobile.yml logs -f backend
@@ -104,7 +112,7 @@ docker-compose -f docker-compose.mobile.yml logs -f backend
 
 Se detaljeret guide: **START_MOBILE_DEV.md**
 
-### Quick Fixes:
+### Quick Fixes
 
 **Phone kan ikke forbinde:**
 ```bash

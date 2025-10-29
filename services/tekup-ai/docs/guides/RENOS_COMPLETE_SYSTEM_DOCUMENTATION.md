@@ -1,4 +1,5 @@
-# 🚀 RenOS Complete System Documentation
+﻿# 🚀 RenOS Complete System Documentation
+
 **Generated:** October 8, 2025  
 **Version:** 1.0.0  
 **Status:** Production-Ready (92% Verification Match)
@@ -25,6 +26,7 @@
 ### System Overview
 
 RenOS er et komplet AI-drevet operationssystem til Rendetalje.dk, der automatiserer:
+
 - 📧 Email-håndtering og lead-generering
 - 📅 Kalenderoptimering og booking
 - 👥 Kunde-relationsmanagement (CRM)
@@ -45,6 +47,7 @@ RenOS er et komplet AI-drevet operationssystem til Rendetalje.dk, der automatise
 ### Tech Stack
 
 **Backend:**
+
 - Node.js 18+ / TypeScript 5
 - Express.js (REST API)
 - Prisma ORM (PostgreSQL)
@@ -52,12 +55,14 @@ RenOS er et komplet AI-drevet operationssystem til Rendetalje.dk, der automatise
 - OpenAI / Anthropic (AI)
 
 **Frontend:**
+
 - React 18 + TypeScript
 - Vite (build tool)
 - TailwindCSS + Custom glassmorphism
 - React Router v6
 
 **Infrastructure:**
+
 - Render.com (hosting)
 - PostgreSQL (database)
 - Redis/Upstash (caching)
@@ -158,11 +163,13 @@ RenOS er et komplet AI-drevet operationssystem til Rendetalje.dk, der automatise
    ```typescript
    const executor = new PlanExecutor({}, { useToolRegistry: true });
    ```
-   
+
    Features:
-   - Execution tracing (executionTracer.ts)
-   - Self-reflection and retry (agentReflector.ts)
-   - Error recovery strategies
+
+- Execution tracing (executionTracer.ts)
+- Self-reflection and retry (agentReflector.ts)
+- Error recovery strategies
+
 ```
 
 ---
@@ -210,6 +217,7 @@ const result = await classifier.classify(userMessage, history);
 **Purpose:** Generate execution plans from classified intents
 
 **Key Methods:**
+
 - `plan(input)` - Main planning entry point
 - `planLeadEmail(input)` - Email lead workflow
 - `planCalendarBooking(input)` - Booking workflow
@@ -258,6 +266,7 @@ interface PlannedTask {
 ```
 
 **Execution flow:**
+
 1. Start trace
 2. For each task:
    - Execute via handler or tool
@@ -300,6 +309,7 @@ const messages = await listRecentMessages({
 ```
 
 **Features:**
+
 - Thread-aware operations (searches before sending)
 - MIME message building
 - Dry-run protection (`isLiveMode` check)
@@ -338,6 +348,7 @@ const conflicts = await checkBookingConflicts(timeRangeHours);
 ```
 
 **Features:**
+
 - Business hours filtering (Mon-Fri 8-16, Sat 9-14)
 - Conflict detection
 - Time zone handling (Europe/Copenhagen)
@@ -355,6 +366,7 @@ export const prisma = new PrismaClient();
 ```
 
 **Key models:**
+
 - Lead
 - Customer
 - Booking
@@ -642,6 +654,7 @@ Content-Type: application/json
 ### Core Models
 
 #### Lead
+
 ```prisma
 model Lead {
   id               String    @id @default(cuid())
@@ -676,6 +689,7 @@ model Lead {
 ```
 
 #### Customer
+
 ```prisma
 model Customer {
   id            String    @id @default(cuid())
@@ -704,6 +718,7 @@ model Customer {
 ```
 
 #### Booking
+
 ```prisma
 model Booking {
   id                String    @id @default(cuid())
@@ -838,7 +853,7 @@ NODE_ENV=production
    npm run start:prod
    ```
 
-2. **Frontend (www.renos.dk):**
+2. **Frontend (<www.renos.dk>):**
    ```bash
    # Build command
    cd client && npm install && npm run build
@@ -887,7 +902,7 @@ GET /api/health
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/JonasAbde/tekup-renos.git
+git clone https://github.com/TekupDK/tekup-renos.git
 cd tekup-renos
 
 # 2. Install dependencies
@@ -969,6 +984,7 @@ npm run test:integration:verbose
 **Framework:** Winston
 
 **Levels:**
+
 - `error` - Critical failures
 - `warn` - Warnings (dry-run blocks, feature flag blocks)
 - `info` - Normal operations (email sent, booking created)
@@ -1013,6 +1029,7 @@ tracer.completeTrace(traceId, "success");
 **Tool:** Sentry
 
 **Features:**
+
 - Automatic error capture
 - Context breadcrumbs
 - User identification
@@ -1034,6 +1051,7 @@ Sentry.init({
 **Frontend:** `client/src/components/SystemHealth.tsx`
 
 **Metrics:**
+
 - API response times
 - Rate limit status
 - Database connection
@@ -1142,9 +1160,9 @@ import { prisma } from "./services/databaseService";
 
 ### Support
 
-- **Email:** support@rendetalje.dk
-- **GitHub:** https://github.com/JonasAbde/tekup-renos
-- **Documentation:** https://docs.renos.dk (coming soon)
+- **Email:** <support@rendetalje.dk>
+- **GitHub:** <https://github.com/TekupDK/tekup-renos>
+- **Documentation:** <https://docs.renos.dk> (coming soon)
 
 ---
 

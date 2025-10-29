@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ../..
+      dockerfile: ./rendetalje/services/backend-nestjs/Dockerfile
+    container_name: renos-backend-dev
+    environment:
+      NODE_ENV: development
+      PORT: "3001"
+      LOG_LEVEL: info
+      # Supabase (cloud)
+      DATABASE_URL: "postgresql://postgres:Habibie12345%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=renos&sslmode=require"
+      SUPABASE_URL: "https://oaevagdgrasfppbrxbey.supabase.co"
+      SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4Nzc3NjQsImV4cCI6MjA3NTQ1Mzc2NH0.M0Kt1Xi-3VVoq6NJ7VbhqBC0z9EK-JQ7ypssayMw7s8"
+      SUPABASE_SERVICE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTg3Nzc2NCwiZXhwIjoyMDc1NDUzNzY0fQ.94lDERK4Enw8YTH_OtE9BpQhQWs8fg_7GZQGnYS8rNo"
+      JWT_SECRET: "development-jwt-secret-change-in-production"
+      JWT_EXPIRES_IN: "7d"
+    ports:
+      - "3001:3001"
+    command: ["sh", "-c", "node dist/main.js"]
+    restart: unless-stopped
+    networks:
+      - renos-dev
+
+  frontend:
+    build:
+      context: ./frontend-nextjs
+      dockerfile: Dockerfile.dev
+    container_name: renos-frontend-dev
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - PORT=3002
+    ports:
+      - "3002:3002"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - renos-dev
+
+networks:
+  renos-dev:
+    name: renos-dev
+    driver: bridge

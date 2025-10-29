@@ -9,6 +9,7 @@
 ## Overview
 
 This workspace is now **fully optimized** for Claude Code development with:
+
 - ✅ **16 slash commands** for common workflows
 - ✅ **5 MCP servers** integrated (3 custom + 2 standard)
 - ✅ **2 automation hooks** for quality control
@@ -82,6 +83,7 @@ Root/
 ## Knowledge System
 
 **Before asking user questions**, Claude will:
+
 1. Search KNOWLEDGE_INDEX.json (856 docs)
 2. Check structured reports (GIT_STATUS_REPORT.json, etc.)
 3. Query TekupVault MCP (semantic search)
@@ -94,17 +96,20 @@ Root/
 ## Current Status
 
 **Git:**
+
 - Branch: claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx
 - 13 commits ahead, 20 behind master
 - Open PR #1
 - 2 stale branches (use /git-cleanup)
 
 **TypeScript:**
+
 - 46 errors (down from 60+)
 - 23% improvement
 - See TYPESCRIPT_FIX_STATUS.md
 
 **Tests:**
+
 - Shared: 32/32 passing ✅
 - Backend/Frontend: Partial (use /test-all)
 

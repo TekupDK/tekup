@@ -8,7 +8,8 @@
 
 ### **1. Brugervenlig Response Formatting** ⭐⭐⭐⭐⭐
 
-#### Før:\n\n```\n\n**Intent:** email.lead (85%)\n\n**Resultat:** Plan eksekveret: 0 succes, 0 i kø, 0 fejlede.
+#### Før:\n\n```\n\n**Intent:** email.lead (85%)\n\n**Resultat:** Plan eksekveret: 0 succes, 0 i kø, 0 fejlede
+
 **Handlinger:**\n\n- gmail: Tilbud klar (queued)\n\n```text\n\n\n#### Efter:\n\n```\n\n📧 Jeg har forstået din forespørgsel som en ny lead.
 
 Plan eksekveret: 0 succes, 0 i kø, 0 fejlede.

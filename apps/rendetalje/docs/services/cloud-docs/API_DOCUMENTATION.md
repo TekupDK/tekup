@@ -11,6 +11,7 @@
 All API endpoints require authentication via JWT Bearer token.
 
 ### Login
+
 ```http
 POST /auth/login
 Content-Type: application/json
@@ -37,6 +38,7 @@ Content-Type: application/json
 ```
 
 ### Headers
+
 ```http
 Authorization: Bearer <jwt-token>
 Content-Type: application/json
@@ -47,11 +49,13 @@ Content-Type: application/json
 ## 👥 Users & Authentication
 
 ### Get Current User
+
 ```http
 GET /auth/me
 ```
 
 ### Update Profile
+
 ```http
 PATCH /auth/profile
 {
@@ -61,6 +65,7 @@ PATCH /auth/profile
 ```
 
 ### Change Password
+
 ```http
 POST /auth/change-password
 {
@@ -74,11 +79,13 @@ POST /auth/change-password
 ## 🏢 Jobs Management
 
 ### List Jobs
+
 ```http
 GET /jobs?page=1&limit=20&status=scheduled&customerId=uuid
 ```
 
 **Query Parameters:**
+
 - `page`: Page number (default: 1)
 - `limit`: Items per page (default: 20, max: 100)
 - `status`: Filter by job status
@@ -120,6 +127,7 @@ GET /jobs?page=1&limit=20&status=scheduled&customerId=uuid
 ```
 
 ### Create Job
+
 ```http
 POST /jobs
 {
@@ -138,11 +146,13 @@ POST /jobs
 ```
 
 ### Get Job Details
+
 ```http
 GET /jobs/:id
 ```
 
 ### Update Job
+
 ```http
 PATCH /jobs/:id
 {
@@ -153,6 +163,7 @@ PATCH /jobs/:id
 ```
 
 ### Delete Job
+
 ```http
 DELETE /jobs/:id
 ```
@@ -162,11 +173,13 @@ DELETE /jobs/:id
 ## 👤 Customers Management
 
 ### List Customers
+
 ```http
 GET /customers?page=1&limit=20&search=john
 ```
 
 ### Create Customer
+
 ```http
 POST /customers
 {
@@ -182,11 +195,13 @@ POST /customers
 ```
 
 ### Get Customer Details
+
 ```http
 GET /customers/:id
 ```
 
 ### Update Customer
+
 ```http
 PATCH /customers/:id
 {
@@ -196,6 +211,7 @@ PATCH /customers/:id
 ```
 
 ### Get Customer Jobs
+
 ```http
 GET /customers/:id/jobs
 ```
@@ -205,11 +221,13 @@ GET /customers/:id/jobs
 ## 👷 Team Management
 
 ### List Team Members
+
 ```http
 GET /team?page=1&limit=20&role=employee
 ```
 
 ### Create Team Member
+
 ```http
 POST /team
 {
@@ -224,11 +242,13 @@ POST /team
 ```
 
 ### Get Team Member Details
+
 ```http
 GET /team/:id
 ```
 
 ### Update Team Member
+
 ```http
 PATCH /team/:id
 {
@@ -238,6 +258,7 @@ PATCH /team/:id
 ```
 
 ### Get Team Member Schedule
+
 ```http
 GET /team/:id/schedule?date=2025-10-23
 ```
@@ -247,6 +268,7 @@ GET /team/:id/schedule?date=2025-10-23
 ## ⏰ Time Tracking
 
 ### Start Time Entry
+
 ```http
 POST /time-entries
 {
@@ -257,6 +279,7 @@ POST /time-entries
 ```
 
 ### Stop Time Entry
+
 ```http
 PATCH /time-entries/:id/stop
 {
@@ -267,6 +290,7 @@ PATCH /time-entries/:id/stop
 ```
 
 ### List Time Entries
+
 ```http
 GET /time-entries?teamMemberId=uuid&dateFrom=2025-10-01&dateTo=2025-10-31
 ```
@@ -276,11 +300,13 @@ GET /time-entries?teamMemberId=uuid&dateFrom=2025-10-01&dateTo=2025-10-31
 ## 💰 Billing & Invoicing
 
 ### List Invoices
+
 ```http
 GET /billing/invoices?customerId=uuid&status=paid
 ```
 
 ### Create Invoice
+
 ```http
 POST /billing/invoices
 {
@@ -301,11 +327,13 @@ POST /billing/invoices
 ```
 
 ### Get Invoice Details
+
 ```http
 GET /billing/invoices/:id
 ```
 
 ### Send Invoice
+
 ```http
 POST /billing/invoices/:id/send
 {
@@ -319,6 +347,7 @@ POST /billing/invoices/:id/send
 ## 🤖 AI Friday Integration
 
 ### Chat with Friday
+
 ```http
 POST /ai-friday/chat
 {
@@ -342,11 +371,13 @@ POST /ai-friday/chat
 ```
 
 ### Get Chat History
+
 ```http
 GET /ai-friday/sessions/:sessionId/messages
 ```
 
 ### Voice Input
+
 ```http
 POST /ai-friday/voice
 Content-Type: multipart/form-data
@@ -363,6 +394,7 @@ Content-Type: multipart/form-data
 ## 📊 Analytics & Reports
 
 ### Dashboard KPIs
+
 ```http
 GET /analytics/dashboard?period=today|week|month|year
 ```
@@ -394,16 +426,19 @@ GET /analytics/dashboard?period=today|week|month|year
 ```
 
 ### Revenue Report
+
 ```http
 GET /analytics/revenue?period=month&year=2025&month=10
 ```
 
 ### Team Performance
+
 ```http
 GET /analytics/team-performance?teamMemberId=uuid&period=month
 ```
 
 ### Customer Satisfaction
+
 ```http
 GET /analytics/customer-satisfaction?period=quarter
 ```
@@ -413,6 +448,7 @@ GET /analytics/customer-satisfaction?period=quarter
 ## 📱 Mobile API Endpoints
 
 ### Sync Data
+
 ```http
 POST /mobile/sync
 {
@@ -427,6 +463,7 @@ POST /mobile/sync
 ```
 
 ### Upload Photos
+
 ```http
 POST /mobile/photos
 Content-Type: multipart/form-data
@@ -440,6 +477,7 @@ Content-Type: multipart/form-data
 ```
 
 ### Get Offline Data
+
 ```http
 GET /mobile/offline-data?teamMemberId=uuid&date=2025-10-23
 ```
@@ -449,16 +487,19 @@ GET /mobile/offline-data?teamMemberId=uuid&date=2025-10-23
 ## 🔔 Notifications
 
 ### List Notifications
+
 ```http
 GET /notifications?read=false&type=job_assignment
 ```
 
 ### Mark as Read
+
 ```http
 PATCH /notifications/:id/read
 ```
 
 ### Send Push Notification
+
 ```http
 POST /notifications/push
 {
@@ -477,6 +518,7 @@ POST /notifications/push
 ## 🔗 External Integrations
 
 ### Tekup-Billy Integration
+
 ```http
 GET /integrations/billy/customers
 POST /integrations/billy/invoices
@@ -484,6 +526,7 @@ GET /integrations/billy/products
 ```
 
 ### TekupVault Search
+
 ```http
 POST /integrations/tekupvault/search
 {
@@ -493,6 +536,7 @@ POST /integrations/tekupvault/search
 ```
 
 ### Calendar Integration
+
 ```http
 GET /integrations/calendar/events?date=2025-10-23
 POST /integrations/calendar/events
@@ -504,6 +548,7 @@ PATCH /integrations/calendar/events/:id
 ## 📋 Validation Schemas
 
 ### Job Creation Schema
+
 ```typescript
 {
   customerId: string (uuid),
@@ -521,6 +566,7 @@ PATCH /integrations/calendar/events/:id
 ```
 
 ### Customer Creation Schema
+
 ```typescript
 {
   name: string (min: 1),
@@ -540,6 +586,7 @@ PATCH /integrations/calendar/events/:id
 ## ⚠️ Error Handling
 
 ### Error Response Format
+
 ```json
 {
   "error": {
@@ -558,6 +605,7 @@ PATCH /integrations/calendar/events/:id
 ```
 
 ### Common Error Codes
+
 - `VALIDATION_ERROR` (400): Invalid input data
 - `UNAUTHORIZED` (401): Invalid or missing authentication
 - `FORBIDDEN` (403): Insufficient permissions
@@ -576,6 +624,7 @@ PATCH /integrations/calendar/events/:id
 - **AI Friday**: 20 requests per minute per user
 
 ### Rate Limit Headers
+
 ```http
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -589,12 +638,14 @@ X-RateLimit-Reset: 1698062400
 All list endpoints support pagination:
 
 ### Query Parameters
+
 - `page`: Page number (default: 1)
 - `limit`: Items per page (default: 20, max: 100)
 - `sort`: Sort field (default: createdAt)
 - `order`: Sort order (asc|desc, default: desc)
 
 ### Response Format
+
 ```json
 {
   "data": [...],
@@ -614,6 +665,7 @@ All list endpoints support pagination:
 ## 🔍 Filtering & Search
 
 ### Common Filters
+
 - `search`: Text search across relevant fields
 - `status`: Filter by status
 - `dateFrom`/`dateTo`: Date range filtering
@@ -621,6 +673,7 @@ All list endpoints support pagination:
 - `teamMemberId`: Filter by team member
 
 ### Search Example
+
 ```http
 GET /jobs?search=kitchen&status=completed&dateFrom=2025-10-01&dateTo=2025-10-31
 ```
@@ -630,6 +683,7 @@ GET /jobs?search=kitchen&status=completed&dateFrom=2025-10-01&dateTo=2025-10-31
 ## 📝 Webhooks
 
 ### Available Events
+
 - `job.created`
 - `job.updated`
 - `job.completed`
@@ -638,6 +692,7 @@ GET /jobs?search=kitchen&status=completed&dateFrom=2025-10-01&dateTo=2025-10-31
 - `customer.created`
 
 ### Webhook Payload
+
 ```json
 {
   "event": "job.completed",
@@ -655,15 +710,17 @@ GET /jobs?search=kitchen&status=completed&dateFrom=2025-10-01&dateTo=2025-10-31
 ## 🧪 Testing
 
 ### Test Environment
+
 - **Base URL**: `https://rendetaljeos-api-staging.onrender.com/api/v1`
 - **Test Data**: Seeded with sample data
 - **Reset**: Database reset daily at 02:00 UTC
 
 ### Postman Collection
+
 Download: `https://rendetaljeos-api.onrender.com/postman-collection.json`
 
 ---
 
 **API Documentation genereret**: 22. Oktober 2025  
 **Version**: 1.0.0  
-**Support**: dev@rendetalje.dk
+**Support**: <dev@rendetalje.dk>

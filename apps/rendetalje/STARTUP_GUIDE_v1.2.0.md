@@ -10,7 +10,7 @@
 
 ## 🔧 Quick Fix Required
 
-### Backend Issues Summary:
+### Backend Issues Summary
 
 1. **Missing modules** - Several auth/prisma imports not found
 2. **SupabaseService** - Property conflicts with PrismaService
@@ -18,7 +18,7 @@
 4. **Redis config** - Invalid option 'retryDelayOnFailover'
 5. **Helmet/rate-limit** - Import/call signature issues
 
-### Immediate Actions:
+### Immediate Actions
 
 **Option 1: Skip Backend for Now - Test Frontend Only**
 
@@ -118,9 +118,9 @@ cd c:\Users\Jonas-dev\tekup\apps\rendetalje
 
 Follow guide in: `AI_TESTING_PROMPT.md`
 
-1. Login: http://localhost:3001/login
+1. Login: <http://localhost:3001/login>
 
-   - Email: admin@rendetalje.dk
+   - Email: <admin@rendetalje.dk>
    - Password: admin123
 
 2. Dashboard: Check real-time stats

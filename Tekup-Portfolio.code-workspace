@@ -5,111 +5,87 @@
       "path": "."
     },
     {
-      "name": "🏭 Production Services",
-      "path": "apps/production"
-    },
-    {
-      "name": "  ├─ 💾 Tekup Database",
-      "path": "apps/production/tekup-database"
-    },
-    {
-      "name": "  ├─ 📚 TekupVault (Standalone)",
-      "path": "../tekup-vault"
-    },
-    {
-      "name": "  └─ 💰 Tekup Billy (MCP Server)",
-      "path": "apps/production/tekup-billy"
-    },
-    {
-      "name": "🌐 Web - 📊 Tekup Cloud Dashboard",
-      "path": "apps/web/tekup-cloud-dashboard"
-    },
-    {
-      "name": "⏱️ Time Tracker",
-      "path": "apps/time-tracker"
-    },
-    {
-      "name": "🧹 Rendetalje (Complete App)",
+      "name": "📱 Rendetalje (Main Application)",
       "path": "apps/rendetalje"
     },
     {
-      "name": "  ├─ Calendar MCP Service",
-      "path": "apps/rendetalje/services/calendar-mcp"
+      "name": "  ├─ 🔧 Services",
+      "path": "apps/rendetalje/services"
     },
     {
-      "name": "  ├─ Backend NestJS",
+      "name": "  │  ├─ 🚀 Backend NestJS",
       "path": "apps/rendetalje/services/backend-nestjs"
     },
     {
-      "name": "  ├─ Frontend Next.js",
+      "name": "  │  ├─ 🌐 Frontend Next.js",
       "path": "apps/rendetalje/services/frontend-nextjs"
     },
     {
-      "name": "  ├─ Mobile (Expo)",
+      "name": "  │  ├─ 📱 Mobile (Expo)",
       "path": "apps/rendetalje/services/mobile"
     },
     {
-      "name": "  ├─ Shared",
+      "name": "  │  ├─ 📦 Shared Packages",
       "path": "apps/rendetalje/services/shared"
     },
     {
-      "name": "  ├─ Database",
+      "name": "  │  └─ 📊 Database",
       "path": "apps/rendetalje/services/database"
     },
     {
-      "name": "  ├─ Deployment",
-      "path": "apps/rendetalje/services/deployment"
+      "name": "  ├─ 🎭 Testing",
+      "path": "apps/rendetalje/__tests__"
     },
     {
-      "name": "  ├─ Scripts",
-      "path": "apps/rendetalje/services/scripts"
-    },
-    {
-      "name": "  └─ Documentation",
+      "name": "  ├─ 📚 Documentation",
       "path": "apps/rendetalje/docs"
+    },
+    {
+      "name": "  └─ 🔧 Scripts",
+      "path": "apps/rendetalje/scripts"
+    },
+    {
+      "name": "🌐 Web Applications",
+      "path": "apps/web"
+    },
+    {
+      "name": "  ├─ 📊 Tekup Cloud Dashboard",
+      "path": "apps/web/tekup-cloud-dashboard"
+    },
+    {
+      "name": "  └─ ⏱️ Time Tracker",
+      "path": "apps/time-tracker"
     },
     {
       "name": "⚙️ Backend Services",
       "path": "services"
     },
     {
-      "name": "  ├─ 🤖 Tekup AI (Monorepo)",
-      "path": "services/tekup-ai"
-    },
-    {
-      "name": "  └─ 📧 Tekup Gmail Services",
-      "path": "services/tekup-gmail-services"
-    },
-    {
       "name": "🔌 MCP Servers",
       "path": "tekup-mcp-servers"
     },
     {
-      "name": "  ├─ Base MCP Server",
-      "path": "tekup-mcp-servers/packages/base-mcp-server"
+      "name": "📦 Shared Packages",
+      "path": "packages"
     },
     {
-      "name": "  ├─ Code Intelligence MCP",
-      "path": "tekup-mcp-servers/packages/code-intelligence-mcp"
-    },
-    {
-      "name": "  ├─ Database MCP",
-      "path": "tekup-mcp-servers/packages/database-mcp"
-    },
-    {
-      "name": "  ├─ Autonomous Browser Tester",
-      "path": "tekup-mcp-servers/packages/autonomous-browser-tester"
-    },
-    {
-      "name": "  └─ Knowledge MCP",
-      "path": "tekup-mcp-servers/packages/knowledge-mcp"
+      "name": "🗄️ Database",
+      "path": "rendetalje-database"
     },
     {
       "name": "🔐 Tekup Secrets",
       "path": "tekup-secrets"
     },
     {
-      "name": "📜 Scripts",
+      "name": "📚 Documentation",
+      "path": "docs"
+    },
+    {
+      "name": "📜 Logs",
+      "path": "logs"
+    },
+    {
+      "name": "🔧 Scripts",
       "path": "scripts"
     },
     {
@@ -117,8 +93,8 @@
       "path": "archive"
     },
     {
-      "name": "📚 Documentation",
-      "path": "docs"
+      "name": "🏛️ TekupVault (External)",
+      "path": "../tekup-vault"
     }
   ],
   "settings": {
@@ -127,27 +103,54 @@
       "**/.git": false,
       "**/dist": true,
       "**/.next": true,
-      "**/.turbo": true
+      "**/.turbo": true,
+      "**/build": true,
+      "**/.cache": true
     },
     "search.exclude": {
       "**/node_modules": true,
       "**/dist": true,
       "**/.next": true,
-      "**/pnpm-lock.yaml": true
+      "**/.turbo": true,
+      "**/pnpm-lock.yaml": true,
+      "**/package-lock.json": true,
+      "**/yarn.lock": true
     },
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit"
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "javascript.preferences.importModuleSpecifier": "relative",
     "powershell.cwd": "📊 Tekup Portfolio (Root)",
     "files.autoSave": "onFocusChange",
     "explorer.compactFolders": false,
     "breadcrumbs.enabled": true,
     "editor.minimap.enabled": true,
-    "workbench.editor.enablePreview": false
+    "workbench.editor.enablePreview": false,
+    "workbench.tree.indent": 20,
+    "emmet.includeLanguages": {
+      "typescript": "html",
+      "typescriptreact": "html"
+    },
+    "tailwindCSS.includeLanguages": {
+      "typescript": "html",
+      "typescriptreact": "html"
+    },
+    "eslint.workingDirectories": [
+      "apps/*",
+      "services/*",
+      "packages/*"
+    ],
+    "prettier.workingDirectories": [
+      "apps/*",
+      "services/*",
+      "packages/*"
+    ]
   },
   "extensions": {
     "recommendations": [
@@ -155,7 +158,29 @@
       "dbaeumer.vscode-eslint",
       "bradlc.vscode-tailwindcss",
       "Prisma.prisma",
-      "ms-vscode.vscode-typescript-next"
+      "ms-vscode.vscode-typescript-next",
+      "ms-vscode.vscode-json",
+      "redhat.vscode-yaml",
+      "ms-vscode.vscode-docker",
+      "formulahendry.auto-rename-tag",
+      "christian-kohler.path-intellisense",
+      "ms-vscode.vscode-eslint",
+      "ms-vscode.test-adapter-converter",
+      "humao.rest-client",
+      "rangav.vscode-thunder-client",
+      "bradlc.vscode-tailwindcss",
+      "expo.snippets",
+      "ms-vscode.vscode-typescript",
+      "ms-vscode.vscode-react-native",
+      "formulahendry.auto-close-tag",
+      "ms-vscode.vscode-css-peek",
+      "christian-kohler.npm-intellisense",
+      "ms-vscode.vscode-npm-script",
+      "visualstudioexptteam.vscodeintellicode",
+      "tabnine.tabnine-vscode",
+      "github.copilot",
+      "github.copilot-chat",
+      "ms-vscode.vscode-git-base"
     ]
   }
 }

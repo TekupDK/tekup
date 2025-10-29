@@ -7,11 +7,11 @@ services:
       context: .
       dockerfile: Dockerfile.mcp
     ports:
-      - "${MCP_PORT:-3001}:3001"
+      - "${MCP_PORT:-3003}:3001"
     environment:
       - NODE_ENV=production
-      - PORT=${MCP_PORT:-3001}
-      - MCP_PORT=${MCP_PORT:-3001}
+      - PORT=${MCP_PORT:-3003}
+      - MCP_PORT=${MCP_PORT:-3003}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       - GOOGLE_CALENDAR_CREDENTIALS=${GOOGLE_CALENDAR_CREDENTIALS}
@@ -88,7 +88,7 @@ services:
   redis:
     image: redis:alpine
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - "${REDIS_PORT:-6378}:6379"
     volumes:
       - redis_data:/data
     restart: unless-stopped
@@ -111,5 +111,10 @@ volumes:
   postgres_data:
 
 networks:
-  default:
+  renos-calendar-network:
     name: renos-calendar-network
+    driver: bridge
+    internal: false
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

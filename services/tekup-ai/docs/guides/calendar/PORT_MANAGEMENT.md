@@ -18,10 +18,13 @@ All ports are configured via environment variables with safe defaults:
 #### Method 1: Use .env.ports File (RECOMMENDED)
 
 \\\ash
+
 # 1. Copy template
+
 cp .env.ports.example .env.ports
 
 # 2. Edit ports (example for development)
+
 cat > .env.ports << 'EOF'
 MCP_PORT=4001
 DASHBOARD_PORT=3010
@@ -32,34 +35,43 @@ NGINX_HTTPS_PORT=8443
 EOF
 
 # 3. Check for conflicts before starting
+
 powershell -File scripts/check-ports.ps1
 
 # 4. Load and start
+
 docker-compose --env-file .env.ports up
 \\\
 
 #### Method 2: Environment Variables
 
 \\\ash
+
 # Windows PowerShell
+
 \ = '4001'
 \ = '3010'
 \ = '3011'
 
 # Start containers
+
 docker-compose up
 \\\
 
 #### Method 3: Docker Compose Override
 
 \\\ash
+
 # Create override file
+
 cp docker-compose.override.yml.example docker-compose.override.yml
 
 # Edit as needed
+
 # Edit docker-compose.override.yml with custom ports
 
 # Start with override
+
 docker-compose up
 \\\
 
@@ -68,31 +80,40 @@ docker-compose up
 #### PowerShell (Windows)
 
 \\\powershell
+
 # Check if port is available
+
 Test-NetConnection -ComputerName 127.0.0.1 -Port 3001
 
 # Check all configured ports
+
 powershell -File scripts/check-ports.ps1
 \\\
 
 #### Command Line (Windows)
 
 \\\cmd
+
 # Find process using port
+
 netstat -ano | findstr :3001
 
 # Kill process
+
 taskkill /PID <PID> /F
 \\\
 
 #### Linux/macOS
 
 \\\ash
+
 # Find process
+
 lsof -i :3001
 netstat -tlnp | grep 3001
 
 # Kill process
+
 kill -9 <PID>
 \\\
 
@@ -115,7 +136,9 @@ kill -9 <PID>
 To run multiple instances:
 
 \\\ash
+
 # Instance 1 - Development
+
 .env.ports:
 MCP_PORT=4001
 DASHBOARD_PORT=3010
@@ -124,6 +147,7 @@ CHATBOT_PORT=3011
 docker-compose --env-file .env.ports up
 
 # Instance 2 - Testing (different terminal)
+
 .env.test:
 MCP_PORT=5001
 DASHBOARD_PORT=5006

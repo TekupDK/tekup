@@ -9,11 +9,13 @@ Following the MCP usage analysis from today's Render logs, all recommended impro
 ## 1. ✅ Fixed Rate Limiting in Scripts
 
 ### Problem
+
 - 13 requests got HTTP 429 (Rate Limit Exceeded) at 19:45:30
 - Caused by sending 107 `get_invoice` calls in ~2 minutes
 - Exceeded 100 requests/minute limit
 
 ### Solution
+
 **Created:** `scripts/safe-batch-invoice-analysis.ps1`
 
 **Key changes:**
@@ -22,6 +24,7 @@ Following the MCP usage analysis from today's Render logs, all recommended impro
 - Documented best practice for batch operations
 
 **Usage:**
+
 ```powershell
 cd scripts
 .\safe-batch-invoice-analysis.ps1
@@ -37,11 +40,13 @@ cd scripts
 ## 2. ✅ Enabled Supabase Audit Logging
 
 ### Problem
+
 - No programmatic access to detailed MCP logs
 - Render logs only show HTTP access logs (no parameters/results)
 - Can't analyze error details beyond status codes
 
 ### Solution
+
 **Created:**
 - `scripts/supabase-setup-audit-logs.sql` - Database schema
 - `docs/operations/ENABLE_SUPABASE_AUDIT_LOGGING.md` - Setup guide
@@ -56,17 +61,18 @@ cd scripts
 **Setup Steps (10 minutes):**
 
 1. **Run SQL in Supabase:**
-   - Open: https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey
+   - Open: <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey>
    - Go to SQL Editor
    - Paste contents of `scripts/supabase-setup-audit-logs.sql`
    - Click "Run"
 
 2. **Update Render Environment:**
-   - Open: https://dashboard.render.com → tekup-billy-mcp
+   - Open: <https://dashboard.render.com> → tekup-billy-mcp
    - Add environment variable: `ENABLE_SUPABASE_LOGGING=true`
    - Save (auto-deploys)
 
 3. **Verify:**
+
    ```powershell
    # Make test call
    Invoke-RestMethod -Uri "https://tekup-billy.onrender.com/api/v1/tools/validate_auth" -Method Post -Headers @{"X-API-Key"=$env:BILLY_API_KEY} -Body '{"organizationId":"your-org-id"}'
@@ -87,11 +93,13 @@ cd scripts
 ## 3. ✅ Shortwave Integration Test Plan
 
 ### Problem
+
 - No Shortwave activity detected in today's logs (100% PowerShell)
 - Integration configured but not validated
 - Unknown if AI can successfully use MCP tools
 
 ### Solution
+
 **Created:** `docs/testing/SHORTWAVE_INTEGRATION_TEST.md`
 
 **Test Scenarios:**
@@ -124,12 +132,14 @@ cd scripts
 ## Files Created
 
 ### Scripts
+
 | File | Purpose |
 |------|---------|
 | `scripts/safe-batch-invoice-analysis.ps1` | Rate-limited batch invoice fetching (600ms delays) |
 | `scripts/supabase-setup-audit-logs.sql` | Database schema for audit logging |
 
 ### Documentation
+
 | File | Purpose |
 |------|---------|
 | `docs/operations/ENABLE_SUPABASE_AUDIT_LOGGING.md` | Complete setup guide with troubleshooting |
@@ -138,6 +148,7 @@ cd scripts
 | `MCP_USAGE_OCT21_STATUS.md` | Investigation notes and findings |
 
 ### Analysis Tools
+
 | File | Purpose |
 |------|---------|
 | `analyze-render-logs.ps1` | Parse Render JSON logs for MCP usage |
@@ -148,12 +159,14 @@ cd scripts
 ## Impact Summary
 
 ### Before
+
 ❌ Rate limiting errors (13 requests blocked)  
 ❌ No detailed audit logs (only HTTP access logs)  
 ❌ Shortwave integration untested  
 ❌ Manual Render dashboard login required for logs
 
 ### After
+
 ✅ **Zero rate limiting** (600ms delays prevent errors)  
 ✅ **Complete audit trail** (Supabase logs all parameters/results)  
 ✅ **Test plan ready** (can validate Shortwave integration)  
@@ -164,6 +177,7 @@ cd scripts
 ## Usage Examples
 
 ### 1. Safe Batch Invoice Analysis
+
 ```powershell
 # Old way (rate limited):
 # for ($i=0; $i -lt 100; $i++) { Invoke-RestMethod ... }
@@ -175,6 +189,7 @@ cd scripts
 ```
 
 ### 2. Query Today's Audit Logs
+
 ```powershell
 # After Supabase setup:
 $response = Invoke-RestMethod `
@@ -188,6 +203,7 @@ $response | Format-Table created_at, tool_name, status, execution_time_ms
 ```
 
 ### 3. Analyze MCP Usage
+
 ```powershell
 # Fetch and analyze Render logs:
 .\render-cli\cli_v2.4.2.exe logs --resources srv-d3kk30t6ubrc73e1qon0 --type request --output json --limit 500 > logs.json
@@ -199,10 +215,11 @@ $response | Format-Table created_at, tool_name, status, execution_time_ms
 ## Next Steps
 
 ### Immediate (You)
+
 1. [ ] **Enable Supabase Audit Logging** (10 min)
    - Run SQL script in Supabase
    - Add `ENABLE_SUPABASE_LOGGING=true` in Render
-   
+
 2. [ ] **Test Shortwave Integration** (10 min)
    - Send test email with customer details
    - Ask Shortwave to create customer
@@ -213,6 +230,7 @@ $response | Format-Table created_at, tool_name, status, execution_time_ms
    - Add error handling and progress tracking
 
 ### Future (Week)
+
 1. [ ] Create dashboard for Supabase analytics
 2. [ ] Set up alerts for high error rates
 3. [ ] Document more Shortwave AI workflows

@@ -1,11 +1,13 @@
 # RendetaljeOS → tekup-database Migration Plan
 
 ## 🎯 Mission
+
 Migrer RendetaljeOS backend fra Supabase til central tekup-database med renos schema.
 
 ## 📊 Current State Analysis
 
 ### RendetaljeOS Backend (Current)
+
 - **Location**: `C:\Users\empir\RendetaljeOS\backend`
 - **Database**: Supabase PostgreSQL (cloud)
 - **Client**: `@supabase/supabase-js`
@@ -13,6 +15,7 @@ Migrer RendetaljeOS backend fra Supabase til central tekup-database med renos sc
 - **Connection**: Via SupabaseService
 
 ### tekup-database (Target)
+
 - **Location**: `C:\Users\empir\tekup-database`
 - **Database**: PostgreSQL 16 localhost:5432 (tekup_db)
 - **Schema**: `renos` (23 tables)
@@ -22,6 +25,7 @@ Migrer RendetaljeOS backend fra Supabase til central tekup-database med renos sc
 ## 🔄 Migration Steps
 
 ### Phase 1: Preparation & Analysis
+
 1. **Backup Current Setup**
    - Copy current `.env` to `.env.supabase.backup`
    - Document current Supabase queries and models
@@ -33,6 +37,7 @@ Migrer RendetaljeOS backend fra Supabase til central tekup-database med renos sc
    - Identify schema differences and required adaptations
 
 ### Phase 2: Install & Configure
+
 3. **Install Dependencies**
    ```bash
    cd backend
@@ -51,6 +56,7 @@ Migrer RendetaljeOS backend fra Supabase til central tekup-database med renos sc
    ```
 
 ### Phase 3: Code Migration
+
 5. **Replace SupabaseService with PrismaService**
    - Create new `PrismaService` in `src/database/`
    - Update dependency injection in modules
@@ -62,6 +68,7 @@ Migrer RendetaljeOS backend fra Supabase til central tekup-database med renos sc
    - Adapt query syntax from Supabase to Prisma
 
 ### Phase 4: Testing & Validation
+
 7. **Test Database Connection**
    - Verify tekup-database Docker container is running
    - Test connection to renos schema
@@ -73,6 +80,7 @@ Migrer RendetaljeOS backend fra Supabase til central tekup-database med renos sc
    - Check data integrity and relationships
 
 ### Phase 5: Deployment
+
 9. **Update Docker Configuration**
    - Ensure tekup-database-postgres container is running
    - Update docker-compose files if needed
@@ -86,6 +94,7 @@ Migrer RendetaljeOS backend fra Supabase til central tekup-database med renos sc
 ## 📋 Detailed Implementation Tasks
 
 ### Task 1: Create PrismaService
+
 ```typescript
 // src/database/prisma.service.ts
 import { Injectable, OnModuleInit } from '@nestjs/common';
@@ -110,6 +119,7 @@ export class PrismaService implements OnModuleInit {
 ```
 
 ### Task 2: Update Module Dependencies
+
 ```typescript
 // src/app.module.ts
 import { PrismaService } from './database/prisma.service';
@@ -123,6 +133,7 @@ import { PrismaService } from './database/prisma.service';
 ```
 
 ### Task 3: Update Service Imports
+
 ```typescript
 // Before (Supabase)
 import { SupabaseService } from '../supabase/supabase.service';
@@ -147,6 +158,7 @@ const customer = await this.prisma.client.customer.findUnique({
 ## 🗺️ Schema Mapping
 
 ### RendetaljeOS → renos Schema Mapping
+
 | RendetaljeOS Model | renos Table | Notes |
 |-------------------|-------------|-------|
 | organizations | organizations | Direct mapping |
@@ -161,12 +173,14 @@ const customer = await this.prisma.client.customer.findUnique({
 ## ⚠️ Risk Mitigation
 
 ### Potential Issues
+
 1. **Schema Differences**: renos may have different field names/types
 2. **Data Migration**: Existing Supabase data needs migration
 3. **Authentication**: May need to adapt auth flow
 4. **Real-time Features**: Supabase subscriptions → Prisma alternatives
 
 ### Rollback Plan
+
 1. Restore `.env.supabase.backup`
 2. Reinstall `@supabase/supabase-js`
 3. Revert code changes from Git
@@ -175,6 +189,7 @@ const customer = await this.prisma.client.customer.findUnique({
 ## 🎯 Success Criteria
 
 ### Technical Validation
+
 - [ ] Backend starts without errors
 - [ ] All API endpoints respond correctly
 - [ ] Database queries return expected data
@@ -182,6 +197,7 @@ const customer = await this.prisma.client.customer.findUnique({
 - [ ] All tests pass
 
 ### Functional Validation
+
 - [ ] User authentication works
 - [ ] CRUD operations function correctly
 - [ ] Real-time features work (if applicable)

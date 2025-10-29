@@ -42,6 +42,7 @@ User accounts and authentication.
 | updated_at | TIMESTAMP | DEFAULT NOW() | Updated timestamp |
 
 **Indexes**:
+
 - `idx_users_email` on `email`
 - `idx_users_organization_id` on `organization_id`
 - `idx_users_role` on `role`
@@ -118,6 +119,7 @@ Customer information and profiles.
 ```
 
 **Indexes**:
+
 - `idx_customers_organization_id` on `organization_id`
 - `idx_customers_email` on `email`
 - `idx_customers_city` on `(address->>'city')`
@@ -153,6 +155,7 @@ Cleaning jobs/bookings.
 | updated_at | TIMESTAMP | DEFAULT NOW() | Updated timestamp |
 
 **Service Type ENUM**:
+
 - `standard` - Standard cleaning
 - `deep` - Deep cleaning
 - `window` - Window cleaning
@@ -160,6 +163,7 @@ Cleaning jobs/bookings.
 - `office` - Office cleaning
 
 **Status ENUM**:
+
 - `scheduled` - Scheduled
 - `confirmed` - Confirmed by customer
 - `in_progress` - Currently in progress
@@ -182,6 +186,7 @@ Cleaning jobs/bookings.
 ```
 
 **Indexes**:
+
 - `idx_jobs_organization_id` on `organization_id`
 - `idx_jobs_customer_id` on `customer_id`
 - `idx_jobs_status` on `status`
@@ -206,6 +211,7 @@ Team member information.
 | updated_at | TIMESTAMP | DEFAULT NOW() | Updated timestamp |
 
 **Employment Type ENUM**:
+
 - `full-time`
 - `part-time`
 - `contractor`
@@ -227,6 +233,7 @@ Team member assignments to jobs.
 | completed_at | TIMESTAMP | | Completed timestamp |
 
 **Indexes**:
+
 - `idx_job_assignments_job_id` on `job_id`
 - `idx_job_assignments_team_member_id` on `team_member_id`
 
@@ -251,6 +258,7 @@ Time tracking entries.
 | updated_at | TIMESTAMP | DEFAULT NOW() | Updated timestamp |
 
 **Indexes**:
+
 - `idx_time_entries_team_member_id` on `team_member_id`
 - `idx_time_entries_job_id` on `job_id`
 - `idx_time_entries_start_time` on `start_time`
@@ -274,6 +282,7 @@ Time entry correction requests.
 | created_at | TIMESTAMP | DEFAULT NOW() | Created timestamp |
 
 **Status ENUM**:
+
 - `pending`
 - `approved`
 - `rejected`
@@ -334,6 +343,7 @@ Customer communication messages.
 | created_at | TIMESTAMP | DEFAULT NOW() | Created timestamp |
 
 **Message Type ENUM**:
+
 - `text`
 - `system`
 
@@ -372,6 +382,7 @@ User notifications.
 | created_at | TIMESTAMP | DEFAULT NOW() | Created timestamp |
 
 **Type ENUM**:
+
 - `info`
 - `success`
 - `warning`
@@ -388,17 +399,20 @@ apps/rendetalje/services/backend-nestjs/prisma/schema.prisma
 ## Database Migrations
 
 ### Run Migrations
+
 ```bash
 npx prisma migrate dev --name migration_name
 npx prisma migrate deploy  # Production
 ```
 
 ### Generate Prisma Client
+
 ```bash
 npx prisma generate
 ```
 
 ### View Database
+
 ```bash
 npx prisma studio
 ```
@@ -406,13 +420,16 @@ npx prisma studio
 ## Performance Considerations
 
 ### Indexes
+
 All foreign keys have indexes for join performance.
 
 ### Connection Pooling
+
 - Pool size: 10 connections (configurable)
 - Idle timeout: 30 seconds
 
 ### Query Optimization
+
 - Use `select` to limit fields
 - Use `include` for related data
 - Pagination enforced on all list queries
@@ -426,13 +443,16 @@ All foreign keys have indexes for join performance.
 ## Security
 
 ### Row Level Security (RLS)
+
 All tables have RLS policies enforcing organization-level data isolation.
 
 ### Encryption
+
 - Data at rest: AES-256
 - Data in transit: TLS 1.3
 
 ### Access Control
+
 - Application access via service role key
 - User access via JWT tokens
 - Admin access via Supabase dashboard

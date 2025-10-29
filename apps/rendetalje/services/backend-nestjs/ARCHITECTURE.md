@@ -9,24 +9,28 @@
 ## Tech Stack
 
 ### Core
+
 - **Runtime:** Node.js 18+ (LTS)
 - **Framework:** NestJS 10.4.20
 - **Language:** TypeScript 5.9+ (strict mode)
 - **Package Manager:** npm (legacy from pre-pnpm migration)
 
 ### Database
+
 - **ORM:** Prisma 6.18.0
 - **Database:** PostgreSQL 15+
 - **Schema:** `renos` (multi-schema setup in tekup-database)
 - **Migrations:** Prisma Migrate
 
 ### API & Validation
+
 - **REST API:** Express 4.18+
 - **WebSockets:** Socket.IO (for RealTimeModule)
 - **Validation:** class-validator + class-transformer
 - **API Docs:** Swagger/OpenAPI 3.0
 
 ### Security & Monitoring
+
 - **Security Headers:** Helmet
 - **Rate Limiting:** @nestjs/throttler
 - **Error Tracking:** Sentry (optional, disabled hvis DSN mangler)
@@ -94,6 +98,7 @@ backend-nestjs/
 ### Active Modules ✅
 
 #### ConfigModule (Global)
+
 **Purpose:** Load and validate environment variables  
 **Config File:** `src/config/configuration.ts`
 
@@ -115,8 +120,9 @@ FRONTEND_URL=http://localhost:3001
 ```
 
 #### ThrottlerModule
+
 **Purpose:** Rate limiting (100 req/min per IP)  
-**Config:** 
+**Config:**
 ```typescript
 ThrottlerModule.forRoot([{
   ttl: 60000,  // 1 minute
@@ -125,6 +131,7 @@ ThrottlerModule.forRoot([{
 ```
 
 #### DatabaseModule
+
 **Purpose:** Prisma ORM integration  
 **Provider:** `PrismaService`
 
@@ -145,10 +152,12 @@ class PrismaService extends PrismaClient {
 ```
 
 #### HealthModule
+
 **Purpose:** Health check endpoints  
 **Controller:** `HealthController`
 
 **Endpoints:**
+
 - `GET /api/v1/health` - Basic health check
   ```json
   {
@@ -298,9 +307,11 @@ model RenosBooking {
 ## API Structure
 
 ### Global Prefix
+
 All endpoints prefixed with `/api/v1`
 
 ### Current Endpoints
+
 ```
 GET  /api/v1/health       - Basic health check
 GET  /api/v1/health/db    - Database health check
@@ -310,6 +321,7 @@ GET  /docs                - Swagger UI (when enabled)
 ```
 
 ### Future Endpoints (When Modules Restored)
+
 ```
 # Customers
 GET    /api/v1/customers
@@ -377,6 +389,7 @@ app.useGlobalInterceptors(new SentryInterceptor())
 ## Error Handling
 
 ### HTTP Exceptions
+
 ```typescript
 throw new NotFoundException('Customer not found')
 throw new BadRequestException('Invalid email format')
@@ -385,11 +398,13 @@ throw new ForbiddenException('Insufficient permissions')
 ```
 
 ### Sentry Integration
+
 - All uncaught exceptions sent to Sentry (if configured)
 - Filtered: connection timeouts, rate limit errors, validation errors
 - Includes request context, user info, stack traces
 
 ### Validation Errors
+
 Automatic via class-validator:
 ```typescript
 // DTO
@@ -411,17 +426,20 @@ export class CreateCustomerDto {
 ## Development Workflow
 
 ### Start Development Server
+
 ```bash
 npm run build
 node dist/main.js
 ```
 
 ### Watch Mode (Auto-rebuild)
+
 ```bash
 npm run start:dev  # Currently broken - needs module fixes
 ```
 
 ### Run Tests
+
 ```bash
 npm run test        # Unit tests
 npm run test:e2e    # E2E tests
@@ -429,6 +447,7 @@ npm run test:cov    # Coverage report
 ```
 
 ### Database Operations
+
 ```bash
 # Generate Prisma Client after schema changes
 npx prisma generate
@@ -448,12 +467,14 @@ npx prisma migrate deploy
 ## Deployment
 
 ### Production Build
+
 ```bash
 npm run build
 NODE_ENV=production node dist/main.js
 ```
 
 ### Environment Variables (Production)
+
 ```bash
 NODE_ENV=production
 PORT=3000
@@ -464,6 +485,7 @@ FRONTEND_URL=https://rendetaljeos.onrender.com
 ```
 
 ### Docker (Future)
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -481,17 +503,20 @@ CMD ["node", "dist/main.js"]
 ## Performance Considerations
 
 ### Database Connection Pooling
+
 ```typescript
 // Prisma default pool size: 25 connections
 prisma:info Starting a postgresql pool with 25 connections
 ```
 
 ### Caching Strategy (Future)
+
 - Redis for session storage
 - Redis for frequently accessed data (customers, leads)
 - CDN for static assets
 
 ### Query Optimization
+
 - Use `.select()` to fetch only needed fields
 - Use `.include()` wisely to avoid N+1 queries
 - Index frequently queried fields in Prisma schema
@@ -516,16 +541,19 @@ prisma:info Starting a postgresql pool with 25 connections
 ## Monitoring & Observability
 
 ### Logs
+
 - Development: Colored console output with Prisma query logs
 - Production: JSON structured logs (ready for log aggregation)
 
 ### Metrics (Future)
+
 - Prometheus metrics endpoint
 - Request duration histograms
 - Error rate counters
 - Database connection pool metrics
 
 ### Health Checks
+
 - `/api/v1/health` - Liveness probe
 - `/api/v1/health/db` - Readiness probe (checks DB connection)
 

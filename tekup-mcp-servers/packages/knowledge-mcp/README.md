@@ -58,17 +58,21 @@ Add this to your MCP client configuration (e.g., `mcp.json`):
 ## Tool: search_knowledge
 
 ### Input Schema
+
 - `query` (string, required): Search query, minimum 2 characters
 - `limit` (number, optional): Maximum results to return (1-20, default: 5)
 
 ### Output
+
 Returns a JSON array of results, each containing:
+
 - `path`: Relative path to the file from the search root
 - `score`: Relevance score based on term frequency
 - `snippets`: Array of up to 3 text snippets with line numbers
 - `summary`: Short summary (first heading or first 120 characters)
 
 ### Example Usage
+
 ```json
 {
   "query": "authentication setup",

@@ -38,10 +38,6 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'hashed_password', description: 'Hashed password' }),
-    __metadata("design:type", String)
-], User.prototype, "passwordHash", void 0);
-__decorate([
     (0, swagger_1.ApiProperty)({ enum: UserRole, example: UserRole.EMPLOYEE, description: 'User role' }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);

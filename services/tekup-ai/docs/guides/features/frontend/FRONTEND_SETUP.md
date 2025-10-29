@@ -5,6 +5,7 @@ Frontend til RenOS er nu oprettet i `client/` mappen med React + TypeScript + Vi
 ## 📦 Installation
 
 ### 1. Installer root dependencies (inkl. concurrently)\n\n```powershell\n\nnpm install\n\n```text\n\n\n### 2. Installer client dependencies\n\n```powershell\n\nnpm run install:client\n\n```text\n
+
 eller
 
 ```powershell

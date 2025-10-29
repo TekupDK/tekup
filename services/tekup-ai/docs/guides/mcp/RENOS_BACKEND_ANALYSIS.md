@@ -19,6 +19,7 @@
 ## 🎯 Production Strengths
 
 ### 1. Security-First Approach
+
 **Sentry Monitoring:**
 ```typescript
 // CRITICAL: Import Sentry FIRST before any other code
@@ -26,6 +27,7 @@ import "./instrument";
 ```
 
 **Comprehensive Security Headers:**
+
 - Content-Security-Policy (XSS protection)
 - X-Frame-Options (clickjacking prevention)
 - Strict-Transport-Security (HTTPS enforcement)
@@ -33,7 +35,9 @@ import "./instrument";
 - 8+ security headers implemented
 
 ### 2. Sophisticated CORS
+
 **Multi-Environment:**
+
 - Production: Whitelist specific domains
 - Development: Localhost variants
 - Comma-separated additional origins
@@ -41,7 +45,9 @@ import "./instrument";
 - ALLOW_LOCAL_DEV flag for testing
 
 ### 3. Prisma Database (15+ Models)
+
 **Key Models:**
+
 - **Lead:** With Firecrawl enrichment, lead scoring, GDPR fields
 - **Customer:** Full CRM (totalLeads, totalBookings, totalRevenue)
 - **Booking:** Time tracking, calendar sync, efficiency scoring
@@ -51,12 +57,14 @@ import "./instrument";
 - **Analytics:** Business metrics
 
 **Advanced Features:**
+
 - Composite indexes for performance
 - Cascade deletes for data integrity
 - JSON fields for flexible data
 - GDPR compliance built-in
 
 ### 4. Graceful Shutdown
+
 ```typescript
 const gracefulShutdown = (signal: string) => {
   server.close(() => process.exit(0));
@@ -65,14 +73,18 @@ const gracefulShutdown = (signal: string) => {
 ```
 
 ### 5. Background Dependency Checks
+
 **Exponential Backoff:**
+
 - Retries database connection with backoff
 - Caps at 60s delay
 - Periodic health re-check (every 5 min)
 - Unref timers to allow process exit
 
 ### 6. 60+ NPM Scripts
+
 **Comprehensive CLI:**
+
 - **Database:** migrate, generate, push, pull, studio, seed, reset, audit, fix
 - **Email:** ingest, matching, auto-response, monitoring (10+ commands)
 - **Booking:** list, availability, stats, conflict checks
@@ -86,11 +98,13 @@ const gracefulShutdown = (signal: string) => {
 ## 📝 TypeScript Conventions
 
 ### Naming (Same as Billy)
+
 - **Routers:** camelCase + Router suffix (`dashboardRouter`)
 - **Middleware:** camelCase (`requireAuth`, `errorHandler`)
 - **Models:** PascalCase (Prisma generates)
 
 ### Import Pattern
+
 ```typescript
 // 1. Critical setup (Sentry)
 import "./instrument";
@@ -109,6 +123,7 @@ import { initializeSentry } from "./services/sentryService";
 ```
 
 ### Error Handling
+
 - Sentry for error tracking
 - Custom errorHandler middleware
 - Structured logging with Pino
@@ -119,17 +134,20 @@ import { initializeSentry } from "./services/sentryService";
 ## 🔌 Integration Points
 
 ### Google Workspace
+
 - Calendar sync (bidirectional)
 - Gmail integration
 - OAuth2 authentication
 
 ### AI Services
+
 - Gemini AI integration
 - OpenAI integration
 - Lead scoring algorithms
 - Firecrawl web scraping
 
 ### External Services
+
 - Clerk authentication
 - Redis caching
 - Sentry monitoring
@@ -140,6 +158,7 @@ import { initializeSentry } from "./services/sentryService";
 ## 💡 Key Patterns for AI Assistant
 
 ### Must Adopt
+
 1. **Security Headers:** Comprehensive CSP implementation
 2. **Graceful Shutdown:** Signal handlers + timeout
 3. **Background Checks:** Exponential backoff for dependencies
@@ -147,6 +166,7 @@ import { initializeSentry } from "./services/sentryService";
 5. **Prisma Patterns:** If using database
 
 ### Consider Adopting
+
 1. **Trust Proxy:** For Render/NGINX deployments
 2. **Sentry Integration:** Error tracking og monitoring
 3. **Swagger/OpenAPI:** Auto-generated API docs

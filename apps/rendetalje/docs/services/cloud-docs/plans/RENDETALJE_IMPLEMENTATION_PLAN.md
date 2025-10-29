@@ -1,10 +1,12 @@
 # RendetaljeOS - Complete Implementation Plan & Coding Checklist
+
 **Based on Competitive Analysis & Design Document**
 
 ## Document Overview
+
 - **Created**: 2025-10-19
 - **Source**: Competitive Analysis Report v1.0
-- **Target Systems**: 
+- **Target Systems**:
   - RendetaljeOS Backend (C:\Users\empir\RendetaljeOS\apps\backend)
   - RendetaljeOS Frontend (C:\Users\empir\RendetaljeOS\apps\frontend)
   - RendetaljeOS-Mobile (C:\Users\empir\Tekup-Cloud\RendetaljeOS-Mobile)
@@ -17,9 +19,11 @@
 ### 1.1 Repository Cleanup & Git Management
 
 #### ✅ Task 1.1.1: Backend Repository Stabilization
+
 **Priority**: 🔴 Critical | **Est**: 2h
 
 **Actions**:
+
 - [ ] Navigate to backend: `cd C:\Users\empir\RendetaljeOS\apps\backend`
 - [ ] Review uncommitted files: `git status`
 - [ ] Commit in logical groups with descriptive messages
@@ -29,9 +33,11 @@
 ---
 
 #### ✅ Task 1.1.2: Frontend Branch Resolution  
+
 **Priority**: 🔴 Critical | **Est**: 3h
 
 **Actions**:
+
 - [ ] Checkout feature/frontend-redesign branch
 - [ ] Test redesign: `pnpm dev`
 - [ ] Merge to main OR document remaining work
@@ -42,6 +48,7 @@
 ### 1.2 Testing Framework Implementation
 
 #### ✅ Task 1.2.1: Backend Testing Infrastructure
+
 **Priority**: 🔴 Critical | **Est**: 8h
 
 **Setup**:
@@ -62,6 +69,7 @@ backend/
 ```
 
 **Critical Test Flows**:
+
 - [ ] Email lead → Intent classification → Auto-response
 - [ ] Lead → Customer → Booking creation
 - [ ] Booking → Calendar sync → Invoice
@@ -75,6 +83,7 @@ backend/
 ### 1.3 Production Monitoring
 
 #### ✅ Task 1.3.1: Activate Sentry
+
 **Priority**: 🔴 Critical | **Est**: 3h
 
 **Environment Variables**:
@@ -85,6 +94,7 @@ SENTRY_RELEASE=1.0.0
 ```
 
 **Configure**:
+
 - [ ] Backend: Verify DSN, test error capture
 - [ ] Frontend: Add error boundary, performance monitoring  
 - [ ] Mobile: Install sentry-expo, configure app.json
@@ -92,6 +102,7 @@ SENTRY_RELEASE=1.0.0
 ---
 
 #### ✅ Task 1.3.2: Uptime Monitoring
+
 **Priority**: 🔴 Critical | **Est**: 2h
 
 **Create Health Endpoint**:
@@ -109,6 +120,7 @@ router.get('/health', async (req, res) => {
 ```
 
 **Setup Monitors**:
+
 - [ ] Choose service (UptimeRobot/Better Uptime)
 - [ ] Monitor API, frontend, database
 - [ ] Configure email/SMS alerts
@@ -121,6 +133,7 @@ router.get('/health', async (req, res) => {
 ### 2.1 Online Booking Widget
 
 #### ✅ Task 2.1.1: Backend API
+
 **Priority**: 🔴 Critical | **Est**: 12h
 
 **Endpoints**:
@@ -131,6 +144,7 @@ POST /api/v1/widget/bookings
 ```
 
 **Implementation**:
+
 - [ ] Calculate available slots from Calendar + DB
 - [ ] Auto-create lead → customer on booking
 - [ ] Sync to Google Calendar
@@ -141,12 +155,15 @@ POST /api/v1/widget/bookings
 ---
 
 #### ✅ Task 2.1.2: Frontend Widget Component
+
 **Priority**: 🔴 Critical | **Est**: 16h
 
 **Widget Flow**:
+
 1. Service selection → 2. Date/time picker → 3. Customer details → 4. Confirmation
 
 **Features**:
+
 - [ ] Mobile-responsive design
 - [ ] Danish language support
 - [ ] Theme customization (colors)
@@ -175,6 +192,7 @@ POST /api/v1/widget/bookings
 ### 2.2 SMS Notification System
 
 #### ✅ Task 2.2.1: Twilio Integration
+
 **Priority**: 🔴 Critical | **Est**: 8h
 
 **Setup**:
@@ -215,6 +233,7 @@ model SmsLog {
 ```
 
 **Integrate**:
+
 - [ ] Send confirmation on booking creation
 - [ ] Schedule reminder 24h before
 - [ ] Enroute notification when cleaner starts
@@ -223,6 +242,7 @@ model SmsLog {
 ---
 
 #### ✅ Task 2.2.2: SMS Scheduler with BullMQ
+
 **Priority**: 🟡 Medium | **Est**: 6h
 
 **Setup Queue**:
@@ -242,6 +262,7 @@ await smsQueue.add('appointment-reminder', {
 ```
 
 **Requirements**:
+
 - [ ] Redis connection (Upstash for production)
 - [ ] Worker to process jobs
 - [ ] Retry logic for failed SMS
@@ -252,9 +273,11 @@ await smsQueue.add('appointment-reminder', {
 ### 2.3 Customer Self-Service Portal
 
 #### ✅ Task 2.3.1: Customer Authentication
+
 **Priority**: 🔴 Critical | **Est**: 8h
 
 **Auth Options**:
+
 - Magic link email (passwordless)
 - Phone OTP (via Twilio)
 - Integration with existing Clerk setup
@@ -270,6 +293,7 @@ GET /api/v1/customer/auth/verify?token=xxx
 ```
 
 **Features**:
+
 - [ ] Generate secure token (JWT)
 - [ ] Email magic link
 - [ ] Verify and create session
@@ -279,6 +303,7 @@ GET /api/v1/customer/auth/verify?token=xxx
 ---
 
 #### ✅ Task 2.3.2: Customer Portal Pages
+
 **Priority**: 🔴 Critical | **Est**: 16h
 
 **Pages to Build**:
@@ -312,6 +337,7 @@ GET /api/v1/customer/auth/verify?token=xxx
    - Saved addresses
 
 **Tech Stack**:
+
 - Next.js App Router
 - Tailwind CSS + shadcn/ui
 - React Query for data fetching
@@ -322,6 +348,7 @@ GET /api/v1/customer/auth/verify?token=xxx
 ### 2.4 Quote Templates Library
 
 #### ✅ Task 2.4.1: Quote Template System
+
 **Priority**: 🟡 Medium | **Est**: 10h
 
 **Database Schema**:
@@ -369,6 +396,7 @@ model Quote {
 ```
 
 **Features**:
+
 - [ ] Admin UI to create/edit templates
 - [ ] Pricing calculator (base + modifiers for sqm, extras)
 - [ ] One-click quote generation from template
@@ -383,11 +411,13 @@ model Quote {
 ### 3.1 Mobile App Core Features
 
 #### ✅ Task 3.1.1: Job Management Screen
+
 **Priority**: 🔴 Critical | **Est**: 12h
 
 **Screen**: Today's Schedule (`/app/(tabs)/dashboard.tsx`)
 
 **Features**:
+
 - [ ] List today's bookings
 - [ ] Start/end job buttons
 - [ ] Timer tracking
@@ -435,6 +465,7 @@ export function JobCard({ booking }) {
 ---
 
 #### ✅ Task 3.1.2: GPS & Time Tracking
+
 **Priority**: 🔴 Critical | **Est**: 10h
 
 **Install Dependencies**:
@@ -469,6 +500,7 @@ export function useLocationTracking() {
 ```
 
 **Features**:
+
 - [ ] Clock-in with GPS verification (within 100m of job site)
 - [ ] Track time spent on job
 - [ ] Auto-pause timer on breaks
@@ -478,6 +510,7 @@ export function useLocationTracking() {
 ---
 
 #### ✅ Task 3.1.3: Photo Upload & Job Completion
+
 **Priority**: 🟡 Medium | **Est**: 8h
 
 **Install**:
@@ -543,6 +576,7 @@ export function JobCompletionScreen({ bookingId }) {
 ---
 
 #### ✅ Task 3.1.4: Digital Checklist System
+
 **Priority**: 🟡 Medium | **Est**: 8h
 
 **Database Schema**:
@@ -613,6 +647,7 @@ export function Checklist({ bookingId }) {
 ### 3.2 Push Notifications
 
 #### ✅ Task 3.2.1: Push Notification Setup
+
 **Priority**: 🔴 Critical | **Est**: 6h
 
 **Install**:
@@ -670,6 +705,7 @@ async function registerForPushNotifications() {
 ```
 
 **Notification Types**:
+
 - [ ] New job assignment
 - [ ] Schedule change/cancellation
 - [ ] Urgent message from office
@@ -681,6 +717,7 @@ async function registerForPushNotifications() {
 ### 3.3 Reporting Dashboard
 
 #### ✅ Task 3.3.1: Analytics Backend
+
 **Priority**: 🟡 Medium | **Est**: 12h
 
 **Endpoints**:
@@ -742,6 +779,7 @@ async function getLeadFunnel(period: string) {
 ---
 
 #### ✅ Task 3.3.2: Dashboard Frontend
+
 **Priority**: 🟡 Medium | **Est**: 16h
 
 **Components to Build**:
@@ -804,15 +842,18 @@ export function RevenueChart({ data }) {
 ### 4.1 Advanced AI Features
 
 #### ✅ Task 4.1.1: Predictive Scheduling
+
 **Priority**: 🟢 Low | **Est**: 20h
 
 **Goal**: Use ML to optimize cleaner schedules based on:
+
 - Historical job duration data
 - Travel time between locations
 - Cleaner skill levels
 - Customer preferences
 
 **Approach**:
+
 1. Collect training data (past bookings with actual durations)
 2. Train model to predict job duration
 3. Use optimization algorithm to create optimal daily routes
@@ -821,11 +862,13 @@ export function RevenueChart({ data }) {
 ---
 
 #### ✅ Task 4.1.2: Customer Churn Prediction
+
 **Priority**: 🟢 Low | **Est**: 16h
 
 **Goal**: Identify customers at risk of canceling
 
 **Signals**:
+
 - Declining booking frequency
 - Negative feedback/ratings
 - Reduced responsiveness to emails
@@ -836,9 +879,11 @@ export function RevenueChart({ data }) {
 ---
 
 #### ✅ Task 4.1.3: Dynamic Pricing Engine
+
 **Priority**: 🟢 Low | **Est**: 20h
 
 **Factors**:
+
 - Time of day/week (peak pricing)
 - Customer lifetime value (loyalty discounts)
 - Supply vs demand
@@ -851,36 +896,42 @@ export function RevenueChart({ data }) {
 ## 📋 IMPLEMENTATION CHECKLIST SUMMARY
 
 ### Week 1-2: Stabilization
+
 - [x] Git repository cleanup
 - [ ] Testing framework setup
 - [ ] Sentry activation
 - [ ] Uptime monitoring
 
 ### Week 3-4: Testing & Documentation
+
 - [ ] Write critical smoke tests
 - [ ] Achieve 40% backend coverage
 - [ ] Document APIs
 - [ ] Health check endpoint
 
 ### Week 5-6: Booking Widget
+
 - [ ] Backend API (availability, bookings)
 - [ ] Frontend widget component
 - [ ] Embedding documentation
 - [ ] Widget analytics
 
 ### Week 7-8: SMS & Portal
+
 - [ ] Twilio integration
 - [ ] SMS scheduler (BullMQ)
 - [ ] Customer portal auth
 - [ ] Portal pages (dashboard, bookings, settings)
 
 ### Week 9-10: Mobile Core
+
 - [ ] Job management screen
 - [ ] GPS tracking & time tracking
 - [ ] Photo upload
 - [ ] Digital checklist
 
 ### Week 11-12: Mobile Polish & Reporting
+
 - [ ] Push notifications
 - [ ] Analytics backend
 - [ ] Dashboard frontend
@@ -891,6 +942,7 @@ export function RevenueChart({ data }) {
 ## 🎯 SUCCESS METRICS
 
 ### Technical Metrics
+
 - [ ] Test coverage > 60% (backend)
 - [ ] Test coverage > 40% (frontend)
 - [ ] API response time p95 < 200ms
@@ -898,6 +950,7 @@ export function RevenueChart({ data }) {
 - [ ] Zero critical security vulnerabilities
 
 ### Product Metrics
+
 - [ ] Booking widget conversion rate > 15%
 - [ ] Customer portal adoption > 50%
 - [ ] Mobile app DAU/MAU > 0.7
@@ -905,6 +958,7 @@ export function RevenueChart({ data }) {
 - [ ] Average lead response time < 15 minutes
 
 ### Business Metrics (by end of 90 days)
+
 - [ ] 10+ beta customers onboarded
 - [ ] NPS score > 50
 - [ ] Customer satisfaction > 4.5/5
@@ -917,6 +971,7 @@ export function RevenueChart({ data }) {
 ### A. Technology Stack Reference
 
 **Backend**:
+
 - Express 4.19, TypeScript 5.9
 - Prisma 6.16 + PostgreSQL
 - OpenAI GPT-4 + Gemini
@@ -926,18 +981,21 @@ export function RevenueChart({ data }) {
 - BullMQ (job queue)
 
 **Frontend**:
+
 - Next.js, React 18, TypeScript
 - Tailwind CSS + shadcn/ui
 - Recharts (analytics)
 - React Query (data fetching)
 
 **Mobile**:
+
 - Expo, React Native 0.81
 - TypeScript
 - Expo Router (navigation)
 - Expo Location, Image Picker, Notifications
 
 **Infrastructure**:
+
 - Render.com (hosting)
 - Supabase (database)
 - Redis (Upstash for queue)
@@ -1074,7 +1132,7 @@ model User {
 
 ## 🚀 GETTING STARTED
 
-### Immediate Next Steps (Today):
+### Immediate Next Steps (Today)
 
 1. **Repository Cleanup** (30 min):
    ```bash

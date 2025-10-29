@@ -3,6 +3,7 @@
 Search through workspace documentation and TekupVault for answers before asking user.
 
 ## Arguments
+
 - `query`: Search query (required)
 
 ## Search Strategy

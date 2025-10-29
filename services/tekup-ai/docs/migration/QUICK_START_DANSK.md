@@ -1,4 +1,4 @@
-# 🎯 TekupVault - Hurtig Opsummering
+﻿# 🎯 TekupVault - Hurtig Opsummering
 
 **Dato:** 18. oktober 2025  
 **Status:** ✅ OPDATERET OG KLAR
@@ -8,6 +8,7 @@
 ## Hvad er TekupVault?
 
 **TekupVault er din centrale AI-vidensbase** - et intelligent system der automatisk:
+
 1. 📥 **Synkroniserer** alle dine GitHub repositories
 2. 🤖 **Indekserer** kode og dokumentation med AI embeddings
 3. 🔍 **Gør det søgbart** med semantisk søgning (ligesom at spørge ChatGPT om din kode)
@@ -19,6 +20,7 @@
 ### Repository Expansion: 4 → 14 repos
 
 **Før:**
+
 - renos-backend
 - renos-frontend  
 - Tekup-Billy
@@ -27,16 +29,19 @@
 **Nu (14 repositories organiseret i 3 lag):**
 
 #### 🎯 Tier 1: Produktionssystemer (4)
+
 - Tekup-Billy (Billy.dk MCP Server)
 - renos-backend (RenOS Backend API)
 - renos-frontend (RenOS Frontend)
 - TekupVault (denne app - self-indexing!)
 
 #### 📚 Tier 2: Dokumentation (2)
+
 - tekup-unified-docs
 - tekup-ai-assistant
 
 #### 🚧 Tier 3: Aktiv Udvikling (8)
+
 - tekup-cloud-dashboard
 - tekup-renos (main system)
 - tekup-renos-dashboard
@@ -50,25 +55,28 @@
 
 ## 🎯 Hvordan fungerer det?
 
-### Dataflow i 3 faser:
+### Dataflow i 3 faser
 
 ```
 GitHub → TekupVault Worker → PostgreSQL → OpenAI Embeddings → Semantic Search
 ```
 
 #### Fase 1: GitHub Sync 📥
+
 - **Hver 6. time** henter TekupVault alle ændringer fra dine repos
 - Filtrerer binære filer (billeder, PDFs, etc.)
 - Gemmer kun tekst (kode, docs, config)
 - **Batch processing:** 10 filer ad gangen
 
 #### Fase 2: AI Indexing 🤖
+
 - OpenAI genererer **1536-dimensional vector** for hver fil
 - Gemmes i PostgreSQL med **pgvector** extension
 - Gør det muligt at "forstå" indholdet semantisk
 
 #### Fase 3: Semantic Search 🔍
-- Du spørger: *"hvordan fungerer email service i renos?"*
+
+- Du spørger: _"hvordan fungerer email service i renos?"_
 - TekupVault finder **mest relevante filer** på tværs af alle repos
 - Returnerer resultater med **similarity score** (0-1)
 
@@ -90,6 +98,7 @@ Med 14 repositories indekseret kan TekupVault besvare:
 ## 🔧 Hvordan bruger jeg det?
 
 ### Option 1: MCP Protocol (Claude Desktop, Cursor)
+
 ```json
 {
   "mcpServers": {
@@ -106,6 +115,7 @@ Med 14 repositories indekseret kan TekupVault besvare:
 ```
 
 ### Option 2: HTTP REST API
+
 ```bash
 # Start serveren
 cd c:\Users\empir\TekupVault
@@ -122,12 +132,14 @@ curl -X POST http://localhost:3000/api/search \
 ```
 
 ### Option 3: Supabase Dashboard
-1. Gå til https://app.supabase.com
+
+1. Gå til <https://app.supabase.com>
 2. Åbn dit TekupVault projekt
 3. Kør SQL queries direkte:
+
 ```sql
 SELECT * FROM vault_documents 
-WHERE repository = 'JonasAbde/Tekup-Billy' 
+WHERE repository = 'TekupDK/Tekup-Billy' 
 LIMIT 10;
 ```
 
@@ -149,11 +161,13 @@ LIMIT 10;
 ## 🔐 Security
 
 ### Private Repositories (13/14)
+
 - Kræver **GitHub Personal Access Token** med `repo` scope
 - Token gemt i `.env` som `GITHUB_TOKEN`
 - **Aldrig commit token til git!**
 
 ### Public Repositories (2/14)
+
 - `rendetalje-os` - Professional cleaning management
 - `Jarvis-lite` - Educational AI assistant
 
@@ -162,6 +176,7 @@ LIMIT 10;
 ## 🚀 Næste Skridt
 
 ### 1. Første Sync (Manual)
+
 ```powershell
 cd c:\Users\empir\TekupVault
 pnpm build
@@ -169,6 +184,7 @@ pnpm dev:worker
 ```
 
 ### 2. Monitorer Status
+
 ```powershell
 # Tjek sync status
 curl http://localhost:3000/api/sync-status
@@ -178,6 +194,7 @@ curl http://localhost:3000/api/sync-status
 ```
 
 ### 3. Test Søgning
+
 ```powershell
 # Via API
 curl -X POST http://localhost:3000/api/search -d '{"query":"Billy.dk"}'
@@ -201,6 +218,7 @@ curl -X POST http://localhost:3000/api/search -d '{"query":"Billy.dk"}'
 ## 📊 Git Status
 
 ### Seneste Commits (2025-10-18)
+
 ```
 2137b0a - docs: Add GitHub sync expansion report (4 → 14 repos)
 f3bf115 - feat(config): Expand GitHub sync to 14 active Tekup Portfolio repos

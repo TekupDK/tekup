@@ -9,6 +9,7 @@
 ## 🎯 Session Formål
 
 Brugeren bad om:
+
 1. At undersøge om feature branch er klar til PR
 2. Hurtig status på redundante dokumenter
 3. Branch health check
@@ -22,6 +23,7 @@ Brugeren bad om:
 **Aktiv Branch:** `claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx`
 **Status:** Up to date with origin
 **Uncommitted Changes:**
+
 - `apps/rendetalje/services/mobile/src/app/map/route.tsx` (minor styling changes)
 
 **Recent Commits (Top 5):**
@@ -36,11 +38,13 @@ de99399 chore: optimize knowledge index
 ### Feature Branch vs Master
 
 **Total Changes:**
+
 - **242 files changed**
 - **+21,513 insertions**
 - **-5,833 deletions**
 
 **Major Areas:**
+
 1. ✅ Mobile app complete (React Native + Expo)
 2. ✅ Docker setup (docker-compose.mobile.yml)
 3. ✅ Backend refactoring (NestJS + Prisma migrations)
@@ -85,18 +89,22 @@ Cannot find module './security.controller'
 ## 🟡 ANDRE ISSUES
 
 ### 1. MCP.json konfiguration (FIXED ✅)
+
 **Problem:** Playwright og Composer-trade havde tomme/manglende værdier
 **Løsning:** Fixed playwright args, removed composer-trade
 **Status:** Stashed i `pre-prisma-migration-backup-20251025`
 
 ### 2. Mobile Package.json Version Downgrades (STASHED)
+
 **Problem:**
+
 - `expo-sqlite`: ^13.2.0 → ~11.3.3
 - `expo-status-bar`: ^3.0.8 → ~1.6.0
 
 **Status:** Stashed sammen med MCP.json fixes
 
 ### 3. React Native "gap" Property Removed (STASHED)
+
 **Problem:** `gap: spacing.md` fjernet fra StyleSheet (compatibility fix)
 **Status:** Stashed i `route.tsx`
 
@@ -215,6 +223,7 @@ Merging requires fixes in separate commits.
 **Stash Name:** "WIP: mcp.json fixes and mobile compatibility updates"
 
 **Content:**
+
 1. `.kilocode/mcp.json` - Fixed playwright args
 2. `apps/rendetalje/services/mobile/package.json` - Version adjustments
 3. `apps/rendetalje/services/mobile/app.json` - Asset references removed

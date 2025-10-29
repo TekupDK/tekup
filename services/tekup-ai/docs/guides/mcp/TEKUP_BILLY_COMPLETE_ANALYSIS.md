@@ -15,14 +15,16 @@
 > "The implementation aligns closely with the Ports & Adapters pattern, also known as Hexagonal Architecture. This pattern is evident in the separation of concerns where the core business logic (the 'hexagon') interacts with external systems through well-defined interfaces or 'adapters.'"
 
 **Evidence:**
+
 - **Core (Hexagon):** MCP tool functions (business logic)
 - **Primary Ports:** Stdio transport, HTTP REST API
 - **Secondary Ports:** Billy.dk API client (BillyClient)
-- **Adapters:** 
+- **Adapters:**
   - Input: Stdio (index.ts), HTTP (http-server.ts)
   - Output: Billy API client (billy-client.ts), Cache (cache-manager.ts), Audit (audit-logger.ts)
 
 **Benefits:**
+
 - ✅ Easy to swap transport layers (Stdio ↔ HTTP)
 - ✅ Testable core logic without external dependencies
 - ✅ Clean separation of concerns
@@ -33,12 +35,15 @@
 ## 🎯 Key Production Strengths
 
 ### 1. Dual Transport Layer
+
 **Stdio + HTTP REST API**
+
 - Local development: Stdio MCP (Claude Desktop, VS Code)
 - Cloud deployment: HTTP REST API (Render.com, AWS, etc.)
 - Same core logic, different transports
 
 ### 2. Sophisticated Configuration Management
+
 ```typescript
 // Zod schema validation BEFORE runtime
 const envSchema = z.object({
@@ -50,15 +55,18 @@ const envSchema = z.object({
 ```
 
 **Features:**
+
 - Environment variable validation at startup
 - Flexible naming (BILLY_ORG_ID or BILLY_ORGANIZATION_ID)
 - Default values og transformations
 - Clear error messages for missing vars
 
 ### 3. Multi-Level Error Handling
+
 **Qwen's Assessment:** "Sophisticated (excellent level)"
 
 **Layers:**
+
 1. **Request Validation:** Zod schemas catch invalid inputs
 2. **API Errors:** Axios interceptor + enhanced error extraction
 3. **Billy API Details:** Extracts errorCode, message, validationErrors
@@ -82,6 +90,7 @@ catch (error: any) {
 ```
 
 ### 4. Security Layers
+
 - **Helmet:** Security headers
 - **CORS:** Configurable origin control
 - **Rate Limiting:** 100 requests per 15 min
@@ -91,6 +100,7 @@ catch (error: any) {
 - **Optional Auth:** Development mode support
 
 ### 5. Performance Optimization
+
 - **Rate Limiter:** Custom class prevents Billy.dk rate limit hits
 - **Caching:** Optional Supabase caching (5 min TTL)
 - **Connection Reuse:** Axios instance with persistent connections
@@ -98,6 +108,7 @@ catch (error: any) {
 - **Timeout Management:** 30s default, configurable
 
 ### 6. Production Operations Support
+
 - **Dry Run Mode:** Test without actual API calls
 - **Test Mode:** Billy test organization support
 - **Audit Logging:** All operations logged to Supabase
@@ -110,35 +121,45 @@ catch (error: any) {
 ## 📝 TypeScript Conventions
 
 ### Naming Conventions
+
 **Classes:** PascalCase
+
 - `BillyClient`, `RateLimiter`, `TekupBillyServer`
 
 **Functions:** camelCase
+
 - `listInvoices`, `createCustomer`, `makeRequest`
 
 **Interfaces:** PascalCase with descriptive names
+
 - `BillyInvoice`, `CreateInvoiceInput`, `ToolCallResponse`
 
 **Constants:** UPPER_SNAKE_CASE
+
 - `SERVER_INFO`, `API_VERSION`, `DEFAULT_CONFIG`
 
 **Private Methods:** camelCase with private keyword
+
 - `private async initializeBillyClient()`
 
 ### Type vs Interface
+
 **Pattern:** Interfaces for domain entities, Types for utilities
 
 **Interfaces Used For:**
+
 - Domain models: `BillyInvoice`, `BillyContact`, `BillyProduct`
 - API inputs: `CreateInvoiceInput`, `ListInvoicesInput`
 - Responses: `ToolCallResponse`, `HealthCheckResponse`
 
 **Types Used For:**
+
 - Union types: `'draft' | 'approved' | 'sent'`
 - Complex combinations
 - Utility types
 
 ### Import Organization
+
 ```typescript
 // 1. External dependencies
 import { McpServer } from '@modelcontextprotocol/sdk';
@@ -158,6 +179,7 @@ import * as invoiceTools from './tools/invoices.js';
 **Pattern:** Grouped imports, .js extensions for ES modules
 
 ### Async/Await Pattern
+
 **Consistent usage:**
 ```typescript
 private async initializeBillyClient(): Promise<BillyClient> {
@@ -176,6 +198,7 @@ async wrapToolWithAudit<T>(...): Promise<T> {
 ## 🛠️ Tool Implementation Pattern
 
 ### Standard Tool Structure
+
 ```typescript
 export async function toolName(
   client: BillyClient,
@@ -193,6 +216,7 @@ export async function toolName(
 ```
 
 ### Input Validation (Zod)
+
 Every tool has Zod schema:
 ```typescript
 const ListInvoicesSchema = z.object({
@@ -204,6 +228,7 @@ const ListInvoicesSchema = z.object({
 ```
 
 ### Tool Registry Pattern
+
 ```typescript
 const toolRegistry: Record<string, Function> = {
   'list_invoices': invoiceTools.listInvoices,
@@ -221,6 +246,7 @@ const result = await toolFunc(client, args);
 ## 📊 Codebase Quality Metrics
 
 ### Type Safety
+
 - **TypeScript:** 90.5% of codebase
 - **Interfaces:** ~40+ defined
 - **Zod Schemas:** All tool inputs validated
@@ -228,6 +254,7 @@ const result = await toolFunc(client, args);
 - **Strict Mode:** Enabled
 
 ### Error Handling Coverage
+
 - **API Errors:** ✅ Comprehensive
 - **Network Errors:** ✅ Timeout + retry
 - **Validation Errors:** ✅ Zod + custom messages
@@ -235,6 +262,7 @@ const result = await toolFunc(client, args);
 - **Logging:** ✅ Winston structured logging
 
 ### Security Features
+
 - **Authentication:** 3 methods supported
 - **Rate Limiting:** 2 levels (HTTP + Billy API)
 - **Input Sanitization:** Zod validation
@@ -247,6 +275,7 @@ const result = await toolFunc(client, args);
 ## 🔌 Integration Architecture
 
 ### Flow Diagram
+
 ```
 AI Agent (Claude, ChatGPT, etc.)
     ↓
@@ -280,6 +309,7 @@ npm run start:http  # HTTP transport
 ```
 
 ### API Endpoints (HTTP Mode)
+
 ```
 GET  /health                     # Health check
 POST /mcp/v1/initialize         # MCP handshake
@@ -294,40 +324,56 @@ DELETE /mcp/v1/sse/:sessionId   # Close SSE session
 ## 🧩 Tool Categories & Organization
 
 ### Invoice Tools (8 tools)
+
 **Files:** `src/tools/invoices.ts`
+
 - CRUD: list, create, get, update
 - Actions: send, approve, cancel, mark_paid
 
 ### Customer Tools (4 tools)
+
 **Files:** `src/tools/customers.ts`
+
 - CRUD: list, create, get, update
 
 ### Product Tools (3 tools)
+
 **Files:** `src/tools/products.ts`
+
 - CRUD: list, create, update
 
 ### Revenue Tools (1 tool)
+
 **Files:** `src/tools/revenue.ts`
+
 - Analytics: get_revenue (with grouping)
 
 ### Preset Workflow Tools (6 tools)
+
 **Files:** `src/tools/presets.ts`
+
 - AI-powered: analyze_user_patterns, generate_personalized_presets
 - Execution: execute_preset, get_recommended_presets
 - Management: list_presets, create_custom_preset
 
 ### Analytics Tools (5 tools)
+
 **Files:** `src/tools/analytics.ts`
+
 - analyze_feedback, analyze_usage_data
 - analyze_adoption_risks, analyze_ab_test
 - analyze_segment_adoption
 
 ### Debug Tools (2 tools)
+
 **Files:** `src/tools/debug.ts`
+
 - validate_auth, test_connection
 
 ### Test Tools (3 tools)
+
 **Files:** `src/tools/test-runner.ts`
+
 - list_test_scenarios, run_test_scenario, generate_test_data
 
 **Total:** 32 tools across 8 categories
@@ -337,26 +383,31 @@ DELETE /mcp/v1/sse/:sessionId   # Close SSE session
 ## 💡 Key Design Decisions
 
 ### Decision 1: Dual Transport
+
 **Why:** Support both local (Stdio) og cloud (HTTP) deployment
 **Impact:** Broader platform compatibility
 **Trade-off:** Slightly more complexity
 
 ### Decision 2: Optional Supabase
+
 **Why:** Works without database for simple setups
 **Impact:** Lower barrier to entry
 **Trade-off:** Some features require Supabase (caching, analytics)
 
 ### Decision 3: Zod Everywhere
+
 **Why:** Runtime validation + compile-time types
 **Impact:** Prevents invalid data at API boundary
 **Trade-off:** Some overhead, but worth it
 
 ### Decision 4: Winston Logging
+
 **Why:** Structured logging for production debugging
 **Impact:** Better observability
 **Trade-off:** More verbose than console.log
 
 ### Decision 5: Tool Registry Pattern
+
 **Why:** Dynamic tool dispatch, easy to add new tools
 **Impact:** Scalable tool system
 **Trade-off:** Less type-safe than direct calls (mitigated with Zod)
@@ -365,7 +416,8 @@ DELETE /mcp/v1/sse/:sessionId   # Close SSE session
 
 ## 🎓 Lessons for AI Assistant Integration
 
-### Apply These Patterns:
+### Apply These Patterns
+
 1. ✅ **Zod Validation:** All inputs validated
 2. ✅ **Enhanced Errors:** Include context og details
 3. ✅ **Structured Logging:** Use Winston or similar
@@ -375,7 +427,8 @@ DELETE /mcp/v1/sse/:sessionId   # Close SSE session
 7. ✅ **Dry Run Mode:** Test without side effects
 8. ✅ **Multi-Auth:** Support multiple auth methods
 
-### Avoid These:
+### Avoid These
+
 - ❌ Tight coupling to transport layer
 - ❌ Missing error context
 - ❌ Unvalidated inputs
@@ -402,6 +455,7 @@ DELETE /mcp/v1/sse/:sessionId   # Close SSE session
 ## 🔍 Dependencies Analysis
 
 ### Core Dependencies (Essential)
+
 - `@modelcontextprotocol/sdk` (1.20.0) - MCP protocol
 - `express` (5.1.0) - HTTP server
 - `axios` (1.6.0) - HTTP client
@@ -409,16 +463,19 @@ DELETE /mcp/v1/sse/:sessionId   # Close SSE session
 - `dotenv` (16.3.0) - Environment config
 
 ### Security Dependencies
+
 - `helmet` (8.1.0) - Security headers
 - `cors` (2.8.5) - Cross-origin control
 - `express-rate-limit` (8.1.0) - Rate limiting
 
 ### Optional Dependencies
+
 - `@supabase/supabase-js` (2.75.0) - Caching + audit
 - `winston` (3.18.3) - Logging
 - `uuid` (13.0.0) - ID generation
 
 ### Development Dependencies
+
 - `typescript` (5.3.0)
 - `tsx` (4.7.0) - TypeScript execution
 - `@types/*` - Type definitions
@@ -430,6 +487,7 @@ DELETE /mcp/v1/sse/:sessionId   # Close SSE session
 ## 🎯 Recommendations for AI Assistant
 
 ### Must Implement
+
 1. **Zod Validation** - Copy pattern for all inputs
 2. **Error Enhancement** - Include billyDetails pattern
 3. **Rate Limiting** - Custom RateLimiter class
@@ -437,12 +495,14 @@ DELETE /mcp/v1/sse/:sessionId   # Close SSE session
 5. **Type Definitions** - Create comprehensive types.ts
 
 ### Should Consider
+
 1. **Dry Run Mode** - Useful for testing
 2. **Multi-Auth** - Flexible authentication
 3. **Health Checks** - Connection validation tools
 4. **Tool Registry** - If supporting multiple services
 
 ### Can Skip (For Now)
+
 1. Supabase integration - Not needed initially
 2. Analytics tools - Add later
 3. Preset workflows - Advanced feature

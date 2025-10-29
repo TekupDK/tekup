@@ -33,6 +33,7 @@ DATABASE_URL=postgresql://postgres.[project]:[pwd]@db.[project].supabase.co:5432
 ```
 
 **Tabeller:**
+
 - `vault_documents`
 - `vault_embeddings` (vector 1536)
 - `vault_sync_status`
@@ -68,6 +69,7 @@ ENCRYPTION_SALT=[16-char-salt]
 ```
 
 **Tabeller (8 stk):**
+
 - `billy_organizations`
 - `billy_users`
 - `billy_cached_invoices`
@@ -106,6 +108,7 @@ Schema: renos.*
 ## 📊 Supabase Projekt Distribution
 
 ### **Projekt 1: TekupVault** (eu-west-3 Paris)
+
 ```
 Apps: 1
 └── TekupVault (vault-api + vault-worker)
@@ -116,6 +119,7 @@ Apps: 1
 ```
 
 ### **Projekt 2: RenOS By Tekup** (eu-central-1 Frankfurt)
+
 ```
 Apps: 1 (snart 2)
 ├── Tekup-Billy (MCP Server)
@@ -142,6 +146,7 @@ Apps: 1 (snart 2)
 ### **Anbefaling: Brug "RenOS By Tekup" Som Central Database**
 
 **Rationale:**
+
 - ✅ Frankfurt (tættere på Danmark end Paris)
 - ✅ Allerede har Tekup-Billy data
 - ✅ Navnet passer til hovedprojekt (RenOS)
@@ -232,23 +237,27 @@ DATABASE_URL=postgresql://postgres.oaevagd:[pwd]@eu-central-1.pooler.supabase.co
 ### **Estimeret Tidsforbrug**
 
 **Fase 1: Schema Setup** (2-3 timer)
+
 - Opret schemas i RenOS projekt
 - Setup RLS policies
 - Test connection fra alle apps
 
 **Fase 2: TekupVault Migration** (4-6 timer)
+
 - Data eksport fra Paris
 - Import til Frankfurt (vault schema)
 - Update vault-api og vault-worker connection strings
 - Test semantic search fungerer
 - Deploy til Render.com
 
-**Fase 3: Billy Reorganization** (2-3 timer) *OPTIONAL*
+**Fase 3: Billy Reorganization** (2-3 timer) _OPTIONAL_
+
 - Beslut om schema move er nødvendig
 - Test at Billy MCP stadig virker
 - Update docs
 
 **Fase 4: RenOS Migration** (6-8 timer)
+
 - Export Prisma data
 - Import til renos schema
 - Update Prisma schema config

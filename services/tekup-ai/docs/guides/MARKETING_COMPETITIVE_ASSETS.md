@@ -7,6 +7,7 @@ Dette dokument indeholder visuelle sammenligninger og marketing copy til brug p�
 ## 🎯 Elevator Pitch Comparison
 
 ### CleanManager's Pitch
+>
 > "CleanManager automatiserer og strukturerer dine administrative opgaver, så du får mere ud af din tid."
 
 **Target:** Eksisterende rengøringsfirmaer der vil optimere drift
@@ -14,6 +15,7 @@ Dette dokument indeholder visuelle sammenligninger og marketing copy til brug p�
 ---
 
 ### RenOS's Pitch
+>
 > "RenOS finder dine første 100 kunder på autopilot, mens du fokuserer på at levere fantastisk rengøring."
 
 **Target:** Nye rengøringsfirmaer der vil vokse hurtigt
@@ -65,6 +67,7 @@ Dette dokument indeholder visuelle sammenligninger og marketing copy til brug p�
 ## 🎨 Customer Journey Comparison
 
 ### CleanManager Customer Journey
+
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │  DAY 0: Firma har allerede 10-50 kunder                     │
@@ -101,6 +104,7 @@ Dette dokument indeholder visuelle sammenligninger og marketing copy til brug p�
 ---
 
 ### RenOS Customer Journey
+
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │  DAY 0: Ny iværksætter starter rengøringsfirma             │
@@ -148,8 +152,9 @@ Dette dokument indeholder visuelle sammenligninger og marketing copy til brug p�
 ## 💬 Customer Testimonial Templates
 
 ### CleanManager Type
+>
 > "Før CleanManager brugte vi 15 timer om ugen på timesedler og fakturering. Nu tager det 2 timer. Vi har fået vores liv tilbage."
-> 
+>
 > — Mikkel Thrane, Thrane Erhvervsrengøring A/S (50+ medarbejdere)
 
 **Pain Point:** Admin overhead  
@@ -158,8 +163,9 @@ Dette dokument indeholder visuelle sammenligninger og marketing copy til brug p�
 ---
 
 ### RenOS Type
+>
 > "Jeg startede mit rengøringsfirma for 6 måneder siden. RenOS fandt mine første 30 kunder på autopilot, mens jeg fokuserede på at levere fantastisk service. Jeg bruger 0 timer på emails."
-> 
+>
 > — Jonas [Efteravn], Rendetalje.dk (solopreneur)
 
 **Pain Point:** Lead generation  
@@ -170,6 +176,7 @@ Dette dokument indeholder visuelle sammenligninger og marketing copy til brug p�
 ## 🎯 Use Case Comparison
 
 ### Når du SKAL bruge CleanManager
+
 ```
 ✅ Du har 10+ medarbejdere
 ✅ Du har faste erhvervskunder
@@ -180,6 +187,7 @@ Dette dokument indeholder visuelle sammenligninger og marketing copy til brug p�
 ```
 
 ### Når du SKAL bruge RenOS
+
 ```
 ✅ Du er solopreneur eller har 1-5 ansatte
 ✅ Du har hovedsageligt private kunder
@@ -229,6 +237,7 @@ Month 36+: ENTERPRISE PHASE
 ## 🎨 Social Media Posts
 
 ### LinkedIn Post #1: Market Positioning
+
 ```
 🚀 CleanManager vs RenOS: Ikke konkurrenter, men perfekte partnere
 
@@ -258,6 +267,7 @@ Det handler om hvor du er i din growth journey.
 ---
 
 ### LinkedIn Post #2: Customer Journey
+
 ```
 📊 From 0 to 50 customers: The RenOS Journey
 
@@ -300,6 +310,7 @@ Different tools. Different stages. Same goal.
 ---
 
 ### Twitter/X Thread
+
 ```
 🧵 CleanManager vs RenOS - en ærlig sammenligning
 
@@ -332,6 +343,7 @@ Win-win for alle. 🚀
 ## 🎯 Website Copy Suggestions
 
 ### Homepage Hero Section
+
 ```
 headline:
 "Find dine første 100 kunder. Automatisk."
@@ -348,6 +360,7 @@ CTA Secondary: "Se sammenligning med CleanManager"
 ---
 
 ### Comparison Page Intro
+
 ```
 # RenOS vs CleanManager: Hvilken passer til dig?
 
@@ -369,6 +382,7 @@ Tænk på det sådan:
 ---
 
 ### Pricing Page
+
 ```
 ## "Men CleanManager koster også..."
 
@@ -397,6 +411,7 @@ Svaret afgør hvilken platform du skal bruge.
 ## 📧 Email Campaign Sequence
 
 ### Email 1: The Confusion (Dag 0)
+
 ```
 Subject: "Er RenOS bare billigere CleanManager? 🤔"
 
@@ -425,6 +440,7 @@ PS: Vi elsker CleanManager. Mange af vores kunder bruger begge platforme.
 ---
 
 ### Email 2: The Clarity (Dag 3)
+
 ```
 Subject: "Hvornår skal du bruge RenOS vs CleanManager?"
 
@@ -454,6 +470,7 @@ Mvh,
 ---
 
 ### Email 3: The Proof (Dag 7)
+
 ```
 Subject: "Jonas gik fra 0 til 50 kunder med RenOS"
 
@@ -486,6 +503,7 @@ Mvh,
 ## 🎨 Infographic Ideas
 
 ### Infographic 1: "The Growth Spectrum"
+
 ```
 [Visual showing customer lifecycle]
 
@@ -513,6 +531,7 @@ Mvh,
 ---
 
 ### Infographic 2: "Problem-Solution Matrix"
+
 ```
 [2x2 grid]
 
@@ -532,6 +551,7 @@ SOLUTION     │ CleanManager │      RenOS
 ## 🎤 Sales Script
 
 ### Discovery Questions
+
 ```
 "Før jeg forklarer hvordan RenOS virker, lad mig spørge:
 
@@ -560,7 +580,7 @@ Based på dine svar, lad mig vise dig [RenOS/CleanManager/Both]..."
 ### When Prospect Says: "Vi overvejer CleanManager"
 
 **Response:**
-"Fantastisk valg! CleanManager er den bedste operations platform i branchen. 
+"Fantastisk valg! CleanManager er den bedste operations platform i branchen.
 
 Før I implementerer CleanManager, har I styr på jeres lead generation?
 
@@ -581,6 +601,7 @@ Lad mig vise jer hvordan de kan arbejde sammen..."
 "God sammenligning, men nej - vi er faktisk forskellige værktøjer.
 
 Analogi:
+
 - CleanManager er som Slack (team communication)
 - RenOS er som Salesforce (sales automation)
 
@@ -606,5 +627,6 @@ Forskellige tools. Samme mission.
 ---
 
 **For flere detaljer, se:**
+
 - [COMPETITIVE_ANALYSIS_CLEANMANAGER.md](./COMPETITIVE_ANALYSIS_CLEANMANAGER.md)
 - [COMPETITIVE_SUMMARY_DA.md](./COMPETITIVE_SUMMARY_DA.md)

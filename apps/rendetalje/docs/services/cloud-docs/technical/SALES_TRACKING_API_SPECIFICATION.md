@@ -1,6 +1,7 @@
 # Sales Tracking System - API Specification
 
 ## Base URL
+
 ```
 Development: http://localhost:3000/api/v1
 Production: https://api.tekup-sales.dk/api/v1
@@ -11,6 +12,7 @@ Production: https://api.tekup-sales.dk/api/v1
 All API requests require authentication using JWT tokens in the Authorization header.
 
 ### Login
+
 ```http
 POST /auth/login
 Content-Type: application/json
@@ -40,6 +42,7 @@ Content-Type: application/json
 ```
 
 ### Using JWT Token
+
 ```http
 GET /sales
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -50,6 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ## Sales API
 
 ### Create Sale
+
 ```http
 POST /sales
 Authorization: Bearer {token}
@@ -125,12 +129,14 @@ Content-Type: application/json
 ---
 
 ### List Sales
+
 ```http
 GET /sales?status=ACCEPTED&dateFrom=2025-01-01&dateTo=2025-12-31&page=1&pageSize=20
 Authorization: Bearer {token}
 ```
 
 **Query Parameters**:
+
 - `status` (optional): Filter by sale status (QUOTE_SENT, ACCEPTED, etc.)
 - `customerId` (optional): Filter by customer
 - `assignedTo` (optional): Filter by assigned user
@@ -176,6 +182,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Sale by ID
+
 ```http
 GET /sales/{id}
 Authorization: Bearer {token}
@@ -195,6 +202,7 @@ Authorization: Bearer {token}
 ---
 
 ### Update Sale
+
 ```http
 PATCH /sales/{id}
 Authorization: Bearer {token}
@@ -222,6 +230,7 @@ Content-Type: application/json
 ---
 
 ### Delete Sale
+
 ```http
 DELETE /sales/{id}
 Authorization: Bearer {token}
@@ -232,6 +241,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Sales Statistics
+
 ```http
 GET /sales/statistics/summary?dateFrom=2025-10-01&dateTo=2025-10-31
 Authorization: Bearer {token}
@@ -298,6 +308,7 @@ Authorization: Bearer {token}
 ---
 
 ### Export Sales to CSV
+
 ```http
 GET /sales/export?format=csv&status=PAID&dateFrom=2025-01-01
 Authorization: Bearer {token}
@@ -318,6 +329,7 @@ RS-2025-0002,Jane Smith,Deep Cleaning,1200,300,1500,PAID,2025-01-18,2025-01-25
 ## Customers API
 
 ### Create Customer
+
 ```http
 POST /customers
 Authorization: Bearer {token}
@@ -367,12 +379,14 @@ Content-Type: application/json
 ---
 
 ### List Customers
+
 ```http
 GET /customers?search=john&status=ACTIVE&page=1&pageSize=20
 Authorization: Bearer {token}
 ```
 
 **Query Parameters**:
+
 - `search` (optional): Search by name, email, or phone
 - `status` (optional): ACTIVE, INACTIVE, BLOCKED
 - `customerType` (optional): B2B, B2C
@@ -407,6 +421,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Customer by ID
+
 ```http
 GET /customers/{id}
 Authorization: Bearer {token}
@@ -417,6 +432,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Customer Sales History
+
 ```http
 GET /customers/{id}/sales?page=1&pageSize=10
 Authorization: Bearer {token}
@@ -447,6 +463,7 @@ Authorization: Bearer {token}
 ---
 
 ### Update Customer
+
 ```http
 PATCH /customers/{id}
 Authorization: Bearer {token}
@@ -464,6 +481,7 @@ Content-Type: application/json
 ---
 
 ### Delete Customer
+
 ```http
 DELETE /customers/{id}
 Authorization: Bearer {token}
@@ -485,12 +503,14 @@ Authorization: Bearer {token}
 ## Services API
 
 ### List Services
+
 ```http
 GET /services?category=Regular Cleaning&active=true
 Authorization: Bearer {token}
 ```
 
 **Query Parameters**:
+
 - `category` (optional): Filter by category
 - `active` (optional): true/false, default: true
 
@@ -516,6 +536,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Service by ID
+
 ```http
 GET /services/{id}
 Authorization: Bearer {token}
@@ -526,6 +547,7 @@ Authorization: Bearer {token}
 ---
 
 ### Create Service (Admin Only)
+
 ```http
 POST /services
 Authorization: Bearer {token}
@@ -556,6 +578,7 @@ Content-Type: application/json
 ---
 
 ### Update Service (Admin Only)
+
 ```http
 PATCH /services/{id}
 Authorization: Bearer {token}
@@ -574,6 +597,7 @@ Content-Type: application/json
 ## Leads API
 
 ### Create Lead
+
 ```http
 POST /leads
 Authorization: Bearer {token}
@@ -620,12 +644,14 @@ Content-Type: application/json
 ---
 
 ### List Leads
+
 ```http
 GET /leads?status=NEW&priority=HIGH&overdue=true
 Authorization: Bearer {token}
 ```
 
 **Query Parameters**:
+
 - `status`: NEW, CONTACTED, QUALIFIED, UNQUALIFIED, CONVERTED
 - `priority`: LOW, MEDIUM, HIGH, URGENT
 - `source`: EMAIL, PHONE, WEBSITE, REFERRAL, EVENT
@@ -662,6 +688,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Lead by ID
+
 ```http
 GET /leads/{id}
 Authorization: Bearer {token}
@@ -672,6 +699,7 @@ Authorization: Bearer {token}
 ---
 
 ### Update Lead
+
 ```http
 PATCH /leads/{id}
 Authorization: Bearer {token}
@@ -691,6 +719,7 @@ Content-Type: application/json
 ---
 
 ### Convert Lead to Sale
+
 ```http
 POST /leads/{id}/convert
 Authorization: Bearer {token}
@@ -726,6 +755,7 @@ Content-Type: application/json
 ```
 
 **Process**:
+
 1. If lead has no customerId, create new customer
 2. Create sale with lead information
 3. Update lead status to CONVERTED
@@ -734,6 +764,7 @@ Content-Type: application/json
 ---
 
 ### Delete Lead
+
 ```http
 DELETE /leads/{id}
 Authorization: Bearer {token}
@@ -746,6 +777,7 @@ Authorization: Bearer {token}
 ## Analytics API
 
 ### Get Dashboard Analytics
+
 ```http
 GET /analytics/dashboard?dateFrom=2025-10-01&dateTo=2025-10-31
 Authorization: Bearer {token}
@@ -817,6 +849,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Customer Lifetime Value Report
+
 ```http
 GET /analytics/customer-ltv
 Authorization: Bearer {token}
@@ -844,12 +877,14 @@ Authorization: Bearer {token}
 ---
 
 ### Get Sales Trend Report
+
 ```http
 GET /analytics/sales-trend?period=weekly&start=2025-01-01&end=2025-12-31
 Authorization: Bearer {token}
 ```
 
 **Query Parameters**:
+
 - `period`: daily, weekly, monthly, yearly
 - `start`: Start date (ISO 8601)
 - `end`: End date (ISO 8601)
@@ -880,6 +915,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Service Performance Report
+
 ```http
 GET /analytics/service-performance?dateFrom=2025-01-01&dateTo=2025-12-31
 Authorization: Bearer {token}
@@ -905,6 +941,7 @@ Authorization: Bearer {token}
 ---
 
 ### Get Sales Rep Performance Report
+
 ```http
 GET /analytics/sales-rep-performance?dateFrom=2025-01-01&dateTo=2025-12-31
 Authorization: Bearer {token}
@@ -940,6 +977,7 @@ Authorization: Bearer {token}
 ## Integration Webhooks
 
 ### Email Webhook (Lead Creation)
+
 ```http
 POST /webhooks/email
 Content-Type: application/json
@@ -966,6 +1004,7 @@ X-Webhook-Signature: {signature}
 ---
 
 ### Billy.dk Payment Webhook
+
 ```http
 POST /webhooks/billy/payment
 Content-Type: application/json
@@ -994,6 +1033,7 @@ X-Billy-Signature: {signature}
 ## Error Responses
 
 ### Standard Error Format
+
 ```json
 {
   "statusCode": 400,
@@ -1050,6 +1090,7 @@ X-Billy-Signature: {signature}
 All list endpoints support pagination with consistent parameters:
 
 **Query Parameters**:
+
 - `page`: Page number (default: 1)
 - `pageSize`: Items per page (default: 20, max: 100)
 
@@ -1072,18 +1113,21 @@ All list endpoints support pagination with consistent parameters:
 ## Filtering & Sorting
 
 ### Filtering
+
 Use query parameters for filtering:
 ```
 GET /sales?status=ACCEPTED&dateFrom=2025-01-01&assignedTo=uuid
 ```
 
 ### Sorting
+
 Use `sortBy` and `sortOrder` parameters:
 ```
 GET /sales?sortBy=saleDate&sortOrder=desc
 ```
 
 **Valid Sort Orders**:
+
 - `asc`: Ascending
 - `desc`: Descending
 
@@ -1092,12 +1136,15 @@ GET /sales?sortBy=saleDate&sortOrder=desc
 ## Data Types
 
 ### Date/Time Format
+
 All dates use ISO 8601 format: `2025-10-18T10:00:00Z`
 
 ### Currency
+
 All amounts are in Danish Kroner (DKK) with 2 decimal places.
 
 ### UUID Format
+
 All IDs use UUID v4: `550e8400-e29b-41d4-a716-446655440000`
 
 ---
@@ -1116,9 +1163,11 @@ Accept: application/vnd.tekup.v1+json
 ## Testing
 
 ### Postman Collection
+
 Import the Postman collection for testing: `sales-tracking-api.postman_collection.json`
 
 ### Test Credentials
+
 ```
 Development Environment:
 Email: admin@rendetalje.dk
@@ -1139,4 +1188,4 @@ Password: TestPassword123!
 
 **Document Version**: 1.0  
 **Last Updated**: 2025-10-18  
-**Contact**: dev@tekup.dk
+**Contact**: <dev@tekup.dk>

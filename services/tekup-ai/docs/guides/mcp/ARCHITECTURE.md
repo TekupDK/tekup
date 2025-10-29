@@ -50,6 +50,7 @@ graph TD
 **Purpose:** Brugerinteraktion med AI-assistenten
 
 #### Jan AI Desktop
+
 - **Type:** Electron-based desktop app
 - **Features:**
   - Chat interface (ChatGPT-like)
@@ -60,6 +61,7 @@ graph TD
 - **Port:** N/A (desktop app)
 
 #### Cursor IDE
+
 - **Type:** VS Code fork med AI integration
 - **Features:**
   - Code completion
@@ -69,6 +71,7 @@ graph TD
 - **Use Case:** Development workflow
 
 #### VS Code Terminal
+
 - **Type:** Command-line interface
 - **Features:**
   - Quick commands
@@ -83,6 +86,7 @@ graph TD
 **Purpose:** Local AI model inference
 
 #### Ollama Server
+
 - **Version:** 0.x.x
 - **Protocol:** HTTP REST API
 - **Default Port:** 11434
@@ -131,6 +135,7 @@ RTX 5070 (8GB VRAM):
 #### Model Context Protocol (MCP)
 
 **What is MCP?**
+
 - Open standard fra Anthropic
 - JSON-RPC baseret
 - AI-first design
@@ -161,8 +166,9 @@ User sees: "✅ Faktura INV-2025-042 oprettet: 1.396 DKK"
 ### 4. External Systems Integration
 
 #### Tekup-Billy (Existing)
+
 **Status:** ✅ Already deployed  
-**URL:** https://tekup-billy.onrender.com  
+**URL:** <https://tekup-billy.onrender.com>  
 **Version:** v1.2.0
 
 **Architecture:**
@@ -177,6 +183,7 @@ Billy.dk Platform
 ```
 
 **Key Endpoints:**
+
 - `POST /billy/invoices` - Create invoice
 - `GET /billy/customers` - List customers
 - `GET /billy/products` - List products
@@ -187,6 +194,7 @@ Billy.dk Platform
 ---
 
 #### RenOS Backend (Existing)
+
 **Status:** ✅ Already deployed  
 **Tech Stack:** Node.js + TypeScript + Prisma
 
@@ -202,6 +210,7 @@ PostgreSQL Database
 ```
 
 **Key Endpoints:**
+
 - `GET /api/bookings` - List/search bookings
 - `POST /api/bookings` - Create booking
 - `GET /api/customers/:id` - Get customer
@@ -259,6 +268,7 @@ TekUp AI → Google OAuth2 → Calendar/Gmail
 #### Windows Performance Monitoring
 
 **Data Sources:**
+
 - WMI (Windows Management Instrumentation)
 - Performance Counters
 - Event Logs
@@ -277,6 +287,7 @@ Get-Counter '\PhysicalDisk(_Total)\Disk Bytes/sec'
 ```
 
 **Alert Thresholds:**
+
 - Chrome RAM >10GB → Suggest tab suspension
 - GPU usage >95% for 5+ min → Thermal warning
 - Disk usage >90% → Cleanup suggestion
@@ -317,6 +328,7 @@ sequenceDiagram
 ```
 
 **Timeline:**
+
 - User input: 0s
 - AI parsing: 0-2s
 - MCP calls: 2-4s (2 API calls)
@@ -371,12 +383,14 @@ Google OAuth2 → RenOS handles
 ### Data Privacy
 
 **Local-First Design:**
+
 - ✅ All AI models run locally (no cloud API calls)
 - ✅ Customer data stays in your database
 - ✅ Conversations stored locally only
 - ✅ No telemetry to external services
 
 **GDPR Compliance:**
+
 - Right to erasure: Delete conversation history
 - Data minimization: Only fetch needed data
 - Purpose limitation: AI only accesses data for specified tasks
@@ -400,11 +414,13 @@ Google OAuth2 → RenOS handles
 ### Scalability
 
 **Current Setup:**
+
 - Single user (Jonas)
 - Local execution only
 - No concurrent requests
 
 **Future (if needed):**
+
 - Multi-user: Deploy Ollama on server
 - Concurrent: Queue system for requests
 - Caching: Store common MCP responses
@@ -522,16 +538,19 @@ Storage:
 ## 🚀 Deployment Architecture
 
 ### Phase 1: Local Development (Current)
+
 - Everything runs locally
 - Manual configuration
 - Testing and iteration
 
 ### Phase 2: Hybrid (Week 2-3)
+
 - Ollama local
 - MCP servers as services
 - Remote API integrations stable
 
 ### Phase 3: Production Ready (Week 4+)
+
 - Automated startup scripts
 - Monitoring dashboards
 - Error alerting
@@ -542,5 +561,4 @@ Storage:
 **Version:** 1.0.0  
 **Last Updated:** 2025-01-15  
 **Maintained by:** TekUp AI Assistant Project
-
 

@@ -109,12 +109,14 @@ AR - Venter på PC2's Prisma migration" -ForegroundColor Green
 ## ⏳ STEP 5: VENT PÅ PC2
 
 **Gør IKKE:**
+
 - ❌ Rør Prisma-relaterede filer
 - ❌ Ændre schema.prisma
 - ❌ Opdater database packages
 - ❌ Merge backup branch
 
 **Kan gøre:**
+
 - ✅ Arbejd på monitoring (UptimeRobot setup)
 - ✅ Frontend Sentry installation (ingen DB changes)
 - ✅ Documentation updates
@@ -240,12 +242,14 @@ git push origin master
 ## 🎯 SUMMARY
 
 **Umiddelbart (10 min):**
+
 1. ✅ Commit monitoring docs
 2. ⚠️ Fix monorepo problem
 3. 🏷️ Tag sikkerhedskopi
 4. ⏸️ STOP og vent
 
 **Når PC2 færdig (45 min):**
+
 1. 🔄 Merge Prisma changes
 2. 🧪 Test grundigt
 3. ✅ Fortsæt monitoring setup

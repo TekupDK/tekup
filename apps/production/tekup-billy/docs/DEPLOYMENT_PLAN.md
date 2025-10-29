@@ -1,4 +1,4 @@
-# 📋 FINAL STATUS: Tekup-Billy + RenOS Security Fix
+﻿# 📋 FINAL STATUS: Tekup-Billy + RenOS Security Fix
 
 **Dato:** 11. Oktober 2025, 04:00  
 **Projekter:** Tekup-Billy MCP + RenOS Backend/Frontend
@@ -331,7 +331,7 @@ WHERE schemaname = 'public';
 **Tekup-Billy MCP:**
 
 - Developer: AI Agent (GitHub Copilot)
-- Repository: github.com/JonasAbde/Tekup-Billy
+- Repository: github.com/TekupDK/Tekup-Billy
 - Deployment: render.com (tekup-billy.onrender.com)
 
 **RenOS Project:**

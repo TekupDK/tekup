@@ -7,6 +7,7 @@ Complete guide til at migrere eksisterende databaser til Tekup Central Database.
 ## 📋 Overview
 
 Denne guide dækker migration af:
+
 1. **TekupVault** - PostgreSQL + pgvector → `vault` schema
 2. **Tekup-Billy** - Supabase → `billy` schema  
 3. **RenOS** - Prisma PostgreSQL → `renos` schema
@@ -437,6 +438,7 @@ EOF
 ## 📞 Support
 
 **Need help?**
+
 - Check [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 - Review logs: `docker logs tekup-database-postgres`
 - Contact: Jonas Abde

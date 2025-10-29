@@ -9,6 +9,7 @@ After setting up authentication and adding the required scope, you can start cre
 ## Common Use Cases
 
 ### 1. Newsletter Management
+
 Automatically organize newsletters:
 
 ```
@@ -17,12 +18,15 @@ Parameters: senderEmail, labelIds, archive
 ```
 
 ### 2. Work Email Organization
+
 Create filters for work emails from managers and team notifications.
 
 ### 3. Automated Filing
+
 Set up filters to automatically file financial emails and support tickets.
 
 ### 4. Large Attachment Management
+
 Handle emails with large attachments by applying special labels.
 
 ## Best Practices
@@ -38,4 +42,4 @@ Handle emails with large attachments by applying special labels.
 - Maximum of 1,000 filters per Gmail account
 - Only one user-defined label can be added per filter
 - Forwarding requires verified destination addresses
-- Some system labels cannot be removed 
+- Some system labels cannot be removed

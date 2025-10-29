@@ -1,4 +1,5 @@
-# Changelog: Tekup Secrets Submodule Migration
+﻿# Changelog: Tekup Secrets Submodule Migration
+
 ## October 24, 2025
 
 ---
@@ -8,6 +9,7 @@
 **Major Change:** Migrated `tekup-secrets` from tracked folder in main workspace to separate private GitHub repository integrated as git submodule.
 
 **Rationale:**
+
 - Better security through GitHub organization access control
 - Multi-workspace support (PC1, PC2, team members share same credentials)
 - Independent version control for credentials vs code
@@ -15,6 +17,7 @@
 - Standard industry practice for private configuration repositories
 
 **Impact:**
+
 - ✅ No functional changes to existing projects
 - ✅ `setup-mcp-secure.ps1` still works without modification
 - ✅ All credentials intact and accessible
@@ -27,17 +30,19 @@
 
 ### 1. Created Separate Repository ✅
 
-**Repository:** https://github.com/TekupDK/tekup-secrets  
+**Repository:** <https://github.com/TekupDK/tekup-secrets>  
 **Visibility:** Private (TekupDK organization only)  
 **Branch:** `main` (default)
 
 #### Initial Setup
+
 - Created repository under TekupDK organization (not personal account)
 - Set visibility to private
 - Added comprehensive README.md
 - Initialized with all existing .env files from backup
 
 **Commits:**
+
 - `ae29fd1` - Initial commit: Tekup Secrets with git-crypt encryption
 - `30b658e` - Remove git-crypt encryption - use private repo security instead
 - `f12fd70` - Replace encrypted files with unencrypted versions
@@ -48,6 +53,7 @@
 **Decision:** Remove git-crypt in favor of private repository access control
 
 **Why:**
+
 1. **Submodule Compatibility:** git-crypt caused "encrypted file has been tampered with" errors when initializing submodule
 2. **Key Management:** Sharing git-crypt keys across team/CI adds complexity without significant security benefit
 3. **Industry Standard:** Private repos (AWS credentials, Terraform state) commonly use repo access control instead of encryption
@@ -55,6 +61,7 @@
 5. **CI/CD Integration:** Render.com uses environment variables, doesn't need submodule access
 
 **Security Model:**
+
 - GitHub organization access control (TekupDK)
 - Private repository (requires authentication)
 - 2FA enforced on organization
@@ -66,6 +73,7 @@
 **Main Workspace Changes:**
 
 #### `.gitmodules` (Created)
+
 ```ini
 [submodule "tekup-secrets"]
     path = tekup-secrets
@@ -73,11 +81,13 @@
 ```
 
 #### Git Structure
+
 - `tekup-secrets/` now points to commit hash in separate repo
 - Main workspace tracks submodule commit reference (not file contents)
 - Submodule can be updated independently
 
 **Commits in Main Workspace:**
+
 - `6ac6986` - Convert tekup-secrets to git submodule
 - `90a4b5a` - Update tekup-secrets submodule to unencrypted version (f12fd70)
 - `da5fcff` - Merge with remote changes + rename-folder.ps1
@@ -85,7 +95,9 @@
 ### 4. Created Documentation ✅
 
 #### `MIGRATION_TO_SUBMODULE.md`
+
 Comprehensive 400+ line guide covering:
+
 - Migration steps and rationale
 - Security model comparison (git-crypt vs private repo)
 - Usage guide for new team members (PC2, etc.)
@@ -95,7 +107,9 @@ Comprehensive 400+ line guide covering:
 - Technical details (submodule configuration, file structure)
 
 #### `setup-new-machine.ps1`
+
 Automated setup script (300+ lines) for new machines:
+
 - Checks prerequisites (Git installation, authentication)
 - Initializes git submodules automatically
 - Runs MCP configuration setup
@@ -106,12 +120,14 @@ Automated setup script (300+ lines) for new machines:
 ### 5. Updated Existing Documentation ✅
 
 #### `README.md`
+
 - Changed "git-crypt encrypted" to "git submodule"
 - Updated Quick Start section with submodule initialization
 - Replaced git-crypt unlock steps with `setup-new-machine.ps1`
 - Added note about TekupDK/tekup-secrets private repo access
 
 #### `tekup-secrets/README.md`
+
 - Updated header with GitHub repository URL
 - Changed "Location" to "Usage: Git submodule"
 - Added architecture explanation (submodule benefits)
@@ -127,6 +143,7 @@ tekup-secrets-backup-*/
 ```
 
 **Protected:**
+
 - `tekup-secrets-backup-20251024-102559/` - Backup before migration
 - `tekup-git-crypt.key` - Old git-crypt key (no longer used)
 - `tekup-secrets-new.key` - Temporary key from migration attempt
@@ -138,12 +155,14 @@ tekup-secrets-backup-*/
 ### For New Team Members (PC2, etc.)
 
 #### 1. Clone Main Workspace
+
 ```powershell
 git clone https://github.com/TekupDK/tekup.git
 cd tekup
 ```
 
 #### 2. Run Automated Setup
+
 ```powershell
 # Automated (recommended)
 .\setup-new-machine.ps1
@@ -153,9 +172,10 @@ git submodule init
 git submodule update --recursive
 ```
 
-**Note:** Requires access to `TekupDK/tekup-secrets` (private repo). Request invite from @JonasAbde if you get "repository not found" error.
+**Note:** Requires access to `TekupDK/tekup-secrets` (private repo). Request invite from @TekupDK if you get "repository not found" error.
 
 #### 3. Verify Setup
+
 ```powershell
 cd tekup-secrets
 Get-Content config/mcp.env -First 5
@@ -172,17 +192,20 @@ Should show:
 ### For Existing Developers (Update)
 
 #### 1. Pull Latest Changes
+
 ```powershell
 cd C:\Users\empir\Tekup
 git pull origin master
 ```
 
 #### 2. Initialize Submodule (First Time)
+
 ```powershell
 git submodule update --init --recursive
 ```
 
 #### 3. Update Submodule to Latest (Ongoing)
+
 ```powershell
 cd tekup-secrets
 git pull origin main
@@ -192,6 +215,7 @@ cd ..
 ### Updating Credentials
 
 #### 1. Edit in Submodule
+
 ```powershell
 cd tekup-secrets
 # Edit config/mcp.env or other files
@@ -202,6 +226,7 @@ cd ..
 ```
 
 #### 2. Update Main Workspace Reference
+
 ```powershell
 git add tekup-secrets
 git commit -m "Update tekup-secrets submodule reference"
@@ -234,11 +259,13 @@ cd tekup
 ### For Existing Clones
 
 **Required Action:**
+
 1. Pull latest changes: `git pull origin master`
 2. Initialize submodule: `git submodule update --init --recursive`
 3. Verify: `Get-Content tekup-secrets\config\mcp.env -First 5`
 
 **No Required Action If:**
+
 - You haven't pulled latest changes yet
 - Your `tekup-secrets/` folder still exists as regular folder
 
@@ -303,6 +330,7 @@ cd tekup
 ## 🔗 Related Documentation
 
 ### Main Workspace
+
 - `MIGRATION_TO_SUBMODULE.md` - This migration guide (comprehensive)
 - `README.md` - Updated with submodule instructions
 - `setup-new-machine.ps1` - Automated setup script
@@ -310,25 +338,28 @@ cd tekup
 - `MCP_QUICK_FIX.md` - MCP troubleshooting
 
 ### Tekup-Secrets Repository
+
 - `README.md` - Updated with separate repo context
 - `SYSTEM_OVERVIEW.md` - Architecture details
 - `QUICK_START.md` - Quick start guide
 - `PC2_SETUP.md` - Multi-PC setup (now uses submodule)
 
 ### GitHub
-- **Main Workspace:** https://github.com/TekupDK/tekup (public)
-- **Secrets Repo:** https://github.com/TekupDK/tekup-secrets (private)
+
+- **Main Workspace:** <https://github.com/TekupDK/tekup> (public)
+- **Secrets Repo:** <https://github.com/TekupDK/tekup-secrets> (private)
 
 ---
 
 ## 🛠️ Troubleshooting
 
-### Issue: "fatal: repository 'https://github.com/TekupDK/tekup-secrets.git' not found"
+### Issue: "fatal: repository '<https://github.com/TekupDK/tekup-secrets.git>' not found"
 
 **Cause:** You don't have access to private repository.
 
 **Solution:**
-1. Ask @JonasAbde for GitHub invite to TekupDK organization
+
+1. Ask @TekupDK for GitHub invite to TekupDK organization
 2. Verify GitHub authentication: `git config user.name`
 3. Test access: `git ls-remote https://github.com/TekupDK/tekup-secrets.git`
 
@@ -371,6 +402,7 @@ git submodule update --init --recursive
 ## 📈 Success Metrics
 
 ### Migration Success
+
 - ✅ Zero data loss (all .env files preserved)
 - ✅ Zero downtime (no production impact)
 - ✅ Zero breaking changes for existing setups
@@ -379,6 +411,7 @@ git submodule update --init --recursive
 - ✅ All tests passing (MCP configs work)
 
 ### Team Benefits
+
 - ✅ Easier onboarding (GitHub invite vs key distribution)
 - ✅ Better audit trail (GitHub logs all access)
 - ✅ Cleaner separation (code public, secrets private)
@@ -403,7 +436,7 @@ The removal of git-crypt simplifies setup and team collaboration while maintaini
 ---
 
 **Migration Completed:** October 24, 2025  
-**Migrated By:** AI Assistant (Copilot) with @JonasAbde  
+**Migrated By:** AI Assistant (Copilot) with @TekupDK  
 **Time Spent:** ~2 hours (as requested)  
 **Status:** ✅ PRODUCTION READY  
 **Next Steps:** PC2 setup using `.\setup-new-machine.ps1`

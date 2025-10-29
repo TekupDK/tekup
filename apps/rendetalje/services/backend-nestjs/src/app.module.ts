@@ -11,6 +11,7 @@ import { QualityModule } from './quality/quality.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { SecurityModule } from './security/security.module';
 import { AiFridayModule } from './ai-friday/ai-friday.module';
+import { SubcontractorsModule } from './subcontractors/subcontractors.module';
 // import { IntegrationsModule } from './integrations/integrations.module'; // Disabled - check dependencies
 import { LoggerModule } from './common/logger/logger.module';
 import { DatabaseModule } from './database/database.module';
@@ -50,6 +51,7 @@ import configuration from './config/configuration';
     RealtimeModule, // ✅ ENABLED: Real-time notifications & WebSocket (Socket.IO)
     SecurityModule, // ✅ ENABLED: Security audit logging + event tracking (Owner/Admin only)
     AiFridayModule, // ✅ ENABLED: AI Friday assistant (chat, voice, analytics)
+    SubcontractorsModule, // ✅ ENABLED: Subcontractor management (profiles, assignments, reviews)
     
     // TODO: Convert remaining modules from Supabase to Prisma
     // IntegrationsModule, // Check dependencies

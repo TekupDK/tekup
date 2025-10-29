@@ -40,6 +40,7 @@ npm install -g @tekup/autonomous-browser-tester
 The MCP server provides 9 autonomous testing tools:
 
 ### Core Browser Tools
+
 - `navigate` - Navigate to URLs
 - `click` - Click elements by CSS selector  
 - `fill` - Fill input fields with values
@@ -49,6 +50,7 @@ The MCP server provides 9 autonomous testing tools:
 - `screenshot` - Capture browser screenshots
 
 ### Specialized Tools
+
 - `test_demo_mode` - Automated demo mode testing
 - `close_browser` - Clean browser shutdown
 
@@ -204,16 +206,19 @@ const testFlow = async () => {
 ## 🔧 Technical Details
 
 ### Puppeteer Configuration
+
 - **Headless Mode**: Disabled for visual testing
 - **Browser Launch**: Configurable with security flags
 - **Timeout Management**: Automatic timeout handling
 
 ### Error Handling
+
 - **Graceful Failures**: All tools handle errors gracefully
 - **Timeout Protection**: Automatic timeout for all operations  
 - **Detailed Errors**: Comprehensive error messages via MCP
 
 ### Browser Management
+
 - **Single Instance**: One browser per server session
 - **State Persistence**: Maintains browser state across tool calls
 - **Auto Cleanup**: Automatic cleanup on server shutdown
@@ -221,11 +226,13 @@ const testFlow = async () => {
 ## 🎯 Integration Points
 
 ### Tekup Dashboard Testing
+
 - **Demo Mode Validation**: Automated testing of demo functionality
 - **Component Testing**: Interactive component validation
 - **Route Testing**: Navigation and routing verification
 
 ### CI/CD Integration
+
 ```yaml
 # GitHub Actions example
 - name: Test Dashboard Demo Mode
@@ -234,6 +241,7 @@ const testFlow = async () => {
 ```
 
 ### Quality Assurance
+
 - **Automated Testing**: Integration with QA pipelines
 - **Visual Regression**: Screenshot comparison testing
 - **User Journey Testing**: End-to-end workflow validation
@@ -254,6 +262,7 @@ const testFlow = async () => {
 ## 🚀 Future Enhancements
 
 ### Planned Features
+
 - **Headless Mode Option**: For CI/CD environments
 - **Multi-Browser Support**: Chrome, Firefox, Safari
 - **Network Interception**: API call monitoring
@@ -261,6 +270,7 @@ const testFlow = async () => {
 - **Cookie Management**: Session handling
 
 ### Advanced Capabilities
+
 - **File Upload Testing**: Automated file upload workflows
 - **Drag & Drop**: Complex UI interaction testing
 - **Mobile Testing**: Mobile-responsive design validation

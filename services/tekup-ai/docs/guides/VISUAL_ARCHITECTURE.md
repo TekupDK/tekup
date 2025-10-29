@@ -1,4 +1,5 @@
 # 🏗️ RenOS - Visual Architecture Diagram
+
 \n\n
 \n\n## System Oversigt
 \n\n
@@ -420,7 +421,7 @@ async function fetchData() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-    
+
     if (!res.ok) throw new Error('API Error');
     
     const json = await res.json();
@@ -545,7 +546,7 @@ Database (PostgreSQL via Prisma)
 Icon Usage Pattern:
 import { IconName } from 'lucide-react';
 
-<IconName 
+<IconName
   className="w-5 h-5 text-primary"
   strokeWidth={2}
 />
@@ -560,7 +561,7 @@ Standard sizes:
 
 ---
 
-*Denne arkitektur diagram giver et komplet overblik over RenOS's visuelle struktur, komponent hierarki, data flow og design system.*
+_Denne arkitektur diagram giver et komplet overblik over RenOS's visuelle struktur, komponent hierarki, data flow og design system._
 
 **Version:** 1.0  
 **Dato:** 3. Oktober 2025

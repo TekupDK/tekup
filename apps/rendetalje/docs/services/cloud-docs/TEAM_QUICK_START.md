@@ -18,9 +18,9 @@ RenOS er jeres komplette operations management system der konsoliderer alle forr
 
 | Portal              | URL                                        | Hvem bruger det?        |
 | ------------------- | ------------------------------------------ | ----------------------- |
-| **Owner Portal**    | https://rendetaljeos.onrender.com/owner    | Ejere & administratorer |
-| **Employee Portal** | https://rendetaljeos.onrender.com/employee | Medarbejdere            |
-| **Customer Portal** | https://rendetaljeos.onrender.com/customer | Kunder                  |
+| **Owner Portal**    | <https://rendetaljeos.onrender.com/owner>    | Ejere & administratorer |
+| **Employee Portal** | <https://rendetaljeos.onrender.com/employee> | Medarbejdere            |
+| **Customer Portal** | <https://rendetaljeos.onrender.com/customer> | Kunder                  |
 | **Mobile App**      | [App Store / Play Store]                   | Medarbejdere i felten   |
 
 ### 🔑 Login Information
@@ -72,7 +72,7 @@ Kontakt systemadministrator for login credentials til jeres rolle.
 
 AI Friday er tilgængelig i alle portaler som en intelligent chat assistant:
 
-### 🎯 Hvordan AI Friday hjælper:
+### 🎯 Hvordan AI Friday hjælper
 
 - **Owner**: "Hvad er dagens omsætning?" → Real-time revenue data
 - **Employee**: "Hvad er mine opgaver i dag?" → Daily job assignments
@@ -134,7 +134,7 @@ Kontakt systemadministrator for:
 
 ## 🔧 Daglig Brug
 
-### For Owners/Admins:
+### For Owners/Admins
 
 1. **Morning Dashboard Check**
 
@@ -153,7 +153,7 @@ Kontakt systemadministrator for:
    - Monitor time entries
    - Review job completions
 
-### For Employees:
+### For Employees
 
 1. **Start of Day**
 
@@ -173,7 +173,7 @@ Kontakt systemadministrator for:
    - Submit time entries
    - Review tomorrow's schedule
 
-### For Customers:
+### For Customers
 
 1. **Booking Services**
 
@@ -202,14 +202,14 @@ Kontakt systemadministrator for:
 
 ### 🤝 Team Support
 
-- **Technical Issues**: dev@rendetalje.dk
+- **Technical Issues**: <dev@rendetalje.dk>
 - **User Training**: Kontakt systemadministrator
-- **Business Questions**: owner@rendetalje.dk
+- **Business Questions**: <owner@rendetalje.dk>
 
 ### 🚨 Emergency Contact
 
 - **Production Issues**: +45 XX XX XX XX
-- **Security Issues**: security@rendetalje.dk
+- **Security Issues**: <security@rendetalje.dk>
 
 ## 🔄 Integration Status
 
@@ -252,7 +252,7 @@ Systemet opdateres løbende med:
 
 ---
 
-## 🎉 Ready to Go!
+## 🎉 Ready to Go
 
 **RendetaljeOS er production-ready og klar til jeres team!**
 

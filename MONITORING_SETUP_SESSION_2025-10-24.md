@@ -30,7 +30,7 @@ Get-Content "C:\Users\empir\Tekup\tekup-secrets\config\monitoring.env" | Select-
 ### 3. Render Configuration (VERIFIED)
 
 **Service:** rendetalje-backend  
-**Render Dashboard:** https://dashboard.render.com
+**Render Dashboard:** <https://dashboard.render.com>
 
 **Current Environment Variables:**
 
@@ -146,11 +146,13 @@ Get-Content "C:\Users\empir\Tekup\tekup-secrets\config\monitoring.env" | Select-
 ### 🔍 UptimeRobot Configuration (Oct 25, 2025)
 
 **Active Monitors (3/3 working):**
+
 - ✅ `tekup-billy.onrender.com/health` - 100% uptime
 - ✅ `renos-backend.onrender.com/health` - 100% uptime  
 - ✅ `tekupvault.onrender.com/health` - 100% uptime (URL corrected)
 
 **Removed Monitors:**
+
 - ❌ `tekupvault.onrender.com/health` - Incorrect URL (renamed)
 - ❌ `[SERVICE NOT DEPLOYED]/health` - Service not deployed yet
 - ❌ `renos-backend.onrender.com/health` - Unknown service
@@ -158,6 +160,7 @@ Get-Content "C:\Users\empir\Tekup\tekup-secrets\config\monitoring.env" | Select-
 ### 🎯 Frontend Sentry Installation (Oct 25, 2025)
 
 **Completed:**
+
 - ✅ Sentry DSN added to .env.local
 - ✅ Ran `npx @sentry/wizard@latest -i nextjs`
 - ✅ Created fresh sentry.server.config.ts
@@ -183,13 +186,13 @@ SENTRY_AUTH_TOKEN=sntrys_eyJpYXQiOjE3NjEzODczMjIuODY1ODE4LCJ1cmwiOiJodHRwczovL3N
 - ✅ **SENTRY_AUTH_TOKEN added to Render.com** (`renos-frontend` environment)
 - ✅ **Auto-redeploy triggered** by Render
 - ✅ **Source maps will upload** on next build
-- ✅ **Frontend deployed at:** https://renos-frontend.onrender.com
+- ✅ **Frontend deployed at:** <https://renos-frontend.onrender.com>
 
 **Test Error Tracking:**
 
-1. Visit: https://renos-frontend.onrender.com/sentry-example-page
+1. Visit: <https://renos-frontend.onrender.com/sentry-example-page>
 2. Click "Trigger Test Error" button
-3. Check Sentry dashboard at: https://sentry.io
+3. Check Sentry dashboard at: <https://sentry.io>
 4. Verify error appears with source maps
 
 ---
@@ -198,9 +201,9 @@ SENTRY_AUTH_TOKEN=sntrys_eyJpYXQiOjE3NjEzODczMjIuODY1ODE4LCJ1cmwiOiJodHRwczovL3N
 
 **Supabase Project:**
 
-- URL: https://oaevagdgrasfppbrxbey.supabase.co
+- URL: <https://oaevagdgrasfppbrxbey.supabase.co>
 - Project ID: oaevagdgrasfppbrxbey
-- Dashboard: https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey
+- Dashboard: <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey>
 
 **Migration File:**
 

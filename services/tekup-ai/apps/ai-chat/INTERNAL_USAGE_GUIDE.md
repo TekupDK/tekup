@@ -22,27 +22,31 @@ The Tekup AI Assistant is an **internal tool** built specifically for our compan
 
 ## 👥 Who Should Use This?
 
-### ✅ Everyone on the Tekup Team:
+### ✅ Everyone on the Tekup Team
 
 **Developers:**
+
 - Finding code examples
 - Understanding architecture decisions
 - Debugging issues
 - Learning new repositories
 
 **Product/Project Managers:**
+
 - Understanding technical context
 - Making strategic decisions
 - Prioritizing work
 - Reviewing feasibility
 
 **New Hires:**
+
 - Onboarding to codebase
 - Learning tech stack
 - Understanding company conventions
 - Finding documentation
 
 **Leadership (Jonas):**
+
 - Strategic planning
 - Repository prioritization
 - Architecture review
@@ -192,6 +196,7 @@ AI: Returns:
 ```
 
 **Tip:** Be specific about:
+
 1. Which repository/file
 2. What you're trying to do
 3. What you've already tried (if debugging)
@@ -203,6 +208,7 @@ AI: Returns:
 ### 1. Code Highlighting + Copy
 
 When AI shows code:
+
 - Hover over code block
 - Click **Copy** button
 - Paste directly into your editor
@@ -248,7 +254,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## ⚠️ What AI Knows vs Doesn't Know
 
-### ✅ AI KNOWS:
+### ✅ AI KNOWS
 
 - **All Tekup repositories** (8 repos, 1,063 docs)
 - **Architecture decisions** (from docs like STRATEGIC_ANALYSIS.md)
@@ -258,7 +264,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 - **Company conventions** (naming, structure, etc.)
 - **Historical context** (why decisions were made)
 
-### ❌ AI DOESN'T KNOW:
+### ❌ AI DOESN'T KNOW
 
 - **Your local uncommitted changes**
 - **Private conversations** (unless documented)
@@ -273,7 +279,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## 🔒 Security & Privacy Guidelines
 
-### ✅ SAFE to Ask:
+### ✅ SAFE to Ask
 
 - Code patterns and examples
 - Architecture questions
@@ -282,7 +288,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 - Repository information
 - Public API usage
 
-### ⚠️ DON'T Share:
+### ⚠️ DON'T Share
 
 - **Customer personal data** (names, emails, etc.)
 - **API keys or passwords** (even in example code)
@@ -296,7 +302,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## 📊 Usage Best Practices
 
-### For Maximum Productivity:
+### For Maximum Productivity
 
 **1. Start Your Day with AI**
 ```
@@ -323,7 +329,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 [Paste PR diff] "Review this against Tekup standards"
 ```
 
-### Time-Saving Habits:
+### Time-Saving Habits
 
 - **Create templates** for common questions
 - **Use voice input** for quick queries while coding
@@ -334,7 +340,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## 🎓 Onboarding for New Team Members
 
-### Week 1 Recommended Flow:
+### Week 1 Recommended Flow
 
 **Day 1: Getting Oriented**
 ```
@@ -377,7 +383,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## 📞 Getting Help
 
-### If AI Gives Wrong Answer:
+### If AI Gives Wrong Answer
 
 1. **Try rephrasing** your question more specifically
 2. **Provide more context** (which repo, what you tried)
@@ -385,13 +391,13 @@ Turn 3: "What if it fails?" (AI still knows context)
 4. **Verify in code** (use file citations to check)
 5. **Report to team** if consistently wrong on a topic
 
-### If AI Is Down:
+### If AI Is Down
 
 - Check #tech-status Slack channel
 - Fallback: Use TekupVault direct search
 - Escalate: Contact Jonas or DevOps
 
-### Feature Requests:
+### Feature Requests
 
 - Post in #ai-assistant Slack channel
 - Include: What you want, why it's useful, how often you'd use it
@@ -401,14 +407,16 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## 📈 Measuring Your Productivity Gains
 
-### Track Your Usage (Optional):
+### Track Your Usage (Optional)
 
 **Before AI Assistant:**
+
 - Time spent searching docs: ___ hours/week
 - Time asking colleagues: ___ hours/week
 - Time context switching: ___ hours/week
 
 **After AI Assistant (Week 4):**
+
 - Same questions answered by AI: ___ hours/week
 - Questions to colleagues: ___ hours/week (should be less)
 - Context switches: ___ (should be fewer)
@@ -419,17 +427,20 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## 🎯 Team Usage Goals
 
-### Month 1:
+### Month 1
+
 - ✅ 100% of team trained
 - ✅ 50+ questions answered per developer
 - ✅ 5+ hours saved per person
 
-### Month 3:
+### Month 3
+
 - ✅ AI first, colleagues second (for tech questions)
 - ✅ New hires onboarded in 1 week (vs 4 weeks)
 - ✅ Zero strategic mistakes (repo deletions, etc.)
 
-### Month 6:
+### Month 6
+
 - ✅ Can't imagine working without it
 - ✅ Team productivity up 20%
 - ✅ Knowledge retention improved
@@ -438,19 +449,22 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## 🔄 Feedback Loop
 
-### We Want to Hear:
+### We Want to Hear
 
 **What's working:**
+
 - "AI saved me X hours on [task]"
 - "Found answer in 2 seconds vs 20 minutes"
 - "Prevented me from making mistake"
 
 **What's not working:**
+
 - "AI gave wrong answer on [topic]"
 - "Couldn't find [specific info]"
 - "Feature request: [idea]"
 
 **How to share:**
+
 - Weekly: #ai-assistant Slack channel
 - Monthly: Team retrospective
 - Anytime: Direct message to Jonas
@@ -459,7 +473,7 @@ Turn 3: "What if it fails?" (AI still knows context)
 
 ## 📋 Quick Reference Card
 
-### Most Common Commands:
+### Most Common Commands
 
 | Question Type | Example |
 |---------------|---------|
@@ -470,16 +484,16 @@ Turn 3: "What if it fails?" (AI still knows context)
 | **Review** | [Paste code] "Review for Tekup standards" |
 | **Learning** | "I'm new to [repo]. Where do I start?" |
 
-### Keyboard Shortcuts:
+### Keyboard Shortcuts
 
 - **Send message:** Enter
 - **New line:** Shift + Enter
 - **Voice input:** Click mic icon
 - **Copy code:** Hover + click Copy button
 
-### URLs:
+### URLs
 
-- **AI Assistant:** http://localhost:3000 (or production URL)
+- **AI Assistant:** <http://localhost:3000> (or production URL)
 - **Documentation:** `c:\Users\empir\tekup-chat\README.md`
 - **Test Scenarios:** `c:\Users\empir\Tekup-Cloud\AI_ASSISTANT_USER_TEST_SCENARIOS.md`
 
@@ -500,11 +514,12 @@ For new users:
 
 ---
 
-## 🎉 Welcome to Faster Development!
+## 🎉 Welcome to Faster Development
 
 The Tekup AI Assistant is here to make your daily work **easier, faster, and more informed**.
 
 **Remember:**
+
 - It's a tool, not a replacement for thinking
 - Verify critical decisions in code
 - Share knowledge with team

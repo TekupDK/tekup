@@ -12,6 +12,7 @@ The full migration of `tekup-chat` to `tekup-ai/apps/ai-chat` is **complete and 
 **Destination:** `c:\Users\empir\tekup-ai\apps\ai-chat`
 
 **Files Transferred (63 files, 407.8 KB):**
+
 - ✅ Next.js 15 application structure
 - ✅ React components (ChatWindow, MessageBubble, MessageInput, etc.)
 - ✅ API routes (both `/app/api/` and `/src/app/api/`)
@@ -57,10 +58,12 @@ The migration required fixing incompatibilities between standalone repo and mono
 ## ✅ Verification Results
 
 ### Build Status
+
 ```bash
 pnpm build
 ```
 **Result:** ✅ **SUCCESS**
+
 - ✅ Zero TypeScript errors
 - ✅ All pages compiled successfully
 - ✅ Static generation complete
@@ -76,6 +79,7 @@ Route (app)                              Size     First Load JS
 ```
 
 ### Dev Server Status
+
 ```bash
 pnpm dev
 ```
@@ -185,12 +189,13 @@ Move-Item "C:\Users\empir\tekup-chat" -Destination "C:\Users\empir\Tekup\archive
    ```
 
 4. **Access the app:**
-   - Chat interface: http://localhost:3000
-   - API endpoint: http://localhost:3000/api/chat
+   - Chat interface: <http://localhost:3000>
+   - API endpoint: <http://localhost:3000/api/chat>
 
 ### For Production Deployment
 
 See `apps/ai-chat/DEPLOYMENT_GUIDE.md` (to be created) for:
+
 - Vercel deployment instructions
 - Environment variable setup
 - Database migration
@@ -222,6 +227,7 @@ See `apps/ai-chat/DEPLOYMENT_GUIDE.md` (to be created) for:
 **Duration:** ~2 hours (including troubleshooting)
 
 **Key Learnings:**
+
 1. Next.js 14.0.4 requires `.js` config files, not `.ts`
 2. Tailwind v4 syntax (`@import "tailwindcss"`) not compatible with v3
 3. Monorepo type systems require careful unification

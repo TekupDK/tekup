@@ -322,12 +322,14 @@ pnpm lint             # Lint code
 ## 🔐 Security Notes
 
 ### **Supabase Connection:**
+
 - ✅ Always use `SUPABASE_SERVICE_KEY` for server-side
 - ✅ Never commit `.env.production` to Git
 - ✅ Use environment variables in CI/CD
 - ✅ Enable Row Level Security (RLS) policies
 
 ### **Docker Connection:**
+
 - ✅ OK for development
 - ⚠️ Never expose port 5432 publicly
 - ✅ Use strong passwords even locally

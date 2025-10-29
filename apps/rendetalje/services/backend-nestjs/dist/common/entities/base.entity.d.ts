@@ -1,3 +1,5 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+export { ApiProperty, ApiPropertyOptional };
 export declare abstract class BaseEntity {
     id: string;
     created_at: string;

@@ -275,6 +275,7 @@ async handler(params, context) {
 ## 🎯 Benefits
 
 ### Før (Scattered Handlers)
+
 ```
 src/agents/handlers/
 ├── emailComposeHandler.ts
@@ -288,6 +289,7 @@ src/agents/handlers/
 ❌ No dynamic availability  
 
 ### Nu (ADK Pattern)
+
 ```
 src/tools/
 ├── registry.ts (central)
@@ -352,6 +354,7 @@ export class RenOSToolRegistry {
 ### Step 3: Done! 🎉
 
 Tool is now:
+
 - ✅ Available via `/api/tools`
 - ✅ Discoverable by agents
 - ✅ Executable via registry
@@ -384,17 +387,20 @@ await toolRegistry.close();
 ## 📚 Next Steps
 
 ### Phase 2: PlanExecutor Integration
+
 - Update `planExecutor.ts` to use tool registry
 - Remove hardcoded handler mappings
 - Dynamic tool loading based on intent
 
 ### Phase 3: CleanManager Replacement Tools
+
 - Job Template Toolset (5 tools)
 - Time Tracking Toolset (4 tools)
 - Invoicing Toolset (6 tools)
 - Inventory Toolset (3 tools)
 
 ### Phase 4: Advanced Features
+
 - Multi-agent architecture (specialized agents)
 - Google pre-built tools (Search, Code Execution)
 - Tool versioning and deprecation

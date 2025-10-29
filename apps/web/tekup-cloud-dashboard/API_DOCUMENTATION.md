@@ -107,6 +107,7 @@ interface ResetPasswordRequest {
 Hent KPI-metrics for dashboard.
 
 **Query Parameters:**
+
 - `tenant_id` (required): Tenant ID
 - `period` (optional): 'day' | 'week' | 'month' | 'year'
 - `start_date` (optional): ISO date string
@@ -139,6 +140,7 @@ const kpis = await apiService.getKPIMetrics('tenant-123', 'month');
 Hent nylige aktiviteter.
 
 **Query Parameters:**
+
 - `tenant_id` (required): Tenant ID
 - `limit` (optional): Antal aktiviteter (default: 10)
 - `offset` (optional): Pagination offset
@@ -185,6 +187,7 @@ type AgentsResponse = AIAgent[];
 Hent leads med filtering og pagination.
 
 **Query Parameters:**
+
 - `tenant_id` (required): Tenant ID
 - `status` (optional): 'new' | 'contacted' | 'qualified' | 'converted' | 'lost'
 - `source` (optional): Lead source filter
@@ -322,6 +325,7 @@ interface PerformanceMetrics {
 Hent fakturaer fra Billy.dk.
 
 **Query Parameters:**
+
 - `status` (optional): 'draft' | 'sent' | 'paid' | 'overdue'
 - `limit` (optional): Antal fakturaer
 - `offset` (optional): Pagination offset
@@ -376,6 +380,7 @@ interface CreateInvoiceRequest {
 Søg i knowledge base.
 
 **Query Parameters:**
+
 - `q` (required): Søgeterm
 - `limit` (optional): Antal resultater
 - `type` (optional): 'document' | 'faq' | 'procedure'
@@ -421,6 +426,7 @@ interface UploadDocumentRequest {
 Hent kalender-events.
 
 **Query Parameters:**
+
 - `start_date` (required): ISO date string
 - `end_date` (required): ISO date string
 - `calendar_id` (optional): Specifik kalender ID
@@ -496,6 +502,7 @@ interface SendEmailResponse {
 Hent notifikationer for bruger.
 
 **Query Parameters:**
+
 - `read` (optional): true | false
 - `type` (optional): 'info' | 'success' | 'warning' | 'error'
 - `limit` (optional): Antal notifikationer

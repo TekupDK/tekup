@@ -7,15 +7,18 @@ Detaljeret installation og setup guide.
 ## 🎯 Prerequisites
 
 ### Required
+
 - **Node.js 18+** (LTS anbefalet)
 - **pnpm 8.15+** eller npm
 - **Git**
 
 ### For Local Development
+
 - **Docker Desktop** (anbefalet) ELLER
 - **PostgreSQL 16** installeret lokalt
 
 ### For Production
+
 - **Render.com account** (eller anden PostgreSQL hosting)
 - **GitHub account** (for deployment)
 
@@ -97,7 +100,7 @@ pnpm db:seed
 
 ### Step 1: Create Database on Render
 
-1. Go to https://render.com/dashboard
+1. Go to <https://render.com/dashboard>
 2. Click "New +" → "PostgreSQL"
 3. Configure:
    - **Name:** tekup-database
@@ -138,6 +141,7 @@ pnpm db:studio
 ### Add New Schema
 
 1. Edit `prisma/schema.prisma`:
+
 ```prisma
 model MyNewModel {
   id String @id @default(uuid())
@@ -148,6 +152,7 @@ model MyNewModel {
 ```
 
 2. Create migration:
+
 ```bash
 pnpm db:migrate dev --name="add_myschema"
 ```

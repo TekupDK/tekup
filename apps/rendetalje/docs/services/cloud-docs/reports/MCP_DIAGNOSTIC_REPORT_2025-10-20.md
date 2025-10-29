@@ -10,6 +10,7 @@
 ## 📊 Executive Summary
 
 ### Problem
+
 ```
 2025-10-19 15:32:01.169 [info] Starting server memory
 2025-10-19 15:32:02.253 [warning] [server stderr] Knowledge Graph MCP Server running on stdio
@@ -20,6 +21,7 @@
 **Root Cause:** Memory server (`@modelcontextprotocol/server-memory`) crasher efter initialisering pga. ugyldigt JSON format i memory.json filen.
 
 **Affected Systems:**
+
 - ✅ Windsurf/Cascade IDE
 - ✅ Alle MCP tools under memory namespace (9 tools)
 - ⚠️ Potentially all IDEs using shared memory server
@@ -53,6 +55,7 @@
 ```
 
 **Evidence:**
+
 - Memory server starter korrekt
 - Opdager 9 tools
 - Crasher umiddelbart efter med exit code 1 (parsing error)
@@ -90,6 +93,7 @@
 ```
 
 **Issues:**
+
 1. ✅ Package reference correct: `@modelcontextprotocol/server-memory`
 2. ✅ Command correct: `npx -y`
 3. ❌ **MEMORY_FILE_PATH points to corrupted JSON**
@@ -105,14 +109,16 @@
 **Relations:** 6  
 **Content Preview:**
 
-### Entities Found:
+### Entities Found
+
 1. **Rendetalje.dk Nuværende Setup** (Website)
 2. **RendetaljeOS Database Schema** (Database)
 3. **Tekup-org CRM Schema** (Database)
 4. **Database Architecture Gaps** (Analysis)
 5. **RenOS.dk Platform Requirements** (Product Vision)
 
-### Relations Found:
+### Relations Found
+
 - Rendetalje.dk → RenOS.dk (provides customer inquiry flow)
 - RendetaljeOS ↔ Tekup-org CRM (overlapping functionality)
 - Database Gaps → Both schemas (identifies improvements)
@@ -124,17 +130,20 @@
 ## 🔍 Impact Assessment
 
 ### Direct Impact
+
 - ❌ Windsurf IDE cannot use MCP memory/knowledge graph tools
 - ❌ Cannot create/read entities and relations
 - ❌ Cannot use knowledge graph for context management
 - ⚠️ Other 4 MCP servers in Windsurf config may be unstable
 
 ### Indirect Impact
+
 - ⚠️ AI assistant context limited (no persistent knowledge graph)
 - ⚠️ Cross-project insights not available via memory
 - ⚠️ Reduced effectiveness of Cascade AI coding
 
 ### Systems NOT Affected
+
 - ✅ Tekup-Billy MCP Server (working in production)
 - ✅ TekupVault MCP API (separate system)
 - ✅ Sequential-thinking MCP server (separate config)
@@ -253,6 +262,7 @@ node convert-memory.mjs
 From `Tekup-org/.mcp-inventory-report.md`:
 
 **Problems:**
+
 - 5 different editors with separate MCP configs
 - API key duplication (Brave API key in 4+ places)
 - Inconsistent server configurations
@@ -261,18 +271,21 @@ From `Tekup-org/.mcp-inventory-report.md`:
 **Recommendation:** Create centralized MCP configuration manager
 
 **Priority 1: Immediate (This Week)**
+
 1. ✅ Fix Windsurf memory.json format
 2. ⚠️ Audit all editor configs for similar JSON issues
 3. ⚠️ Consolidate API keys to environment variables
 4. ⚠️ Disable unused/duplicate servers
 
 **Priority 2: Short-term (This Month)**
+
 1. Create shared `~/.tekup/mcp-config.json` template
 2. Add config validation script (Zod schema)
 3. Integrate with existing `env-auto.mjs` system (Tekup-org)
 4. Document standard MCP setup per editor
 
 **Priority 3: Long-term (Q4 2025)**
+
 1. Build unified MCP management CLI
 2. Auto-sync configs across editors
 3. Health monitoring dashboard
@@ -308,7 +321,7 @@ Get-Content "C:\Users\empir\.codeium\windsurf\memory.json" | ConvertFrom-Json
 ### 1. Tekup-Billy MCP Server (Separate Issue)
 
 **Status:** ✅ WORKING in production  
-**URL:** https://tekup-billy-mcp.onrender.com  
+**URL:** <https://tekup-billy-mcp.onrender.com>  
 **Version:** v1.4.1  
 **Tools:** 32 tools operational
 
@@ -333,7 +346,7 @@ Get-Content "C:\Users\empir\.codeium\windsurf\memory.json" | ConvertFrom-Json
 ### 2. TekupVault MCP Integration (Future)
 
 **Status:** 🚧 Phase 2 planned  
-**Current:** REST API only (https://tekupvault.onrender.com)  
+**Current:** REST API only (<https://tekupvault.onrender.com>)  
 **Future:** Native MCP server for documentation search
 
 **When Ready:**
@@ -351,16 +364,19 @@ Get-Content "C:\Users\empir\.codeium\windsurf\memory.json" | ConvertFrom-Json
 ## 📚 Documentation References
 
 ### TekupVault Troubleshooting
+
 - `TekupVault/docs/MCP_DEBUG_ANALYSIS_2025-10-17.md` - Comprehensive debugging guide
 - `TekupVault/docs/MCP_IMPLEMENTATION_COMPLETE.md` - MCP implementation details
 - `TekupVault/CURSOR_MCP_SETUP_COMPLETE.md` - Cursor-specific setup
 
 ### Tekup-Billy MCP
+
 - `Tekup-Billy/README.md` - Main documentation
 - `Tekup-Billy/docs/UNIVERSAL_MCP_PLUGIN_GUIDE.md` - Cross-platform guide
 - `Tekup-Billy/NEXT_STEPS_FOR_JONAS.md` - Production deployment guide
 
 ### Tekup-org MCP Inventory
+
 - `Tekup-org/.mcp-inventory-report.md` - Complete config inventory
 - `Tekup-org/.mcp/docs/TROUBLESHOOTING.md` - Common issues
 - `Tekup-org/.mcp/docs/SETUP.md` - Initial setup guide
@@ -370,6 +386,7 @@ Get-Content "C:\Users\empir\.codeium\windsurf\memory.json" | ConvertFrom-Json
 ## ✅ Action Plan
 
 ### Immediate (Today)
+
 1. **STOP Windsurf IDE**
 2. **Backup memory.json** (script above)
 3. **Choose Fix Option 1 or 2** (recommend Option 1 for speed)
@@ -378,12 +395,14 @@ Get-Content "C:\Users\empir\.codeium\windsurf\memory.json" | ConvertFrom-Json
 6. **Test memory tools** work correctly
 
 ### Short-term (This Week)
+
 1. **Audit other editor configs** (Kiro, Trae) for similar issues
 2. **Update Tekup-Billy credentials** in Windsurf config
 3. **Create `.env` for MCP configs** (avoid hardcoded secrets)
 4. **Document MCP setup** per project in Tekup-Cloud
 
 ### Long-term (This Month)
+
 1. **Build centralized MCP config manager** (integrate with env-auto.mjs)
 2. **Add MCP config validation** to CI/CD pipeline
 3. **Create MCP health dashboard** (monitor all servers)
@@ -427,17 +446,20 @@ Get-Content "C:\Users\empir\.codeium\windsurf\memory.json" | ConvertFrom-Json
 ## 📞 Next Steps
 
 **Immediate:**
+
 - [ ] Apply Fix Option 1 (reset memory.json)
 - [ ] Verify memory server works
 - [ ] Test memory tools in Cascade
 
 **Follow-up:**
+
 - [ ] Audit other MCP configs
 - [ ] Create centralized MCP management system
 - [ ] Document MCP best practices
 - [ ] Integrate with Tekup Portfolio standards
 
 **Questions for Jonas:**
+
 1. Should we preserve existing knowledge graph data? (Fix Option 2)
 2. Do you use memory server actively in Windsurf/Cascade?
 3. Priority: Fix all editors or just Windsurf?

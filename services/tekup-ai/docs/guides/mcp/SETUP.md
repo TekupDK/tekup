@@ -22,7 +22,8 @@ winget install Ollama.Ollama
 ```
 
 **Eller download manuelt:**
-- Visit: https://ollama.com/download/windows
+
+- Visit: <https://ollama.com/download/windows>
 - Download Windows installer
 - Kør installer og følg instruktioner
 
@@ -41,19 +42,19 @@ ollama --version
 ```powershell
 ollama pull qwen2.5-coder:14b-instruct-q4_K_M
 ```
-⏱️ *Download size: ~8GB, takes 5-15 minutes depending on connection*
+⏱️ _Download size: ~8GB, takes 5-15 minutes depending on connection_
 
 **Download Llama 3.3 (for general tasks):**
 ```powershell
 ollama pull llama3.3:8b-instruct-q5_K_M
 ```
-⏱️ *Download size: ~6GB*
+⏱️ _Download size: ~6GB_
 
 **Download Mistral (for fast responses):**
 ```powershell
 ollama pull mistral:7b-instruct-q4_K_M
 ```
-⏱️ *Download size: ~4GB*
+⏱️ _Download size: ~4GB_
 
 ### Step 4: Test Ollama
 
@@ -92,7 +93,8 @@ winget install Jan.Jan
 ```
 
 **Eller download manuelt:**
-- Visit: https://jan.ai/download
+
+- Visit: <https://jan.ai/download>
 - Download Windows installer
 - Kør installer
 
@@ -127,6 +129,7 @@ Explain TypeScript interfaces in simple terms
 ```
 
 **Expected:**
+
 - Response inden for 5-10 sekunder
 - Kvalitets svar om TypeScript
 - GPU utilization (check Task Manager → Performance → GPU)
@@ -137,7 +140,7 @@ Explain TypeScript interfaces in simple terms
 
 > **Alternative til Jan AI:** Hvis du foretrækker en moderne web-baseret interface med fuld CLI-kontrol
 
-### Prerequisites:
+### Prerequisites
 
 - Docker Desktop må være installeret (check: `docker --version`)
 - Ollama kørende i baggrund
@@ -149,6 +152,7 @@ Explain TypeScript interfaces in simple terms
 ```
 
 Dette script vil:
+
 - ✅ Verificere Docker er kørende
 - ✅ Hente Open WebUI Docker image
 - ✅ Starte container på port 3000
@@ -199,7 +203,7 @@ Done
 
 ### Step 4: Access Open WebUI
 
-1. Open browser: http://localhost:3000
+1. Open browser: <http://localhost:3000>
 2. Opret admin account (første bruger)
 3. Gå til **Settings → Models**
 4. Add connection: `http://host.docker.internal:11434`
@@ -256,6 +260,7 @@ Write a TypeScript function to calculate invoice total with tax
 ## 📚 Full CLI Control Guide
 
 Se komplet guide med alle commands:
+
 - **[CLI Control Guide](guides/cli-control.md)** - Alle Docker/Ollama/Open WebUI commands
 - **[Docker Troubleshooting](guides/docker-troubleshooting.md)** - Fælles problemer og løsninger
 
@@ -266,7 +271,8 @@ Se komplet guide med alle commands:
 ### Step 1: Understand Current Setup
 
 Du har allerede:
-- **Tekup-Billy** deployed på: https://tekup-billy.onrender.com
+
+- **Tekup-Billy** deployed på: <https://tekup-billy.onrender.com>
 - **API endpoints** til Billy.dk (invoices, customers, products)
 
 ### Step 2: Find Jan AI Config Location
@@ -323,7 +329,7 @@ curl https://tekup-billy.onrender.com/billy/customers
 
 ## 📋 Phase 4: Verify Everything Works (5 minutes)
 
-### Checklist:
+### Checklist
 
 - [ ] **Ollama running:** `ollama list` viser 3 modeller
 - [ ] **Jan AI connected:** Jan AI kan se Ollama models
@@ -331,7 +337,7 @@ curl https://tekup-billy.onrender.com/billy/customers
 - [ ] **GPU utilized:** Task Manager viser GPU usage når AI svarer
 - [ ] **Tekup-Billy accessible:** API svarer på requests
 
-### Test Commands i Jan AI:
+### Test Commands i Jan AI
 
 **Test 1: General query**
 ```
@@ -436,7 +442,7 @@ ollama pull qwen2.5-coder:14b-instruct-q4_K_M
 
 ## 📊 Performance Expectations
 
-### With Your Hardware (RTX 5070 8GB + 64GB RAM):
+### With Your Hardware (RTX 5070 8GB + 64GB RAM)
 
 | Model | Response Time | Quality | Use Case |
 |-------|---------------|---------|----------|
@@ -444,7 +450,7 @@ ollama pull qwen2.5-coder:14b-instruct-q4_K_M
 | Llama 3.3 8B | 2-3 sek | Very Good | General chat, business |
 | Mistral 7B | 1-2 sek | Good | Quick answers |
 
-### GPU Memory Usage:
+### GPU Memory Usage
 
 | Model | VRAM Used | Can Run? |
 |-------|-----------|----------|
@@ -487,5 +493,4 @@ After completing setup, you should achieve:
 **Version:** 1.0.0  
 **Last Updated:** 2025-01-15  
 **Author:** TekUp AI Assistant Project
-
 

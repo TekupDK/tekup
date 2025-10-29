@@ -1,66 +1,1 @@
-# 🎯 RenOS Deployment - Hurtig Kommando Reference\n\n\n\n## 🚀 Deployment Status Check\n\n\n\n### Quick Status (anbefalet først)\n\n\n\n```powershell\n\n# Check om backend er oppe\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/health" -Method Get\n\n\n\n# Hvis fejl: Vent 2-3 min og prøv igen (deployment i gang)\n\n```\n\n\n\n### Kontinuerlig Monitoring\n\n\n\n```powershell\n\n# Start monitor (opdaterer hvert 30 sek)\n\n.\monitor-deployment.ps1\n\n\n\n# Stop med Ctrl+C\n\n```\n\n
----
-\n\n## ✅ Verification Workflow\n\n\n\n### Step 1: Render Dashboard\n\n\n\n1. Gå til: <https://dashboard.render.com>\n\n2. Find service: **tekup-renos**\n\n3. Check "Events" tab for deploy status\n\n4. Vent på: "Deploy succeeded ✅"
-\n\n### Step 2: Environment Variables\n\n\n\n```powershell\n\n# Kør checklist\n\n.\verify-env-vars.ps1\n\n\n\n# Verificer KRITISKE vars:\n\n# - GEMINI_KEY (AI features)\n\n# - GOOGLE_CLIENT_ID/SECRET/REFRESH_TOKEN (Gmail)\n\n# - DATABASE_URL (Database)\n\n# - FRONTEND_URL + CORS_ORIGIN (Frontend)\n\n```\n\n\n\n### Step 3: Automated Tests\n\n\n\n```powershell\n\n# Kør fuld test suite\n\n.\test-deployment.ps1\n\n\n\n# Forvented output:\n\n# ✅ Backend Health Check\n\n# ✅ Dashboard API\n\n# ✅ Frontend Loading\n\n# ✅ Leads API\n\n```\n\n\n\n### Step 4: Manual UI Testing\n\n\n\n1. Open: <https://tekup-renos.onrender.com>\n\n2. Login (hvis auth enabled)\n\n3. Navigate to **Leads** page\n\n4. Verify **AI Process** button (⚡) exists\n\n5. Create test lead:
-   - Name: "Test Kunde"\n\n   - Email: "<test@example.com>"\n\n   - Task: "Privatrengøring"\n\n6. Click **AI Process** (⚡)\n\n7. Wait ~6 seconds\n\n8. Verify modal shows:
-   - Parsed customer data\n\n   - Generated quote\n\n   - Edit capability\n\n9. Click **Send**\n\n10. Check Gmail for sent email
-
----
-\n\n## 🐛 Troubleshooting\n\n\n\n### Backend offline/error\n\n\n\n**Symptom:** `Invoke-RestMethod` fejler\n\n
-**Solutions:**
-\n\n1. **Wait 3-5 min** - Deployment kan tage tid\n\n2. **Check Render logs:**
-
-   ```
-   Render Dashboard → tekup-renos → Logs tab
-   Look for: "Server running on port..."
-   ```
-\n\n3. **Verify build succeeded:**
-
-   ```
-   Events tab → "Deploy succeeded" ✅
-   ```
-\n\n### AI Process button missing\n\n\n\n**Symptom:** UI viser ikke ⚡ button\n\n
-**Solutions:**
-\n\n1. **Hard refresh browser:** `Ctrl + Shift + R`\n\n2. **Clear browser cache**\n\n3. **Check console for errors:** `F12 → Console tab`\n\n\n\n### AI Process returns error\n\n\n\n**Symptom:** Modal viser fejl efter klik\n\n
-**Solutions:**
-\n\n1. **Check GEMINI_KEY:**
-
-   ```
-   Render → Environment → GEMINI_KEY must be set
-   ```
-\n\n2. **Check backend logs:**
-
-   ```
-   Render → Logs → Look for "Gemini API" errors
-   ```
-\n\n3. **Verify lead has valid data:**
-   - Email må ikke være tom\n\n   - Navn må ikke være tom\n\n\n\n### Quote not sending to Gmail\n\n\n\n**Symptom:** "Send" button doesn't send\n\n
-**Solutions:**
-\n\n1. **Check Google credentials:**
-
-   ```
-   GOOGLE_CLIENT_ID
-   GOOGLE_CLIENT_SECRET
-   GOOGLE_REFRESH_TOKEN
-   ```
-\n\n2. **Check RUN_MODE:**
-
-   ```
-   Should be "live" not "dry-run"
-   ```
-\n\n3. **Check backend logs:**
-
-   ```
-   Look for: "Gmail API" errors
-   ```
-
----
-\n\n## 📊 Expected Timeline\n\n\n\n```\n\n✅ Git push               - 0 min (done)\n\n🟡 Render build starts    - 1 min\n\n🟡 Build completes        - 3-4 min\n\n🟡 Deploy starts          - 4 min\n\n✅ Deploy succeeds        - 5-6 min\n\n✅ Health check OK        - 6 min\n\n✅ Ready for testing      - 7 min\n\n```
-
-**Current time:** Check Render dashboard for exact status\n\n
----
-\n\n## 🎯 Quick Commands Cheat Sheet\n\n\n\n```powershell\n\n# Quick status\n\n.\quick-status.ps1\n\n\n\n# Full test\n\n.\test-deployment.ps1\n\n\n\n# Monitor continuously\n\n.\monitor-deployment.ps1\n\n\n\n# Env var checklist\n\n.\verify-env-vars.ps1\n\n\n\n# Manual health check\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/health" -Method Get\n\n\n\n# Check dashboard stats\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/dashboard/stats" -Method Get\n\n\n\n# Check leads\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/leads" -Method Get\n\n```\n\n
----
-\n\n## 🔗 Important URLs\n\n\n\n- **Backend:** <https://tekup-renos.onrender.com>\n\n- **Frontend:** <https://tekup-renos.onrender.com>\n\n- **Health:** <https://tekup-renos.onrender.com/api/health>\n\n- **Render Dashboard:** <https://dashboard.render.com>\n\n
----
-\n\n## 📞 Need Help?\n\n\n\n1. Check Render logs first\n\n2. Verify all environment variables\n\n3. Try manual health check\n\n4. Review deployment guide: `DEPLOYMENT_GUIDE_AI_FEATURES.md`
+# 🎯 RenOS Deployment - Hurtig Kommando Reference\n\n\n\n## 🚀 Deployment Status Check\n\n\n\n### Quick Status (anbefalet først)\n\n\n\n```powershell\n\n# Check om backend er oppe\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/health" -Method Get\n\n\n\n# Hvis fejl: Vent 2-3 min og prøv igen (deployment i gang)\n\n```\n\n\n\n### Kontinuerlig Monitoring\n\n\n\n```powershell\n\n# Start monitor (opdaterer hvert 30 sek)\n\n.\monitor-deployment.ps1\n\n\n\n# Stop med Ctrl+C\n\n```\n\n---\n\n## ✅ Verification Workflow\n\n\n\n### Step 1: Render Dashboard\n\n\n\n1. Gå til: <https://dashboard.render.com>\n\n2. Find service: **tekup-renos**\n\n3. Check "Events" tab for deploy status\n\n4. Vent på: "Deploy succeeded ✅"\n\n### Step 2: Environment Variables\n\n\n\n```powershell\n\n# Kør checklist\n\n.\verify-env-vars.ps1\n\n\n\n# Verificer KRITISKE vars:\n\n# - GEMINI_KEY (AI features)\n\n# - GOOGLE_CLIENT_ID/SECRET/REFRESH_TOKEN (Gmail)\n\n# - DATABASE_URL (Database)\n\n# - FRONTEND_URL + CORS_ORIGIN (Frontend)\n\n```\n\n\n\n### Step 3: Automated Tests\n\n\n\n```powershell\n\n# Kør fuld test suite\n\n.\test-deployment.ps1\n\n\n\n# Forvented output:\n\n# ✅ Backend Health Check\n\n# ✅ Dashboard API\n\n# ✅ Frontend Loading\n\n# ✅ Leads API\n\n```\n\n\n\n### Step 4: Manual UI Testing\n\n\n\n1. Open: <https://tekup-renos.onrender.com>\n\n2. Login (hvis auth enabled)\n\n3. Navigate to **Leads** page\n\n4. Verify **AI Process** button (⚡) exists\n\n5. Create test lead:- Name: "Test Kunde"\n\n   - Email: "<test@example.com>"\n\n   - Task: "Privatrengøring"\n\n6. Click **AI Process** (⚡)\n\n7. Wait ~6 seconds\n\n8. Verify modal shows:- Parsed customer data\n\n   - Generated quote\n\n   - Edit capability\n\n9. Click **Send**\n\n10. Check Gmail for sent email---\n\n## 🐛 Troubleshooting\n\n\n\n### Backend offline/error\n\n\n\n**Symptom:** `Invoke-RestMethod` fejler\n\n**Solutions:**\n\n1. **Wait 3-5 min** - Deployment kan tage tid\n\n2. **Check Render logs:**   ```   Render Dashboard → tekup-renos → Logs tab   Look for: "Server running on port..."   ```\n\n3. **Verify build succeeded:**   ```   Events tab → "Deploy succeeded" ✅   ```\n\n### AI Process button missing\n\n\n\n**Symptom:** UI viser ikke ⚡ button\n\n**Solutions:**\n\n1. **Hard refresh browser:** `Ctrl + Shift + R`\n\n2. **Clear browser cache**\n\n3. **Check console for errors:** `F12 → Console tab`\n\n\n\n### AI Process returns error\n\n\n\n**Symptom:** Modal viser fejl efter klik\n\n**Solutions:**\n\n1. **Check GEMINI_KEY:**   ```   Render → Environment → GEMINI_KEY must be set   ```\n\n2. **Check backend logs:**   ```   Render → Logs → Look for "Gemini API" errors   ```\n\n3. **Verify lead has valid data:**- Email må ikke være tom\n\n   - Navn må ikke være tom\n\n\n\n### Quote not sending to Gmail\n\n\n\n**Symptom:** "Send" button doesn't send\n\n**Solutions:**\n\n1. **Check Google credentials:**   ```   GOOGLE_CLIENT_ID   GOOGLE_CLIENT_SECRET   GOOGLE_REFRESH_TOKEN   ```\n\n2. **Check RUN_MODE:**   ```   Should be "live" not "dry-run"   ```\n\n3. **Check backend logs:**   ```   Look for: "Gmail API" errors   ```---\n\n## 📊 Expected Timeline\n\n\n\n```\n\n✅ Git push               - 0 min (done)\n\n🟡 Render build starts    - 1 min\n\n🟡 Build completes        - 3-4 min\n\n🟡 Deploy starts          - 4 min\n\n✅ Deploy succeeds        - 5-6 min\n\n✅ Health check OK        - 6 min\n\n✅ Ready for testing      - 7 min\n\n```**Current time:** Check Render dashboard for exact status\n\n---\n\n## 🎯 Quick Commands Cheat Sheet\n\n\n\n```powershell\n\n# Quick status\n\n.\quick-status.ps1\n\n\n\n# Full test\n\n.\test-deployment.ps1\n\n\n\n# Monitor continuously\n\n.\monitor-deployment.ps1\n\n\n\n# Env var checklist\n\n.\verify-env-vars.ps1\n\n\n\n# Manual health check\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/health" -Method Get\n\n\n\n# Check dashboard stats\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/dashboard/stats" -Method Get\n\n\n\n# Check leads\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/leads" -Method Get\n\n```\n\n---\n\n## 🔗 Important URLs\n\n\n\n- **Backend:** <https://tekup-renos.onrender.com>\n\n- **Frontend:** <https://tekup-renos.onrender.com>\n\n- **Health:** <https://tekup-renos.onrender.com/api/health>\n\n- **Render Dashboard:** <https://dashboard.render.com>\n\n---\n\n## 📞 Need Help?\n\n\n\n1. Check Render logs first\n\n2. Verify all environment variables\n\n3. Try manual health check\n\n4. Review deployment guide: `DEPLOYMENT_GUIDE_AI_FEATURES.md`

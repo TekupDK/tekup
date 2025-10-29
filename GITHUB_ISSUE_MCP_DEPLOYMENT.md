@@ -11,6 +11,7 @@
 Deploy 3 nye MCP servere til production (Render.com) baseret på proven architecture fra tekup-billy og tekupvault.
 
 **Related Documentation:**
+
 - [MCP_PRODUCTION_ARCHITECTURE_PLAN.md](./tekup-mcp-servers/docs/MCP_PRODUCTION_ARCHITECTURE_PLAN.md)
 - [Tekup-Billy Deployment Guide](./apps/production/tekup-billy/docs/DEPLOYMENT_COMPLETE.md)
 
@@ -19,6 +20,7 @@ Deploy 3 nye MCP servere til production (Render.com) baseret på proven architec
 ## 📦 Servers Ready for Deployment
 
 ### 1. Knowledge MCP ✅ Code Complete
+
 - **Location:** `tekup-mcp-servers/packages/knowledge-mcp/`
 - **Features:**
   - `search_knowledge` - Search in markdown/txt documentation
@@ -27,6 +29,7 @@ Deploy 3 nye MCP servere til production (Render.com) baseret på proven architec
 - **Status:** Built, tested locally with dotenv
 
 ### 2. Code Intelligence MCP ✅ Code Complete
+
 - **Location:** `tekup-mcp-servers/packages/code-intelligence-mcp/`
 - **Features:**
   - `find_code` - Semantic code search by description
@@ -36,6 +39,7 @@ Deploy 3 nye MCP servere til production (Render.com) baseret på proven architec
 - **Supported:** `.ts, .tsx, .js, .jsx, .py, .java, .go, .rs`
 
 ### 3. Database MCP ✅ Code Complete
+
 - **Location:** `tekup-mcp-servers/packages/database-mcp/`
 - **Features:**
   - `query_database` - Read-only SQL with Row Level Security
@@ -66,6 +70,7 @@ Deploy 3 nye MCP servere til production (Render.com) baseret på proven architec
 For each server, create a new **Web Service** in Render.com:
 
 #### Knowledge MCP Configuration
+
 ```yaml
 Name: tekup-knowledge-mcp
 Region: Frankfurt (EU Central)
@@ -86,6 +91,7 @@ KNOWLEDGE_MAX_FILES=5000
 ```
 
 #### Code Intelligence MCP Configuration
+
 ```yaml
 Name: tekup-code-intelligence-mcp
 Region: Frankfurt (EU Central)
@@ -104,6 +110,7 @@ CODE_SEARCH_ROOT=/opt/render/project/src
 ```
 
 #### Database MCP Configuration
+
 ```yaml
 Name: tekup-database-mcp
 Region: Frankfurt (EU Central)
@@ -123,7 +130,7 @@ SUPABASE_ANON_KEY=[FROM SUPABASE DASHBOARD - Project Settings > API]
 SUPABASE_SERVICE_ROLE_KEY=[FROM SUPABASE DASHBOARD - Keep Secret!]
 ```
 
-⚠️ **Get SUPABASE_SERVICE_ROLE_KEY from:** https://supabase.com/dashboard/project/uagsdymcvdwcgfvqbtwj/settings/api
+⚠️ **Get SUPABASE_SERVICE_ROLE_KEY from:** <https://supabase.com/dashboard/project/uagsdymcvdwcgfvqbtwj/settings/api>
 
 ---
 
@@ -187,6 +194,7 @@ Total Phase 1:          $21/month
 ```
 
 **Existing servers:**
+
 - tekup-billy: $15/month
 - tekupvault: $15/month
 
@@ -208,12 +216,14 @@ Total Phase 1:          $21/month
 ## 📈 Next Steps After Deployment
 
 **Phase 2 (Week 3-4):**
+
 - [ ] Build MCP Gateway service
 - [ ] Implement load balancing
 - [ ] Add centralized monitoring
 - [ ] Setup health check aggregation
 
 **Phase 3 (Month 2):**
+
 - [ ] Integrate into Tekup Dashboard
 - [ ] Add AI assistant UI component
 - [ ] Create user documentation
@@ -225,7 +235,7 @@ Total Phase 1:          $21/month
 
 - Architecture Plan: [MCP_PRODUCTION_ARCHITECTURE_PLAN.md](./tekup-mcp-servers/docs/MCP_PRODUCTION_ARCHITECTURE_PLAN.md)
 - Security Guidelines: [TEKUP_MCP_SECURITY.md](./tekup-mcp-servers/docs/TEKUP_MCP_SECURITY.md)
-- Render.com Docs: https://render.com/docs/web-services
+- Render.com Docs: <https://render.com/docs/web-services>
 - Tekup-Billy Example: [DEPLOYMENT_COMPLETE.md](./apps/production/tekup-billy/docs/DEPLOYMENT_COMPLETE.md)
 
 ---

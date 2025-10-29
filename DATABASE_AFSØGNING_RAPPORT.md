@@ -280,7 +280,7 @@ Database Size:     11 MB (schema only)
 
 ### Supabase Projekt: RenOS By Tekup
 
-**URL:** https://oaevagdgrasfppbrxbey.supabase.co  
+**URL:** <https://oaevagdgrasfppbrxbey.supabase.co>  
 **Region:** EU Central 1 (Frankfurt)  
 **Status:** � Active MEN ikke migreret korrekt  
 **Tier:** nano → Pro ($25/mdr)
@@ -299,13 +299,13 @@ DATABASE_URL=postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=renos
 
 ### Supabase Projekt: TekupVault (Legacy)
 
-**URL:** https://twaoebtlusudzxshjral.supabase.co  
+**URL:** <https://twaoebtlusudzxshjral.supabase.co>  
 **Status:** � Legacy - skulle være migrated  
 **Brug:** Gammel vault project - refereret i tekup-vault/.env.example
 
 ---
 
-## 🔄 Migration Status - ⚠️ UFULDSTÆNDIG!
+## 🔄 Migration Status - ⚠️ UFULDSTÆNDIG
 
 ### ✅ Schema Migration (Completed)
 
@@ -518,7 +518,7 @@ docker exec -it tekup-database-postgres psql -U tekup -d tekup_db
 
 ## 📞 Support
 
-**Repository:** https://github.com/TekupDK/tekup  
+**Repository:** <https://github.com/TekupDK/tekup>  
 **Database Package:** `apps/production/tekup-database`  
 **Issues:** GitHub Issues  
 **Version:** 1.3.0

@@ -10,6 +10,7 @@
 ### ✅ LIVE Deployments (4 services)
 
 #### 1. **TekupVault**
+
 ```
 Service: tekupvault-api + tekupvault-worker
 URL: https://tekupvault.onrender.com
@@ -31,6 +32,7 @@ Skal opdateres:
 ---
 
 #### 2. **Tekup-Billy**
+
 ```
 Service: tekup-billy-mcp
 URL: https://tekup-billy.onrender.com
@@ -49,6 +51,7 @@ Skal opdateres:
 ---
 
 #### 3. **RenOS Backend**
+
 ```
 Service: renos-backend
 URL: https://renos-backend.onrender.com
@@ -67,6 +70,7 @@ Skal opdateres:
 ---
 
 #### 4. **RenOS Frontend**
+
 ```
 Service: renos-frontend
 URL: https://renos-frontend.onrender.com
@@ -115,6 +119,7 @@ envVars:
 ```
 
 **Hvordan opdatere:**
+
 1. Gå til Render.com dashboard
 2. Naviger til `tekupvault-api` service
 3. Environment → Edit Environment Variables
@@ -126,11 +131,13 @@ envVars:
 ### 🟢 INGEN ÆNDRING - Billy & RenOS
 
 **Tekup-Billy:**
+
 - ✅ Allerede på oaevagdgrasfppbrxbey
 - ✅ Environment variables korrekte
 - ✅ Ingen action required
 
 **RenOS Backend:**
+
 - ✅ Allerede på oaevagdgrasfppbrxbey
 - ✅ Environment variables korrekte
 - ✅ Ingen action required
@@ -144,6 +151,7 @@ envVars:
 **Efter TekupVault data er migreret lokalt:**
 
 #### Step 1: Update Render.com Environment Variables
+
 ```bash
 # Via Render.com Dashboard:
 # 1. Login til dashboard.render.com
@@ -161,6 +169,7 @@ DATABASE_URL=postgresql://postgres:Habibie12%40@db.oaevagdgrasfppbrxbey.supabase
 ```
 
 #### Step 2: Monitor Deployment
+
 ```bash
 # Watch Render logs for successful deploy
 # Check health endpoint
@@ -170,6 +179,7 @@ curl https://tekupvault.onrender.com/health
 ```
 
 #### Step 3: Test Production
+
 ```bash
 # Test search endpoint
 curl https://tekupvault.onrender.com/api/search?q=test
@@ -224,13 +234,15 @@ CLEANUP (Phase 6):
 ## ⚠️ KRITISK: Zero-Downtime Strategy
 
 ### **Problem:**
+
 - TekupVault production kører 24/7
-- ChatGPT MCP integration peger på https://tekupvault.onrender.com
+- ChatGPT MCP integration peger på <https://tekupvault.onrender.com>
 - Kan ikke have downtime
 
 ### **Løsning: Blue-Green Deployment**
 
 #### Option A: Quick Cutover (Minimal Downtime)
+
 ```
 1. Migrer data til RenOS projekt (done offline)
 2. Test lokalt alt virker
@@ -243,6 +255,7 @@ CLEANUP (Phase 6):
 ---
 
 #### Option B: Zero Downtime (Advanced)
+
 ```
 1. Deploy ny "tekupvault-api-v2" service
 2. Point til RenOS Supabase projekt
@@ -276,7 +289,8 @@ CLEANUP (Phase 6):
 
 ## ✅ Checklist for Production Update
 
-### TekupVault Render.com:
+### TekupVault Render.com
+
 - [ ] Data migreret til RenOS Supabase projekt
 - [ ] Lokal testing passed
 - [ ] Git committed og pushed
@@ -287,12 +301,13 @@ CLEANUP (Phase 6):
 - [ ] Update DATABASE_URL (optional)
 - [ ] Save changes (triggers auto-deploy)
 - [ ] Monitor deployment logs
-- [ ] Test https://tekupvault.onrender.com/health
+- [ ] Test <https://tekupvault.onrender.com/health>
 - [ ] Test search endpoint
 - [ ] Test MCP endpoint
 - [ ] Verify ChatGPT integration still works
 
-### Tekup-Billy & RenOS:
+### Tekup-Billy & RenOS
+
 - [x] Already on correct Supabase projekt ✅
 - [ ] Verify health checks
 - [ ] No action needed
@@ -301,13 +316,14 @@ CLEANUP (Phase 6):
 
 ## 📝 Render Dashboard Links
 
-**Login:** https://dashboard.render.com
+**Login:** <https://dashboard.render.com>
 
 **Services:**
-- TekupVault API: https://dashboard.render.com/web/tekupvault-api
-- TekupVault Worker: https://dashboard.render.com/web/tekupvault-worker  
-- Tekup-Billy: https://dashboard.render.com/web/tekup-billy-mcp
-- RenOS Backend: https://dashboard.render.com/web/renos-backend
+
+- TekupVault API: <https://dashboard.render.com/web/tekupvault-api>
+- TekupVault Worker: <https://dashboard.render.com/web/tekupvault-worker>  
+- Tekup-Billy: <https://dashboard.render.com/web/tekup-billy-mcp>
+- RenOS Backend: <https://dashboard.render.com/web/renos-backend>
 
 ---
 

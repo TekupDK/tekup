@@ -1,4 +1,4 @@
-# RenOS Backend Integration Guide
+﻿# RenOS Backend Integration Guide
 
 ## Overview
 
@@ -787,7 +787,7 @@ describe('Billy MCP Client', () => {
 ## Support & Resources
 
 - **Billy MCP Server:** <https://tekup-billy.onrender.com>
-- **GitHub Repository:** <https://github.com/JonasAbde/Tekup-Billy>
+- **GitHub Repository:** <https://github.com/TekupDK/Tekup-Billy>
 - **Billy.dk API Docs:** <https://www.billy.dk/api>
 - **Service Status:** Check Render.com dashboard
 

@@ -61,6 +61,7 @@ interface ButtonProps {
 Container component with header, body, and footer sections.
 
 **Components**:
+
 - `Card` - Main container
 - `CardHeader` - Title and actions
 - `CardBody` - Content area
@@ -193,6 +194,7 @@ interface SpinnerProps {
 Main dashboard view for organization owners.
 
 **Features**:
+
 - KPI cards (revenue, jobs, team utilization)
 - Revenue charts
 - Team location map
@@ -292,6 +294,7 @@ interface NotificationCenterProps {
 Data table with filtering and pagination.
 
 **Features**:
+
 - Search with debounce
 - Advanced filters (city, status, satisfaction)
 - Pagination
@@ -356,6 +359,7 @@ interface CustomerFormProps {
 Customer analytics dashboard.
 
 **Features**:
+
 - Satisfaction trends
 - Revenue analysis
 - Job history
@@ -386,6 +390,7 @@ interface CustomerCommunicationLogProps {
 Professional time tracking component.
 
 **Features**:
+
 - Start/pause/stop controls
 - Real-time elapsed display (HH:MM:SS)
 - Break time management
@@ -496,6 +501,7 @@ interface ServiceSelectionProps {
 Authentication form with validation.
 
 **Features**:
+
 - React Hook Form integration
 - Zod schema validation
 - Email/password fields

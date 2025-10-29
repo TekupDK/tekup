@@ -1,4 +1,4 @@
-# Tekup Secrets - Centralized Secret Management
+﻿# Tekup Secrets - Centralized Secret Management
 
 **Purpose:** Centralized, secure environment variable management for all Tekup Portfolio projects
 
@@ -29,12 +29,14 @@ tekup-secrets/
 ## 🔐 Security Architecture
 
 ### File Permissions (Windows)
+
 ```powershell
 # Set restricted access (owner only)
 icacls "C:\Users\empir\tekup-secrets" /inheritance:r /grant:r "$env:USERNAME:(OI)(CI)F"
 ```
 
 ### Git Protection
+
 ```gitignore
 # tekup-secrets/.gitignore
 *.env
@@ -52,6 +54,7 @@ secrets/
 ## 📋 Environment File Structure
 
 ### .env.production (Master Production Secrets)
+
 ```bash
 # ==================== LLM PROVIDERS ====================
 OPENAI_API_KEY=sk-proj-REAL_PRODUCTION_KEY
@@ -83,6 +86,7 @@ SENTRY_DSN=https://REAL_SENTRY_DSN@sentry.io/PROJECT_ID
 ```
 
 ### .env.shared (Non-sensitive defaults)
+
 ```bash
 # Application defaults (safe to share)
 NODE_ENV=development
@@ -114,6 +118,7 @@ TEKUPVAULT_API_URL=https://tekupvault.onrender.com
 ## 🤖 AI Agent Integration
 
 ### Auto-Sync Script (scripts/sync-to-project.ps1)
+
 ```powershell
 <#
 .SYNOPSIS
@@ -189,6 +194,7 @@ Write-Host "📁 Target: $targetEnvFile" -ForegroundColor Cyan
 ```
 
 ### AI-Readable Config Loader (TypeScript)
+
 ```typescript
 // packages/tekup-config/src/secrets-loader.ts
 import { readFileSync, existsSync } from 'fs';
@@ -290,6 +296,7 @@ export class SecretsLoader {
 ## 🔄 Sync Workflows
 
 ### 1. Initial Setup
+
 ```powershell
 # Create secrets directory
 New-Item -ItemType Directory -Path "C:\Users\empir\tekup-secrets" -Force
@@ -303,10 +310,11 @@ Copy-Item "C:\Users\empir\tekup-ai\.env" "C:\Users\empir\tekup-secrets\.env.deve
 # Initialize git (private repo ONLY)
 cd "C:\Users\empir\tekup-secrets"
 git init
-git remote add origin git@github.com:JonasAbde/tekup-secrets-private.git  # MUST BE PRIVATE!
+git remote add origin git@github.com:TekupDK/tekup-secrets-private.git  # MUST BE PRIVATE!
 ```
 
 ### 2. AI Agent Auto-Sync
+
 ```typescript
 // In AI agent startup:
 import { SecretsLoader } from '@tekup/config';
@@ -331,6 +339,7 @@ async function initializeAgent() {
 ```
 
 ### 3. Manual Sync (For specific project)
+
 ```powershell
 # Sync to tekup-ai development
 .\tekup-secrets\scripts\sync-to-project.ps1 -Project "tekup-ai" -Environment "development"
@@ -345,6 +354,7 @@ async function initializeAgent() {
 ## 🛡️ Security Best Practices
 
 ### DO ✅
+
 - ✅ Use separate `.env.production` and `.env.development`
 - ✅ Set strict file permissions (owner only)
 - ✅ Use private Git repo if versioning (recommended: NO git at all)
@@ -353,6 +363,7 @@ async function initializeAgent() {
 - ✅ Validate with Zod schemas before use
 
 ### DON'T ❌
+
 - ❌ Never commit `.env` files to public repos
 - ❌ Never share production secrets in chat/Slack
 - ❌ Never hardcode secrets in source code

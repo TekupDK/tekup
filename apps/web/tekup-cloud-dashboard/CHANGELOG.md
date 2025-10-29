@@ -8,6 +8,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [Unreleased]
 
 ### Added
+
 - Komplet produktionsklar dashboard-applikation
 - Real-time data integration med Supabase
 - Autentificeringssystem med Supabase Auth
@@ -21,11 +22,13 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Komplet dokumentation (README, Deployment Guide, API Docs)
 
 ### Changed
+
 - Opgraderet fra mock data til real-time data integration
 - Implementeret React Router for production-ready navigation
 - Refaktoreret komponentstruktur for bedre maintainability
 
 ### Security
+
 - Implementeret sikker autentificering via Supabase
 - Tilføjet environment variable validation
 - Implementeret rolle-baseret adgangskontrol
@@ -33,6 +36,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [1.0.0] - 2024-01-XX
 
 ### Added
+
 - Initial release af Tekup Cloud Dashboard
 - Moderne React + TypeScript + Vite setup
 - TailwindCSS styling system
@@ -44,6 +48,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Responsive design
 
 ### Components
+
 - Dashboard side med KPI-kort
 - Leads management side
 - System Health monitoring
@@ -51,6 +56,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Placeholder sider for fremtidige funktioner
 
 ### Infrastructure
+
 - Vite build system
 - ESLint konfiguration
 - TypeScript konfiguration
@@ -60,12 +66,14 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [0.9.0] - 2024-01-XX (Pre-production)
 
 ### Added
+
 - Mock data system til udvikling
 - Grundlæggende komponentstruktur
 - Context API til state management
 - Responsive layout system
 
 ### Components
+
 - KPICard komponenter
 - ActivityFeed komponent
 - QuickActions komponent
@@ -73,6 +81,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - AgentMonitor komponent
 
 ### Data Models
+
 - Tenant type definition
 - User type definition
 - AIAgent type definition
@@ -83,6 +92,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [0.8.0] - 2024-01-XX (Development)
 
 ### Added
+
 - Initial projekt setup
 - Vite konfiguration
 - React + TypeScript setup
@@ -90,6 +100,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Grundlæggende folder struktur
 
 ### Development Setup
+
 - Package.json konfiguration
 - Vite config setup
 - TypeScript konfiguration
@@ -99,6 +110,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## Kommende Funktioner (Roadmap)
 
 ### [1.1.0] - Planlagt
+
 - [ ] Advanced analytics dashboard
 - [ ] Email automation workflows
 - [ ] Kalender integration
@@ -108,6 +120,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - [ ] User preferences system
 
 ### [1.2.0] - Planlagt
+
 - [ ] Mobile app support
 - [ ] Offline functionality
 - [ ] Advanced reporting
@@ -116,6 +129,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - [ ] Audit log system
 
 ### [1.3.0] - Planlagt
+
 - [ ] White-label support
 - [ ] Advanced tenant management
 - [ ] Custom integrations framework
@@ -123,6 +137,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - [ ] Advanced security features
 
 ### [2.0.0] - Fremtidig
+
 - [ ] Microservices arkitektur
 - [ ] GraphQL API
 - [ ] Real-time collaboration
@@ -132,6 +147,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## Tekniske Forbedringer
 
 ### Performance
+
 - [x] Lazy loading af komponenter
 - [x] Code splitting
 - [x] Optimeret bundle størrelse
@@ -139,6 +155,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - [ ] Advanced caching strategier
 
 ### Security
+
 - [x] Supabase Auth integration
 - [x] Environment variable validation
 - [x] Rolle-baseret adgangskontrol
@@ -147,6 +164,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - [ ] Two-factor authentication
 
 ### Developer Experience
+
 - [x] TypeScript strict mode
 - [x] ESLint konfiguration
 - [x] Komplet dokumentation
@@ -157,12 +175,14 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## Bug Fixes
 
 ### [1.0.0]
+
 - Fixet routing issues med React Router
 - Løst styling konflikter med TailwindCSS
 - Forbedret error handling i API calls
 - Fixet responsive design issues
 
 ### [0.9.0]
+
 - Løst memory leaks i useEffect hooks
 - Fixet state management issues
 - Forbedret component re-rendering performance
@@ -170,6 +190,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## Breaking Changes
 
 ### [1.0.0]
+
 - Ændret fra mock data til real-time API integration
 - Opdateret komponent props interfaces
 - Ændret routing struktur til React Router
@@ -178,6 +199,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## Migration Guide
 
 ### Fra 0.9.0 til 1.0.0
+
 1. Opdater environment variabler jf. `.env.example`
 2. Installer nye dependencies: `npm install`
 3. Opdater Supabase konfiguration
@@ -185,6 +207,7 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 5. Verificer API integration
 
 ### Fra Mock Data til Real Data
+
 1. Opsæt Supabase projekt
 2. Konfigurer database tabeller
 3. Opdater API endpoints
@@ -202,4 +225,4 @@ og dette projekt følger [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
-For spørgsmål om changelog eller versioning, kontakt development team på dev@tekup.dk.
+For spørgsmål om changelog eller versioning, kontakt development team på <dev@tekup.dk>.

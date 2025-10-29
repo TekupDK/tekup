@@ -11,6 +11,7 @@ Tekup Database uses **multi-schema PostgreSQL architecture** with schema-level i
 ### Schema Strategy
 
 **Why Multi-Schema?**
+
 - ✅ Logical separation of concerns
 - ✅ Clear ownership boundaries
 - ✅ Easier access control (schema-level permissions)
@@ -38,6 +39,7 @@ tekup_db/
 ### Models
 
 #### `VaultDocument`
+
 Primary document storage with metadata.
 
 ```prisma
@@ -61,6 +63,7 @@ model VaultDocument {
 ```
 
 **Design Decisions:**
+
 - `cuid()` for distributed ID generation
 - Composite unique constraint prevents duplicates
 - Indexes on commonly queried fields
@@ -68,6 +71,7 @@ model VaultDocument {
 - JSON for flexible metadata
 
 #### `VaultEmbedding`
+
 Vector embeddings for semantic search.
 
 ```prisma
@@ -85,12 +89,14 @@ model VaultEmbedding {
 ```
 
 **Design Decisions:**
+
 - pgvector for native PostgreSQL vector operations
 - 1536 dimensions (OpenAI text-embedding-ada-002 compatible)
 - Cascade delete maintains referential integrity
 - Integer ID for performance (frequent similarity queries)
 
 #### `VaultSyncStatus`
+
 Track synchronization state per repository.
 
 ```prisma
@@ -117,6 +123,7 @@ model VaultSyncStatus {
 ### Models
 
 #### `BillyOrganization`
+
 Billy.dk organization mapping.
 
 ```prisma
@@ -141,11 +148,13 @@ model BillyOrganization {
 ```
 
 **Design Decisions:**
+
 - Stores encrypted API keys
 - One-to-many relationships for all related data
 - Settings as JSON for flexibility
 
 #### `BillyCache`
+
 TTL-based caching for Billy API responses.
 
 ```prisma
@@ -166,11 +175,13 @@ model BillyCache {
 ```
 
 **Design Decisions:**
+
 - Composite unique key for fast lookups
 - TTL via `expiresAt` for automatic expiration checking
 - Index on expiration for efficient cleanup queries
 
 #### `BillyAuditLog`
+
 Complete audit trail of all API operations.
 
 ```prisma
@@ -200,6 +211,7 @@ model BillyAuditLog {
 ```
 
 **Design Decisions:**
+
 - Comprehensive logging for compliance
 - Performance metrics (durationMs)
 - Security context (IP, user agent)
@@ -214,6 +226,7 @@ model BillyAuditLog {
 ### Core Models
 
 #### `RenosLead`
+
 Lead management with AI scoring.
 
 ```prisma
@@ -260,12 +273,14 @@ model RenosLead {
 ```
 
 **Design Decisions:**
+
 - AI scoring with metadata for explainability
 - Flexible enrichment via JSON
 - Status tracking for funnel analytics
 - Multiple contact methods
 
 #### `RenosBooking`
+
 Job bookings with time tracking.
 
 ```prisma
@@ -307,6 +322,7 @@ model RenosBooking {
 ```
 
 **Design Decisions:**
+
 - Separate estimated vs actual times
 - Efficiency scoring for analytics
 - Break tracking for accurate billing
@@ -321,6 +337,7 @@ model RenosBooking {
 ### Models
 
 #### `SharedUser`
+
 Unified user model across all services.
 
 ```prisma
@@ -339,6 +356,7 @@ model SharedUser {
 ```
 
 #### `SharedAuditLog`
+
 Cross-service audit logging.
 
 ```prisma
@@ -364,27 +382,34 @@ model SharedAuditLog {
 ## Design Patterns
 
 ### 1. Soft Deletes (Not Used)
+
 **Decision:** Use hard deletes with CASCADE  
 **Rationale:** Simpler, clearer data model. Use audit logs for history.
 
 ### 2. Timestamps
+
 **Pattern:** Every table has `createdAt` and `updatedAt`  
 **Rationale:** Essential for debugging and analytics
 
 ### 3. JSON Fields
+
 **When to use:**
+
 - Flexible metadata
 - API responses (cache)
 - Configuration settings
 - Enrichment data
 
 **When NOT to use:**
+
 - Frequently queried fields
 - Data requiring indexes
 - Relationships
 
 ### 4. Indexes
+
 **Strategy:**
+
 - Primary keys (automatic)
 - Foreign keys (automatic with Prisma)
 - Frequently filtered fields
@@ -392,7 +417,9 @@ model SharedAuditLog {
 - Composite indexes for common queries
 
 ### 5. IDs
+
 **Strategy:**
+
 - `cuid()` for distributed generation
 - `autoincrement()` only for high-volume tables (embeddings)
 
@@ -401,6 +428,7 @@ model SharedAuditLog {
 ## Performance Considerations
 
 ### Connection Pooling
+
 ```typescript
 datasource db {
   provider = "postgresql"
@@ -410,12 +438,14 @@ datasource db {
 ```
 
 ### Query Optimization
+
 - Use `select` to limit fields
 - Eager load with `include` when needed
 - Use transactions for multi-step operations
 - Batch operations where possible
 
 ### Indexes
+
 Review query patterns quarterly and add indexes as needed.
 
 ---
@@ -423,6 +453,7 @@ Review query patterns quarterly and add indexes as needed.
 ## Migration Strategy
 
 ### Adding New Models
+
 1. Add to appropriate schema
 2. Run `prisma migrate dev --name descriptive_name`
 3. Update client libraries
@@ -430,6 +461,7 @@ Review query patterns quarterly and add indexes as needed.
 5. Update documentation
 
 ### Modifying Existing Models
+
 1. Test on staging first
 2. Backup production
 3. Create migration
@@ -441,6 +473,7 @@ Review query patterns quarterly and add indexes as needed.
 ## Future Enhancements
 
 ### Planned Features
+
 - [ ] Full-text search (tsvector)
 - [ ] Partitioning for large tables
 - [ ] Read replicas for scaling

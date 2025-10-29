@@ -18,6 +18,7 @@ Common issues og solutions for TekUp AI Assistant setup.
 ### Issue: Ollama won't start
 
 **Symptoms:**
+
 - `ollama` command not found
 - "Failed to connect to Ollama" in Jan AI
 - Port 11434 not listening
@@ -48,6 +49,7 @@ ollama serve
 ```
 
 **Prevention:**
+
 - Add Ollama to startup programs
 - Create shortcut: `ollama serve` in Startup folder
 
@@ -56,6 +58,7 @@ ollama serve
 ### Issue: Model download fails
 
 **Symptoms:**
+
 - Download stops at X%
 - "Network error" during pull
 - Disk space error
@@ -87,6 +90,7 @@ ollama pull qwen2.5-coder:14b-instruct-q4_K_M
 ### Issue: Model runs very slowly (30+ seconds)
 
 **Symptoms:**
+
 - GPU not being used (check Task Manager)
 - CPU at 100%
 - Long response times
@@ -125,6 +129,7 @@ nvidia-smi
 ### Issue: Jan AI won't connect to Ollama
 
 **Symptoms:**
+
 - "Failed to connect" error
 - Ollama models not showing in Jan AI
 - Timeout errors
@@ -172,6 +177,7 @@ nvidia-smi
 ### Issue: Jan AI crashes or freezes
 
 **Symptoms:**
+
 - App becomes unresponsive
 - White screen
 - Memory error
@@ -207,6 +213,7 @@ nvidia-smi
 ### Issue: Billy MCP not responding
 
 **Symptoms:**
+
 - "Tool not found" error
 - Invoice creation fails
 - Timeout errors
@@ -227,7 +234,7 @@ Get-Content "$env:APPDATA\jan\extensions\mcp-config.json" | ConvertFrom-Json
 **Solutions:**
 
 1. **Verify Tekup-Billy is running:**
-   - Visit: https://tekup-billy.onrender.com
+   - Visit: <https://tekup-billy.onrender.com>
    - Should show API status page
 
 2. **Check MCP config:**
@@ -253,6 +260,7 @@ Get-Content "$env:APPDATA\jan\extensions\mcp-config.json" | ConvertFrom-Json
 ### Issue: MCP tools not showing in Jan AI
 
 **Symptoms:**
+
 - Can't see `create_invoice` tool
 - AI doesn't know about Billy integration
 
@@ -293,6 +301,7 @@ Get-Content "$env:APPDATA\jan\extensions\mcp-config.json" | ConvertFrom-Json
 ### Issue: High RAM usage (>40GB)
 
 **Symptoms:**
+
 - System slows down
 - Ollama using 20GB+ RAM
 - Chrome crashes
@@ -307,7 +316,7 @@ Get-Content "$env:APPDATA\jan\extensions\mcp-config.json" | ConvertFrom-Json
 2. **Limit Ollama context:**
    - Shorter conversations use less RAM
    - Restart Ollama periodically
-   
+
 3. **Close unused apps:**
    ```powershell
    # Kill Chrome if not needed
@@ -325,6 +334,7 @@ Get-Content "$env:APPDATA\jan\extensions\mcp-config.json" | ConvertFrom-Json
 ### Issue: Slow AI responses (>30 seconds)
 
 **Symptoms:**
+
 - Every response takes 30+ seconds
 - GPU shows 0% usage
 - CPU at 100%
@@ -361,6 +371,7 @@ Get-Content "$env:APPDATA\jan\extensions\mcp-config.json" | ConvertFrom-Json
 ### Issue: "Customer not found" errors
 
 **Symptoms:**
+
 - AI can't find customer by name
 - list_customers returns empty
 
@@ -384,6 +395,7 @@ Get-Content "$env:APPDATA\jan\extensions\mcp-config.json" | ConvertFrom-Json
 ### Issue: Invoice creation fails
 
 **Symptoms:**
+
 - "Unknown error" when creating invoice
 - 500 error from Billy API
 - Missing required fields
@@ -430,6 +442,7 @@ curl -X POST "https://tekup-billy.onrender.com/billy/invoices" `
 ### Issue: Bookings not syncing
 
 **Symptoms:**
+
 - AI shows old bookings
 - Calendar out of date
 - Missing recent entries
@@ -454,6 +467,7 @@ curl -X POST "https://tekup-billy.onrender.com/billy/invoices" `
 ### Issue: Access codes missing
 
 **Symptoms:**
+
 - AI shows booking without access code
 - "null" or "-" for code
 
@@ -515,9 +529,11 @@ eventvwr
 ```
 
 **Jan AI logs:**
+
 - Jan AI → Settings → Advanced → Show Logs
 
 **MCP logs:**
+
 - Console output where MCP server runs
 
 ### Collect Debug Info
@@ -546,6 +562,7 @@ ollama list >> debug-info.txt
 ### Report Issue
 
 Include:
+
 1. Error message (exact text)
 2. Steps to reproduce
 3. System info (from above)
@@ -553,6 +570,7 @@ Include:
 5. Logs (relevant sections)
 
 **Where to report:**
+
 - GitHub Issues: `tekup-ai-assistant`
 - Or check `chat.md` for previous discussions
 
@@ -561,5 +579,4 @@ Include:
 **Version:** 1.0.0  
 **Last Updated:** 2025-01-15  
 **See also:** [SETUP.md](SETUP.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [WORKFLOWS.md](WORKFLOWS.md)
-
 

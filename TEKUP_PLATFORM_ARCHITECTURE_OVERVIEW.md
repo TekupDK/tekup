@@ -566,10 +566,10 @@ graph TD
 
 | Service                | URL                                     | Status       | Last Check       | Response Time |
 | ---------------------- | --------------------------------------- | ------------ | ---------------- | ------------- |
-| **Tekup-Billy MCP**    | https://tekup-billy.onrender.com        | 🟢 Up        | 2025-10-25 10:18 | 145ms         |
-| **TekupVault API**     | https://tekupvault-api.onrender.com     | 🟢 Up        | 2025-10-25 10:18 | 234ms         |
-| **Rendetalje Backend** | https://renos-backend.onrender.com      | 🟢 Up        | 2025-10-25 10:18 | 123ms         |
-| **Calendar MCP**       | https://renos-calendar-mcp.onrender.com | 🟡 Preparing | -                | -             |
+| **Tekup-Billy MCP**    | <https://tekup-billy.onrender.com>        | 🟢 Up        | 2025-10-25 10:18 | 145ms         |
+| **TekupVault API**     | <https://tekupvault-api.onrender.com>     | 🟢 Up        | 2025-10-25 10:18 | 234ms         |
+| **Rendetalje Backend** | <https://renos-backend.onrender.com>      | 🟢 Up        | 2025-10-25 10:18 | 123ms         |
+| **Calendar MCP**       | <https://renos-calendar-mcp.onrender.com> | 🟡 Preparing | -                | -             |
 
 ### **Development Services Health**
 
@@ -668,7 +668,7 @@ graph TD
 
 - **Technical Lead**: Jonas Abde
 - **Organization**: TekupDK
-- **Repository**: https://github.com/TekupDK/tekup
+- **Repository**: <https://github.com/TekupDK/tekup>
 - **Production Support**: Render.com dashboard + Sentry alerts
 
 ### **Maintenance Schedule**

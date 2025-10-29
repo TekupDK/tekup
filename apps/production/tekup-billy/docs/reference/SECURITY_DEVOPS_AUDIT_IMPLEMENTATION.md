@@ -1,8 +1,8 @@
-# Tekup-Billy MCP: Security & DevOps Audit Implementation
+﻿# Tekup-Billy MCP: Security & DevOps Audit Implementation
 
 **Dato:** 13. Oktober 2025  
 **Status:** ✅ **IMPLEMENTERET**  
-**Repository:** <https://github.com/JonasAbde/Tekup-Billy>
+**Repository:** <https://github.com/TekupDK/Tekup-Billy>
 
 ---
 
@@ -179,8 +179,8 @@ SENTRY_PROFILES_SAMPLE_RATE=0.1   # 10% profile sampling
 **Badges Added:**
 
 ```markdown
-[![CI/CD Pipeline](https://github.com/JonasAbde/Tekup-Billy/actions/workflows/ci.yml/badge.svg)]
-[![CodeQL Security](https://github.com/JonasAbde/Tekup-Billy/actions/workflows/codeql.yml/badge.svg)]
+[![CI/CD Pipeline](https://github.com/TekupDK/Tekup-Billy/actions/workflows/ci.yml/badge.svg)]
+[![CodeQL Security](https://github.com/TekupDK/Tekup-Billy/actions/workflows/codeql.yml/badge.svg)]
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)]
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)]
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)]

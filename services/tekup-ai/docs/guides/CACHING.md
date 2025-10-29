@@ -1,197 +1,1 @@
-# Caching System\n\n\n\nIn-memory caching layer for optimeret performance af Gmail og Calendar API opkald.
-\n\n## 📋 Indholdsfortegnelse\n\n\n\n- [Oversigt](#oversigt)\n\n- [Funktioner](#funktioner)\n\n- [Cache Strategi](#cache-strategi)\n\n- [CLI Kommandoer](#cli-kommandoer)\n\n- [API Reference](#api-reference)\n\n- [Cache Invalidation](#cache-invalidation)\n\n- [Performance](#performance)\n\n- [Best Practices](#best-practices)\n\n\n\n## 🎯 Oversigt\n\n\n\nCaching systemet reducerer antallet af API-kald til Google Gmail og Calendar ved at cache resultater i hukommelsen med konfigurerbare TTL (Time To Live) værdier.
-\n\n### Fordele\n\n\n\n- ⚡ **Hurtigere Responstider**: Cache hits returnerer data øjeblikkeligt\n\n- 💰 **Reduceret API Forbrug**: Færre kald til Google APIs\n\n- 📊 **Performance Monitoring**: Built-in statistik og hit-rate tracking\n\n- 🧹 **Automatisk Oprydning**: Expired entries fjernes automatisk\n\n- 🔄 **Smart Invalidation**: Automatisk cache-invalidering ved data-ændringer\n\n\n\n## ✨ Funktioner\n\n\n\n### In-Memory Cache\n\n\n\nSimpel, men effektiv in-memory cache uden eksterne dependencies:
-\n\n```typescript
-import { cache, CacheKeys, CacheTTL } from './services/cacheService';
-
-// Get from cache
-const events = cache.get<CalendarEventSummary[]>(
-    CacheKeys.eventList('primary', timeMin, timeMax)
-);
-
-// Set in cache with TTL
-cache.set(
-    CacheKeys.eventList('primary', timeMin, timeMax),
-    events,
-    CacheTTL.eventList
-);\n\n```
-\n\n### Cache Key Builders\n\n\n\nStandardiserede key builders for konsistente cache keys:
-\n\n```typescript
-// Gmail cache keys
-CacheKeys.email(emailId)
-CacheKeys.emailList(maxResults, query)
-CacheKeys.thread(threadId)
-
-// Calendar cache keys
-CacheKeys.event(eventId)
-CacheKeys.eventList(calendarId, timeMin, timeMax)
-CacheKeys.availability(calendarId, timeMin, timeMax)
-CacheKeys.nextSlot(calendarId, durationMinutes, startAfter)
-
-// Lead cache keys
-CacheKeys.lead(leadId)
-CacheKeys.leadList()\n\n```
-\n\n### Automatisk Cleanup\n\n\n\nCache entries med expired TTL fjernes automatisk hver 5. minut:
-\n\n```typescript
-// Kører automatisk i baggrunden
-setInterval(() => {
-    cache.cleanup();
-}, 5 * 60 * 1000);\n\n```
-\n\n## 📊 Cache Strategi\n\n\n\n### TTL Værdier\n\n\n\nForskellige data-typer har forskellige cache-varighed baseret på hvor ofte de ændrer sig:
-\n\n```typescript
-export const CacheTTL = {
-    email: 5 * 60,        // 5 minutter - Emails kan ændre sig hyppigt\n\n    emailList: 2 * 60,    // 2 minutter - Lister ændrer sig oftere\n\n    thread: 5 * 60,       // 5 minutter - Threads er relativt stabile\n\n    
-    event: 15 * 60,       // 15 minutter - Events er mere stabile\n\n    eventList: 5 * 60,    // 5 minutter - Event lister kan ændres\n\n    availability: 5 * 60, // 5 minutter - Availability skal være forholdsvis fresh\n\n    nextSlot: 5 * 60,     // 5 minutter - Next slot searches\n\n    
-    lead: 10 * 60,        // 10 minutter - Leads ændrer sig sjældent\n\n    leadList: 2 * 60,     // 2 minutter - Lead listen opdateres oftere\n\n};\n\n```
-\n\n### Cache Flow\n\n\n\n```\n\n┌─────────────┐
-│   Request   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐     Hit      ┌─────────────┐
-│ Check Cache ├─────────────►│   Return    │
-└──────┬──────┘              └─────────────┘
-       │ Miss
-       ▼
-┌─────────────┐
-│  Call API   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Cache Data  │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│   Return    │
-└─────────────┘\n\n```
-\n\n## 🛠️ CLI Kommandoer\n\n\n\n### Cache Statistik\n\n\n\nVis cache performance metrics:
-\n\n```bash
-npm run cache:stats\n\n```
-
-Output:
-\n\n```
-📊 Cache Statistics
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total Hits:      127
-Total Misses:    43
-Hit Rate:        74.71%
-Current Size:    18 entries
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n```
-\n\n### Ryd Cache\n\n\n\nSlet al cached data:
-\n\n```bash
-npm run cache:clear\n\n```
-\n\n### Cleanup Expired\n\n\n\nFjern kun expired entries:
-\n\n```bash
-npm run cache:cleanup\n\n```
-\n\n## 📚 API Reference\n\n\n\n### CacheService Class\n\n\n\n#### Methods\n\n\n\n##### `get<T>(key: string): T | null`\n\n\n\nHent værdi fra cache.
-
-**Parameters:**
-\n\n- `key` - Cache key\n\n
-**Returns:** Cached data eller `null` hvis ikke fundet eller expired\n\n
-**Example:**
-\n\n```typescript
-const events = cache.get<CalendarEventSummary[]>('calendar:list:primary:...');\n\n```
-\n\n##### `set<T>(key: string, data: T, ttlSeconds: number): void`\n\n\n\nGem værdi i cache med TTL.
-
-**Parameters:**
-\n\n- `key` - Cache key\n\n- `data` - Data til cache\n\n- `ttlSeconds` - TTL i sekunder\n\n
-**Example:**
-\n\n```typescript
-cache.set('calendar:list:primary:...', events, CacheTTL.eventList);\n\n```
-\n\n##### `delete(key: string): boolean`\n\n\n\nSlet specifik cache entry.
-
-**Parameters:**
-\n\n- `key` - Cache key\n\n
-**Returns:** `true` hvis deleted, `false` hvis ikke fundet\n\n\n\n##### `invalidatePattern(pattern: string): number`\n\n\n\nSlet alle keys der matcher et regex pattern.
-
-**Parameters:**
-\n\n- `pattern` - Regex pattern (string)\n\n
-**Returns:** Antal slettede entries\n\n
-**Example:**
-\n\n```typescript
-// Invalidate all calendar caches for 'primary' calendar
-cache.invalidatePattern('^calendar:(list|availability):primary:');\n\n```
-\n\n##### `clear(): void`\n\n\n\nRyd hele cachen og reset statistik.
-\n\n##### `cleanup(): number`\n\n\n\nFjern alle expired entries.
-
-**Returns:** Antal fjernede entries\n\n\n\n##### `getStats(): CacheStats`\n\n\n\nFå cache statistik.
-
-**Returns:**
-\n\n```typescript
-{
-    hits: number;
-    misses: number;
-    size: number;
-}\n\n```
-\n\n##### `getHitRate(): number`\n\n\n\nFå cache hit rate (0-1).
-
-**Returns:** Hit rate som decimal (f.eks. 0.75 = 75%)\n\n\n\n## 🔄 Cache Invalidation\n\n\n\nCache invalideres automatisk når data ændres:
-\n\n### Gmail Invalidation\n\n\n\nNår en email sendes:
-\n\n```typescript
-// Invalidate email list caches
-cache.invalidatePattern('^gmail:(list|threads):');\n\n```
-\n\n### Calendar Invalidation\n\n\n\nNår et event oprettes eller ændres:
-\n\n```typescript
-// Invalidate calendar caches for specific calendar
-cache.invalidatePattern(`^calendar:(list|availability|nextslot):${calendarId}`);\n\n```
-\n\n### Manual Invalidation\n\n\n\n```typescript\n\n// Invalidate specific key
-cache.delete('gmail:email:12345');
-
-// Invalidate pattern
-cache.invalidatePattern('^calendar:availability:');
-
-// Clear all
-cache.clear();\n\n```
-\n\n## ⚡ Performance\n\n\n\n### Cache Hit Rates\n\n\n\nForventede hit rates ved normal brug:
-\n\n- **Email Lists**: 60-70% (hyppige nye emails)\n\n- **Calendar Events**: 75-85% (relativt stabile)\n\n- **Availability Checks**: 70-80% (genbruges ofte)\n\n- **Threads**: 80-90% (sjældent ændret)\n\n\n\n### Memory Footprint\n\n\n\nCache bruger minimal hukommelse:
-\n\n- ~1KB per cached email\n\n- ~2KB per cached event list\n\n- ~500 bytes per availability check\n\n- Typisk total: 5-20MB ved normal brug\n\n\n\n### Performance Gains\n\n\n\nForventet performance forbedring:
-\n\n- **API Response Time**: 200-500ms → <1ms (cache hit)\n\n- **Reduced API Calls**: ~60% reduktion\n\n- **Faster User Experience**: Øjeblikkelig respons ved cache hits\n\n\n\n## 📋 Best Practices\n\n\n\n### 1. Brug Konsistente Keys\n\n\n\nBrug altid `CacheKeys` builders:
-\n\n```typescript
-// ✅ Godt
-const key = CacheKeys.eventList(calendarId, timeMin, timeMax);
-
-// ❌ Dårligt
-const key = `calendar:list:${calendarId}:${timeMin}:${timeMax}`;\n\n```
-\n\n### 2. Vælg Passende TTL\n\n\n\nVælg TTL baseret på data-volatilitet:
-\n\n```typescript
-// ✅ Godt - Stabile data får længere TTL\n\ncache.set(key, events, CacheTTL.event); // 15 min
-
-// ❌ Dårligt - For kort TTL for stabile data\n\ncache.set(key, events, 10); // 10 sekunder er for kort\n\n```
-\n\n### 3. Invalidér Ved Mutations\n\n\n\nInvalidér altid cache når data ændres:
-\n\n```typescript
-// ✅ Godt
-await createCalendarEvent(input);
-cache.invalidatePattern(`^calendar:(list|availability):${calendarId}`);
-
-// ❌ Dårligt - Glemmer invalidation\n\nawait createCalendarEvent(input);
-// Cache er nu stale!\n\n```
-\n\n### 4. Monitorér Performance\n\n\n\nTjek jævnligt cache statistik:
-\n\n```bash
-npm run cache:stats\n\n```
-
-Forventet hit rate > 70% indikerer god cache effektivitet.
-\n\n### 5. Cleanup Regelmæssigt\n\n\n\nSelvom automatisk cleanup kører, kan manuel cleanup være nyttig:
-\n\n```bash\n\n# Ved høj memory usage\n\nnpm run cache:cleanup\n\n\n\n# Ved problemer\n\nnpm run cache:clear\n\n```\n\n\n\n## 🔍 Debugging\n\n\n\n### Log Cache Hits/Misses\n\n\n\nCache logger automatisk hits og misses på debug level:
-\n\n```typescript
-// Enable debug logging
-LOG_LEVEL=debug npm run dev\n\n```
-
-Output:
-\n\n```
-{"level":30,"msg":"Cache hit","key":"gmail:list:5:all"}
-{"level":30,"msg":"Cache miss","key":"calendar:availability:primary:..."}\n\n```
-\n\n### Inspect Cache Content\n\n\n\nI development kan du inspicere cache:
-\n\n```typescript
-import { cache } from './services/cacheService';
-
-// Get stats
-console.log(cache.getStats());
-
-// Get specific value
-const data = cache.get('some:key');
-console.log(data);\n\n```
-\n\n## 🚀 Future Enhancements\n\n\n\nPotentielle forbedringer:
-\n\n1. **Redis Integration**: For distributed caching i production\n\n2. **Cache Warming**: Pre-load ofte brugt data ved startup\n\n3. **Partial Cache Updates**: Update kun ændrede felter\n\n4. **Multi-Level Cache**: L1 (memory) + L2 (Redis)\n\n5. **Cache Metrics Dashboard**: Visualiser cache performance
-\n\n## 📝 Changelog\n\n\n\n### v1.0.0 (2025-09-30)\n\n\n\n- Initial release\n\n- In-memory cache med TTL support\n\n- Gmail og Calendar integration\n\n- Automatisk cleanup\n\n- CLI monitoring tools\n\n- Cache statistics tracking\n\n- Pattern-based invalidation
+# Caching System\n\n\n\nIn-memory caching layer for optimeret performance af Gmail og Calendar API opkald.\n\n## 📋 Indholdsfortegnelse\n\n\n\n- [Oversigt](#oversigt)\n\n- [Funktioner](#funktioner)\n\n- [Cache Strategi](#cache-strategi)\n\n- [CLI Kommandoer](#cli-kommandoer)\n\n- [API Reference](#api-reference)\n\n- [Cache Invalidation](#cache-invalidation)\n\n- [Performance](#performance)\n\n- [Best Practices](#best-practices)\n\n\n\n## 🎯 Oversigt\n\n\n\nCaching systemet reducerer antallet af API-kald til Google Gmail og Calendar ved at cache resultater i hukommelsen med konfigurerbare TTL (Time To Live) værdier.\n\n### Fordele\n\n\n\n- ⚡ **Hurtigere Responstider**: Cache hits returnerer data øjeblikkeligt\n\n- 💰 **Reduceret API Forbrug**: Færre kald til Google APIs\n\n- 📊 **Performance Monitoring**: Built-in statistik og hit-rate tracking\n\n- 🧹 **Automatisk Oprydning**: Expired entries fjernes automatisk\n\n- 🔄 **Smart Invalidation**: Automatisk cache-invalidering ved data-ændringer\n\n\n\n## ✨ Funktioner\n\n\n\n### In-Memory Cache\n\n\n\nSimpel, men effektiv in-memory cache uden eksterne dependencies:\n\n```typescriptimport { cache, CacheKeys, CacheTTL } from './services/cacheService';// Get from cacheconst events = cache.get<CalendarEventSummary[]>(    CacheKeys.eventList('primary', timeMin, timeMax));// Set in cache with TTLcache.set(    CacheKeys.eventList('primary', timeMin, timeMax),    events,    CacheTTL.eventList);\n\n```\n\n### Cache Key Builders\n\n\n\nStandardiserede key builders for konsistente cache keys:\n\n```typescript// Gmail cache keysCacheKeys.email(emailId)CacheKeys.emailList(maxResults, query)CacheKeys.thread(threadId)// Calendar cache keysCacheKeys.event(eventId)CacheKeys.eventList(calendarId, timeMin, timeMax)CacheKeys.availability(calendarId, timeMin, timeMax)CacheKeys.nextSlot(calendarId, durationMinutes, startAfter)// Lead cache keysCacheKeys.lead(leadId)CacheKeys.leadList()\n\n```\n\n### Automatisk Cleanup\n\n\n\nCache entries med expired TTL fjernes automatisk hver 5. minut:\n\n```typescript// Kører automatisk i baggrundensetInterval(() => {    cache.cleanup();}, 5 * 60 * 1000);\n\n```\n\n## 📊 Cache Strategi\n\n\n\n### TTL Værdier\n\n\n\nForskellige data-typer har forskellige cache-varighed baseret på hvor ofte de ændrer sig:\n\n```typescriptexport const CacheTTL = {    email: 5 * 60,        // 5 minutter - Emails kan ændre sig hyppigt\n\n    emailList: 2 * 60,    // 2 minutter - Lister ændrer sig oftere\n\n    thread: 5 * 60,       // 5 minutter - Threads er relativt stabile\n\n    event: 15 * 60,       // 15 minutter - Events er mere stabile\n\n    eventList: 5 * 60,    // 5 minutter - Event lister kan ændres\n\n    availability: 5 * 60, // 5 minutter - Availability skal være forholdsvis fresh\n\n    nextSlot: 5 * 60,     // 5 minutter - Next slot searches\n\n    lead: 10 * 60,        // 10 minutter - Leads ændrer sig sjældent\n\n    leadList: 2 * 60,     // 2 minutter - Lead listen opdateres oftere\n\n};\n\n```\n\n### Cache Flow\n\n\n\n```\n\n┌─────────────┐│   Request   │└──────┬──────┘       │       ▼┌─────────────┐     Hit      ┌─────────────┐│ Check Cache ├─────────────►│   Return    │└──────┬──────┘              └─────────────┘       │ Miss       ▼┌─────────────┐│  Call API   │└──────┬──────┘       │       ▼┌─────────────┐│ Cache Data  │└──────┬──────┘       │       ▼┌─────────────┐│   Return    │└─────────────┘\n\n```\n\n## 🛠️ CLI Kommandoer\n\n\n\n### Cache Statistik\n\n\n\nVis cache performance metrics:\n\n```bashnpm run cache:stats\n\n```Output:\n\n```📊 Cache Statistics━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━Total Hits:      127Total Misses:    43Hit Rate:        74.71%Current Size:    18 entries━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n```\n\n### Ryd Cache\n\n\n\nSlet al cached data:\n\n```bashnpm run cache:clear\n\n```\n\n### Cleanup Expired\n\n\n\nFjern kun expired entries:\n\n```bashnpm run cache:cleanup\n\n```\n\n## 📚 API Reference\n\n\n\n### CacheService Class\n\n\n\n#### Methods\n\n\n\n##### `get<T>(key: string): T | null`\n\n\n\nHent værdi fra cache.**Parameters:**\n\n- `key` - Cache key\n\n**Returns:** Cached data eller `null` hvis ikke fundet eller expired\n\n**Example:**\n\n```typescriptconst events = cache.get<CalendarEventSummary[]>('calendar:list:primary:...');\n\n```\n\n##### `set<T>(key: string, data: T, ttlSeconds: number): void`\n\n\n\nGem værdi i cache med TTL.**Parameters:**\n\n- `key` - Cache key\n\n- `data` - Data til cache\n\n- `ttlSeconds` - TTL i sekunder\n\n**Example:**\n\n```typescriptcache.set('calendar:list:primary:...', events, CacheTTL.eventList);\n\n```\n\n##### `delete(key: string): boolean`\n\n\n\nSlet specifik cache entry.**Parameters:**\n\n- `key` - Cache key\n\n**Returns:** `true` hvis deleted, `false` hvis ikke fundet\n\n\n\n##### `invalidatePattern(pattern: string): number`\n\n\n\nSlet alle keys der matcher et regex pattern.**Parameters:**\n\n- `pattern` - Regex pattern (string)\n\n**Returns:** Antal slettede entries\n\n**Example:**\n\n```typescript// Invalidate all calendar caches for 'primary' calendarcache.invalidatePattern('^calendar:(list|availability):primary:');\n\n```\n\n##### `clear(): void`\n\n\n\nRyd hele cachen og reset statistik.\n\n##### `cleanup(): number`\n\n\n\nFjern alle expired entries.**Returns:** Antal fjernede entries\n\n\n\n##### `getStats(): CacheStats`\n\n\n\nFå cache statistik.**Returns:**\n\n```typescript{    hits: number;    misses: number;    size: number;}\n\n```\n\n##### `getHitRate(): number`\n\n\n\nFå cache hit rate (0-1).**Returns:** Hit rate som decimal (f.eks. 0.75 = 75%)\n\n\n\n## 🔄 Cache Invalidation\n\n\n\nCache invalideres automatisk når data ændres:\n\n### Gmail Invalidation\n\n\n\nNår en email sendes:\n\n```typescript// Invalidate email list cachescache.invalidatePattern('^gmail:(list|threads):');\n\n```\n\n### Calendar Invalidation\n\n\n\nNår et event oprettes eller ændres:\n\n```typescript// Invalidate calendar caches for specific calendarcache.invalidatePattern(`^calendar:(list|availability|nextslot):${calendarId}`);\n\n```\n\n### Manual Invalidation\n\n\n\n```typescript\n\n// Invalidate specific keycache.delete('gmail:email:12345');// Invalidate patterncache.invalidatePattern('^calendar:availability:');// Clear allcache.clear();\n\n```\n\n## ⚡ Performance\n\n\n\n### Cache Hit Rates\n\n\n\nForventede hit rates ved normal brug:\n\n- **Email Lists**: 60-70% (hyppige nye emails)\n\n- **Calendar Events**: 75-85% (relativt stabile)\n\n- **Availability Checks**: 70-80% (genbruges ofte)\n\n- **Threads**: 80-90% (sjældent ændret)\n\n\n\n### Memory Footprint\n\n\n\nCache bruger minimal hukommelse:\n\n- ~1KB per cached email\n\n- ~2KB per cached event list\n\n- ~500 bytes per availability check\n\n- Typisk total: 5-20MB ved normal brug\n\n\n\n### Performance Gains\n\n\n\nForventet performance forbedring:\n\n- **API Response Time**: 200-500ms → <1ms (cache hit)\n\n- **Reduced API Calls**: ~60% reduktion\n\n- **Faster User Experience**: Øjeblikkelig respons ved cache hits\n\n\n\n## 📋 Best Practices\n\n\n\n### 1. Brug Konsistente Keys\n\n\n\nBrug altid `CacheKeys` builders:\n\n```typescript// ✅ Godtconst key = CacheKeys.eventList(calendarId, timeMin, timeMax);// ❌ Dårligtconst key = `calendar:list:${calendarId}:${timeMin}:${timeMax}`;\n\n```\n\n### 2. Vælg Passende TTL\n\n\n\nVælg TTL baseret på data-volatilitet:\n\n```typescript// ✅ Godt - Stabile data får længere TTL\n\ncache.set(key, events, CacheTTL.event); // 15 min// ❌ Dårligt - For kort TTL for stabile data\n\ncache.set(key, events, 10); // 10 sekunder er for kort\n\n```\n\n### 3. Invalidér Ved Mutations\n\n\n\nInvalidér altid cache når data ændres:\n\n```typescript// ✅ Godtawait createCalendarEvent(input);cache.invalidatePattern(`^calendar:(list|availability):${calendarId}`);// ❌ Dårligt - Glemmer invalidation\n\nawait createCalendarEvent(input);// Cache er nu stale!\n\n```\n\n### 4. Monitorér Performance\n\n\n\nTjek jævnligt cache statistik:\n\n```bashnpm run cache:stats\n\n```Forventet hit rate > 70% indikerer god cache effektivitet.\n\n### 5. Cleanup Regelmæssigt\n\n\n\nSelvom automatisk cleanup kører, kan manuel cleanup være nyttig:\n\n```bash\n\n# Ved høj memory usage\n\nnpm run cache:cleanup\n\n\n\n# Ved problemer\n\nnpm run cache:clear\n\n```\n\n\n\n## 🔍 Debugging\n\n\n\n### Log Cache Hits/Misses\n\n\n\nCache logger automatisk hits og misses på debug level:\n\n```typescript// Enable debug loggingLOG_LEVEL=debug npm run dev\n\n```Output:\n\n```{"level":30,"msg":"Cache hit","key":"gmail:list:5:all"}{"level":30,"msg":"Cache miss","key":"calendar:availability:primary:..."}\n\n```\n\n### Inspect Cache Content\n\n\n\nI development kan du inspicere cache:\n\n```typescriptimport { cache } from './services/cacheService';// Get statsconsole.log(cache.getStats());// Get specific valueconst data = cache.get('some:key');console.log(data);\n\n```\n\n## 🚀 Future Enhancements\n\n\n\nPotentielle forbedringer:\n\n1. **Redis Integration**: For distributed caching i production\n\n2. **Cache Warming**: Pre-load ofte brugt data ved startup\n\n3. **Partial Cache Updates**: Update kun ændrede felter\n\n4. **Multi-Level Cache**: L1 (memory) + L2 (Redis)\n\n5. **Cache Metrics Dashboard**: Visualiser cache performance\n\n## 📝 Changelog\n\n\n\n### v1.0.0 (2025-09-30)\n\n\n\n- Initial release\n\n- In-memory cache med TTL support\n\n- Gmail og Calendar integration\n\n- Automatisk cleanup\n\n- CLI monitoring tools\n\n- Cache statistics tracking\n\n- Pattern-based invalidation

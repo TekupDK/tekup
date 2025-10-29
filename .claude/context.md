@@ -5,6 +5,7 @@
 This is a **monorepo workspace** containing the entire Tekup business platform.
 
 ### Repository Structure
+
 ```
 C:/Users/Jonas-dev/tekup/          # Main repo (github.com/TekupDK/tekup)
 ├── apps/
@@ -29,39 +30,46 @@ C:/Users/Jonas-dev/tekup/          # Main repo (github.com/TekupDK/tekup)
 ## Key Files & Entry Points
 
 **Backend:**
+
 - Entry: `apps/rendetalje/services/backend-nestjs/src/main.ts`
 - Config: `apps/rendetalje/services/backend-nestjs/src/config/configuration.ts`
 - Database: Uses SupabaseService (NOT PrismaService currently)
 
 **Frontend:**
+
 - Entry: `apps/rendetalje/services/frontend-nextjs/src/app/layout.tsx`
 - Config: `apps/rendetalje/services/frontend-nextjs/next.config.js`
 - Stores: Zustand in `src/store/`
 
 **Mobile:**
+
 - Entry: `apps/rendetalje/services/mobile/App.tsx`
 - Config: `apps/rendetalje/services/mobile/app.json`
 
 ## Common Issues & Solutions
 
 ### TypeScript Errors
+
 - **Current status:** 46 errors remaining (see TYPESCRIPT_FIX_STATUS.md)
 - **Primary cause:** Prisma schema mismatch (@tekup/database)
 - **Workaround:** @ts-ignore annotations applied
 - **Permanent fix:** Update Prisma schema or use Supabase directly
 
 ### Testing
+
 - **Backend:** Jest unit tests (some failing - mock setup issues)
 - **Frontend:** Jest + React Testing Library (module resolution issues)
 - **E2E:** Playwright (mostly working)
 - **Shared:** 32/32 tests passing ✅
 
 ### Database
+
 - **Development:** Supabase (direct client)
 - **ORM:** Prisma via @tekup/database (type issues)
 - **Recommendation:** Use SupabaseService for now
 
 ### Git Workflow
+
 - **Main branch:** master
 - **Feature branches:** claude/* prefix
 - **Commit style:** Conventional commits (feat:, fix:, docs:, etc.)
@@ -73,7 +81,7 @@ C:/Users/Jonas-dev/tekup/          # Main repo (github.com/TekupDK/tekup)
 - **Formatting:** Prettier (format on save)
 - **Linting:** ESLint with NestJS/React configs
 - **Imports:** Use absolute paths with @ aliases
-- **Tests:** Co-located with source (*.spec.ts, *.test.tsx)
+- **Tests:** Co-located with source (_.spec.ts,_.test.tsx)
 
 ## Before Making Changes
 

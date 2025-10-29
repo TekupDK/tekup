@@ -1,4 +1,5 @@
-# RenOS Backend - Komplet Analyse
+﻿# RenOS Backend - Komplet Analyse
+
 *Genereret: 18. oktober 2025*
 **Service**: renos-backend.onrender.com  
 **Status**: 🟢 LIVE (deployed Oct 14, 21:26)
@@ -66,29 +67,35 @@ src/agents/
 ### **Dependencies (60+)**
 
 **Core Framework**:
+
 - Express 4.19.2 (REST API)
 - TypeScript 5.9.3
 - Prisma 6.16.3 (ORM)
 - Node.js 18+ (runtime)
 
 **AI & LLM**:
+
 - OpenAI 4.28.4 (GPT-4 for intent classification)
 - Google Generative AI 0.24.1 (Gemini for email generation)
 
 **Google APIs**:
+
 - googleapis 131.0.0 (Gmail + Calendar)
 - @google-cloud/local-auth 3.0.1 (OAuth)
 
 **Authentication & Security**:
+
 - @clerk/clerk-sdk-node 4.13.23
 - express-rate-limit 8.1.0
 - express-validator 7.2.1
 
 **Monitoring & Logging**:
+
 - @sentry/node 10.17.0 (error tracking)
 - pino 9.1.0 (structured logging)
 
 **Validation & Utils**:
+
 - zod 3.23.8 (schema validation)
 - axios 1.7.2 (HTTP client)
 - sanitize-html 2.17.0
@@ -97,7 +104,7 @@ src/agents/
 
 ## 🗄️ DATABASE SCHEMA (23 Prisma Models)
 
-### **Kritiske Tabeller**:
+### **Kritiske Tabeller**
 
 ```prisma
 Lead (23 felter)
@@ -134,6 +141,7 @@ Invoice (26 felter - Sprint 3)
 ```
 
 **Andre Modeller**:
+
 - ChatSession, ChatMessage (chatbot)
 - Quote (tilbud generation)
 - Analytics (metrics tracking)
@@ -196,12 +204,13 @@ renos-backend/
 ### 🚨 **MAJOR ISSUE: Documentation Overload**
 
 **115+ markdown files i root directory** er **KAOS**:
+
 - Session logs (SESSION_COMPLETE_OCT14_2025.md, SESSION_PROGRESS_OCT11_1930.md)
 - Deployment docs (DEPLOYMENT_SUCCESS.md, DEPLOYMENT_WAITING.md)
 - Debug guides (CORS_FIX_RENDER.md, CUSTOMER_API_TIMEOUT_FIX.md)
 - Status reports (FASE1_IMPLEMENTATION_STATUS.md, FASE2_IMPLEMENTATION_STATUS.md)
 
-**Anbefaling**: 
+**Anbefaling**:
 ```bash
 # Opret docs/archive/ og flyt alt derover:
 mkdir docs/archive/2025-10-sessions
@@ -220,7 +229,8 @@ mkdir docs/archive/debugging
 
 ## 🚀 DEPLOYMENT (Render.com)
 
-### **Service Config**:
+### **Service Config**
+
 ```yaml
 Service ID: srv-d3kgr03e5dus73fl48v0
 Name: renos-backend
@@ -239,10 +249,10 @@ Start:
 
 Auto Deploy: YES (on push to main)
 Branch: main
-Repo: https://github.com/JonasAbde/renos-backend
+Repo: https://github.com/TekupDK/renos-backend
 ```
 
-### **Recent Deploys (Last 10)**:
+### **Recent Deploys (Last 10)**
 
 | Date | Commit | Status | Duration |
 |------|--------|--------|----------|
@@ -274,7 +284,7 @@ Files Modified:
 
 ## 🔐 SECURITY
 
-### **7 Security Layers**:
+### **7 Security Layers**
 
 1. **Authentication**: Clerk SDK JWT validation
 2. **Rate Limiting**: 500 req/min (dashboard), 100 req/15min (public)
@@ -284,7 +294,7 @@ Files Modified:
 6. **API Keys**: Environment variables only
 7. **Sentry Monitoring**: Error tracking + performance profiling
 
-### **Safety Rails** (CRITICAL):
+### **Safety Rails** (CRITICAL)
 
 ```typescript
 // RUN_MODE flag prevents accidents
@@ -300,6 +310,7 @@ ESCALATION_ENABLED: boolean
 ```
 
 **Approval Workflows**:
+
 - Email auto-responses require approval before sending
 - `npm run email:pending` → review
 - `npm run email:approve <id>` → send
@@ -320,6 +331,7 @@ ESCALATION_ENABLED: boolean
 **Test Framework**: Vitest + Supertest
 
 **Gaps**:
+
 - No CI/CD automated testing
 - Missing unit tests for agents
 - Integration tests exist but not comprehensive
@@ -337,12 +349,13 @@ ESCALATION_ENABLED: boolean
 
 ## ⚡ PERFORMANCE
 
-### **Response Times** (Customer API):
+### **Response Times** (Customer API)
+
 - Health check: 15ms
 - GET /api/customers: 63-92ms
 - POST /api/customers: 259ms (includes validation)
 
-### **Database Optimizations** (Oct 14):
+### **Database Optimizations** (Oct 14)
 
 **NEW INDEXES** (6 added):
 ```prisma
@@ -366,7 +379,8 @@ model Booking {
 
 ## 🔧 CLI TOOLS (40+ Management Scripts)
 
-### **Email Management**:
+### **Email Management**
+
 ```bash
 npm run email:pending       # List pending auto-responses
 npm run email:approve <id>  # Approve email
@@ -375,7 +389,8 @@ npm run email:monitor       # Monitor queue
 npm run email:ingest        # Sync Gmail emails
 ```
 
-### **Calendar & Booking**:
+### **Calendar & Booking**
+
 ```bash
 npm run booking:availability
 npm run booking:next-slot
@@ -383,7 +398,8 @@ npm run calendar:sync
 npm run calendar:deduplicate
 ```
 
-### **Customer Management**:
+### **Customer Management**
+
 ```bash
 npm run customer:list
 npm run customer:stats
@@ -391,7 +407,8 @@ npm run customer:import-csv
 npm run customer:threads    # Link email threads
 ```
 
-### **Database**:
+### **Database**
+
 ```bash
 npm run db:studio           # Prisma Studio UI
 npm run db:migrate          # Run migrations
@@ -402,7 +419,8 @@ npm run db:audit            # Audit relations
 
 ## 💰 COST ANALYSIS
 
-### **Current Costs**:
+### **Current Costs**
+
 ```
 Render.com Starter:  €7/month
 Supabase Free Tier:  €0/month (PostgreSQL)
@@ -415,7 +433,7 @@ Google APIs:         €0/month (free tier)
 TOTAL:               ~€9-12/month
 ```
 
-### **Scaling Projections**:
+### **Scaling Projections**
 
 | Users | Emails/day | Cost |
 |-------|------------|------|
@@ -428,7 +446,7 @@ TOTAL:               ~€9-12/month
 
 ## 🎯 RECOMMENDATIONS
 
-### **Short-term (1-2 uger)**:
+### **Short-term (1-2 uger)**
 
 1. **🗂️ Documentation Cleanup** (CRITICAL)
    - Move 110+ markdown files to `docs/archive/`
@@ -451,7 +469,7 @@ TOTAL:               ~€9-12/month
    - Database query metrics
    - Email processing stats
 
-### **Medium-term (1-2 måneder)**:
+### **Medium-term (1-2 måneder)**
 
 5. **🧪 Increase Test Coverage**
    - Target: 60% coverage på agents
@@ -467,7 +485,7 @@ TOTAL:               ~€9-12/month
    - Database connection pooling
    - Rate limiting per customer
 
-### **Long-term (3-6 måneder)**:
+### **Long-term (3-6 måneder)**
 
 8. **🏗️ Microservices Split** (hvis nødvendigt)
    - Email worker → separate service
@@ -488,7 +506,8 @@ TOTAL:               ~€9-12/month
 
 ## 🎓 PROJECT WORKFLOW BEST PRACTICES
 
-### **Development**:
+### **Development**
+
 ```bash
 # 1. Feature branch
 git checkout -b feature/add-sms-notifications
@@ -506,7 +525,8 @@ git push origin feature/add-sms-notifications
 # 5. Merge to main → auto-deploy production
 ```
 
-### **Debugging**:
+### **Debugging**
+
 ```bash
 # Check Google API setup
 npm run verify:google
@@ -541,7 +561,7 @@ npm run dev  # Pino pretty logging
 
 ## 🔗 INTEGRATION POINTS
 
-### **How RenOS Backend Uses TekupVault**:
+### **How RenOS Backend Uses TekupVault**
 
 ```typescript
 // AI Agent queries TekupVault for context
@@ -558,6 +578,7 @@ const similarLeads = await fetch('https://tekupvault.onrender.com/search', {
 ```
 
 **Data Flow**:
+
 1. RenOS creates lead → saves to database
 2. TekupVault syncs renos-backend repo (6h cycle)
 3. TekupVault indexes lead data (OpenAI embeddings)
@@ -569,6 +590,7 @@ const similarLeads = await fetch('https://tekupvault.onrender.com/search', {
 ## ✅ CONCLUSION
 
 **RenOS Backend er et SOLIDT production system** med:
+
 - ✅ Excellent AI agent architecture (Intent→Plan→Execute)
 - ✅ Comprehensive database schema (23 models)
 - ✅ Strong security (auth + rate limiting + safety rails)
@@ -576,6 +598,7 @@ const similarLeads = await fetch('https://tekupvault.onrender.com/search', {
 - ✅ Rich CLI tooling (40+ management scripts)
 
 **Men har udfordringer**:
+
 - ⚠️ **Documentation kaos** (115 markdown files i root)
 - ⚠️ Limited test coverage
 - ⚠️ 13 npm security vulnerabilities
@@ -598,6 +621,7 @@ const similarLeads = await fetch('https://tekupvault.onrender.com/search', {
 ---
 
 **📞 SPØRGSMÅL?**
+
 - Vil du have detaljer om specifikke AI agents?
 - Skal jeg lave migration guide til documentation cleanup?
 - Vil du have performance optimization plan?

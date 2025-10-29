@@ -11,6 +11,7 @@
 **Pattern:** Turborepo Monorepo + Microservices
 
 ### Monorepo Structure
+
 ```
 TekupVault/
 ├── apps/
@@ -30,6 +31,7 @@ TekupVault/
 ## 📦 Tech Stack
 
 ### Build System
+
 - **Monorepo:** Turborepo 1.11
 - **Package Manager:** pnpm 8.15
 - **Testing:** Vitest 2.1 + Coverage
@@ -37,6 +39,7 @@ TekupVault/
 - **Formatting:** Prettier
 
 ### Runtime
+
 - **Language:** TypeScript 5.3
 - **Runtime:** Node.js 18+
 - **Database:** Supabase
@@ -49,9 +52,11 @@ TekupVault/
 ## 🔧 Apps & Packages
 
 ### App: vault-api
+
 **Purpose:** REST API for knowledge search
 
 **Dependencies:**
+
 - `@supabase/supabase-js` - Database client
 - `@tekupvault/vault-core` - Shared config
 - `@tekupvault/vault-search` - Search logic
@@ -61,44 +66,54 @@ TekupVault/
 - `pino` + `pino-http` - Logging
 
 **Routes:**
+
 - `/search` - Semantic search
 - `/sync` - GitHub sync trigger
 - `/webhooks` - GitHub webhooks
 - `/debug` - Debug endpoints
 
 ### App: vault-worker
+
 **Purpose:** Background jobs
 
 **Jobs:**
+
 - `sync-github.ts` - GitHub repository sync
 - `index-documents.ts` - Document indexing
 
 **Shared:** Uses vault-core for config, vault-search for indexing
 
 ### Package: vault-core
+
 **Purpose:** Shared configuration og types
 
 **Dependencies:**
+
 - `zod` - Validation schemas
 - `typescript` - Build
 
 **Exports:**
+
 - Config management
 - Shared types
 - Constants
 
 ### Package: vault-ingest
+
 **Purpose:** GitHub sync logic
 
 **Functionality:**
+
 - GitHub API integration
 - Repository file fetching
 - Code indexing
 
 ### Package: vault-search
+
 **Purpose:** Embeddings og search
 
 **Functionality:**
+
 - Generate embeddings
 - Vector search
 - Semantic matching
@@ -108,17 +123,20 @@ TekupVault/
 ## 🎯 Notable Patterns
 
 ### Monorepo Benefits
+
 - **Code Sharing:** vault-core shared across apps
 - **Type Safety:** Shared types across workspace
 - **Atomic Changes:** Update multiple packages together
 - **Build Optimization:** Turbo caching
 
 ### Microservices Approach
+
 - **Separation:** API server vs background worker
 - **Scalability:** Scale API og worker independently
 - **Resilience:** Worker failures don't affect API
 
 ### Workspace References
+
 ```json
 {
   "dependencies": {
@@ -133,6 +151,7 @@ TekupVault/
 ## 💡 Key Takeaways
 
 ### For AI Assistant Integration
+
 1. **Monorepo NOT needed:** TekUp AI Assistant can stay simple
 2. **Shared Config Pattern:** Can adopt for multi-module projects
 3. **Background Jobs:** If needed, separate worker process
@@ -140,6 +159,7 @@ TekupVault/
 5. **Supabase:** Consistent database choice
 
 ### Code Standards (Same as Billy/RenOS)
+
 - TypeScript strict mode
 - Zod validation
 - Express + Security middleware

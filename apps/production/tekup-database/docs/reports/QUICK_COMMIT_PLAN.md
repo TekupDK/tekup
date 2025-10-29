@@ -9,6 +9,7 @@
 ## 🎯 Action Plan
 
 ### 1. Tekup-Billy (19 files) - 10 min
+
 **Priority:** 🟡 HIGH  
 **Files:** MCP usage reports, Render analytics, Supabase setup
 
@@ -22,6 +23,7 @@ git push
 ---
 
 ### 2. Tekup Google AI (2 files) - 3 min
+
 **Priority:** 🟡 MEDIUM  
 **Branch:** feature/frontend-redesign  
 **Files:** README.md, pnpm-lock.yaml (deleted)
@@ -36,6 +38,7 @@ git push origin feature/frontend-redesign
 ---
 
 ### 3. TekupVault (1 file) - 2 min
+
 **Priority:** 🟢 LOW  
 **Files:** README.md
 

@@ -29,6 +29,7 @@
 **Prompt:** "Write a Python function to validate email addresses using regex. Include docstring and error handling."
 
 **Resultat:**
+
 - ✅ **Korrekt kode:** Python function med regex
 - ✅ **Docstring:** Komplet med Args og Returns
 - ✅ **Error handling:** Try/except med ValueError
@@ -41,6 +42,7 @@
 **Response Tid:** ~8 sekunder
 
 **Highlights:**
+
 - Meget struktureret og læsbar kode
 - Professionel error handling (ValueError med from e)
 - Inkluderer både valid og invalid email examples
@@ -53,6 +55,7 @@
 **Prompt:** "Debug this Python code: def calc(x,y): return x+y calc(5)"
 
 **Resultat:**
+
 - ✅ **Korrekt identificeret fejl:** Manglende andet argument
 - ✅ **Forklaring:** "function is defined to take two arguments but is being called with only one"
 - ✅ **Korrekt løsning:** Tilføjet andet argument (3)
@@ -64,6 +67,7 @@
 **Response Tid:** ~5 sekunder
 
 **Highlights:**
+
 - Øjeblikkelig identifikation af problemet
 - Klar og koncis forklaring
 - Leverer working solution
@@ -76,6 +80,7 @@
 **Prompt:** "Create a Python MCP server skeleton with a tool that calls an invoice API. Include error handling and type hints."
 
 **Resultat:**
+
 - ✅ **Full Flask server:** Komplet web server skeleton
 - ✅ **Type hints:** Dict[str, Any], Optional[InvoiceResponse]
 - ✅ **Error handling:** Multiple exception types (RequestException, ValueError, generic Exception)
@@ -90,6 +95,7 @@
 **Response Tid:** ~20 sekunder
 
 **Highlights:**
+
 - Production-ready code structure
 - Proper separation of concerns (API call function separate from endpoint)
 - Comprehensive error handling (3 levels)
@@ -104,7 +110,8 @@
 
 **Samme Prompt som Test 1**
 
-#### Llama 3.2 3B Resultat:
+#### Llama 3.2 3B Resultat
+
 - ✅ Basic function structure korrekt
 - ⚠️ Docstring: OK men mindre detaljeret
 - ⚠️ Error handling: Generic Exception (mindre specifik)
@@ -204,40 +211,47 @@
 
 ## 🎯 Use Cases for TekUp AI Assistant
 
-### Perfekt til:
+### Perfekt til
 
 ✅ **Billy.dk MCP Server Development**
+
 - Kan generere production-ready API integration code
 - Type hints og error handling indbygget
 - Flask/FastAPI struktur ready to go
 
 ✅ **Code Review & Debugging**
+
 - Instant bug identification
 - Professional fixes
 - Explanation of issues
 
 ✅ **Documentation Generation**
+
 - Excellent docstrings
 - README generation
 - API documentation
 
 ✅ **Refactoring & Optimization**
+
 - Suggests best practices
 - Modern Python patterns
 - Type hints migration
 
 ✅ **Test Generation**
+
 - Can generate pytest tests
 - Comprehensive test coverage
 - Edge case consideration
 
-### Mindre Egnet til:
+### Mindre Egnet til
 
 ⚠️ **Quick Simple Queries**
+
 - Llama 3.2 3B er hurtigere til trivielle spørgsmål
 - Overkill for "what is X?" queries
 
 ⚠️ **Når Internet Forbindelse Mangler**
+
 - GPT-OSS 120B cloud er bedre hvis online
 
 ---
@@ -249,6 +263,7 @@
 **1. GØR Qwen 14B til Primary Coding Model ✅**
 
 Rationale:
+
 - Klart den bedste til coding tasks
 - Production-ready code quality
 - Perfect til Billy.dk MCP implementation
@@ -257,6 +272,7 @@ Rationale:
 **2. Behold Llama 3.2 3B til Quick Tasks**
 
 Rationale:
+
 - Hurtigere responses (2s forskel)
 - God til simple queries
 - Backup når Qwen ikke behøves
@@ -264,6 +280,7 @@ Rationale:
 **3. Brug GPT-OSS 120B Cloud til Reasoning**
 
 Rationale:
+
 - Complex architectural decisions
 - System design discussions
 - Når local models ikke er nok
@@ -286,16 +303,19 @@ Workflow:
 ### Næste Skridt
 
 **Immediat (I dag):**
+
 1. ✅ Test Qwen med Billy.dk API documentation
 2. ✅ Generate initial MCP server code
 3. ✅ Test code generation quality
 
 **Denne Uge:**
+
 1. Implement Billy.dk MCP server med Qwen
 2. Generate comprehensive tests
 3. Document API integration
 
 **Næste Uge:**
+
 1. Extend til RenOS integration
 2. Performance tuning
 3. Production deployment
@@ -324,6 +344,7 @@ Workflow:
 🎉 **Qwen 2.5 Coder 14B overgår alle forventninger!**
 
 Dette er præcis den model vi manglede til:
+
 - Billy.dk MCP server implementation ✅
 - RenOS integration ✅
 - Production-quality code generation ✅

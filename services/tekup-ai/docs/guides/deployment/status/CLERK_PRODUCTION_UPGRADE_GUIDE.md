@@ -1,75 +1,1 @@
-# 🔑 Clerk Production Keys Upgrade Guide\n\n\n\n**Status:** 🟡 I GANG  
-**Prioritet:** HØJTID (Kritisk før go-live)  
-**Estimeret tid:** 15 minutter  
-**Dato:** 3. oktober 2025, kl. 13:50\n\n
----
-\n\n## 🎯 Formål\n\n\n\nOpgradere Clerk authentication fra test keys til production keys for at fjerne udvikler-advarsler og gøre systemet klar til reelle brugere.
-
----
-\n\n## 📋 Current State\n\n\n\n**Current Keys (Development):**
-\n\n```env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_YXJyaXZpbmctcmVkYmlyZC0xMi5jbGVyay5hY2NvdW50cy5kZXYk\n\n```
-
-**Location:** `client/.env` (line 2)\n\n
-**Problem:**
-\n\n- Browser console viser "Development mode" warning\n\n- Ikke egnet til production brug\n\n- Clerk anbefaler production keys til live apps\n\n
----
-\n\n## 🚀 Step-by-Step Upgrade Process\n\n\n\n### Step 1: Åbn Clerk Dashboard\n\n\n\n1. Gå til: <https://dashboard.clerk.com>\n\n2. Log ind med din Clerk account\n\n3. Vælg dit projekt: **"RenOS"** eller tilsvarende\n\n\n\n### Step 2: Opret Production Environment\n\n\n\n1. I venstre sidebar → Click på **"Production"** eller **"Go to Production"**\n\n2. Hvis du ikke har production environment:
-   - Click **"Create Production Instance"**\n\n   - Clerk vil guide dig gennem setup\n\n   - Acceptér deres anbefaling for production settings\n\n\n\n### Step 3: Find Production Keys\n\n\n\n1. I Production environment → Gå til **"API Keys"**\n\n2. Find section: **"Publishable Key"**\n\n3. Kopiér nøglen - den starter med `pk_live_` (ikke `pk_test_`)\n\n4. **VIGTIGT:** Gem nøglen sikkert - du skal bruge den i næste step\n\n\n\n### Step 4: Opdater Render Frontend Environment\n\n\n\n1. Gå til: <https://dashboard.render.com/web/srv-d3e057nfte5s73f2naqg>\n\n2. Click **"Environment"** i venstre sidebar\n\n3. Find variable: **VITE_CLERK_PUBLISHABLE_KEY**\n\n4. Click **"Edit"** (blyant icon)\n\n5. Erstat `pk_test_...` med din nye `pk_live_...` key\n\n6. Click **"Save Changes"**
-\n\n### Step 5: Redeploy Frontend\n\n\n\n1. Stadig i Render dashboard for frontend service\n\n2. Click **"Manual Deploy"** button i toppen\n\n3. Vælg **"Clear build cache & deploy"**\n\n4. Vent på deployment (ca. 3-5 minutter)\n\n5. Se logs for at verificere ingen errors
-\n\n### Step 6: Verificer Production Keys Virker\n\n\n\n1. Når deployment er færdig, åbn: <https://tekup-renos-1.onrender.com>\n\n2. Åbn browser console (F12)\n\n3. Verificer:
-   - ✅ **INGEN** "Development mode" warnings\n\n   - ✅ Clerk logger kun production-relevante beskeder\n\n   - ✅ Login fungerer stadig\n\n   - ✅ Ingen 401 eller 403 errors\n\n\n\n4. Test login flow:
-
-   ```
-   1. Click "Log ud" (hvis logget ind)
-   2. Click "Log ind"
-   3. Log ind med eksisterende account
-   4. Verificer redirect til Dashboard
-   5. Check at navigation virker
-   ```
-
----
-\n\n## ⚠️ VIGTIGE NOTER\n\n\n\n### DNS og Domains (Optional)\n\n\n\nHvis du vil bruge custom domain (f.eks. `app.rendetalje.dk`):
-\n\n1. I Clerk Dashboard → Production → **"Domains"**\n\n2. Add domain: `app.rendetalje.dk`\n\n3. Clerk giver dig DNS records (CNAME)\n\n4. Tilføj CNAME records i din DNS provider (f.eks. Cloudflare)\n\n5. Vent på DNS propagation (op til 24 timer)
-
-**For nu:** Brug Render's default domain (tekup-renos-1.onrender.com) - det virker perfekt!\n\n\n\n### Clerk Webhook Setup (Optional - Nice to Have)\n\n\n\nHvis du vil synkronisere users til din database:\n\n\n\n1. I Clerk Dashboard → Production → **"Webhooks"**\n\n2. Add endpoint: `https://tekup-renos.onrender.com/api/webhooks/clerk`\n\n3. Select events:
-   - `user.created`\n\n   - `user.updated`\n\n   - `user.deleted`\n\n4. Copy webhook signing secret\n\n5. Add til Render backend env: `CLERK_WEBHOOK_SECRET=whsec_...`
-
-**For nu:** Skip dette step - ikke kritisk for go-live.\n\n\n\n### User Migration\n\n\n\n**GOD NYHED:** Clerk Production og Development shares IKKE users!\n\n
-Hvad det betyder:
-\n\n- Alle test users (fra development) eksisterer IKKE i production\n\n- Reelle brugere skal oprette nye accounts i production\n\n- Dette er faktisk GODT - ingen test data i production! ✅\n\n
-Første gang systemet startes i production:
-\n\n1. Du (admin) skal oprette ny account\n\n2. Kunder skal oprette accounts når de modtager første quote email
-
----
-\n\n## 🧪 Verification Checklist\n\n\n\nEfter upgrade, verificer følgende:
-\n\n```
-Frontend:\n\n- [ ] https://tekup-renos-1.onrender.com loader uden errors\n\n- [ ] Ingen "Development mode" warning i console\n\n- [ ] Login flow virker\n\n- [ ] Protected routes kræver authentication\n\n- [ ] Logout virker\n\n- [ ] User profile vises korrekt i Layout\n\n
-Backend:\n\n- [ ] https://tekup-renos.onrender.com/api/health returnerer 200 OK\n\n- [ ] Clerk authentication middleware virker\n\n- [ ] API endpoints kræver valid Clerk token\n\n- [ ] Ingen 401 Unauthorized errors ved valid login\n\n
-Integration:\n\n- [ ] Dashboard data loader efter login\n\n- [ ] Leads page viser data\n\n- [ ] Customers page viser data\n\n- [ ] Bookings page viser data\n\n- [ ] AI Quote Modal åbner og fungerer\n\n```
-
----
-\n\n## 🐛 Troubleshooting\n\n\n\n### Problem: "Invalid publishable key"\n\n\n\n**Solution:**
-\n\n1. Verificer du kopierede hele nøglen (inkl. `pk_live_` prefix)\n\n2. Ingen extra spaces før/efter key\n\n3. Key skal være fra **Production** environment (ikke Development)\n\n\n\n### Problem: Login redirect fejler\n\n\n\n**Solution:**
-\n\n1. Check Clerk Dashboard → Production → **"Paths"**\n\n2. Verificer redirect URLs:
-   - Sign-in: `/sign-in`\n\n   - Sign-up: `/sign-up`\n\n   - After sign-in: `/dashboard`\n\n   - After sign-up: `/dashboard`\n\n\n\n### Problem: CORS errors efter upgrade\n\n\n\n**Solution:**
-\n\n1. Check Render backend logs\n\n2. Verificer `ALLOWED_ORIGINS` env variable inkluderer frontend URL\n\n3. Redeploy backend hvis nødvendigt
-
----
-\n\n## 📊 Success Criteria\n\n\n\n**✅ UPGRADE COMPLETED når:**
-\n\n1. ✅ `pk_live_` key deployed til Render frontend\n\n2. ✅ Ingen development warnings i browser console\n\n3. ✅ Login flow fungerer 100%\n\n4. ✅ Protected routes kræver authentication\n\n5. ✅ User profile vises korrekt\n\n6. ✅ API requests inkluderer valid Clerk tokens
-
----
-\n\n## 🎯 Next Steps After Upgrade\n\n\n\n1. ✅ Test Customer360 Email Endpoints (optional)\n\n2. ✅ Run End-to-End Production Test\n\n3. 🚀 GO LIVE med kunde!
-
----
-\n\n## 📝 Notes\n\n\n\n**Clerk Pricing:**
-\n\n- Free tier: Op til 10,000 monthly active users (MAU)\n\n- RenOS usage: Estimeret 5-50 MAU (kundeportal)\n\n- **Konklusion:** Gratis plan er rigeligt! 💰✅\n\n
-**Alternative (hvis Clerk ikke ønsket):**
-\n\n- Auth0\n\n- Supabase Auth\n\n- NextAuth.js\n\n- Firebase Auth\n\n
-Men Clerk er **perfekt** for RenOS - simpel, sikker, production-ready! 🎉\n\n
----
-
-**Status:** 🟡 KLAR TIL EXECUTION  
-**Blocker:** INGEN - kan køres straks  
-**Risk:** LAV - rollback er simpel (ændre key tilbage)
+# 🔑 Clerk Production Keys Upgrade Guide\n\n\n\n**Status:** 🟡 I GANG  **Prioritet:** HØJTID (Kritisk før go-live)  **Estimeret tid:** 15 minutter  **Dato:** 3. oktober 2025, kl. 13:50\n\n---\n\n## 🎯 Formål\n\n\n\nOpgradere Clerk authentication fra test keys til production keys for at fjerne udvikler-advarsler og gøre systemet klar til reelle brugere.---\n\n## 📋 Current State\n\n\n\n**Current Keys (Development):**\n\n```envVITE_CLERK_PUBLISHABLE_KEY=pk_test_YXJyaXZpbmctcmVkYmlyZC0xMi5jbGVyay5hY2NvdW50cy5kZXYk\n\n```**Location:** `client/.env` (line 2)\n\n**Problem:**\n\n- Browser console viser "Development mode" warning\n\n- Ikke egnet til production brug\n\n- Clerk anbefaler production keys til live apps\n\n---\n\n## 🚀 Step-by-Step Upgrade Process\n\n\n\n### Step 1: Åbn Clerk Dashboard\n\n\n\n1. Gå til: <https://dashboard.clerk.com>\n\n2. Log ind med din Clerk account\n\n3. Vælg dit projekt: **"RenOS"** eller tilsvarende\n\n\n\n### Step 2: Opret Production Environment\n\n\n\n1. I venstre sidebar → Click på **"Production"** eller **"Go to Production"**\n\n2. Hvis du ikke har production environment:- Click **"Create Production Instance"**\n\n   - Clerk vil guide dig gennem setup\n\n   - Acceptér deres anbefaling for production settings\n\n\n\n### Step 3: Find Production Keys\n\n\n\n1. I Production environment → Gå til **"API Keys"**\n\n2. Find section: **"Publishable Key"**\n\n3. Kopiér nøglen - den starter med `pk_live_` (ikke `pk_test_`)\n\n4. **VIGTIGT:** Gem nøglen sikkert - du skal bruge den i næste step\n\n\n\n### Step 4: Opdater Render Frontend Environment\n\n\n\n1. Gå til: <https://dashboard.render.com/web/srv-d3e057nfte5s73f2naqg>\n\n2. Click **"Environment"** i venstre sidebar\n\n3. Find variable: **VITE_CLERK_PUBLISHABLE_KEY**\n\n4. Click **"Edit"** (blyant icon)\n\n5. Erstat `pk_test_...` med din nye `pk_live_...` key\n\n6. Click **"Save Changes"**\n\n### Step 5: Redeploy Frontend\n\n\n\n1. Stadig i Render dashboard for frontend service\n\n2. Click **"Manual Deploy"** button i toppen\n\n3. Vælg **"Clear build cache & deploy"**\n\n4. Vent på deployment (ca. 3-5 minutter)\n\n5. Se logs for at verificere ingen errors\n\n### Step 6: Verificer Production Keys Virker\n\n\n\n1. Når deployment er færdig, åbn: <https://tekup-renos-1.onrender.com>\n\n2. Åbn browser console (F12)\n\n3. Verificer:- ✅ **INGEN** "Development mode" warnings\n\n   - ✅ Clerk logger kun production-relevante beskeder\n\n   - ✅ Login fungerer stadig\n\n   - ✅ Ingen 401 eller 403 errors\n\n\n\n4. Test login flow:   ```   1. Click "Log ud" (hvis logget ind)   2. Click "Log ind"   3. Log ind med eksisterende account   4. Verificer redirect til Dashboard   5. Check at navigation virker   ```---\n\n## ⚠️ VIGTIGE NOTER\n\n\n\n### DNS og Domains (Optional)\n\n\n\nHvis du vil bruge custom domain (f.eks. `app.rendetalje.dk`):\n\n1. I Clerk Dashboard → Production → **"Domains"**\n\n2. Add domain: `app.rendetalje.dk`\n\n3. Clerk giver dig DNS records (CNAME)\n\n4. Tilføj CNAME records i din DNS provider (f.eks. Cloudflare)\n\n5. Vent på DNS propagation (op til 24 timer)**For nu:** Brug Render's default domain (tekup-renos-1.onrender.com) - det virker perfekt!\n\n\n\n### Clerk Webhook Setup (Optional - Nice to Have)\n\n\n\nHvis du vil synkronisere users til din database:\n\n\n\n1. I Clerk Dashboard → Production → **"Webhooks"**\n\n2. Add endpoint: `https://tekup-renos.onrender.com/api/webhooks/clerk`\n\n3. Select events:- `user.created`\n\n   - `user.updated`\n\n   - `user.deleted`\n\n4. Copy webhook signing secret\n\n5. Add til Render backend env: `CLERK_WEBHOOK_SECRET=whsec_...`**For nu:** Skip dette step - ikke kritisk for go-live.\n\n\n\n### User Migration\n\n\n\n**GOD NYHED:** Clerk Production og Development shares IKKE users!\n\nHvad det betyder:\n\n- Alle test users (fra development) eksisterer IKKE i production\n\n- Reelle brugere skal oprette nye accounts i production\n\n- Dette er faktisk GODT - ingen test data i production! ✅\n\nFørste gang systemet startes i production:\n\n1. Du (admin) skal oprette ny account\n\n2. Kunder skal oprette accounts når de modtager første quote email---\n\n## 🧪 Verification Checklist\n\n\n\nEfter upgrade, verificer følgende:\n\n```Frontend:\n\n- [ ] https://tekup-renos-1.onrender.com loader uden errors\n\n- [ ] Ingen "Development mode" warning i console\n\n- [ ] Login flow virker\n\n- [ ] Protected routes kræver authentication\n\n- [ ] Logout virker\n\n- [ ] User profile vises korrekt i Layout\n\nBackend:\n\n- [ ] https://tekup-renos.onrender.com/api/health returnerer 200 OK\n\n- [ ] Clerk authentication middleware virker\n\n- [ ] API endpoints kræver valid Clerk token\n\n- [ ] Ingen 401 Unauthorized errors ved valid login\n\nIntegration:\n\n- [ ] Dashboard data loader efter login\n\n- [ ] Leads page viser data\n\n- [ ] Customers page viser data\n\n- [ ] Bookings page viser data\n\n- [ ] AI Quote Modal åbner og fungerer\n\n```---\n\n## 🐛 Troubleshooting\n\n\n\n### Problem: "Invalid publishable key"\n\n\n\n**Solution:**\n\n1. Verificer du kopierede hele nøglen (inkl. `pk_live_` prefix)\n\n2. Ingen extra spaces før/efter key\n\n3. Key skal være fra **Production** environment (ikke Development)\n\n\n\n### Problem: Login redirect fejler\n\n\n\n**Solution:**\n\n1. Check Clerk Dashboard → Production → **"Paths"**\n\n2. Verificer redirect URLs:- Sign-in: `/sign-in`\n\n   - Sign-up: `/sign-up`\n\n   - After sign-in: `/dashboard`\n\n   - After sign-up: `/dashboard`\n\n\n\n### Problem: CORS errors efter upgrade\n\n\n\n**Solution:**\n\n1. Check Render backend logs\n\n2. Verificer `ALLOWED_ORIGINS` env variable inkluderer frontend URL\n\n3. Redeploy backend hvis nødvendigt---\n\n## 📊 Success Criteria\n\n\n\n**✅ UPGRADE COMPLETED når:**\n\n1. ✅ `pk_live_` key deployed til Render frontend\n\n2. ✅ Ingen development warnings i browser console\n\n3. ✅ Login flow fungerer 100%\n\n4. ✅ Protected routes kræver authentication\n\n5. ✅ User profile vises korrekt\n\n6. ✅ API requests inkluderer valid Clerk tokens---\n\n## 🎯 Next Steps After Upgrade\n\n\n\n1. ✅ Test Customer360 Email Endpoints (optional)\n\n2. ✅ Run End-to-End Production Test\n\n3. 🚀 GO LIVE med kunde!---\n\n## 📝 Notes\n\n\n\n**Clerk Pricing:**\n\n- Free tier: Op til 10,000 monthly active users (MAU)\n\n- RenOS usage: Estimeret 5-50 MAU (kundeportal)\n\n- **Konklusion:** Gratis plan er rigeligt! 💰✅\n\n**Alternative (hvis Clerk ikke ønsket):**\n\n- Auth0\n\n- Supabase Auth\n\n- NextAuth.js\n\n- Firebase Auth\n\nMen Clerk er **perfekt** for RenOS - simpel, sikker, production-ready! 🎉\n\n---**Status:** 🟡 KLAR TIL EXECUTION  **Blocker:** INGEN - kan køres straks  **Risk:** LAV - rollback er simpel (ændre key tilbage)

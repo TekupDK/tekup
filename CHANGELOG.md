@@ -158,7 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 23 TypeScript errors in tekup-chat migration
 - GitHub Push Protection violation (secret redaction)
-- Import path updates (@/lib/_ → @tekup/_)
+- Import path updates (@/lib/_→ @tekup/_)
 
 ### Security
 

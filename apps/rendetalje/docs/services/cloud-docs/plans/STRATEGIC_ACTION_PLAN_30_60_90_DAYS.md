@@ -1,4 +1,5 @@
-# 🎯 Tekup Portfolio Strategic Action Plan
+﻿# 🎯 Tekup Portfolio Strategic Action Plan
+
 **30/60/90 Day Roadmap**  
 **Generated**: October 18, 2025  
 **Based On**: Comprehensive audit verification of 8 sources  
@@ -29,6 +30,7 @@
 ### Week 1 (Oct 21-27): Critical Cleanup
 
 #### Priority 1: Tekup-org Value Extraction
+
 **Effort**: 10-15 hours total  
 **Value**: €360,000 extractable  
 **Owner**: Lead developer
@@ -49,6 +51,7 @@ npm install ../packages/tekup-design-system
 ```
 
 **Deliverables**:
+
 - [ ] @tekup/design-system package created
 - [ ] 1,200+ lines glassmorphism CSS extracted
 - [ ] Tailwind 4.1 configuration ported
@@ -70,6 +73,7 @@ cp ../../Tekup-org/apps/tekup-ai-backend/prisma/schema.prisma src/ai.prisma
 ```
 
 **Deliverables**:
+
 - [ ] @tekup/database-schemas package created
 - [ ] Multi-tenant CRM patterns extracted
 - [ ] Workflow automation schemas available
@@ -95,6 +99,7 @@ echo "See EXTRACTION_GUIDE.md for details." >> Tekup-org-ARCHIVED-2025-09/README
 ```
 
 **Deliverables**:
+
 - [ ] Repository renamed and archived
 - [ ] README updated with archive status
 - [ ] Extraction guide documented
@@ -106,6 +111,7 @@ echo "See EXTRACTION_GUIDE.md for details." >> Tekup-org-ARCHIVED-2025-09/README
 ---
 
 #### Priority 2: RenOS Backend Feature Branch
+
 **Effort**: 2-3 hours  
 **Impact**: Resolve 71 uncommitted files  
 **Owner**: Backend developer
@@ -150,6 +156,7 @@ echo "Target: November 2025" >> FEATURE_BRANCHES.md
 ```
 
 **Deliverables**:
+
 - [ ] Decision made: Merge or Keep Separate
 - [ ] 71 files committed (either way)
 - [ ] Git state clean on main branch
@@ -160,6 +167,7 @@ echo "Target: November 2025" >> FEATURE_BRANCHES.md
 ---
 
 #### Priority 3: Tekup-Billy v1.4.0 Finalization
+
 **Effort**: 1-2 hours  
 **Impact**: Complete major version release  
 **Owner**: MCP server maintainer
@@ -220,6 +228,7 @@ git push origin main --tags
 ```
 
 **Deliverables**:
+
 - [ ] 33 files committed in logical groups
 - [ ] v1.4.0 tagged and documented
 - [ ] CHANGELOG.md updated
@@ -231,6 +240,7 @@ git push origin main --tags
 ---
 
 #### Priority 4: RendetaljeOS Git State Fix
+
 **Effort**: 15 minutes  
 **Impact**: Resolve detached HEAD state  
 **Owner**: Any developer
@@ -266,6 +276,7 @@ git push origin main
 ```
 
 **Deliverables**:
+
 - [ ] Git state verified and documented
 - [ ] Detached HEAD fixed (if applicable)
 - [ ] 24 uncommitted files committed
@@ -278,6 +289,7 @@ git push origin main
 ### Week 1 Summary
 
 **Uncommitted Files Progress**:
+
 - Before: 1,196 files
 - Tekup-org: -1,040 (archived)
 - RenOS Backend: -71 (merged/committed)
@@ -293,6 +305,7 @@ git push origin main
 ### Week 2 (Oct 28 - Nov 3): Testing Foundation
 
 #### Task 1: RenOS Frontend Test Framework
+
 **Effort**: 1 day (8 hours)  
 **Impact**: CRITICAL production safety net  
 **Owner**: Frontend developer
@@ -364,6 +377,7 @@ describe('Dashboard', () => {
 ```
 
 **Deliverables**:
+
 - [ ] Vitest configured and working
 - [ ] 15+ component tests written
 - [ ] 30% code coverage achieved
@@ -375,6 +389,7 @@ describe('Dashboard', () => {
 ---
 
 #### Task 2: Tekup-Billy Production Redis Setup
+
 **Effort**: 4 hours  
 **Impact**: Enable horizontal scaling  
 **Owner**: DevOps/Backend developer
@@ -432,6 +447,7 @@ k6 run --vus 500 --duration 60s load-test.js
 ```
 
 **Deliverables**:
+
 - [ ] Redis Cloud instance provisioned
 - [ ] Tekup-Billy connected to Redis
 - [ ] Circuit breaker tested under load
@@ -443,6 +459,7 @@ k6 run --vus 500 --duration 60s load-test.js
 ---
 
 #### Task 3: RenOS Backend Documentation Cleanup
+
 **Effort**: 2-3 hours  
 **Impact**: Reduce chaos, improve maintainability  
 **Owner**: Backend developer
@@ -520,6 +537,7 @@ Intent → Plan → Execute AI agent system
 ```
 
 **Deliverables**:
+
 - [ ] 110+ files moved to docs/archive/
 - [ ] Root directory clean (5 files only)
 - [ ] ARCHITECTURE.md created
@@ -532,6 +550,7 @@ Intent → Plan → Execute AI agent system
 ### Week 3 (Nov 4-10): Monitoring & Security
 
 #### Task 1: Sentry Error Tracking (All Production Repos)
+
 **Effort**: 4 hours  
 **Impact**: Proactive error detection  
 **Owner**: DevOps
@@ -569,6 +588,7 @@ npm install @sentry/react
 ```
 
 **Deliverables**:
+
 - [ ] Sentry projects created for 4 repos
 - [ ] SDK integrated in all production apps
 - [ ] Error alerts configured
@@ -580,6 +600,7 @@ npm install @sentry/react
 ---
 
 #### Task 2: Fix npm Security Vulnerabilities
+
 **Effort**: 1 hour  
 **Impact**: Security compliance  
 **Owner**: Backend developer
@@ -614,6 +635,7 @@ Fixed via npm audit fix:
 ```
 
 **Deliverables**:
+
 - [ ] All repos audited
 - [ ] Vulnerabilities fixed (0 high/critical)
 - [ ] Tests pass after updates
@@ -626,6 +648,7 @@ Fixed via npm audit fix:
 ### Week 4 (Nov 11-17): CI/CD Automation
 
 #### Task 1: GitHub Actions Workflows
+
 **Effort**: 6 hours  
 **Impact**: Automated testing and deployment  
 **Owner**: DevOps
@@ -680,6 +703,7 @@ jobs:
 ```
 
 **Apply to Repos**:
+
 - [ ] Tekup-Billy
 - [ ] TekupVault
 - [ ] RenOS Backend
@@ -687,6 +711,7 @@ jobs:
 - [ ] RendetaljeOS (if active)
 
 **Deliverables**:
+
 - [ ] CI/CD workflows created
 - [ ] Automated tests run on every PR
 - [ ] Code coverage tracked
@@ -699,6 +724,7 @@ jobs:
 ### Phase 1 Summary (30 Days)
 
 **Achievements**:
+
 - ✅ Uncommitted files: 1,196 → <50 (96% reduction)
 - ✅ Tekup-org: €360K value extracted and archived
 - ✅ Test coverage: 0% → 30% average
@@ -707,6 +733,7 @@ jobs:
 - ✅ CI/CD: 5 repos automated
 
 **Health Scores**:
+
 - Tekup-Billy: 92 → 95/100 (Redis production)
 - TekupVault: 78 → 80/100 (monitoring)
 - RenOS Backend: 80 → 85/100 (docs cleanup)
@@ -724,6 +751,7 @@ jobs:
 ### Week 5-6 (Nov 18 - Dec 1): TekupVault Expansion
 
 #### Task: Index All 11 Repositories
+
 **Effort**: 1 week  
 **Impact**: Complete knowledge graph  
 **Value**: +€200K (TekupVault value increase)
@@ -733,19 +761,19 @@ jobs:
 // apps/vault-worker/src/config/repositories.ts
 export const MONITORED_REPOS = [
   // Already indexed:
-  'JonasAbde/renos-backend',
-  'JonasAbde/renos-frontend',
-  'JonasAbde/Tekup-Billy',
+  'TekupDK/renos-backend',
+  'TekupDK/renos-frontend',
+  'TekupDK/Tekup-Billy',
   
   // NEW - Add 8 more:
-  'JonasAbde/TekupVault',           // Self-indexing
-  'JonasAbde/RendetaljeOS',
-  'JonasAbde/Agent-Orchestrator',
-  'JonasAbde/tekup-ai-assistant',
-  'JonasAbde/tekup-gmail-automation',
-  'JonasAbde/Tekup-org-ARCHIVED',   // Read-only archive
-  'JonasAbde/tekup-design-system',  // New package
-  'JonasAbde/tekup-database-schemas' // New package
+  'TekupDK/TekupVault',           // Self-indexing
+  'TekupDK/RendetaljeOS',
+  'TekupDK/Agent-Orchestrator',
+  'TekupDK/tekup-ai-assistant',
+  'TekupDK/tekup-gmail-automation',
+  'TekupDK/Tekup-org-ARCHIVED',   // Read-only archive
+  'TekupDK/tekup-design-system',  // New package
+  'TekupDK/tekup-database-schemas' // New package
 ]
 ```
 
@@ -774,6 +802,7 @@ export class EmbeddingCache {
 ```
 
 **Deliverables**:
+
 - [ ] All 11 repos indexed
 - [ ] Embedding cache implemented (80% savings)
 - [ ] Total documents: ~3,000 (from 750)
@@ -789,6 +818,7 @@ export class EmbeddingCache {
 **Target**: 30% → 50% average coverage
 
 **Repos to Focus**:
+
 1. **Tekup-Billy**: Add integration tests for MCP tools
 2. **TekupVault**: Add search quality tests
 3. **RenOS Backend**: Add AI agent tests
@@ -797,6 +827,7 @@ export class EmbeddingCache {
 **Effort**: 2 weeks (40 hours split across repos)
 
 **Deliverables**:
+
 - [ ] 50+ new test files created
 - [ ] 50% coverage achieved
 - [ ] E2E tests for critical flows
@@ -809,12 +840,14 @@ export class EmbeddingCache {
 ### Phase 2 Summary (60 Days)
 
 **Achievements**:
+
 - ✅ TekupVault indexes all 11 repos (complete knowledge graph)
 - ✅ Test coverage: 30% → 50% average
 - ✅ Performance optimization: 80% cost reduction (embedding cache)
 - ✅ Integration: Cross-repo search working
 
 **Health Scores**:
+
 - TekupVault: 80 → 88/100 (major expansion)
 - Tekup-Billy: 95 → 96/100 (comprehensive tests)
 - RenOS Backend: 85 → 87/100 (agent tests)
@@ -832,12 +865,14 @@ export class EmbeddingCache {
 ### Week 9-12 (Dec 16 - Jan 13): Performance & Security
 
 **Focus Areas**:
+
 1. Performance monitoring (Web Vitals, APM)
 2. Security audit (penetration testing)
 3. Documentation consolidation
 4. Architecture decision records
 
 **Major Tasks**:
+
 - [ ] Lighthouse CI for all frontends
 - [ ] Database query optimization
 - [ ] API response time monitoring
@@ -846,12 +881,14 @@ export class EmbeddingCache {
 - [ ] Runbook for each service
 
 **Deliverables**:
+
 - [ ] <100ms P95 response times
 - [ ] Security audit passed
 - [ ] Complete documentation
 - [ ] 65% average test coverage
 
 **Final Health Scores**:
+
 - Tekup-Billy: 96 → 98/100 (near perfect)
 - TekupVault: 88 → 92/100 (enterprise-grade)
 - RenOS Backend: 87 → 90/100 (excellent)
@@ -866,6 +903,7 @@ export class EmbeddingCache {
 ### Weekly Check-ins
 
 **Every Monday**:
+
 - [ ] Review uncommitted file count
 - [ ] Check health score trends
 - [ ] Verify test coverage %
@@ -875,6 +913,7 @@ export class EmbeddingCache {
 ### Monthly Reviews
 
 **End of Month 1, 2, 3**:
+
 - [ ] Full portfolio audit re-run
 - [ ] Compare to baseline metrics
 - [ ] Adjust targets if needed
@@ -899,16 +938,19 @@ export class EmbeddingCache {
 ### Repository Status
 
 🥇 **Tier 1** (4 repos, all 90+/100):
+
 - Tekup-Billy: 98/100 (enterprise SaaS integration)
 - TekupVault: 92/100 (AI knowledge platform)
 - RenOS Backend: 90/100 (AI agent orchestration)
 - RenOS Frontend: 89/100 (modern React SPA)
 
 🥈 **Tier 2** (2 repos, 80-89/100):
+
 - RendetaljeOS: 85/100 (monorepo migration complete)
 - Agent-Orchestrator: 82/100 (Electron dashboard)
 
 🥉 **Tier 3** (1 repo, archived):
+
 - Tekup-org: ARCHIVED (value extracted)
 
 **Achievement Unlocked**: World-class portfolio with 87/100 average health! 🏆

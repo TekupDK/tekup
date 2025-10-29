@@ -1,4 +1,4 @@
-# Tekup Secrets - Migration to Git Submodule
+﻿# Tekup Secrets - Migration to Git Submodule
 
 **Date:** October 24, 2025  
 **Status:** ✅ COMPLETED  
@@ -11,15 +11,18 @@ Successfully migrated `tekup-secrets` from a tracked folder in the main Tekup wo
 ## Migration Steps Completed
 
 ### 1. Created Separate Repository ✅
-- **Repository:** https://github.com/TekupDK/tekup-secrets (private)
+
+- **Repository:** <https://github.com/TekupDK/tekup-secrets> (private)
 - **Organization:** TekupDK (not personal JonasAbde account)
 - **Visibility:** Private (only authorized team members)
 - **Purpose:** Central credential storage for all Tekup projects
 
 ### 2. Removed git-crypt Encryption ✅
+
 **Decision:** Remove git-crypt in favor of GitHub private repo security
 
 **Rationale:**
+
 - git-crypt caused submodule initialization issues ("encrypted file has been tampered with")
 - Key management complexity for team collaboration and CI/CD
 - Private repository provides sufficient security via GitHub access control
@@ -27,16 +30,20 @@ Successfully migrated `tekup-secrets` from a tracked folder in the main Tekup wo
 - Simplifies clone workflow for new team members
 
 **Commits:**
+
 - `30b658e`: Remove git-crypt encryption - use private repo security instead
 - `f12fd70`: Replace encrypted files with unencrypted versions
 
 ### 3. Converted to Git Submodule ✅
+
 **Main Workspace Changes:**
+
 - Removed `tekup-secrets` folder from git tracking
 - Added `.gitmodules` with submodule configuration
 - Linked to `https://github.com/TekupDK/tekup-secrets.git`
 
 **Commits:**
+
 - `6ac6986`: Convert tekup-secrets to git submodule
 - `90a4b5a`: Update tekup-secrets submodule to unencrypted version
 - `da5fcff`: Merge with remote changes + rename-folder.ps1
@@ -44,6 +51,7 @@ Successfully migrated `tekup-secrets` from a tracked folder in the main Tekup wo
 ## Architecture
 
 ### Before Migration
+
 ```
 C:\Users\empir\Tekup\
 ├── tekup-secrets/           # Regular tracked folder
@@ -58,6 +66,7 @@ C:\Users\empir\Tekup\
 ```
 
 ### After Migration
+
 ```
 C:\Users\empir\Tekup\
 ├── .gitmodules              # Submodule configuration
@@ -80,12 +89,14 @@ TekupDK/tekup-secrets (separate repo):
 ## Security Model
 
 ### Access Control Layers
+
 1. **GitHub Organization:** TekupDK (private)
 2. **Repository Permissions:** Invite-only team members
 3. **File Protection:** .gitignore prevents accidental credential commits in projects
 4. **CI/CD:** Render.com uses environment variables (not repo secrets)
 
 ### No git-crypt Required
+
 - ✅ Private repo = only authenticated users can clone
 - ✅ GitHub audit logs track all access
 - ✅ Team members need GitHub invite + repo access
@@ -95,6 +106,7 @@ TekupDK/tekup-secrets (separate repo):
 ## Benefits of Submodule Approach
 
 ### 1. **Multi-Workspace Support**
+
 Can be shared across multiple Tekup projects:
 ```
 C:\Tekup-Project-A\tekup-secrets\  → TekupDK/tekup-secrets
@@ -103,17 +115,20 @@ C:\PC2\Tekup\tekup-secrets\        → TekupDK/tekup-secrets (same credentials)
 ```
 
 ### 2. **Access Control**
+
 - Main workspace (`TekupDK/tekup`) is public
 - Secrets repo (`TekupDK/tekup-secrets`) is private
 - Public contributors can't see credentials
 - Team members get separate invite for secrets repo
 
 ### 3. **Independent Version Control**
+
 - Update credentials without polluting main workspace history
 - Clear separation of code vs. configuration
 - Can rollback credentials independently
 
 ### 4. **Simplified CI/CD**
+
 - Render.com doesn't need submodule access (uses env vars)
 - Local dev gets credentials from submodule
 - Production gets credentials from Render secrets
@@ -123,12 +138,14 @@ C:\PC2\Tekup\tekup-secrets\        → TekupDK/tekup-secrets (same credentials)
 ### For New Team Members (PC2, etc.)
 
 #### 1. Clone Main Workspace
+
 ```powershell
 git clone https://github.com/TekupDK/tekup.git
 cd tekup
 ```
 
 #### 2. Initialize Submodule
+
 ```powershell
 # First time: initialize and clone
 git submodule init
@@ -141,6 +158,7 @@ git submodule update --init --recursive
 **Note:** You must have access to `TekupDK/tekup-secrets` (private repo) or this will fail.
 
 #### 3. Verify Credentials
+
 ```powershell
 cd tekup-secrets
 Get-Content config/mcp.env -First 5
@@ -157,17 +175,20 @@ Should show:
 ### For Existing Developers (Update Existing Clone)
 
 #### 1. Pull Latest Changes
+
 ```powershell
 cd C:\Users\empir\Tekup
 git pull origin master
 ```
 
 #### 2. Initialize Submodule (if not done)
+
 ```powershell
 git submodule update --init --recursive
 ```
 
 #### 3. Update Submodule to Latest
+
 ```powershell
 cd tekup-secrets
 git pull origin main
@@ -177,6 +198,7 @@ cd ..
 ### Updating Credentials
 
 #### 1. Make Changes in Submodule
+
 ```powershell
 cd tekup-secrets
 # Edit config/mcp.env or other files
@@ -187,6 +209,7 @@ cd ..
 ```
 
 #### 2. Update Main Workspace Reference
+
 ```powershell
 git add tekup-secrets
 git commit -m "Update tekup-secrets submodule reference"
@@ -209,11 +232,13 @@ git push origin master
 ```
 
 **Generates:**
+
 - `~/.cursor/mcp.json` (Cursor IDE)
 - `~/.windsurf/mcp.json` (Windsurf IDE) - coming soon
 - `~/.config/claude/mcp.json` (Claude Desktop) - coming soon
 
 **Supported MCP Servers:**
+
 - `tekup-billy` - Billy.dk accounting integration
 - `tekupvault` - TekupVault knowledge search
 - `filesystem` - Safe file access (Tekup workspace only)
@@ -223,15 +248,18 @@ git push origin master
 
 ## Troubleshooting
 
-### Issue: "fatal: repository 'https://github.com/TekupDK/tekup-secrets.git' not found"
+### Issue: "fatal: repository '<https://github.com/TekupDK/tekup-secrets.git>' not found"
+
 **Cause:** You don't have access to the private repository.
 
 **Solution:**
-1. Ask Jonas Abde (@JonasAbde) for GitHub invite to TekupDK organization
+
+1. Ask Jonas Abde (@TekupDK) for GitHub invite to TekupDK organization
 2. Ensure you're logged in: `git config --global user.name` (should show your GitHub username)
 3. Use HTTPS with Personal Access Token or SSH keys
 
 ### Issue: Submodule shows as "modified" after `git status`
+
 **Cause:** The submodule is pointing to a different commit than the main workspace expects.
 
 **Solution:**
@@ -245,6 +273,7 @@ git commit -m "Sync tekup-secrets submodule"
 ```
 
 ### Issue: Empty `tekup-secrets` folder after clone
+
 **Cause:** Submodule not initialized.
 
 **Solution:**
@@ -253,9 +282,11 @@ git submodule update --init --recursive
 ```
 
 ### Issue: "git-crypt: error: encrypted file has been tampered with"
+
 **Cause:** Old git-crypt configuration (pre-migration issue).
 
 **Solution:** This should not occur anymore. We removed git-crypt encryption in commit `f12fd70`. If you see this:
+
 1. Delete `tekup-secrets` folder
 2. Run `git submodule update --init --recursive`
 3. Files should now be plaintext (private repo security instead)
@@ -273,6 +304,7 @@ git submodule update --init --recursive
 If submodule causes critical issues:
 
 ### 1. Convert Back to Regular Folder
+
 ```powershell
 # Backup current state
 Copy-Item tekup-secrets tekup-secrets-submodule-backup -Recurse
@@ -296,6 +328,7 @@ git commit -m "Rollback: Convert tekup-secrets from submodule to regular folder"
 ## Success Metrics
 
 ### ✅ Completed
+
 - [x] Created `TekupDK/tekup-secrets` private repository
 - [x] Removed git-crypt encryption (simplified security model)
 - [x] Converted to git submodule in main workspace
@@ -306,6 +339,7 @@ git commit -m "Rollback: Convert tekup-secrets from submodule to regular folder"
 - [x] Created comprehensive migration documentation
 
 ### 🎯 Ready for Production
+
 - Main workspace: `https://github.com/TekupDK/tekup` (public)
 - Secrets repo: `https://github.com/TekupDK/tekup-secrets` (private)
 - Submodule initialized and pointing to latest commit (`f12fd70`)
@@ -315,12 +349,14 @@ git commit -m "Rollback: Convert tekup-secrets from submodule to regular folder"
 ## Next Steps
 
 ### For PC2 Setup
+
 1. Clone main workspace: `git clone https://github.com/TekupDK/tekup.git`
 2. Initialize submodule: `git submodule update --init --recursive`
 3. Run MCP setup: `.\setup-mcp-secure.ps1`
 4. Verify Cursor MCP works: Open Cursor → Check MCP servers in settings
 
 ### For Team Members (Future)
+
 1. Request GitHub invite to `TekupDK` organization
 2. Request access to `tekup-secrets` repository
 3. Follow "For New Team Members" guide above
@@ -329,6 +365,7 @@ git commit -m "Rollback: Convert tekup-secrets from submodule to regular folder"
 ## Technical Details
 
 ### Submodule Configuration (`.gitmodules`)
+
 ```ini
 [submodule "tekup-secrets"]
     path = tekup-secrets
@@ -336,12 +373,14 @@ git commit -m "Rollback: Convert tekup-secrets from submodule to regular folder"
 ```
 
 ### Current Submodule State
+
 - **Branch:** `main`
 - **Commit:** `f12fd70` (Replace encrypted files with unencrypted versions)
 - **Remote:** `https://github.com/TekupDK/tekup-secrets.git`
 - **Tracking:** Main workspace tracks submodule commit hash in `.git/modules/tekup-secrets`
 
 ### File Structure in Submodule
+
 ```
 tekup-secrets/
 ├── .env.development      # Development environment (local)
@@ -392,6 +431,7 @@ tekup-secrets/
 ## Conclusion
 
 The migration from tracked folder to git submodule provides:
+
 - **Better Security:** Access control via private repo
 - **Easier Collaboration:** Team members clone separate repo
 - **Multi-Workspace Support:** Same credentials across PC1, PC2, CI/CD
@@ -403,6 +443,6 @@ The removal of git-crypt simplifies setup while maintaining security through Git
 ---
 
 **Migration Completed:** October 24, 2025  
-**Migrated By:** AI Assistant (Copilot) with user @JonasAbde  
+**Migrated By:** AI Assistant (Copilot) with user @TekupDK  
 **Documentation:** Complete and ready for team onboarding  
 **Status:** ✅ PRODUCTION READY

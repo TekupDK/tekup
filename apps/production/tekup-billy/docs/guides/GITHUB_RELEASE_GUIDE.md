@@ -1,4 +1,4 @@
-# 🚀 GitHub Release Guide - Tekup-Billy v1.4.0
+﻿# 🚀 GitHub Release Guide - Tekup-Billy v1.4.0
 
 **Dato:** 18. Oktober 2025  
 **Formål:** GitHub best practices for official release  
@@ -257,10 +257,10 @@ jobs:
 - Updated deployment documentation
 
 ### Contributors
-- @JonasAbde - Implementation
+- @TekupDK - Implementation
 - @CascadeAI - Analysis & automation
 
-**Full Changelog**: [v1.3.0...v1.4.0](https://github.com/JonasAbde/Tekup-Billy/compare/v1.3.0...v1.4.0)
+**Full Changelog**: [v1.3.0...v1.4.0](https://github.com/TekupDK/Tekup-Billy/compare/v1.3.0...v1.4.0)
 ```
 
 ---
@@ -396,10 +396,10 @@ None - this release is fully backwards compatible.
 
 ## 🙏 Contributors
 
-- @JonasAbde - Implementation
+- @TekupDK - Implementation
 - Cascade AI - Analysis & automation
 
-**Full Changelog**: [v1.3.0...v1.4.0](https://github.com/JonasAbde/Tekup-Billy/compare/v1.3.0...v1.4.0)
+**Full Changelog**: [v1.3.0...v1.4.0](https://github.com/TekupDK/Tekup-Billy/compare/v1.3.0...v1.4.0)
 ```
 
 ---
@@ -422,7 +422,7 @@ npm outdated
 npx snyk test
 
 # 5. Review GitHub security alerts
-# Check: https://github.com/JonasAbde/Tekup-Billy/security
+# Check: https://github.com/TekupDK/Tekup-Billy/security
 ```
 
 ---

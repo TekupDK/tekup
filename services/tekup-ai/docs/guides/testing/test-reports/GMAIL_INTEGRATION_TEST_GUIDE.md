@@ -1,212 +1,1 @@
-# 📧 Gmail Integration Testing Guide\n\n\n\n**Todo #3: Test Gmail Integration End-to-End**  
-**Date**: October 1, 2025  
-**Status**: In Progress
-
----
-\n\n## 🎯 Test Objectives\n\n\n\nVerify that RenOS can:
-\n\n1. ✅ Connect to Gmail via Google API\n\n2. ✅ Detect new emails from customers\n\n3. ✅ Generate AI responses with Gemini\n\n4. ✅ Display emails in dashboard for approval\n\n5. ✅ Send approved responses back to customers
-
----
-\n\n## 📋 Prerequisites Checklist\n\n\n\nBefore testing, ensure:
-\n\n### ✅ Deployment\n\n\n\n- [x] Backend deployed: <https://tekup-renos.onrender.com>\n\n- [x] Frontend deployed: <https://tekup-renos-1.onrender.com>\n\n- [x] Authentication disabled (ENABLE_AUTH=false)\n\n- [x] Database connected (Neon PostgreSQL)\n\n\n\n### ⏳ Google Credentials (To Verify)\n\n\n\n- [ ] GOOGLE_PROJECT_ID set in Render\n\n- [ ] GOOGLE_CLIENT_EMAIL set\n\n- [ ] GOOGLE_PRIVATE_KEY set (with \n for newlines)\n\n- [ ] GOOGLE_IMPERSONATED_USER set (e.g., <info@rendetalje.dk>)\n\n- [ ] GMAIL_CLIENT_ID set\n\n- [ ] GMAIL_CLIENT_SECRET set\n\n- [ ] GMAIL_REDIRECT_URI set\n\n\n\n### ⏳ Google Workspace Setup (To Verify)\n\n\n\n- [ ] Service account created in Google Cloud\n\n- [ ] Domain-wide delegation enabled\n\n- [ ] Scopes authorized in Google Workspace Admin:\n\n  - `https://www.googleapis.com/auth/gmail.modify`\n\n  - `https://www.googleapis.com/auth/calendar`\n\n
----
-\n\n## 🧪 Test Plan\n\n\n\n### Test 1: Verify Google Setup ✅\n\n\n\n**Purpose**: Check if Google credentials are configured correctly
-
-**Method**: Run verification tool locally
-\n\n```powershell\n\n# From your project root\n\nnpm run verify:google\n\n```\n\n
-**Expected Output**:
-\n\n```
-🔍 Checking Environment Variables...
-
-✅ PASS - GOOGLE_PROJECT_ID: Set correctly\n\n✅ PASS - GOOGLE_CLIENT_EMAIL: Valid format\n\n✅ PASS - GOOGLE_PRIVATE_KEY: Valid format\n\n✅ PASS - GOOGLE_IMPERSONATED_USER: Set\n\n```
-
-**If you see errors**: This means credentials are missing or incorrect. We'll need to fix this in Todo #6 (Environment Variables).
-
----
-\n\n### Test 2: Fetch Gmail Messages 📧\n\n\n\n**Purpose**: Verify RenOS can read emails from Gmail
-
-**Method A**: Via Dashboard (Recommended)
-\n\n1. Open: <https://tekup-renos-1.onrender.com>\n\n2. Navigate to **Leads** section\n\n3. Look for recent emails\n\n4. Check if emails are displayed
-
-**Method B**: Via API Endpoint
-\n\n```powershell\n\n# Test the API directly\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/dashboard/leads" -Method Get\n\n```\n\n
-**Expected Response**:
-\n\n```json
-{
-  "leads": [
-    {
-      "id": "...",
-      "name": "Customer Name",
-      "email": "customer@example.com",
-      "subject": "Request for quote",
-      "receivedAt": "2025-10-01T...",
-      "status": "new"
-    }
-  ]
-}\n\n```
-
-**Method C**: Run Data Fetcher Locally
-\n\n```powershell\n\n# Fetch last 10 Gmail messages\n\nnpm run data:gmail\n\n```\n\n
-**Expected Output**:
-\n\n```
-📧 Fetching Gmail messages...
-Found 10 messages:
-
-────────────────────────────────────────────────
-ID: 18d4f5a2b3c1d6e8
-From: kunde@example.com
-Subject: Tilbud på kontorrengøring
-Date: 2025-09-29T10:30:00Z
-Snippet: Hej, jeg vil gerne have et tilbud...
-────────────────────────────────────────────────\n\n```
-
----
-\n\n### Test 3: Send Test Email to RenOS 📨\n\n\n\n**Purpose**: Create a real lead that RenOS should detect
-
-**Steps**:
-\n\n1. **Send an email** to `info@rendetalje.dk` from your personal email:\n\n\n\n```
-To: info@rendetalje.dk
-Subject: Testforespørgsel - Vinduespolering\n\n
-Hej Rendetalje,
-
-Jeg vil gerne have et tilbud på vinduespolering til mit kontor.
-
-Adresse: Nørregade 10, 1165 København K
-Størrelse: Ca. 100 m²
-Tidspunkt: Helst i næste uge
-
-Venlig hilsen,
-[Dit Navn]
-[Din Email]
-[Dit Telefon]\n\n```
-\n\n2. **Wait 2-3 minutes** for RenOS to detect the email\n\n\n\n3. **Check Dashboard** for the new lead:\n\n   - Go to: <https://tekup-renos-1.onrender.com>\n\n   - Navigate to "Leads" section\n\n   - Look for your test email\n\n\n\n4. **Check Backend Logs** in Render:\n\n   - Go to: <https://dashboard.render.com>\n\n   - Select: tekup-renos (backend)\n\n   - Click: Logs\n\n   - Look for: "New lead detected" or similar messages\n\n
----
-\n\n### Test 4: AI Response Generation 🤖\n\n\n\n**Purpose**: Verify Gemini AI can generate appropriate responses
-
-**Method A**: Via Dashboard
-\n\n1. Open lead in dashboard\n\n2. Click "Generate Response" button\n\n3. Review AI-generated response\n\n4. Check if response is relevant and professional
-
-**Method B**: Via API
-\n\n```powershell\n\n# Test AI chat endpoint\n\n$body = @{\n\n    message = "Jeg vil gerne have et tilbud på vinduespolering"
-    sessionId = "test-session-123"
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/chat" `
-    -Method Post `
-    -Body $body `
-    -ContentType "application/json"\n\n```
-
-**Expected Response**:
-\n\n```json
-{
-  "response": "Hej! Tak for din henvendelse om vinduespolering...",
-  "sessionId": "test-session-123"
-}\n\n```
-
----
-\n\n### Test 5: Email Auto-Response 📤\n\n\n\n**Purpose**: Test full workflow from detection to response
-
-**Method**: Use lead monitoring tool
-\n\n```powershell\n\n# Check for new leads\n\nnpm run leads:check\n\n```\n\n
-**Expected Output**:
-\n\n```
-🔍 Checking for new Leadmail.no leads...
-
-✅ Found 1 new lead(s):
-
-────────────────────────────────────────────────
-📧 Lead ID: 18d4f5a2b3c1d6e8
-👤 Name: [Your Name]
-📍 Source: Direct Email
-🏠 Task Type: Vinduespolering
-✉️  Email: your@email.com
-⏰ Received: 01-10-2025 22:30:00
-────────────────────────────────────────────────\n\n```
-
----
-\n\n### Test 6: Dashboard Workflow 🖥️\n\n\n\n**Purpose**: Test complete user workflow
-
-**Steps**:
-\n\n1. **Access Dashboard**
-   - URL: <https://tekup-renos-1.onrender.com>\n\n   - Should load without authentication prompt\n\n\n\n2. **Check Overview**
-   - Verify stats display (customers, leads, bookings)\n\n   - Check KPIs show data or zero values\n\n\n\n3. **View Leads Section**
-   - Navigate to Leads\n\n   - Check if recent emails are listed\n\n   - Click on a lead to see details\n\n\n\n4. **Test AI Response**
-   - Select a lead\n\n   - Click "Generate Response"\n\n   - Review AI-generated text\n\n   - Edit if needed\n\n\n\n5. **Send Response (Dry-Run)**
-   - Click "Approve" or "Send"\n\n   - Check if action is logged\n\n   - Verify in RUN_MODE=dry-run, no actual email is sent\n\n
----
-\n\n## 🐛 Troubleshooting\n\n\n\n### Issue 1: "No emails found"\n\n\n\n**Possible Causes**:
-\n\n- Gmail credentials not set\n\n- Domain-wide delegation not enabled\n\n- Wrong email being monitored\n\n- No emails in inbox\n\n
-**Solutions**:
-\n\n1. Run `npm run verify:google` to check credentials\n\n2. Verify GOOGLE_IMPERSONATED_USER matches your email\n\n3. Send a test email to trigger detection\n\n4. Check Render logs for authentication errors
-
----
-\n\n### Issue 2: "Authentication Error"\n\n\n\n**Error Message**:
-\n\n```
-unauthorized_client: Client is unauthorized to retrieve access tokens\n\n```
-
-**Solution**:
-\n\n1. Check `TROUBLESHOOTING_AUTH.md` for detailed guide\n\n2. Verify domain-wide delegation is enabled\n\n3. Authorize scopes in Google Workspace Admin Console\n\n4. Ensure service account has correct permissions
-
-**Quick Fix Command**:
-\n\n```powershell\n\n# Verify your Google setup\n\nnpm run verify:google\n\n```\n\n
----
-\n\n### Issue 3: "AI Response Not Generated"\n\n\n\n**Possible Causes**:
-\n\n- GEMINI_KEY not set or invalid\n\n- API quota exceeded\n\n- Network timeout\n\n
-**Solutions**:
-\n\n1. Check Render environment for GEMINI_KEY\n\n2. Verify key at: <https://makersuite.google.com/app/apikey>\n\n3. Check Render logs for error messages\n\n4. Try different prompt/message
-
----
-\n\n### Issue 4: "Frontend Shows Empty Dashboard"\n\n\n\n**Possible Causes**:
-\n\n- No data in database yet\n\n- Backend not returning data\n\n- CORS issues\n\n- API endpoint not working\n\n
-**Solutions**:
-\n\n1. Check backend health: <https://tekup-renos.onrender.com/health>\n\n2. Test API directly: `/api/dashboard/stats`\n\n3. Check browser console for errors (F12)\n\n4. Verify CORS configuration in backend logs
-
----
-\n\n### Issue 5: "GOOGLE_CALENDAR_ID Missing" Warning\n\n\n\n**Log Message**:
-\n\n```
-⚠️ GOOGLE_CALENDAR_ID missing - booking features may not work\n\n```
-
-**Impact**: Booking/calendar features won't work
-
-**Solution**: Will fix in Todo #6 (Environment Variables)
-
-**For Now**: Focus on email testing, bookings can wait
-
----
-\n\n## ✅ Test Results Template\n\n\n\nUse this to document your test results:
-\n\n```markdown\n\n# Gmail Integration Test Results\n\nDate: [Date]\n\nTester: [Your Name]
-\n\n## Test 1: Google Setup Verification\n\nStatus: [ ] Pass [ ] Fail\n\nNotes:
-\n\n## Test 2: Fetch Gmail Messages\n\nStatus: [ ] Pass [ ] Fail\n\nMessages Found: [Number]
-Notes:
-\n\n## Test 3: Send Test Email\n\nStatus: [ ] Pass [ ] Fail\n\nEmail Detected: [ ] Yes [ ] No
-Time to Detection: [Minutes]
-Notes:
-\n\n## Test 4: AI Response Generation\n\nStatus: [ ] Pass [ ] Fail\n\nResponse Quality: [ ] Good [ ] Needs Work
-Notes:
-\n\n## Test 5: Email Auto-Response\n\nStatus: [ ] Pass [ ] Fail\n\nResponse Sent: [ ] Yes [ ] No (Dry-run)
-Notes:
-\n\n## Test 6: Dashboard Workflow\n\nStatus: [ ] Pass [ ] Fail\n\nUser Experience: [ ] Good [ ] Needs Improvement
-Notes:
-\n\n## Overall Assessment\n\nGmail Integration: [ ] Working [ ] Needs Fixes\n\nReady for Production: [ ] Yes [ ] No
-Next Steps:\n\n```
-
----
-\n\n## 📊 Success Criteria\n\n\n\nFor Todo #3 to be complete, we need:
-\n\n- [x] Backend can connect to Gmail API\n\n- [ ] Can fetch recent messages successfully\n\n- [ ] New emails are detected and parsed\n\n- [ ] AI generates relevant responses\n\n- [ ] Dashboard displays emails correctly\n\n- [ ] End-to-end workflow functions (even in dry-run)\n\n
----
-\n\n## 🎯 Next Steps After Testing\n\n\n\n### If Tests Pass ✅\n\n\n\n1. Mark Todo #3 as complete\n\n2. Move to Todo #5 (User Guide)\n\n3. Fix Todo #6 (Environment Variables)\n\n4. Consider switching to LIVE mode (RUN_MODE=production)
-\n\n### If Tests Fail ❌\n\n\n\n1. Document which tests failed\n\n2. Check error messages in Render logs\n\n3. Fix environment variables (Todo #6)\n\n4. Verify Google Workspace setup\n\n5. Re-run tests
-
----
-\n\n## 🆘 Need Help?\n\n\n\n### Documentation\n\n\n\n- **Google Auth Setup**: `docs/TROUBLESHOOTING_AUTH.md`\n\n- **Data Fetching**: `docs/QUICKSTART_DATA_FETCHING.md`\n\n- **Gmail Service**: `src/services/gmailService.ts`\n\n- **Lead Monitor**: `src/services/leadMonitor.ts`\n\n\n\n### Tools Available\n\n\n\n```bash\n\nnpm run verify:google      # Verify Google credentials\n\nnpm run data:gmail         # Fetch Gmail messages\n\nnpm run leads:check        # Check for new leads\n\nnpm run leads:monitor      # Start monitoring (continuous)\n\n```\n\n\n\n### Support Resources\n\n\n\n- **Render Logs**: <https://dashboard.render.com> → tekup-renos → Logs\n\n- **Google Cloud Console**: <https://console.cloud.google.com>\n\n- **Google Workspace Admin**: <https://admin.google.com>\n\n
----
-\n\n## 📝 Test Execution Plan\n\n\n\n**Estimated Time**: 30-60 minutes
-\n\n### Phase 1: Local Verification (10 min)\n\n\n\n1. Run `npm run verify:google`\n\n2. Check for credential errors\n\n3. Document what's missing
-\n\n### Phase 2: Backend Testing (15 min)\n\n\n\n1. Test health endpoint\n\n2. Test API endpoints\n\n3. Check Render logs\n\n4. Verify database connection
-\n\n### Phase 3: Gmail Integration (20 min)\n\n\n\n1. Send test email\n\n2. Monitor detection\n\n3. Check dashboard\n\n4. Test AI response
-\n\n### Phase 4: Documentation (15 min)\n\n\n\n1. Fill out test results template\n\n2. Take screenshots\n\n3. Document issues\n\n4. Plan fixes
-
----
-
-**Ready to Start Testing?** 🚀\n\n
-Let me know when you want to begin, and I'll guide you through each step!
+# 📧 Gmail Integration Testing Guide\n\n\n\n**Todo #3: Test Gmail Integration End-to-End**  **Date**: October 1, 2025  **Status**: In Progress---\n\n## 🎯 Test Objectives\n\n\n\nVerify that RenOS can:\n\n1. ✅ Connect to Gmail via Google API\n\n2. ✅ Detect new emails from customers\n\n3. ✅ Generate AI responses with Gemini\n\n4. ✅ Display emails in dashboard for approval\n\n5. ✅ Send approved responses back to customers---\n\n## 📋 Prerequisites Checklist\n\n\n\nBefore testing, ensure:\n\n### ✅ Deployment\n\n\n\n- [x] Backend deployed: <https://tekup-renos.onrender.com>\n\n- [x] Frontend deployed: <https://tekup-renos-1.onrender.com>\n\n- [x] Authentication disabled (ENABLE_AUTH=false)\n\n- [x] Database connected (Neon PostgreSQL)\n\n\n\n### ⏳ Google Credentials (To Verify)\n\n\n\n- [ ] GOOGLE_PROJECT_ID set in Render\n\n- [ ] GOOGLE_CLIENT_EMAIL set\n\n- [ ] GOOGLE_PRIVATE_KEY set (with \n for newlines)\n\n- [ ] GOOGLE_IMPERSONATED_USER set (e.g., <info@rendetalje.dk>)\n\n- [ ] GMAIL_CLIENT_ID set\n\n- [ ] GMAIL_CLIENT_SECRET set\n\n- [ ] GMAIL_REDIRECT_URI set\n\n\n\n### ⏳ Google Workspace Setup (To Verify)\n\n\n\n- [ ] Service account created in Google Cloud\n\n- [ ] Domain-wide delegation enabled\n\n- [ ] Scopes authorized in Google Workspace Admin:\n\n  - `https://www.googleapis.com/auth/gmail.modify`\n\n  - `https://www.googleapis.com/auth/calendar`\n\n---\n\n## 🧪 Test Plan\n\n\n\n### Test 1: Verify Google Setup ✅\n\n\n\n**Purpose**: Check if Google credentials are configured correctly**Method**: Run verification tool locally\n\n```powershell\n\n# From your project root\n\nnpm run verify:google\n\n```\n\n**Expected Output**:\n\n```🔍 Checking Environment Variables...✅ PASS - GOOGLE_PROJECT_ID: Set correctly\n\n✅ PASS - GOOGLE_CLIENT_EMAIL: Valid format\n\n✅ PASS - GOOGLE_PRIVATE_KEY: Valid format\n\n✅ PASS - GOOGLE_IMPERSONATED_USER: Set\n\n```**If you see errors**: This means credentials are missing or incorrect. We'll need to fix this in Todo #6 (Environment Variables).---\n\n### Test 2: Fetch Gmail Messages 📧\n\n\n\n**Purpose**: Verify RenOS can read emails from Gmail**Method A**: Via Dashboard (Recommended)\n\n1. Open: <https://tekup-renos-1.onrender.com>\n\n2. Navigate to **Leads** section\n\n3. Look for recent emails\n\n4. Check if emails are displayed**Method B**: Via API Endpoint\n\n```powershell\n\n# Test the API directly\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/dashboard/leads" -Method Get\n\n```\n\n**Expected Response**:\n\n```json{  "leads": [    {      "id": "...",      "name": "Customer Name",      "email": "customer@example.com",      "subject": "Request for quote",      "receivedAt": "2025-10-01T...",      "status": "new"    }  ]}\n\n```**Method C**: Run Data Fetcher Locally\n\n```powershell\n\n# Fetch last 10 Gmail messages\n\nnpm run data:gmail\n\n```\n\n**Expected Output**:\n\n```📧 Fetching Gmail messages...Found 10 messages:────────────────────────────────────────────────ID: 18d4f5a2b3c1d6e8From: <kunde@example.com>Subject: Tilbud på kontorrengøringDate: 2025-09-29T10:30:00ZSnippet: Hej, jeg vil gerne have et tilbud...────────────────────────────────────────────────\n\n```---\n\n### Test 3: Send Test Email to RenOS 📨\n\n\n\n**Purpose**: Create a real lead that RenOS should detect**Steps**:\n\n1. **Send an email** to `info@rendetalje.dk` from your personal email:\n\n\n\n```To: <info@rendetalje.dk>Subject: Testforespørgsel - Vinduespolering\n\nHej Rendetalje,Jeg vil gerne have et tilbud på vinduespolering til mit kontor.Adresse: Nørregade 10, 1165 København KStørrelse: Ca. 100 m²Tidspunkt: Helst i næste ugeVenlig hilsen,[Dit Navn][Din Email][Dit Telefon]\n\n```\n\n2. **Wait 2-3 minutes** for RenOS to detect the email\n\n\n\n3. **Check Dashboard** for the new lead:\n\n   - Go to: <https://tekup-renos-1.onrender.com>\n\n   - Navigate to "Leads" section\n\n   - Look for your test email\n\n\n\n4. **Check Backend Logs** in Render:\n\n   - Go to: <https://dashboard.render.com>\n\n   - Select: tekup-renos (backend)\n\n   - Click: Logs\n\n   - Look for: "New lead detected" or similar messages\n\n---\n\n### Test 4: AI Response Generation 🤖\n\n\n\n**Purpose**: Verify Gemini AI can generate appropriate responses**Method A**: Via Dashboard\n\n1. Open lead in dashboard\n\n2. Click "Generate Response" button\n\n3. Review AI-generated response\n\n4. Check if response is relevant and professional**Method B**: Via API\n\n```powershell\n\n# Test AI chat endpoint\n\n$body = @{\n\n    message = "Jeg vil gerne have et tilbud på vinduespolering"    sessionId = "test-session-123"} | ConvertTo-JsonInvoke-RestMethod -Uri "<https://tekup-renos.onrender.com/api/chat>" `    -Method Post `    -Body $body `    -ContentType "application/json"\n\n```**Expected Response**:\n\n```json{  "response": "Hej! Tak for din henvendelse om vinduespolering...",  "sessionId": "test-session-123"}\n\n```---\n\n### Test 5: Email Auto-Response 📤\n\n\n\n**Purpose**: Test full workflow from detection to response**Method**: Use lead monitoring tool\n\n```powershell\n\n# Check for new leads\n\nnpm run leads:check\n\n```\n\n**Expected Output**:\n\n```🔍 Checking for new Leadmail.no leads...✅ Found 1 new lead(s):────────────────────────────────────────────────📧 Lead ID: 18d4f5a2b3c1d6e8👤 Name: [Your Name]📍 Source: Direct Email🏠 Task Type: Vinduespolering✉️  Email: <your@email.com>⏰ Received: 01-10-2025 22:30:00────────────────────────────────────────────────\n\n```---\n\n### Test 6: Dashboard Workflow 🖥️\n\n\n\n**Purpose**: Test complete user workflow**Steps**:\n\n1. **Access Dashboard**- URL: <https://tekup-renos-1.onrender.com>\n\n   - Should load without authentication prompt\n\n\n\n2. **Check Overview**- Verify stats display (customers, leads, bookings)\n\n   - Check KPIs show data or zero values\n\n\n\n3. **View Leads Section**- Navigate to Leads\n\n   - Check if recent emails are listed\n\n   - Click on a lead to see details\n\n\n\n4. **Test AI Response**- Select a lead\n\n   - Click "Generate Response"\n\n   - Review AI-generated text\n\n   - Edit if needed\n\n\n\n5. **Send Response (Dry-Run)**- Click "Approve" or "Send"\n\n   - Check if action is logged\n\n   - Verify in RUN_MODE=dry-run, no actual email is sent\n\n---\n\n## 🐛 Troubleshooting\n\n\n\n### Issue 1: "No emails found"\n\n\n\n**Possible Causes**:\n\n- Gmail credentials not set\n\n- Domain-wide delegation not enabled\n\n- Wrong email being monitored\n\n- No emails in inbox\n\n**Solutions**:\n\n1. Run `npm run verify:google` to check credentials\n\n2. Verify GOOGLE_IMPERSONATED_USER matches your email\n\n3. Send a test email to trigger detection\n\n4. Check Render logs for authentication errors---\n\n### Issue 2: "Authentication Error"\n\n\n\n**Error Message**:\n\n```unauthorized_client: Client is unauthorized to retrieve access tokens\n\n```**Solution**:\n\n1. Check `TROUBLESHOOTING_AUTH.md` for detailed guide\n\n2. Verify domain-wide delegation is enabled\n\n3. Authorize scopes in Google Workspace Admin Console\n\n4. Ensure service account has correct permissions**Quick Fix Command**:\n\n```powershell\n\n# Verify your Google setup\n\nnpm run verify:google\n\n```\n\n---\n\n### Issue 3: "AI Response Not Generated"\n\n\n\n**Possible Causes**:\n\n- GEMINI_KEY not set or invalid\n\n- API quota exceeded\n\n- Network timeout\n\n**Solutions**:\n\n1. Check Render environment for GEMINI_KEY\n\n2. Verify key at: <https://makersuite.google.com/app/apikey>\n\n3. Check Render logs for error messages\n\n4. Try different prompt/message---\n\n### Issue 4: "Frontend Shows Empty Dashboard"\n\n\n\n**Possible Causes**:\n\n- No data in database yet\n\n- Backend not returning data\n\n- CORS issues\n\n- API endpoint not working\n\n**Solutions**:\n\n1. Check backend health: <https://tekup-renos.onrender.com/health>\n\n2. Test API directly: `/api/dashboard/stats`\n\n3. Check browser console for errors (F12)\n\n4. Verify CORS configuration in backend logs---\n\n### Issue 5: "GOOGLE_CALENDAR_ID Missing" Warning\n\n\n\n**Log Message**:\n\n```⚠️ GOOGLE_CALENDAR_ID missing - booking features may not work\n\n```**Impact**: Booking/calendar features won't work**Solution**: Will fix in Todo #6 (Environment Variables)**For Now**: Focus on email testing, bookings can wait---\n\n## ✅ Test Results Template\n\n\n\nUse this to document your test results:\n\n```markdown\n\n# Gmail Integration Test Results\n\nDate: [Date]\n\nTester: [Your Name]\n\n## Test 1: Google Setup Verification\n\nStatus: [ ] Pass [ ] Fail\n\nNotes:\n\n## Test 2: Fetch Gmail Messages\n\nStatus: [ ] Pass [ ] Fail\n\nMessages Found: [Number]Notes:\n\n## Test 3: Send Test Email\n\nStatus: [ ] Pass [ ] Fail\n\nEmail Detected: [ ] Yes [ ] NoTime to Detection: [Minutes]Notes:\n\n## Test 4: AI Response Generation\n\nStatus: [ ] Pass [ ] Fail\n\nResponse Quality: [ ] Good [ ] Needs WorkNotes:\n\n## Test 5: Email Auto-Response\n\nStatus: [ ] Pass [ ] Fail\n\nResponse Sent: [ ] Yes [ ] No (Dry-run)Notes:\n\n## Test 6: Dashboard Workflow\n\nStatus: [ ] Pass [ ] Fail\n\nUser Experience: [ ] Good [ ] Needs ImprovementNotes:\n\n## Overall Assessment\n\nGmail Integration: [ ] Working [ ] Needs Fixes\n\nReady for Production: [ ] Yes [ ] NoNext Steps:\n\n```---\n\n## 📊 Success Criteria\n\n\n\nFor Todo #3 to be complete, we need:\n\n- [x] Backend can connect to Gmail API\n\n- [ ] Can fetch recent messages successfully\n\n- [ ] New emails are detected and parsed\n\n- [ ] AI generates relevant responses\n\n- [ ] Dashboard displays emails correctly\n\n- [ ] End-to-end workflow functions (even in dry-run)\n\n---\n\n## 🎯 Next Steps After Testing\n\n\n\n### If Tests Pass ✅\n\n\n\n1. Mark Todo #3 as complete\n\n2. Move to Todo #5 (User Guide)\n\n3. Fix Todo #6 (Environment Variables)\n\n4. Consider switching to LIVE mode (RUN_MODE=production)\n\n### If Tests Fail ❌\n\n\n\n1. Document which tests failed\n\n2. Check error messages in Render logs\n\n3. Fix environment variables (Todo #6)\n\n4. Verify Google Workspace setup\n\n5. Re-run tests---\n\n## 🆘 Need Help?\n\n\n\n### Documentation\n\n\n\n- **Google Auth Setup**: `docs/TROUBLESHOOTING_AUTH.md`\n\n- **Data Fetching**: `docs/QUICKSTART_DATA_FETCHING.md`\n\n- **Gmail Service**: `src/services/gmailService.ts`\n\n- **Lead Monitor**: `src/services/leadMonitor.ts`\n\n\n\n### Tools Available\n\n\n\n```bash\n\nnpm run verify:google      # Verify Google credentials\n\nnpm run data:gmail         # Fetch Gmail messages\n\nnpm run leads:check        # Check for new leads\n\nnpm run leads:monitor      # Start monitoring (continuous)\n\n```\n\n\n\n### Support Resources\n\n\n\n- **Render Logs**: <https://dashboard.render.com> → tekup-renos → Logs\n\n- **Google Cloud Console**: <https://console.cloud.google.com>\n\n- **Google Workspace Admin**: <https://admin.google.com>\n\n---\n\n## 📝 Test Execution Plan\n\n\n\n**Estimated Time**: 30-60 minutes\n\n### Phase 1: Local Verification (10 min)\n\n\n\n1. Run `npm run verify:google`\n\n2. Check for credential errors\n\n3. Document what's missing\n\n### Phase 2: Backend Testing (15 min)\n\n\n\n1. Test health endpoint\n\n2. Test API endpoints\n\n3. Check Render logs\n\n4. Verify database connection\n\n### Phase 3: Gmail Integration (20 min)\n\n\n\n1. Send test email\n\n2. Monitor detection\n\n3. Check dashboard\n\n4. Test AI response\n\n### Phase 4: Documentation (15 min)\n\n\n\n1. Fill out test results template\n\n2. Take screenshots\n\n3. Document issues\n\n4. Plan fixes---**Ready to Start Testing?** 🚀\n\nLet me know when you want to begin, and I'll guide you through each step!

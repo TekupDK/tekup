@@ -9,7 +9,8 @@
 
 ### ✅ HAR DATABASE (Skal migreres/forbindes)
 
-#### 1. **TekupVault** 
+#### 1. **TekupVault**
+
 **Location:** `c:\Users\empir\TekupVault`  
 **Nuværende Database:** Supabase (twaoebtlusudzxshjral)  
 **Schema:** vault_documents, vault_embeddings, vault_sync_status  
@@ -20,7 +21,8 @@
 
 ---
 
-#### 2. **Tekup-Billy** 
+#### 2. **Tekup-Billy**
+
 **Location:** `c:\Users\empir\Tekup-Billy`  
 **Nuværende Database:** Supabase (oaevagdgrasfppbrxbey) - DELT med RenOS  
 **Schema:** billy_organizations, billy_cached_*, billy_audit_logs, billy_usage_metrics  
@@ -31,7 +33,8 @@
 
 ---
 
-#### 3. **Tekup Google AI (RenOS)** 
+#### 3. **Tekup Google AI (RenOS)**
+
 **Location:** `c:\Users\empir\Tekup Google AI`  
 **Nuværende Database:** Supabase (oaevagdgrasfppbrxbey) - DELT med Billy  
 **Schema:** 19 Prisma models (Lead, Customer, Booking, Invoice, etc.)  
@@ -42,7 +45,8 @@
 
 ---
 
-#### 4. **RendetaljeOS** 
+#### 4. **RendetaljeOS**
+
 **Location:** `c:\Users\empir\RendetaljeOS`  
 **Nuværende Database:** Supabase (oaevagdgrasfppbrxbey) - DELT med Billy & RenOS  
 **Schema:** 19 Prisma models (samme som Tekup Google AI - det er en duplicate!)  
@@ -54,30 +58,35 @@
 ---
 
 #### 5. **Tekup-org** (Monorepo med FLERE apps)
+
 **Location:** `c:\Users\empir\Tekup-org`  
 **Nuværende Database:** Multiple Prisma schemas i forskellige apps
 
 **Sub-apps med database:**
 
 **5a. tekup-crm-api**
+
 - Schema: 28+ Prisma models (multi-tenant CRM)
 - Migration Target: → `crm` schema
 - Priority: 🟡 MEDIUM
 - Status: Skal undersøges om i aktiv brug
 
 **5b. flow-api**
+
 - Schema: 12 Prisma models (workflow automation)
 - Migration Target: → `flow` schema
 - Priority: 🟡 MEDIUM
 - Status: Lead management system
 
 **5c. rendetalje-os-backend**
+
 - Schema: 17 Prisma models
 - Migration Target: → Måske merge med `renos`?
 - Priority: 🟢 LOW
 - Status: Overlap med RendetaljeOS?
 
 **5d. Andre apps** (tekup-unified-platform, essenza-pro, etc.)
+
 - Status: ⚠️ Skal audites for aktiv brug
 
 **Påvirkning:** Stor! Monorepo med mange apps der potentielt skal migreres
@@ -85,6 +94,7 @@
 ---
 
 #### 6. **Tekup-Cloud**
+
 **Location:** `c:\Users\empir\Tekup-Cloud`  
 **Nuværende Database:** Ukendt (skal undersøges)  
 **Schema:** Skal tjekkes  
@@ -97,6 +107,7 @@
 ### ❌ INGEN DATABASE (Ikke påvirket)
 
 #### 7. **tekup-ai-assistant**
+
 **Location:** `c:\Users\empir\tekup-ai-assistant`  
 **Database:** Ingen selvstændig database  
 **Påvirkning:** ❌ Ingen - bruger måske andre services' APIs
@@ -104,6 +115,7 @@
 ---
 
 #### 8. **tekup-cloud-dashboard**
+
 **Location:** `c:\Users\empir\tekup-cloud-dashboard`  
 **Database:** Muligvis deler med Supabase projekter  
 **Påvirkning:** ⚠️ Skal undersøges
@@ -111,6 +123,7 @@
 ---
 
 #### 9. **tekup-gmail-automation**
+
 **Location:** `c:\Users\empir\tekup-gmail-automation`  
 **Database:** Python-baseret, ingen persistent database  
 **Påvirkning:** ❌ Ingen
@@ -118,6 +131,7 @@
 ---
 
 #### 10. **Agent-Orchestrator**
+
 **Location:** `c:\Users\empir\Agent-Orchestrator`  
 **Database:** Ingen fundet  
 **Påvirkning:** ❌ Ingen
@@ -125,6 +139,7 @@
 ---
 
 #### 11. **Gmail-PDF-Forwarder**
+
 **Location:** `c:\Users\empir\Gmail-PDF-Forwarder`  
 **Database:** Ingen  
 **Påvirkning:** ❌ Ingen
@@ -132,6 +147,7 @@
 ---
 
 #### 12. **Gmail-PDF-Auto**
+
 **Location:** `c:\Users\empir\gmail-pdf-auto`  
 **Database:** Ingen  
 **Påvirkning:** ❌ Ingen
@@ -229,6 +245,7 @@
 ## 🔍 Kritiske Spørgsmål der Skal Besvares
 
 ### 1. **RendetaljeOS vs Tekup Google AI**
+
 ```
 ❓ Er disse to SAMME system med duplicate data?
 ❓ Eller separate deployments?
@@ -238,6 +255,7 @@ Action: Sammenlign data i Supabase projekt
 ```
 
 ### 2. **Tekup-org Apps**
+
 ```
 ❓ Hvilke apps i Tekup-org er i aktiv brug?
 ❓ tekup-crm-api - bruges den?
@@ -248,6 +266,7 @@ Action: Git log analysis + team interview
 ```
 
 ### 3. **Supabase Projekt Strategi**
+
 ```
 ❓ Skal vi merge TekupVault ind i oaevagdgrasfppbrxbey?
 ❓ Eller opret nyt centralt Supabase projekt?
@@ -261,6 +280,7 @@ Action: Beslut migration strategi
 ## 📊 Migration Effort Estimat
 
 ### **Definite Migrations (Core 4):**
+
 ```
 TekupVault:           2-3 timer
 Tekup-Billy:          2-3 timer
@@ -271,6 +291,7 @@ TOTAL:               10-14 timer
 ```
 
 ### **If Tekup-org Apps (Additional 3):**
+
 ```
 CRM API:              4-5 timer
 Flow API:             2-3 timer
@@ -280,6 +301,7 @@ ADDITIONAL:          8-11 timer
 ```
 
 ### **Grand Total:**
+
 ```
 Minimum (Core 4):    10-14 timer
 Maximum (All 7):     18-25 timer
@@ -290,6 +312,7 @@ Maximum (All 7):     18-25 timer
 ## 🎯 Anbefalet Tilgang
 
 ### **Phase 1: Quick Wins** (10-14 timer)
+
 1. ✅ Setup central database (Supabase eller Docker)
 2. ✅ Migrer TekupVault → vault schema
 3. ✅ Migrer Tekup-Billy → billy schema
@@ -297,11 +320,13 @@ Maximum (All 7):     18-25 timer
 5. ✅ Beslut RendetaljeOS strategi (merge eller separat)
 
 ### **Phase 2: Tekup-org Audit** (4-6 timer)
+
 1. 🔍 Audit hvilke apps er i aktiv brug
 2. 🔍 Identificer data duplicates
 3. 🔍 Beslut migration scope
 
 ### **Phase 3: Full Migration** (8-11 timer)
+
 1. ✅ Migrer aktive Tekup-org apps
 2. ✅ Cleanup unused apps
 3. ✅ Decommission gamle databases

@@ -9,9 +9,11 @@ This server enables AI assistants to safely query and analyze your Supabase data
 ## Tools
 
 ### 1. `query_database`
+
 Execute read-only SQL queries against Supabase.
 
 **Input:**
+
 - `query` (string, required): SELECT query to execute
 - `useAdmin` (boolean, optional): Use service role key to bypass RLS (default: false)
 
@@ -25,14 +27,17 @@ Execute read-only SQL queries against Supabase.
 **Safety:** Only SELECT queries allowed. INSERT, UPDATE, DELETE automatically rejected.
 
 ### 2. `get_schema`
+
 Get complete database schema including all tables and columns.
 
 **Returns:** Full schema with table structures, column types, and row counts.
 
 ### 3. `get_table_info`
+
 Get detailed information about a specific table.
 
 **Input:**
+
 - `tableName` (string, required): Name of table to inspect
 
 **Example:**
@@ -45,14 +50,17 @@ Get detailed information about a specific table.
 **Returns:** Columns, types, row count, and sample data (first 5 rows).
 
 ### 4. `list_tables`
+
 List all tables in the public schema.
 
 **Returns:** Array of table names.
 
 ### 5. `analyze_query_performance`
+
 Analyze query execution plan and performance.
 
 **Input:**
+
 - `query` (string, required): Query to analyze
 
 **Example:**
@@ -67,10 +75,12 @@ Analyze query execution plan and performance.
 ## Environment Variables
 
 ### Required
+
 - `SUPABASE_URL`: Your Supabase project URL
 - `SUPABASE_ANON_KEY`: Supabase anon/public key (respects RLS)
 
 ### Optional
+
 - `SUPABASE_SERVICE_ROLE_KEY`: Service role key for admin queries (bypasses RLS)
 
 ## Security Features
@@ -104,30 +114,35 @@ Add to your MCP client configuration:
 ## Use Cases
 
 ### 1. Database Exploration
+
 "Show me all tables in the database"
 ```typescript
 list_tables()
 ```
 
 ### 2. Schema Analysis
+
 "What's the structure of the users table?"
 ```typescript
 get_table_info({ tableName: "users" })
 ```
 
 ### 3. Data Queries
+
 "Find all active subscriptions"
 ```typescript
 query_database({ query: "SELECT * FROM subscriptions WHERE status = 'active'" })
 ```
 
 ### 4. Performance Debugging
+
 "Why is this query slow?"
 ```typescript
 analyze_query_performance({ query: "SELECT * FROM orders WHERE date > '2025-01-01'" })
 ```
 
 ### 5. Admin Queries
+
 "Get all users (bypassing RLS)"
 ```typescript
 query_database({ query: "SELECT * FROM users", useAdmin: true })

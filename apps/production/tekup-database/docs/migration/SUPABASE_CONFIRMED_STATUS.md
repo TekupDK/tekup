@@ -8,6 +8,7 @@
 ## 🎯 BEKRÆFTET: 2 Supabase Projekter
 
 ### **Projekt 1: RenOS By Tekup**
+
 ```
 Name: RenOS By Tekup
 Region: AWS eu-central-1 (Frankfurt, Germany)
@@ -17,6 +18,7 @@ URL: https://oaevagdgrasfppbrxbey.supabase.co
 ```
 
 **Bruges af:**
+
 - ✅ Tekup-Billy (billy_* tabeller)
 - ✅ Tekup Google AI (RenOS - 19 models)
 - ✅ RendetaljeOS (duplicate af Google AI?)
@@ -26,6 +28,7 @@ URL: https://oaevagdgrasfppbrxbey.supabase.co
 ---
 
 ### **Projekt 2: TekupVault**
+
 ```
 Name: TekupVault
 Region: AWS eu-west-3 (Paris, France)
@@ -35,9 +38,11 @@ URL: https://twaoebtlusudzxshjral.supabase.co
 ```
 
 **Bruges af:**
+
 - ✅ TekupVault (vault-api + vault-worker)
 
 **Tabeller:** 3
+
 - vault_documents
 - vault_embeddings (pgvector)
 - vault_sync_status
@@ -49,6 +54,7 @@ URL: https://twaoebtlusudzxshjral.supabase.co
 ### **Option A: Merge TekupVault → RenOS Projekt** ⭐ ANBEFALET
 
 **Hvorfor:**
+
 - RenOS projekt er i Frankfurt (tættere på Danmark)
 - Allerede delt mellem 3 apps
 - Større capacity allerede i brug
@@ -89,6 +95,7 @@ Cost: FREE (nano tier)
 ### **Option B: Opret Nyt "Tekup Central" Projekt**
 
 **Hvorfor:**
+
 - Clean slate
 - Proper multi-schema design fra start
 - Følger tekup-database schema structure
@@ -135,6 +142,7 @@ Cost: FREE → $25/mo (når vi scaler)
 ## 💰 Cost Analysis
 
 ### **Current (2 projekter):**
+
 ```
 RenOS: nano tier = FREE
 TekupVault: nano tier = FREE
@@ -143,6 +151,7 @@ Total: $0/mdr
 ```
 
 ### **After Merge (1 projekt):**
+
 ```
 RenOS (merged): nano tier = FREE
 eller
@@ -161,6 +170,7 @@ Pro tier: $25/mdr
 ## 🚀 Migration Plan - Detaljeret
 
 ### **STEP 1: Backup Alt** (30 min)
+
 ```bash
 # Backup RenOS projekt
 supabase db dump --db-url="postgresql://postgres:...@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres" > renos-backup.sql
@@ -172,6 +182,7 @@ supabase db dump --db-url="postgresql://postgres:...@db.twaoebtlusudzxshjral.sup
 ---
 
 ### **STEP 2: Opret Vault Tabeller i RenOS** (1 time)
+
 ```bash
 # Connect til RenOS projekt
 psql "postgresql://postgres:Habibie12%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres"
@@ -239,6 +250,7 @@ CREATE INDEX idx_vault_sync_status_updated_at ON vault_sync_status(updated_at DE
 ---
 
 ### **STEP 3: Migrer Data** (1 time)
+
 ```bash
 # Option A: Direct copy (hurtigst)
 pg_dump "postgresql://postgres:...@db.twaoebtlusudzxshjral.supabase.co:5432/postgres" \
@@ -253,6 +265,7 @@ pg_dump "postgresql://postgres:...@db.twaoebtlusudzxshjral.supabase.co:5432/post
 ---
 
 ### **STEP 4: Update TekupVault App** (30 min)
+
 ```typescript
 // apps/vault-api/.env
 // OLD:
@@ -269,6 +282,7 @@ DATABASE_URL=postgresql://postgres.oaevagdgrasfppbrxbey:Habibie12%40@db.oaevagdg
 ---
 
 ### **STEP 5: Test Everything** (30 min)
+
 ```bash
 # Test TekupVault
 cd c:/Users/empir/TekupVault
@@ -284,6 +298,7 @@ psql "..." -c "SELECT COUNT(*) FROM vault_documents;"
 ---
 
 ### **STEP 6: Cutover & Cleanup** (15 min)
+
 ```bash
 # Deploy updated TekupVault to production
 git commit -am "feat: migrate to consolidated RenOS Supabase project"
@@ -301,12 +316,14 @@ git push
 ## ✅ Post-Migration Status
 
 ### **Før:**
+
 ```
 Projekt 1: TekupVault (Paris) - 3 tabeller
 Projekt 2: RenOS (Frankfurt) - 25 tabeller
 ```
 
 ### **Efter:**
+
 ```
 Projekt: RenOS By Tekup (Frankfurt) - 28 tabeller
 ├── Vault: vault_documents, vault_embeddings, vault_sync_status
@@ -319,16 +336,19 @@ Projekt: RenOS By Tekup (Frankfurt) - 28 tabeller
 ## 🎯 Næste Skridt - Dit Valg
 
 ### **A) Start Migration Nu** (2-3 timer total)
+
 - Jeg guider dig step-by-step
 - Minimal downtime
 - Klar til at starte
 
 ### **B) Planlæg Migration** (beslut senere)
+
 - Lav detaljeret timeline
 - Koordiner med team
 - Schedule maintenance window
 
 ### **C) Behold Som Nu** (0 timer)
+
 - 2 projekter virker fint
 - Ingen akut behov
 

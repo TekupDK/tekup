@@ -32,12 +32,14 @@
 ### Eksisterende Analyse (DATABASE_CONSOLIDATION_ANALYSE.md)
 
 **Identificeret:**
+
 - ✅ **TekupVault** - Allerede på Supabase
 - ✅ **Tekup-Billy** - Allerede på Supabase  
 - 🔄 **5 Prisma + PostgreSQL** implementationer (skal konsolideres)
 - 🔄 Diverse lokale database-løsninger
 
 **Vores Status:**
+
 - ✅ tekup-database repo oprettet med 6 schemas
 - ✅ 64 models defineret (vault, billy, renos, crm, flow, shared)
 - ⚠️ Kun 3/6 schemas deployed (vault: 3 tables, billy: 8 tables, shared: 2 tables)
@@ -48,6 +50,7 @@
 ## 🎯 Prioriteret Opgaveliste
 
 ### Phase 1: Deploy Pending Schemas ⚡ (HØJESTE PRIORITET)
+
 - [ ] Deploy renos schema (22 tabeller)
 - [ ] Deploy crm schema (18 tabeller)
 - [ ] Deploy flow schema (11 tabeller)
@@ -55,6 +58,7 @@
 - [ ] Test connections til alle schemas
 
 ### Phase 2: Repository Integration 🔗
+
 - [ ] TekupVault - Opdater connection til tekup-database
 - [ ] Tekup-Billy - Opdater connection til tekup-database
 - [ ] Tekup Google AI / RenOS - Migrer til renos schema
@@ -62,6 +66,7 @@
 - [ ] Flow API - Migrer til flow schema
 
 ### Phase 3: Documentation & Cleanup 📚
+
 - [ ] Opdater alle repo READMEs med nye database URLs
 - [ ] Opdater migration guides
 - [ ] Test alle connections
@@ -72,11 +77,13 @@
 ## 🚀 Session Progress
 
 ### Timer 1: Discovery
+
 - ✅ Surveyed repository status
 - ✅ Identified database consolidation analysis
 - 🔄 Reading existing documentation
 
 ### Timer 2-10: TBD
+
 _Autonomous work will continue here..._
 
 ---

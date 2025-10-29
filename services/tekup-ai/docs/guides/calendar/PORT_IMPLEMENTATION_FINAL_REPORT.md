@@ -63,6 +63,7 @@ PORT MAPPING:
   Nginx HTTPS:   443  (env: NGINX_HTTPS_PORT)
 
 CONFIGURATION METHODS:
+
   1. .env.ports file         - Recommended
   2. Environment variables   - Direct  
   3. docker-compose override - Professional
@@ -73,12 +74,14 @@ CONFIGURATION METHODS:
 â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 BEFORE STARTUP:
+
   1. npm run check:ports
      â†’ Scans all 6 ports
      â†’ Reports availability
      â†’ Suggests alternatives if conflicts found
 
 DURING STARTUP:
+
   1. Reads environment variables (MCP_PORT, etc.)
   2. Falls back to defaults if not set
   3. Passes to Docker Compose
@@ -113,7 +116,9 @@ QUICK START:
 
 CUSTOM PORTS:
   cp .env.ports.example .env.ports
-  # Edit .env.ports with your ports
+
+# Edit .env.ports with your ports
+
   docker-compose --env-file .env.ports up
 
 ENVIRONMENT VARIABLES:

@@ -71,6 +71,7 @@ https://claude.ai/share/ae42cf6f-0409-4ff7-a1c1-1d78e3fb0d6a
 ```
 
 **Parametre:**
+
 - `url` (påkrævet): URL'en der skal hentes
 - `wait_for` (valgfri): CSS selector at vente på før scraping
 
@@ -85,7 +86,7 @@ Brug fetch_url_simple værktøjet til at hente: https://example.com
 
 ## 🧪 Verificér installation
 
-### Test MCP-serveren direkte:
+### Test MCP-serveren direkte
 
 ```powershell
 python scripts/test_mcp_scraper.py
@@ -98,7 +99,7 @@ Du skulle se:
 🎉 Alle tests bestået!
 ```
 
-### Test i Cursor (efter genstart):
+### Test i Cursor (efter genstart)
 
 Åbn en ny chat og spørg:
 ```
@@ -129,6 +130,7 @@ Hent indholdet fra https://example.com og giv mig en opsummering.
 ### Problem: MCP-server vises ikke i Cursor
 
 **Løsning:**
+
 1. Bekræft at Python er i PATH: `python --version`
 2. Kontroller den fulde sti er korrekt i konfigurationen
 3. Genstart Cursor fuldstændigt
@@ -137,6 +139,7 @@ Hent indholdet fra https://example.com og giv mig en opsummering.
 ### Problem: Playwright timeout fejl
 
 **Løsning:**
+
 1. Kontroller internetforbindelse
 2. Nogle sider tager længere tid - timeout kan øges i `mcp_web_scraper.py`
 3. Prøv `fetch_url_simple` som alternativ for statiske sider
@@ -144,6 +147,7 @@ Hent indholdet fra https://example.com og giv mig en opsummering.
 ### Problem: UnicodeEncodeError
 
 **Løsning:**
+
 - Dette er allerede fikset i test-scriptet
 - Hvis det sker i MCP-serveren, lad mig vide
 

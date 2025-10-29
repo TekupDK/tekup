@@ -8,12 +8,15 @@
 ## 🎯 Mission: Fjern Supabase, brug kun Prisma ORM
 
 ### Problem Identificeret
+
 Backend havde 71→83 TypeScript compilation errors pga. blandede dependencies:
+
 - SupabaseModule importeret men ikke brugt
 - 16+ services brugte Supabase queries
 - PrismaService eksisterede men var ikke korrekt integreret
 
 ### Beslutning: Complete Supabase Removal
+
 Efter grundig dokumentationsanalyse bekræftede vi at Rendetalje backend **kun skal bruge Prisma**.  
 SupabaseModule var legacy code fra tidligere udvikling.
 
@@ -24,11 +27,13 @@ SupabaseModule var legacy code fra tidligere udvikling.
 ### Ændringer Implementeret
 
 #### 1. SupabaseModule Fjernet Komplet
+
 - **Deleted:** `src/supabase/` directory (hele modulet)
 - **Deleted:** `auth/guards/supabase-auth.guard.ts`
 - **Deleted:** `auth/strategies/supabase.strategy.ts`
 
 #### 2. Prisma Integration Opdateret
+
 **Før:**
 ```typescript
 import { PrismaClient } from '@tekup/database'; // Forsøgte at bruge shared package
@@ -39,7 +44,8 @@ import { PrismaClient } from '@tekup/database'; // Forsøgte at bruge shared pac
 import { PrismaClient } from '@prisma/client'; // Direkte fra @prisma/client
 ```
 
-**Rationale:** 
+**Rationale:**
+
 - @tekup/database's pre-instantiated client var for kompleks at integrere
 - Backend genererer nu sin egen Prisma Client fra kopieret schema
 
@@ -56,6 +62,7 @@ npx prisma generate
 ```
 
 #### 3. PrismaService Konfiguration
+
 ```typescript
 // src/database/prisma.service.ts
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
@@ -77,6 +84,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 #### 4. Moduler Disabled (Kræver Prisma Conversion)
 
 **Filer Renamed til .bak (16 services):**
+
 - `auth/auth.service.ts.bak` - Supabase Auth
 - `jobs/jobs.service.ts.bak` - 100+ Supabase queries
 - `team/team.service.ts.bak` - 50+ Supabase queries
@@ -107,10 +115,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 ```
 
 **Directory Renamed:**
+
 - `src/customers/` → `src/customers.bak/` (35+ field name errors med ny Prisma schema)
 - `src/common/services/base.service.ts` → `.bak` (brugte disabled accessors)
 
 #### 5. Build Configuration
+
 ```json
 // tsconfig.json - exclude .bak files
 {
@@ -125,6 +135,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 ```
 
 #### 6. Main.ts Fix
+
 ```typescript
 // Changed from default import to namespace import
 import * as compression from 'compression'; // Fixed TypeError
@@ -132,15 +143,17 @@ import * as compression from 'compression'; // Fixed TypeError
 
 ---
 
-## 🚀 Resultat: Backend Kører!
+## 🚀 Resultat: Backend Kører
 
 ### Build Output
+
 ```
 ✅ BUILD SUCCESS
 0 TypeScript errors (ned fra 83 errors!)
 ```
 
 ### Runtime Output
+
 ```
 [Nest] Starting Nest application...
 [InstanceLoader] DatabaseModule dependencies initialized +13ms
@@ -151,6 +164,7 @@ prisma:info Starting a postgresql pool with 25 connections.
 ```
 
 ### Endpoints Tilgængelige
+
 - `http://localhost:3000/api/v1/health` - Basic health check
 - `http://localhost:3000/api/v1/health/db` - Database health check
 - `http://localhost:3000/docs` - Swagger (disabled indtil moduler er re-enabled)
@@ -178,11 +192,14 @@ prisma:info Starting a postgresql pool with 25 connections.
 ### Prioriteret Rækkefølge
 
 #### 1. CustomersModule (Highest Priority)
+
 **Problem:** Field name mismatches mellem old API og ny Prisma schema
+
 - Old: `customer_id`, `created_at`, `organization_id` (snake_case)
 - New: `customerId`, `createdAt` (camelCase, ingen organization_id)
 
 **Tasks:**
+
 - [ ] Map all field names: snake_case → camelCase
 - [ ] Remove `organization_id` references (not in new schema)
 - [ ] Fix relation names: `jobs` → `leads`, etc.
@@ -192,12 +209,15 @@ prisma:info Starting a postgresql pool with 25 connections.
 **Estimate:** 2-3 hours
 
 #### 2. JobsModule (→ LeadsModule)
+
 **Problem:** 100+ Supabase queries need conversion
+
 - `.from('jobs')` → `prisma.renosLead.findMany()`
 - Complex queries med joins
 - File uploads (Supabase Storage → local/S3?)
 
 **Tasks:**
+
 - [ ] Rename module: Jobs → Leads (reflect schema change)
 - [ ] Convert all 100+ Supabase queries to Prisma
 - [ ] Update file upload strategy
@@ -207,8 +227,10 @@ prisma:info Starting a postgresql pool with 25 connections.
 **Estimate:** 4-6 hours
 
 #### 3. AuthModule
+
 **Problem:** Brugte Supabase Auth
 **Tasks:**
+
 - [ ] Implement JWT strategy med Prisma User lookup
 - [ ] Password hashing (bcrypt already installed)
 - [ ] Session management
@@ -217,7 +239,9 @@ prisma:info Starting a postgresql pool with 25 connections.
 **Estimate:** 3-4 hours
 
 #### 4. TeamModule
+
 **Tasks:**
+
 - [ ] Convert 50+ Supabase queries
 - [ ] Team member CRUD
 - [ ] Role management
@@ -225,6 +249,7 @@ prisma:info Starting a postgresql pool with 25 connections.
 **Estimate:** 2-3 hours
 
 #### 5. Remaining Modules (Lower Priority)
+
 - TimeTrackingModule - 2h
 - GDPRModule - 1h
 - QualityModule (3 services) - 3h
@@ -239,6 +264,7 @@ prisma:info Starting a postgresql pool with 25 connections.
 ## 🛠️ Development Workflow Established
 
 ### Start Backend
+
 ```bash
 cd backend-nestjs
 npm run build
@@ -246,6 +272,7 @@ node dist/main.js
 ```
 
 ### Add New Module Back
+
 1. Restore `.bak` file
 2. Convert Supabase → Prisma queries
 3. Update imports
@@ -254,6 +281,7 @@ node dist/main.js
 6. Test runtime: `node dist/main.js`
 
 ### Prisma Schema Updates
+
 ```bash
 # If schema changes in tekup-database:
 cp ../../../production/tekup-database/prisma/schema.prisma prisma/schema.prisma

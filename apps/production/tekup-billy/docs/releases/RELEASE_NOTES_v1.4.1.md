@@ -1,4 +1,4 @@
-# 🚀 Release Notes v1.4.1
+﻿# 🚀 Release Notes v1.4.1
 
 **Release Date:** October 20, 2025  
 **Status:** Production Deployed ✅  
@@ -463,7 +463,7 @@ npm install @tekup/billy-mcp@1.4.1
 ### Docker Image
 
 ```bash
-docker pull ghcr.io/jonasabde/tekup-billy:1.4.1
+docker pull ghcr.io/TekupDK/tekup-billy:1.4.1
 ```
 
 ### Render.com (Auto-Deploy)
@@ -479,7 +479,7 @@ git push origin main
 ## 📞 Support
 
 **Documentation:** `docs/operations/`  
-**Issues:** GitHub Issues (JonasAbde/Tekup-Billy)  
+**Issues:** GitHub Issues (TekupDK/Tekup-Billy)  
 **Health Status:** `https://tekup-billy.onrender.com/health`  
 **Logs:** `https://dashboard.render.com` (requires login)
 

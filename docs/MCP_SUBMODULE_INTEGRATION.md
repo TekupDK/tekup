@@ -14,51 +14,51 @@ The `tekup-mcp-servers` repository is located at `Tekup/tekup-mcp-servers`. When
 
 ## Initializing and Updating the Submodule
 
-### First-time setup (after cloning the main monorepo):
+### First-time setup (after cloning the main monorepo)
 
-1.  **Clone the main `Tekup` monorepo:**
+1. **Clone the main `Tekup` monorepo:**
     ```bash
     git clone [URL_OF_TEKUP_MONOREPO]
     cd Tekup
     ```
-2.  **Initialize and update submodules:**
+2. **Initialize and update submodules:**
     ```bash
     git submodule update --init --recursive
     ```
     This command will clone the `tekup-mcp-servers` repository into the `Tekup/tekup-mcp-servers` directory.
 
-### Updating the submodule to the latest commit from its remote:
+### Updating the submodule to the latest commit from its remote
 
 If there are new changes in the `tekup-mcp-servers` remote repository that you want to pull into your local monorepo:
 
-1.  **Navigate into the submodule directory:**
+1. **Navigate into the submodule directory:**
     ```bash
     cd Tekup/tekup-mcp-servers
     ```
-2.  **Pull the latest changes:**
+2. **Pull the latest changes:**
     ```bash
     git pull origin main # Or the relevant branch name
     ```
-3.  **Navigate back to the main monorepo root:**
+3. **Navigate back to the main monorepo root:**
     ```bash
     cd ../..
     ```
-4.  **Commit the submodule update in the main monorepo:**
+4. **Commit the submodule update in the main monorepo:**
     ```bash
     git add Tekup/tekup-mcp-servers
     git commit -m "Update tekup-mcp-servers submodule to latest"
     ```
     This commits the new reference to the submodule's commit in the main monorepo's history.
 
-### Updating the main monorepo to a specific submodule commit:
+### Updating the main monorepo to a specific submodule commit
 
 If someone else has updated the submodule reference in the main monorepo and you pull those changes:
 
-1.  **Pull changes in the main monorepo:**
+1. **Pull changes in the main monorepo:**
     ```bash
     git pull origin main # Or the relevant branch name
     ```
-2.  **Update the submodule to the commit referenced by the main monorepo:**
+2. **Update the submodule to the commit referenced by the main monorepo:**
     ```bash
     git submodule update --remote
     ```

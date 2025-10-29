@@ -437,7 +437,7 @@ GRANT ALL ON ALL SEQUENCES IN SCHEMA vault TO tekup;
 
 ## Getting Help
 
-### Before asking for help:
+### Before asking for help
 
 1. ✅ Run health check: `pnpm db:health`
 2. ✅ Check Docker: `docker ps`
@@ -450,7 +450,7 @@ GRANT ALL ON ALL SEQUENCES IN SCHEMA vault TO tekup;
    pnpm db:push
    ```
 
-### Collect debug information:
+### Collect debug information
 
 ```bash
 # System info
@@ -470,7 +470,7 @@ pnpm db:health
 
 ### Contact
 
-- Check GitHub Issues: https://github.com/TekupDK/tekup/issues
+- Check GitHub Issues: <https://github.com/TekupDK/tekup/issues>
 - Review documentation: README.md, MIGRATION_GUIDE.md
 - Create new issue with debug info above
 

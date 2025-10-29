@@ -9,8 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrganizationEntity = exports.BaseEntity = void 0;
+exports.OrganizationEntity = exports.BaseEntity = exports.ApiPropertyOptional = exports.ApiProperty = void 0;
 const swagger_1 = require("@nestjs/swagger");
+Object.defineProperty(exports, "ApiProperty", { enumerable: true, get: function () { return swagger_1.ApiProperty; } });
+Object.defineProperty(exports, "ApiPropertyOptional", { enumerable: true, get: function () { return swagger_1.ApiPropertyOptional; } });
 class BaseEntity {
 }
 exports.BaseEntity = BaseEntity;

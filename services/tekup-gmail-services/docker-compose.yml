@@ -68,5 +68,10 @@ services:
 
 networks:
   tekup-gmail-network:
+    name: tekup-gmail-network
     driver: bridge
+    internal: false
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
 

@@ -11,6 +11,7 @@
 ## ✅ Hvad Er Færdigt (75%)
 
 ### Backend Infrastructure ✅
+
 - Express server med trust proxy fix
 - Rate limiting og security headers
 - CORS konfiguration
@@ -18,12 +19,14 @@
 - Health endpoint: `{"status":"ok","timestamp":"2025-10-05T09:06:16.124Z"}`
 
 ### Database ✅
+
 - PostgreSQL (Neon) forbindelse
 - Alle tabeller oprettet og fungerer
 - Customer, EmailThread, EmailMessage tabeller har data
 - Prisma ORM setup og fungerer
 
 ### Email Ingest System ✅
+
 - **Status:** Kørt succesfuldt
 - **Data:** 1,898 email tråde indlæst
 - **Matched:** 0 tråde (PROBLEM!)
@@ -31,6 +34,7 @@
 - **Errors:** 0
 
 ### Customer 360 UI ✅
+
 - React komponent færdig (`Customer360.tsx`)
 - Søgefunktion
 - Customer liste med stats
@@ -39,6 +43,7 @@
 - Responsive design
 
 ### API Endpoints ✅
+
 - `/api/dashboard/customers` - Virker (5 kunder fundet)
 - `/api/dashboard/customers/:id/threads` - Virker (men returnerer tom)
 - `/api/dashboard/threads/unmatched` - Virker (1,894 tråde)
@@ -55,6 +60,7 @@
 **Impact:** Customer 360 viser ingen email tråde for kunder  
 
 **Detaljer:**
+
 - 1,898 email tråde er indlæst
 - 0 tråde er matchet til kunder
 - 1,894 tråde er unmatched
@@ -69,6 +75,7 @@ Threads: [] (tom array)
 ### 🟡 VIGTIGT: UI Forbedringer
 
 **Mangler:**
+
 - Loading states for bedre UX
 - Error handling i UI
 - Empty state messages
@@ -84,6 +91,7 @@ Threads: [] (tom array)
 **Problem:** `matchThreadToCustomer` funktion virker ikke
 
 **Debug Steps:**
+
 1. Check email format i database
 2. Check participant emails i threads
 3. Test matching logik
@@ -113,6 +121,7 @@ POST /api/dashboard/threads/:id/link-customer
 ### Step 3: Verify Customer 360 (5 min)
 
 **Test:**
+
 1. Åbn Customer 360 UI
 2. Vælg kunde
 3. Verificer email tråde vises
@@ -123,6 +132,7 @@ POST /api/dashboard/threads/:id/link-customer
 ## 📊 Nuværende Data Status
 
 ### Customers (5 fundet)
+
 ```json
 [
   {
@@ -146,6 +156,7 @@ POST /api/dashboard/threads/:id/link-customer
 ```
 
 ### Email Threads (1,898 total)
+
 ```json
 {
   "totalThreads": 1898,
@@ -158,6 +169,7 @@ POST /api/dashboard/threads/:id/link-customer
 ```
 
 ### Unmatched Threads Eksempel
+
 ```json
 {
   "id": "cmgdh9z4h01glfy10einn98fs",
@@ -174,16 +186,19 @@ POST /api/dashboard/threads/:id/link-customer
 ## 🚨 Identificerede Problemer
 
 ### Problem 1: Empty Participants Array
+
 **Issue:** `participants: []` i alle tråde  
 **Cause:** Gmail API returnerer ikke participants korrekt  
 **Fix:** Debug Gmail API response og extract participants
 
 ### Problem 2: Email Format Mismatch
+
 **Issue:** Customer emails vs thread participants ikke matcher  
 **Cause:** Forskellige email formater eller encoding  
 **Fix:** Normalize email addresses før matching
 
 ### Problem 3: Matching Logic
+
 **Issue:** `matchThreadToCustomer` funktion virker ikke  
 **Cause:** Logic fejl eller database query problemer  
 **Fix:** Debug og fix matching algoritme
@@ -192,7 +207,7 @@ POST /api/dashboard/threads/:id/link-customer
 
 ## 🎯 Næste Konkrete Handling
 
-### NU (Næste 20 minutter):
+### NU (Næste 20 minutter)
 
 1. **Debug Email Matching (10 min)**
    ```bash
@@ -215,7 +230,8 @@ POST /api/dashboard/threads/:id/link-customer
    # Test automatic matching
    ```
 
-### Resultat Efter Fix:
+### Resultat Efter Fix
+
 - ✅ Customer 360 viser email tråde
 - ✅ Reply funktionalitet virker
 - ✅ 95% Customer 360 functionality
@@ -226,6 +242,7 @@ POST /api/dashboard/threads/:id/link-customer
 ## 📈 Success Metrics
 
 ### Current State
+
 ```
 Backend:        ████████████████████ 100%
 Database:       ████████████████████ 100%
@@ -236,6 +253,7 @@ Overall:        ████████████████░░░░ 75%
 ```
 
 ### After Fix (Expected)
+
 ```
 Email Matching: ████████████████████ 100%
 Customer 360:   ████████████████████ 95%
@@ -247,6 +265,7 @@ Overall:        ████████████████████ 95%
 ## 🔍 Technical Details
 
 ### Email Matching Algorithm
+
 ```typescript
 // Current logic (not working)
 for (const participant of thread.participants) {
@@ -258,6 +277,7 @@ for (const participant of thread.participants) {
 ```
 
 ### Gmail API Response
+
 ```typescript
 // Expected participants format
 participants: ["customer@email.com", "info@rendetalje.dk"]
@@ -265,6 +285,7 @@ participants: ["customer@email.com", "info@rendetalje.dk"]
 ```
 
 ### Database Schema
+
 ```sql
 -- EmailThread table
 CREATE TABLE "EmailThread" (

@@ -11,6 +11,7 @@
 Qwen 2.5 Coder 14B er succesfuldt downloadet, installeret og testet med **fremragende resultater** (58/60 points, 97%). Modellen er nu **production-ready** og klar til at drive Billy.dk MCP implementation.
 
 ### Key Findings
+
 - ✅ **Code Quality:** 10/10 - Production-ready kode
 - ✅ **Debugging:** 10/10 - Instant og accurate
 - ✅ **Documentation:** 10/10 - Professional level
@@ -25,6 +26,7 @@ Qwen 2.5 Coder 14B er succesfuldt downloadet, installeret og testet med **fremra
 ### Immediat (I Dag - 1-2 timer)
 
 #### 1. Test Open WebUI med Qwen ⏰ 30 min
+
 ```powershell
 # Start Open WebUI
 .\scripts\manage-docker.ps1 start
@@ -35,18 +37,21 @@ Qwen 2.5 Coder 14B er succesfuldt downloadet, installeret og testet med **fremra
 ```
 
 **Success Criteria:**
+
 - ✅ Chat interface connects to Ollama
 - ✅ Kan vælge Qwen model
 - ✅ Response quality matches CLI tests
 - ✅ Multi-turn conversations work
 
 #### 2. Generate Billy.dk MCP Server Skeleton ⏰ 30 min
+
 ```powershell
 # Brug Qwen til at generate initial code
 ollama run qwen2.5-coder:14b "Create a Python MCP server for Billy.dk invoice API integration. Include endpoints for: create invoice, list invoices, get invoice by ID. Use FastAPI, include type hints, error handling, and authentication."
 ```
 
 **Forventet Output:**
+
 - Complete FastAPI server structure
 - Authentication middleware
 - Error handling
@@ -54,6 +59,7 @@ ollama run qwen2.5-coder:14b "Create a Python MCP server for Billy.dk invoice AP
 - Ready for customization
 
 #### 3. Review og Save Generated Code ⏰ 30 min
+
 - Review Qwen's generated code
 - Save til `mcp-servers/billy/`
 - Test basic structure
@@ -64,6 +70,7 @@ ollama run qwen2.5-coder:14b "Create a Python MCP server for Billy.dk invoice AP
 ### Denne Uge (3-5 timer)
 
 #### Day 1: Billy.dk MCP Server Foundation
+
 - [ ] Setup project structure (`mcp-servers/billy/`)
 - [ ] Create `requirements.txt` med dependencies
 - [ ] Implement basic FastAPI server
@@ -71,6 +78,7 @@ ollama run qwen2.5-coder:14b "Create a Python MCP server for Billy.dk invoice AP
 - [ ] Test connection til Billy.dk API
 
 #### Day 2: Core MCP Tools Implementation
+
 - [ ] Implement `create_invoice` tool
 - [ ] Implement `list_invoices` tool
 - [ ] Implement `get_invoice` tool
@@ -78,6 +86,7 @@ ollama run qwen2.5-coder:14b "Create a Python MCP server for Billy.dk invoice AP
 - [ ] Write unit tests
 
 #### Day 3: Integration & Testing
+
 - [ ] Connect MCP server til Open WebUI
 - [ ] Test invoice creation via chat
 - [ ] Test error scenarios
@@ -89,6 +98,7 @@ ollama run qwen2.5-coder:14b "Create a Python MCP server for Billy.dk invoice AP
 ### Næste Uge (5-8 timer)
 
 #### Week 2: RenOS Integration
+
 - [ ] Create RenOS MCP server
 - [ ] Implement booking tools
 - [ ] Calendar sync
@@ -96,6 +106,7 @@ ollama run qwen2.5-coder:14b "Create a Python MCP server for Billy.dk invoice AP
 - [ ] End-to-end testing
 
 #### Week 2: Documentation & Deployment
+
 - [ ] Complete API documentation
 - [ ] Create user guides
 - [ ] Setup monitoring
@@ -150,6 +161,7 @@ Code:
 **Example Prompts:**
 
 1. **Authentication:**
+
 ```
 Create a Billy.dk API authentication module with:
 - API key management
@@ -159,6 +171,7 @@ Create a Billy.dk API authentication module with:
 ```
 
 2. **Invoice Creation:**
+
 ```
 Create an invoice creation function that:
 - Takes customer_id, items list, and optional notes
@@ -169,6 +182,7 @@ Create an invoice creation function that:
 ```
 
 3. **Error Handling:**
+
 ```
 Create comprehensive error handling for Billy.dk API with:
 - Custom exception classes
@@ -182,6 +196,7 @@ Create comprehensive error handling for Billy.dk API with:
 ## 📊 Success Metrics
 
 ### Phase 2 Completion (AI Infrastructure)
+
 - ✅ Ollama running (DONE)
 - ✅ Coding model installed (DONE - Qwen)
 - ✅ Model tested (DONE - 97% score)
@@ -189,12 +204,14 @@ Create comprehensive error handling for Billy.dk API with:
 - **Target:** 100% by end of day
 
 ### Phase 3 Kickoff (Billy Integration)
+
 - ⏳ MCP server skeleton generated
 - ⏳ Basic invoice creation working
 - ⏳ First test invoice created via chat
 - **Target:** Week 1 completion
 
 ### Performance Targets
+
 - **Response Time:** < 15 seconds per code generation
 - **Code Quality:** > 90% production-ready (no major refactor needed)
 - **Success Rate:** > 95% of generated code works first time
@@ -223,6 +240,7 @@ Create comprehensive error handling for Billy.dk API with:
 ### Code Review Checklist
 
 For all Qwen-generated code:
+
 - [ ] Type hints present og correct
 - [ ] Error handling comprehensive
 - [ ] Logging implemented
@@ -261,6 +279,7 @@ For all Qwen-generated code:
 | **Total** | **21 hours** | **5 hours** | **76%** |
 
 **Value Created:**
+
 - 16 hours saved per major integration
 - @ 350 DKK/hour = **5,600 DKK saved**
 - Høj code quality = færre bugs = yderligere besparelser
@@ -272,6 +291,7 @@ For all Qwen-generated code:
 ### Week 1 Milestones
 
 **Monday (Today):**
+
 - [x] Download Qwen ✅
 - [x] Test Qwen ✅
 - [x] Document results ✅
@@ -279,21 +299,25 @@ For all Qwen-generated code:
 - [ ] Generate Billy skeleton
 
 **Tuesday:**
+
 - [ ] Implement Billy MCP foundation
 - [ ] Test basic functionality
 - [ ] Create first invoice via chat
 
 **Wednesday:**
+
 - [ ] Complete Billy MCP tools
 - [ ] Write tests
 - [ ] Documentation
 
 **Thursday:**
+
 - [ ] Integration testing
 - [ ] Bug fixes
 - [ ] Performance tuning
 
 **Friday:**
+
 - [ ] Demo preparation
 - [ ] Review & retrospective
 - [ ] Plan RenOS integration
@@ -303,6 +327,7 @@ For all Qwen-generated code:
 ## 🎯 Definition of Done
 
 ### Phase 2: AI Infrastructure ✅
+
 - [x] Qwen 2.5 Coder 14B downloaded
 - [x] Model tested thoroughly
 - [x] Test results documented
@@ -310,6 +335,7 @@ For all Qwen-generated code:
 - [ ] All models accessible via chat
 
 ### Phase 3: Billy.dk Integration (Week 1)
+
 - [ ] MCP server running
 - [ ] Create invoice via chat works
 - [ ] List invoices works
@@ -322,6 +348,7 @@ For all Qwen-generated code:
 ## 📞 Support Resources
 
 **Documentation:**
+
 - Test Results: `docs/QWEN_TEST_RESULTS.md`
 - Model Status: `docs/INSTALLED_MODELS_REPORT.md`
 - MCP Resources: `docs/MCP_RESOURCES.md`

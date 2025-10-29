@@ -9,6 +9,7 @@
 ## 🎯 STRATEGISK VISION
 
 ### Hvorfor Custom MCP Servers?
+
 1. **Konkurrencefordel** - Unikke AI-drevne workflows ingen andre har
 2. **Business Integration** - Deep integration med Tekup's systemer
 3. **Developer Productivity** - Automatiser repetitive tasks
@@ -20,10 +21,12 @@
 ## 🚀 FORESLÅEDE TEKUP MCP SERVERS
 
 ### 1. **Tekup Knowledge Base MCP** 🧠
+
 **Navn:** `tekup-knowledge-mcp`  
 **Formål:** Centraliseret adgang til al Tekup dokumentation, best practices, og project learnings
 
 **Features:**
+
 - 📚 **Documentation Search**
   - Search gennem alle Tekup projekt READMEs
   - Find setup guides, API docs, troubleshooting
@@ -47,6 +50,7 @@
   - Render deployment guides
 
 **Tech Stack:**
+
 - Node.js/TypeScript
 - Vector DB (Pinecone eller Qdrant)
 - OpenAI Embeddings
@@ -61,6 +65,7 @@
 ```
 
 **Business Value:** 🔥🔥🔥
+
 - Onboarding nye developers: 80% hurtigere
 - Reduce debugging time: 40%
 - Consistent code quality
@@ -68,10 +73,12 @@
 ---
 
 ### 2. **Tekup Client Context MCP** 👥
+
 **Navn:** `tekup-client-mcp`  
 **Formål:** AI har instant access til client information, preferences, og project history
 
 **Features:**
+
 - 📊 **Client Profiles**
   - Company info, industry, size
   - Technology preferences
@@ -94,6 +101,7 @@
   - Next milestones
 
 **Tech Stack:**
+
 - Node.js/TypeScript
 - Supabase (client data storage)
 - Integration med tekup-billy
@@ -109,6 +117,7 @@
 ```
 
 **Business Value:** 🔥🔥🔥
+
 - Personalized communication automatically
 - Faster project setup
 - Avoid repeating past mistakes
@@ -117,10 +126,12 @@
 ---
 
 ### 3. **Tekup Code Intelligence MCP** 🤖
+
 **Navn:** `tekup-code-intel-mcp`  
 **Formål:** Deep understanding af Tekup monorepo structure og code patterns
 
 **Features:**
+
 - 🏗️ **Monorepo Navigation**
   - "Hvor er auth logic?"
   - "Find all API routes"
@@ -142,6 +153,7 @@
   - "Find untested edge cases"
 
 **Tech Stack:**
+
 - Node.js/TypeScript
 - Tree-sitter (code parsing)
 - AST analysis
@@ -157,6 +169,7 @@
 ```
 
 **Business Value:** 🔥🔥🔥🔥
+
 - Reduce code review time: 50%
 - Faster bug fixes
 - Better code maintainability
@@ -165,10 +178,12 @@
 ---
 
 ### 4. **Tekup Deployment & DevOps MCP** 🚀
+
 **Navn:** `tekup-deploy-mcp`  
 **Formål:** AI-assisted deployments, monitoring, og infrastructure management
 
 **Features:**
+
 - 🌐 **Render Integration**
   - Deploy status checking
   - Log analysis
@@ -193,6 +208,7 @@
   - Backup status
 
 **Tech Stack:**
+
 - Node.js/TypeScript
 - Render API
 - GitHub API
@@ -210,6 +226,7 @@
 ```
 
 **Business Value:** 🔥🔥🔥🔥🔥
+
 - Faster incident response
 - Proactive issue detection
 - Reduced downtime
@@ -218,10 +235,12 @@
 ---
 
 ### 5. **Tekup Meeting & Communication MCP** 📧
+
 **Navn:** `tekup-comms-mcp`  
 **Formål:** AI-powered meeting scheduling, email management, og communication insights
 
 **Features:**
+
 - 📅 **Smart Scheduling**
   - Find optimal meeting times
   - Respect work-life balance
@@ -245,6 +264,7 @@
   - Client satisfaction indicators
 
 **Tech Stack:**
+
 - Node.js/TypeScript
 - Google Calendar API (already have)
 - Gmail API (need to reactivate gmail-mcp)
@@ -261,6 +281,7 @@
 ```
 
 **Business Value:** 🔥🔥🔥
+
 - Save 5-10 hours/week per developer
 - Better client communication
 - Never miss important emails
@@ -269,10 +290,12 @@
 ---
 
 ### 6. **Tekup Invoice & Finance MCP** 💰
+
 **Navn:** `tekup-finance-mcp` (Enhanced tekup-billy)  
 **Formål:** Upgrade tekup-billy til fuld financial intelligence
 
 **Features (udover existing billy integration):**
+
 - 💵 **Revenue Insights**
   - Monthly recurring revenue (MRR)
   - Client lifetime value (CLV)
@@ -295,6 +318,7 @@
   - Scope templates
 
 **Tech Stack:**
+
 - Enhance existing tekup-billy
 - Add analytics layer
 - OpenAI for proposal generation
@@ -310,6 +334,7 @@
 ```
 
 **Business Value:** 🔥🔥🔥🔥🔥
+
 - Better financial planning
 - Reduced late payments
 - Accurate pricing
@@ -318,10 +343,12 @@
 ---
 
 ### 7. **Tekup Learning & Development MCP** 📚
+
 **Navn:** `tekup-learn-mcp`  
 **Formål:** Personalized learning paths og skill development tracking
 
 **Features:**
+
 - 🎓 **Skill Gap Analysis**
   - Current team skills
   - Project requirements
@@ -345,6 +372,7 @@
   - Knowledge sharing
 
 **Tech Stack:**
+
 - Node.js/TypeScript
 - Learning Management System (LMS) integration
 - Skill taxonomy database
@@ -358,6 +386,7 @@
 ```
 
 **Business Value:** 🔥🔥🔥
+
 - Faster skill development
 - Better project staffing
 - Employee retention
@@ -368,20 +397,24 @@
 ## 🎯 PRIORITERET IMPLEMENTATION ROADMAP
 
 ### PHASE 1 - FOUNDATION (Måned 1-2)
+
 **Priority:** 🔥🔥🔥🔥🔥
 
 #### 1.1 Tekup Knowledge Base MCP
+
 - Mest immediate value
 - Foundation for andre servers
 - Relativt simpel at implementere
 
 **Week 1-2:**
+
 - [ ] Setup project structure
 - [ ] Document scraping pipeline
 - [ ] Vector DB setup (Pinecone free tier)
 - [ ] Basic search implementation
 
 **Week 3-4:**
+
 - [ ] Integrate med Kilo Code
 - [ ] Test med real dokumentation
 - [ ] Refinement baseret på feedback
@@ -391,18 +424,22 @@
 ---
 
 ### PHASE 2 - BUSINESS INTEGRATION (Måned 2-3)
+
 **Priority:** 🔥🔥🔥🔥
 
 #### 2.1 Tekup Client Context MCP
+
 - High business value
 - Builds på existing Supabase data
 
 **Week 5-6:**
+
 - [ ] Database schema design
 - [ ] Client data migration
 - [ ] Basic MCP tools implementation
 
 **Week 7-8:**
+
 - [ ] Billy integration
 - [ ] Calendar integration
 - [ ] Testing & refinement
@@ -410,10 +447,12 @@
 **Estimated Effort:** 40-50 timer
 
 #### 2.2 Enhanced Tekup Finance MCP
+
 - Upgrade existing tekup-billy
 - Add analytics layer
 
 **Week 9-10:**
+
 - [ ] Analytics module
 - [ ] Forecasting algorithms
 - [ ] Proposal generation
@@ -423,13 +462,16 @@
 ---
 
 ### PHASE 3 - DEVELOPER PRODUCTIVITY (Måned 3-4)
+
 **Priority:** 🔥🔥🔥🔥
 
 #### 3.1 Tekup Code Intelligence MCP
+
 - Meget teknisk
 - Høj developer ROI
 
 **Week 11-14:**
+
 - [ ] AST parsing setup
 - [ ] Dependency graph building
 - [ ] Search implementation
@@ -440,13 +482,16 @@
 ---
 
 ### PHASE 4 - OPERATIONS (Måned 4-5)
+
 **Priority:** 🔥🔥🔥
 
 #### 4.1 Tekup Deployment & DevOps MCP
+
 - Operational excellence
 - Reduces incident response time
 
 **Week 15-18:**
+
 - [ ] Render API integration
 - [ ] Monitoring setup
 - [ ] Alert system
@@ -457,13 +502,16 @@
 ---
 
 ### PHASE 5 - COMMUNICATION (Måned 5-6)
+
 **Priority:** 🔥🔥🔥
 
 #### 5.1 Tekup Meeting & Communication MCP
+
 - Quality of life improvement
 - Time savings
 
 **Week 19-22:**
+
 - [ ] Calendar integration enhancement
 - [ ] Email API setup
 - [ ] Slack integration
@@ -474,9 +522,11 @@
 ---
 
 ### PHASE 6 - GROWTH (Måned 6+)
+
 **Priority:** 🔥🔥
 
 #### 6.1 Tekup Learning & Development MCP
+
 - Long-term investment
 - Culture building
 
@@ -489,6 +539,7 @@
 ## 🛠️ TECHNICAL IMPLEMENTATION GUIDE
 
 ### Project Structure
+
 ```
 Tekup/
 ├── apps/
@@ -521,6 +572,7 @@ Tekup/
 ```
 
 ### Base MCP Server Template
+
 ```typescript
 // tekup-mcp-base/src/index.ts
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -574,6 +626,7 @@ export abstract class TekupMCPServer {
 ```
 
 ### Example: Tekup Knowledge Base MCP Implementation
+
 ```typescript
 // tekup-knowledge-mcp/src/index.ts
 import { TekupMCPServer } from "@tekup/mcp-base";
@@ -676,6 +729,7 @@ server.start().catch(console.error);
 ## 🔧 KILO CODE INTEGRATION
 
 ### Update Kilo Code MCP Config
+
 ```json
 {
   "mcpServers": {
@@ -736,6 +790,7 @@ server.start().catch(console.error);
 ## 💰 BUSINESS CASE & ROI
 
 ### Investment
+
 - **Development Time:** ~300-400 timer over 6 måneder
 - **Infrastructure Costs:** ~$100-200/måned (Pinecone, OpenAI API, hosting)
 - **Maintenance:** ~20 timer/måned
@@ -743,6 +798,7 @@ server.start().catch(console.error);
 ### Expected Returns (per måned)
 
 #### Time Savings
+
 - **Onboarding:** 40 timer spareret per ny developer
 - **Code Review:** 20 timer/måned per senior developer
 - **Debugging:** 30 timer/måned per team
@@ -753,11 +809,13 @@ server.start().catch(console.error);
 **Total:** ~90-100 timer spareret per developer per måned
 
 #### Financial Impact
+
 - Antag 5 developers, gennemsnits rate 800 kr/time
 - **Savings:** 90 timer × 5 developers × 800 kr = **360,000 kr/måned**
 - **Annual:** ~4,3 million kr
 
 #### Kvalitative Benefits
+
 - 📈 Faster project delivery
 - 🎯 Better code quality
 - 😊 Higher developer satisfaction
@@ -766,6 +824,7 @@ server.start().catch(console.error);
 - 💡 Innovation enablement
 
 ### ROI Calculation
+
 - **Year 1 Investment:** ~400 timer udvikling + 12 måneder infrastructure ≈ 400,000 kr
 - **Year 1 Returns:** 4,3 million kr
 - **ROI:** **975%** 🚀
@@ -775,6 +834,7 @@ server.start().catch(console.error);
 ## 🎬 GETTING STARTED - STEP BY STEP
 
 ### Step 1: Setup Phase 1 Project (This Week)
+
 ```bash
 # Create project structure
 cd C:\Users\empir\Tekup\apps
@@ -800,12 +860,14 @@ mkdir src/utils
 ```
 
 ### Step 2: First Implementation (Next Week)
+
 1. Implement base server class
 2. Add simple search tool
 3. Test locally
 4. Integrate med Kilo Code
 
 ### Step 3: Iterate & Expand
+
 1. Gather feedback
 2. Add more tools
 3. Improve accuracy
@@ -815,7 +877,7 @@ mkdir src/utils
 
 ## 🤔 DECISION POINTS
 
-### Spørgsmål til dig:
+### Spørgsmål til dig
 
 1. **Prioritering:** Er du enig i Phase 1 starter med Knowledge Base?
 2. **Resources:** Kan du dedikere 10-15 timer/uge til dette?
@@ -843,6 +905,7 @@ This innovation plan is part of the **Tekup MCP Servers Project**. See related d
 ### Version 1.0.0 (26. oktober 2025)
 
 #### Proposed
+
 - **7 Custom MCP Servers** designed:
   1. Tekup Knowledge Base MCP (Priority 🔥🔥🔥🔥🔥)
   2. Tekup Client Context MCP (Priority 🔥🔥🔥🔥)
@@ -853,18 +916,21 @@ This innovation plan is part of the **Tekup MCP Servers Project**. See related d
   7. Tekup Learning & Development MCP (Priority 🔥🔥)
 
 #### Calculated
+
 - **Business Case:** 4.3 million kr/år value
 - **ROI:** 975% first year
 - **Time Savings:** 90-100 timer/måned per udvikler
 - **Investment:** 300-400 timer over 6 måneder
 
 #### Defined
+
 - **6-Phase Implementation Roadmap** (6 months total)
 - **Tech Stack** for each server (Node.js, TypeScript, vector DBs, APIs)
 - **MCP Tools** specification for each server
 - **Features & Use Cases** for each server
 
 #### Recommended
+
 - **Phase 1 Priority:** Knowledge Base MCP (40-60 timer, 1-2 måneder)
 - **Quick Wins:** Knowledge + Finance MCP first
 - **Infrastructure:** Pinecone vector DB, OpenAI embeddings, Render hosting
@@ -882,6 +948,7 @@ This innovation plan is part of the **Tekup MCP Servers Project**. See related d
 ---
 
 **Vil du have jeg:**
+
 - ✅ Starter med at opsætte projekt strukturen?
 - ✅ Implementerer base MCP server template?
 - ✅ Laver første proof-of-concept med knowledge search?

@@ -18,7 +18,7 @@ You are testing **Rendetalje v1.2.0** - a full-stack cleaning service management
 
 ## 🚀 Quick Setup (If Services Aren't Running)
 
-### Start All Services:
+### Start All Services
 
 ```powershell
 # 1. Start Database (PostgreSQL)
@@ -237,7 +237,7 @@ Check the dashboard displays:
 1. Click "Opret Kunde" button
 2. Fill in form:
    - Name: "AI Test Customer Ltd"
-   - Email: "aitest@cleaning.dk"
+   - Email: "<aitest@cleaning.dk>"
    - Phone: "+4587654321"
    - Type: "business"
    - Address: "Innovation Street 42"

@@ -1,11 +1,13 @@
 # User Acceptance Testing (UAT) Checklist - RendetaljeOS
 
 ## Overview
+
 This checklist ensures that RendetaljeOS meets all business requirements and is ready for production launch. Each item must be verified and signed off by the appropriate stakeholders.
 
 ## Pre-UAT Setup
 
 ### Environment Preparation
+
 - [ ] **Staging Environment Ready**
   - [ ] All services deployed and running
   - [ ] Database populated with realistic test data
@@ -29,6 +31,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
 ## Owner Portal UAT
 
 ### Dashboard and Overview
+
 - [ ] **Dashboard Loading and Performance**
   - [ ] Dashboard loads within 3 seconds
   - [ ] All KPI cards display correct data
@@ -44,6 +47,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Map controls (zoom, pan) function properly
 
 ### Customer Management
+
 - [ ] **Customer CRUD Operations**
   - [ ] Create new customer with all fields
   - [ ] Edit existing customer information
@@ -60,6 +64,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Customer statistics calculated accurately
 
 ### Job Management
+
 - [ ] **Job Creation and Assignment**
   - [ ] Create job with all required fields
   - [ ] Assign job to available team member
@@ -75,6 +80,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Customer notifications sent automatically
 
 ### Team Management
+
 - [ ] **Team Member Administration**
   - [ ] Add new team member with role assignment
   - [ ] Edit team member skills and information
@@ -90,6 +96,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Payroll data export functionality
 
 ### Reports and Analytics
+
 - [ ] **Financial Reports**
   - [ ] Revenue reports by period (daily, weekly, monthly)
   - [ ] Profit margin calculations accurate
@@ -105,6 +112,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Equipment and supply usage
 
 ### AI Friday Integration
+
 - [ ] **Basic Functionality**
   - [ ] Friday responds to simple queries
   - [ ] Data retrieval questions answered accurately
@@ -122,6 +130,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
 ## Employee Mobile App UAT
 
 ### App Installation and Setup
+
 - [ ] **Installation Process**
   - [ ] App downloads from Google Play Store
   - [ ] Installation completes without errors
@@ -137,6 +146,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Data syncs when connection restored
 
 ### Daily Operations
+
 - [ ] **Job Management**
   - [ ] Daily job list displays correctly
   - [ ] Job details show all necessary information
@@ -152,6 +162,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Travel time tracking accurate
 
 ### Quality Control
+
 - [ ] **Checklist System**
   - [ ] Service checklists load correctly
   - [ ] Items can be checked off easily
@@ -167,6 +178,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Offline photo storage functions
 
 ### Time Tracking
+
 - [ ] **Clock In/Out System**
   - [ ] Start work timer functions correctly
   - [ ] Break tracking works properly
@@ -184,6 +196,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
 ## Customer Portal UAT
 
 ### Self-Service Booking
+
 - [ ] **Booking Process**
   - [ ] Service types clearly explained
   - [ ] Available time slots accurate
@@ -199,6 +212,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Account deletion process clear
 
 ### Service Tracking
+
 - [ ] **Real-Time Updates**
   - [ ] Job status updates display promptly
   - [ ] Team arrival notifications sent
@@ -214,6 +228,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Support ticket system operational
 
 ### Billing and Payments
+
 - [ ] **Invoice Management**
   - [ ] Invoices display correctly
   - [ ] Payment status updates accurately
@@ -231,6 +246,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
 ## Integration Testing
 
 ### External Service Integrations
+
 - [ ] **Billy.dk Integration**
   - [ ] Customer data syncs correctly
   - [ ] Invoices created automatically
@@ -253,6 +269,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Time zone handling correct
 
 ### Communication Systems
+
 - [ ] **Email Notifications**
   - [ ] Booking confirmations sent
   - [ ] Reminder emails delivered
@@ -270,6 +287,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
 ## Performance and Security Testing
 
 ### Performance Benchmarks
+
 - [ ] **Load Testing**
   - [ ] System handles 100 concurrent users
   - [ ] Response times under 2 seconds
@@ -285,6 +303,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Offline sync efficient
 
 ### Security Verification
+
 - [ ] **Authentication and Authorization**
   - [ ] Login security measures work
   - [ ] Role-based access enforced
@@ -302,6 +321,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
 ## Business Process Validation
 
 ### End-to-End Workflows
+
 - [ ] **Complete Service Lifecycle**
   - [ ] Customer books service online
   - [ ] Job assigned to team member
@@ -318,6 +338,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Quality issue resolution
 
 ### Operational Procedures
+
 - [ ] **Daily Operations**
   - [ ] Morning job assignment process
   - [ ] Route optimization workflow
@@ -335,6 +356,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
 ## UAT Sign-Off
 
 ### Stakeholder Approval
+
 - [ ] **Business Owner Sign-Off**
   - Name: ________________
   - Date: ________________
@@ -354,6 +376,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - Comments: ________________
 
 ### Known Issues and Limitations
+
 - [ ] **Documented Issues**
   - [ ] All known bugs documented
   - [ ] Workarounds provided where applicable
@@ -362,6 +385,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Impact assessment completed
 
 ### Go-Live Readiness
+
 - [ ] **Final Checklist**
   - [ ] All critical issues resolved
   - [ ] Training materials prepared
@@ -372,6 +396,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
 ## Post-UAT Actions
 
 ### Issue Resolution
+
 - [ ] **Critical Issues** (Must fix before go-live)
   - Issue 1: ________________
   - Issue 2: ________________
@@ -383,6 +408,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - Issue 3: ________________
 
 ### Training and Documentation
+
 - [ ] **User Training Completed**
   - [ ] Owner/management training
   - [ ] Employee mobile app training
@@ -391,6 +417,7 @@ This checklist ensures that RendetaljeOS meets all business requirements and is 
   - [ ] Documentation updated
 
 ### Launch Preparation
+
 - [ ] **Go-Live Planning**
   - [ ] Launch date confirmed
   - [ ] Communication plan executed

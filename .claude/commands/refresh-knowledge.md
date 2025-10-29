@@ -49,6 +49,7 @@ Re-index all documentation and update knowledge base.
 ## Schedule
 
 Recommend running:
+
 - After major feature completion
 - Weekly (Monday mornings)
 - After adding significant documentation

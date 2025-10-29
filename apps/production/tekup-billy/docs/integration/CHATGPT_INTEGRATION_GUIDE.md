@@ -1,4 +1,4 @@
-# 🤖 ChatGPT Integration Guide - Tekup-Billy MCP
+﻿# 🤖 ChatGPT Integration Guide - Tekup-Billy MCP
 
 **Dato:** 20. Oktober 2025  
 **Status:** Production Ready ✅  
@@ -764,7 +764,7 @@ Show me customers who haven't been invoiced in the last 3 months
 ## 🆘 Support
 
 **Issues:**
-- GitHub: [JonasAbde/Tekup-Billy/issues](https://github.com/JonasAbde/Tekup-Billy/issues)
+- GitHub: [TekupDK/Tekup-Billy/issues](https://github.com/TekupDK/Tekup-Billy/issues)
 
 **Health Check:**
 - `https://tekup-billy.onrender.com/health`

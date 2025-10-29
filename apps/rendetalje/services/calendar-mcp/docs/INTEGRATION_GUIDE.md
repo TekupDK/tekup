@@ -7,6 +7,7 @@ Denne guide beskriver hvordan du integrerer RenOS Calendar MCP med eksisterende 
 ## Billy.dk Integration
 
 ### Setup
+
 ```typescript
 // Environment variables
 BILLY_API_KEY=your_billy_api_key
@@ -15,6 +16,7 @@ ENABLE_AUTO_INVOICE=true
 ```
 
 ### Automatisk Faktura Oprettelse
+
 ```typescript
 import { autoCreateInvoice } from './src/tools/invoice-automation';
 
@@ -28,6 +30,7 @@ console.log(result);
 ```
 
 ### Payment Monitoring
+
 ```typescript
 // Automatisk overvågning af betalinger
 const paymentStatus = await checkPaymentStatus({
@@ -42,6 +45,7 @@ if (paymentStatus.paid) {
 ## Google Calendar Integration
 
 ### Setup
+
 ```typescript
 // Environment variables
 GOOGLE_CLIENT_EMAIL=renos-319@renos-465008.iam.gserviceaccount.com
@@ -52,6 +56,7 @@ GOOGLE_IMPERSONATED_USER=info@rendetalje.dk
 ```
 
 ### Event Oprettelse
+
 ```typescript
 import { createCalendarEvent } from './src/integrations/google-calendar';
 
@@ -67,6 +72,7 @@ console.log(event.id); // Google Calendar event ID
 ```
 
 ### Konflikt Detektion
+
 ```typescript
 import { checkBookingConflicts } from './src/tools/booking-validator';
 
@@ -85,6 +91,7 @@ if (conflicts.hasConflicts) {
 ## Twilio Voice Integration
 
 ### Setup
+
 ```typescript
 // Environment variables
 TWILIO_ACCOUNT_SID=your_account_sid
@@ -93,6 +100,7 @@ TWILIO_PHONE_NUMBER=your_phone_number
 ```
 
 ### Voice Alerts
+
 ```typescript
 import { sendVoiceAlert } from './src/integrations/twilio-voice';
 
@@ -114,6 +122,7 @@ await sendVoiceAlert({
 ## Supabase Database Integration
 
 ### Setup
+
 ```typescript
 // Environment variables
 SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
@@ -122,6 +131,7 @@ SUPABASE_SERVICE_KEY=your_service_key
 ```
 
 ### Customer Intelligence
+
 ```typescript
 import { getCustomerMemory } from './src/tools/customer-memory';
 
@@ -135,6 +145,7 @@ console.log(intelligence.intelligence);
 ```
 
 ### Overtime Tracking
+
 ```typescript
 import { trackOvertimeRisk } from './src/tools/overtime-tracker';
 
@@ -153,6 +164,7 @@ if (overtime.status === 'alert') {
 ## Tekup-Billy MCP Integration
 
 ### Billy.dk API Calls
+
 ```typescript
 // Automatisk faktura oprettelse via Billy.dk
 const invoice = await createBillyInvoice({
@@ -171,6 +183,7 @@ console.log(invoice.invoiceId);
 ```
 
 ### Payment Status Monitoring
+
 ```typescript
 // Overvåg betalingsstatus
 const paymentStatus = await getPaymentStatus({
@@ -187,6 +200,7 @@ if (paymentStatus.status === 'paid') {
 ## Mobile PWA Dashboard Integration
 
 ### API Endpoints
+
 ```typescript
 // Backend API endpoints
 const API_BASE = 'https://renos-calendar-mcp.onrender.com';
@@ -210,6 +224,7 @@ const validation = await fetch(`${API_BASE}/validate-booking`, {
 ```
 
 ### Real-time Updates
+
 ```typescript
 // WebSocket connection for real-time updates
 const ws = new WebSocket('wss://renos-calendar-mcp.onrender.com/ws');
@@ -230,6 +245,7 @@ ws.onmessage = (event) => {
 ## Error Handling & Fail-Safe Mode
 
 ### Confidence-based Automation
+
 ```typescript
 // Fail-safe mode aktiveres automatisk ved lav confidence
 const validation = await validateBookingDate({
@@ -246,6 +262,7 @@ if (validation.confidence < 0.8) {
 ```
 
 ### Undo Function
+
 ```typescript
 import { undoManager } from './src/utils/undo-manager';
 
@@ -265,6 +282,7 @@ await undoManager.undo(undoId);
 ## Performance Optimization
 
 ### Redis Caching
+
 ```typescript
 // Cache customer intelligence
 const cachedIntelligence = await redis.get(`customer:${customerId}`);
@@ -277,6 +295,7 @@ await redis.setex(`customer:${customerId}`, 3600, JSON.stringify(intelligence));
 ```
 
 ### Database Connection Pooling
+
 ```typescript
 // Supabase connection pooling
 const supabase = createClient(
@@ -296,6 +315,7 @@ const supabase = createClient(
 ## Monitoring & Logging
 
 ### Health Checks
+
 ```typescript
 // Health check endpoint
 app.get('/health', async (req, res) => {
@@ -315,6 +335,7 @@ app.get('/health', async (req, res) => {
 ```
 
 ### Logging
+
 ```typescript
 import { logger } from './src/utils/logger';
 
@@ -357,6 +378,7 @@ logger.error('Overtime detected', {
    - Ensure proper authentication
 
 ### Debug Mode
+
 ```typescript
 // Enable debug logging
 process.env.DEBUG = 'renos-calendar-mcp:*';
@@ -368,17 +390,20 @@ process.env.LOG_LEVEL = 'debug';
 ## Security Considerations
 
 ### Environment Variables
+
 - Never commit secrets to Git
 - Use Render Environment Groups
 - Rotate keys regularly
 
 ### API Security
+
 - Rate limiting on all endpoints
 - Input validation and sanitization
 - CORS configuration
 - Authentication tokens
 
 ### Data Protection
+
 - Encrypt sensitive data
 - GDPR compliance
 - Data retention policies

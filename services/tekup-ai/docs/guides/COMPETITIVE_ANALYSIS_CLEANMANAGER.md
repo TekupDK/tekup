@@ -9,7 +9,9 @@
 ## 📋 Executive Summary
 
 ### TL;DR Konklusion
+
 **RenOS er fundamentalt anderledes end CleanManager:**
+
 - **CleanManager:** Administrativt værktøj (planlægning, fakturering, løn)
 - **RenOS:** AI-drevet salgsmaskine (lead konvertering, kundevækst, automation)
 
@@ -31,6 +33,7 @@
 ### 1. GRUNDMODUL (CleanManager)
 
 #### CleanManager Tilbyder
+
 ```
 ✅ Rengøringssystem - Strukturerede opgavetyper
 ✅ Planlægning - Manuel drag-and-drop kalender
@@ -40,6 +43,7 @@
 ```
 
 #### RenOS Ækvivalent
+
 ```
 ❌ Rengøringssystem - Ikke implementeret (manuel process)
 🟡 Planlægning - AI-drevet booking (automatisk, ingen manuel drag-drop)
@@ -55,13 +59,16 @@
 ### 2. TILLÆGSMODULER (CleanManager)
 
 #### a) App med Tidsregistrering
+
 **CleanManager:**
+
 - ✅ Mobile app til medarbejdere
 - ✅ Check-in/check-out via GPS
 - ✅ Timesedler til lønsystem
 - ✅ Opgavestyring fra mobil
 
 **RenOS Status:**
+
 - ❌ Ingen mobile app (planlagt fase 3)
 - ❌ Ingen tidsregistrering
 - 🎯 **Ikke prioriteret** - Jonas kører solo i fase 1
@@ -71,13 +78,16 @@
 ---
 
 #### b) Kvalitetsrapporter
+
 **CleanManager:**
+
 - ✅ Digital rapportskabeloner
 - ✅ Før/efter fotos
 - ✅ Kunde-signaturer
 - ✅ Problem tracking
 
 **RenOS Status:**
+
 - ❌ Ingen kvalitetsrapporter
 - 🟡 E-mail auto-response kan bede om feedback
 - 🎯 **Ikke prioriteret** - Manual quality control i fase 1
@@ -87,13 +97,16 @@
 ---
 
 #### c) Fakturaberegning
+
 **CleanManager:**
+
 - ✅ Automatisk faktura fra timer
 - ✅ Integration til e-conomic/Dinero
 - ✅ Prismodeller (fast, time, m²)
 - ✅ Faktura-templates
 
 **RenOS Status:**
+
 - 🟡 Billy.dk integration planlagt (fase 3)
 - ❌ Ingen automatisk fakturering endnu
 - 🟡 Tilbud kan sendes via e-mail (ikke faktura)
@@ -104,13 +117,16 @@
 ---
 
 #### d) Lønberegning
+
 **CleanManager:**
+
 - ✅ Automatisk lønkørsel fra timer
 - ✅ Integration til Salary/DataLøn
 - ✅ Overtid, ferie, sygdom tracking
 - ✅ Skatteberegning
 
 **RenOS Status:**
+
 - ❌ Ingen lønsystem
 - ❌ Ikke planlagt
 - 🎯 **Out of scope** - Jonas har ikke ansatte
@@ -120,12 +136,15 @@
 ---
 
 #### e) SMS Notifikationer
+
 **CleanManager:**
+
 - ✅ SMS til medarbejdere (shift reminders)
 - ✅ SMS til kunder (booking confirmations)
 - ✅ Bulkudsendelser
 
 **RenOS Status:**
+
 - ❌ Ingen SMS
 - 🟡 E-mail notifikationer fungerer
 - 🎯 **Low priority** - e-mail er preferred channel
@@ -135,7 +154,9 @@
 ---
 
 #### f) Tilbudssystem
+
 **CleanManager:**
+
 - ✅ Tilbudsskabeloner
 - ✅ Prisberegning baseret på m²/timer
 - ✅ PDF-generering
@@ -169,6 +190,7 @@
 ### 3. UNIKKE RENOS FEATURES (CleanManager HAR IKKE)
 
 #### a) AI Email Auto-Response
+
 ```
 🤖 Gemini AI Integration
 - Forstår kundens intent (moving, regular, question)
@@ -190,6 +212,7 @@
 ---
 
 #### b) Lead Monitoring System
+
 ```
 🔍 Intelligent Lead Parsing
 - Automatisk monitoring af leadmail@rendetalje.dk inbox
@@ -210,6 +233,7 @@
 ---
 
 #### c) Smart Calendar Booking
+
 ```
 📅 AI-Optimeret Booking
 - Conflict detection (double-booking prevention)
@@ -230,6 +254,7 @@
 ---
 
 #### d) Real-Time Dashboard
+
 ```
 📊 5 Intelligente Widgets
 1. System Safety Status - Risk level monitoring (SAFE/CAUTION/DANGER)
@@ -251,6 +276,7 @@
 ---
 
 #### e) Business Intelligence
+
 ```
 📈 Data-Drevet Beslutningstagning
 - Lead conversion rate tracking
@@ -273,6 +299,7 @@
 ## 💰 Prissammenligning
 
 ### CleanManager Pricing
+
 ```
 Abonnementsmodel (gættet fra industri-standard):
 - Grundmodul: ~200-300 kr/md per user
@@ -287,6 +314,7 @@ Abonnementsmodel (gættet fra industri-standard):
 ```
 
 ### RenOS Pricing (Foreslået)
+
 ```
 Freemium Model:
 - Free Tier: 
@@ -325,6 +353,7 @@ Freemium Model:
 ## 🎯 Target Market Analyse
 
 ### CleanManager's Sweet Spot
+
 ```
 Ideal Customer Profile:
 - Etablerede firmaer (3-10 år i branchen)
@@ -346,6 +375,7 @@ Revenue Model:
 ```
 
 ### RenOS's Sweet Spot
+
 ```
 Ideal Customer Profile:
 - Nye firmaer (0-2 år i branchen)
@@ -396,12 +426,14 @@ Revenue Model:
 ### Hvorfor De IKKE Er Konkurrenter
 
 **Analogien:**
+
 - **CleanManager = Microsoft Office** (productivity tools for established teams)
 - **RenOS = HubSpot/Salesforce** (sales & growth tools for scaling businesses)
 
 Du bruger ikke Office til at finde nye kunder. Du bruger ikke HubSpot til at lave timesedler.
 
 ### Integration Muligheder
+
 ```
 RenOS → CleanManager Pipeline:
 
@@ -416,6 +448,7 @@ RenOS → CleanManager Pipeline:
 ```
 
 **Partnership Opportunity:**
+
 - RenOS referral deal med CleanManager
 - "Brug RenOS til at vokse - brug CleanManager til at drive"
 - Cross-selling: Vi får 10% kommission på CleanManager sales
@@ -426,6 +459,7 @@ RenOS → CleanManager Pipeline:
 ## 🚀 Go-To-Market Strategi
 
 ### Positioning Statement
+
 ```
 RenOS er AI-salgsassistenten for nye rengøringsfirmaer.
 
@@ -437,6 +471,7 @@ end at hyre en salgsmedarbejder.
 ```
 
 ### Competitive Messaging
+
 ```
 🚫 FORKERT: "Vi er billigere end CleanManager"
 ✅ RIGTIGT: "Vi løser et helt andet problem end CleanManager"
@@ -449,6 +484,7 @@ end at hyre en salgsmedarbejder.
 ```
 
 ### Customer Acquisition Funnel
+
 ```
 Stage 1 (0-10 kunder): RenOS Free Tier
 - AI email automation
@@ -476,6 +512,7 @@ Stage 4 (200+ kunder): Enterprise Bundle
 ## 🎓 Lessons Learned
 
 ### What CleanManager Does Better
+
 ```
 1. Established market presence (8,000+ brugere)
 2. Feature-complete drift system
@@ -487,6 +524,7 @@ Stage 4 (200+ kunder): Enterprise Bundle
 ```
 
 ### What We Can Learn
+
 ```
 ✅ Professional website (clean design, clear messaging)
 ✅ Free trial offer (14 dage, no credit card)
@@ -498,6 +536,7 @@ Stage 4 (200+ kunder): Enterprise Bundle
 ```
 
 ### Where We Have Advantage
+
 ```
 🚀 AI-first architecture (they can't retrofit easily)
 🚀 Modern tech stack (TypeScript, React, Prisma)
@@ -513,6 +552,7 @@ Stage 4 (200+ kunder): Enterprise Bundle
 ## 📊 Market Opportunity Sizing
 
 ### Total Addressable Market (TAM)
+
 ```
 Rengøringsvirksomheder i Danmark: ~3,500 firmaer
 - Etablerede (50+ medarbejdere): 500 firmaer → CleanManager
@@ -525,6 +565,7 @@ Total TAM: $1.5M ARR (10.5M kr)
 ```
 
 ### Serviceable Addressable Market (SAM)
+
 ```
 Realistisk markedsandel (5 år): 10% af TAM
 - 300 betalende kunder
@@ -538,6 +579,7 @@ Breakdown:
 ```
 
 ### CleanManager's Market
+
 ```
 Current: 8,000+ brugere (impressive!)
 - Men mange er gratis trials
@@ -555,18 +597,21 @@ Pure competition: Minimal (different buyer personas)
 ## ✅ Action Items
 
 ### Immediate (Uge 1)
+
 - [ ] Tilføj "RenOS vs CleanManager" side på website
 - [ ] Lav comparison chart (feature scorecard)
 - [ ] Skriv blog post: "Hvilken løsning passer til dit rengøringsfirma?"
 - [ ] Outreach til CleanManager for partnership talk
 
 ### Short-term (Måned 1)
+
 - [ ] Customer interviews: "Hvorfor valgte du CleanManager?"
 - [ ] Identify overlap: Hvem bruger begge systemer?
 - [ ] Co-marketing test: Fælles webinar?
 - [ ] Feature gap analysis: Hvad mangler vi mest?
 
 ### Long-term (År 1)
+
 - [ ] Integration: RenOS → CleanManager data export
 - [ ] Referral program: CleanManager sends us leads
 - [ ] Bundle pricing: Discount for using both
@@ -577,10 +622,12 @@ Pure competition: Minimal (different buyer personas)
 ## 🎯 Final Verdict
 
 ### De Er IKKE Konkurrenter
+
 **CleanManager = Operations Platform** (for når du HAR kunder)  
 **RenOS = Growth Engine** (for at FINDE kunder)
 
 ### Strategic Positioning
+
 ```
 RenOS slogan: "Get your first 100 customers. Then worry about operations."
 
@@ -589,6 +636,7 @@ Vi er den manglende brik FØR CleanManager.
 ```
 
 ### Winning Pitch
+
 ```
 "Hvis du har 50+ medarbejdere og brug for lønsystem, 
 brug CleanManager. 

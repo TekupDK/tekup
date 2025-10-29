@@ -1,106 +1,1 @@
-# ✅ Google Calendar Setup - PERFEKT KONFIGURATION\n\n\n\n**Status:** ✅ KOMPLET  
-**Calendar:** RenOS Automatisk Booking  
-**Dato:** 2. oktober 2025\n\n
----
-\n\n## 🎯 Hvad Er Oprettet\n\n\n\nDu har oprettet en **dedikeret Google Calendar** til RenOS booking system!\n\n\n\n### Calendar Detaljer\n\n\n\n**Navn:** RenOS Automatisk Booking  
-**Beskrivelse:** Rendetalje automatisk booking system  
-**Timezone:** (GMT+02:00) Centraleuropæisk tid - København  
-**Organisation:** rendetalje.dk\n\n
-**Calendar ID:**\n\n```
-c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com\n\n```
-
----
-\n\n## ✅ Perfekt Konfiguration\n\n\n\n### 1. Delt Med (Permissions) ✅\n\n\n\n- **empire1266@gmail.com**\n\n  - Kan se al information om begivenheder\n\n  - Read access til calendar events\n\n\n\n- **info@rendetalje.dk**\n\n  - Kan ændre og administrere deling\n\n  - Full admin access\n\n\n\n### 2. Auto-Accept Enabled ✅\n\n\n\n```\n\n✅ Acceptér automatisk invitationer, som ikke er i konflikt\n\n```
-
-**Hvad Dette Betyder:**\n\n- RenOS kan automatisk booke tider\n\n- Ingen manuel godkendelse nødvendig\n\n- System afviser automatisk overlappende bookinger\n\n- Perfekt til automated booking system!\n\n\n\n### 3. Email Notifikationer Konfigureret ✅\n\n\n\n**Nye begivenheder:**\n\n- ✅ Mail notification når booking oprettes\n\n
-**Ændrede begivenheder:**\n\n- ✅ Mail notification når booking ændres\n\n
-**Aflyste begivenheder:**\n\n- ⚠️ INGEN notification (kan enablees hvis ønsket)\n\n
-**Begivenhedssvar:**\n\n- ⚠️ INGEN notification (kan enablees hvis ønsket)\n\n
-**Daglig agenda:**\n\n- ✅ Mail notification med dagens bookinger\n\n\n\n### 4. Adgangstilladelser ✅\n\n\n\n**Gør kalenderen offentligt tilgængelig:**\n\n- ✅ Kan se al information om begivenheder\n\n- Nyttigt for kunder at se ledige tider\n\n
-**Gør tilgængelig for Rendetalje:**\n\n- ✅ Kan se al information om begivenheder\n\n- Alle i organisationen kan se calendar\n\n
----
-\n\n## 🔧 Integration Links\n\n\n\n### Offentlig Web Adresse\n\n```\n\nhttps://calendar.google.com/calendar/embed?src=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff%40group.calendar.google.com&ctz=Europe%2FCopenhagen\n\n```
-
-**Use Case:** Embed på Rendetalje.dk website\n\n\n\n### iCal Format (Offentlig)\n\n```\n\nhttps://calendar.google.com/calendar/ical/c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff%40group.calendar.google.com/public/basic.ics\n\n```
-
-**Use Case:** Integration med andre calendar apps\n\n\n\n### iCal Format (Hemmelig)\n\n```\n\nhttps://calendar.google.com/calendar/ical/c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff%40group.calendar.google.com/private-72eb1b7266ba67d9eaf978d12f478ec8/basic.ics\n\n```
-
-⚠️ **VIGTIGT:** Del ALDRIG denne URL! Den giver fuld read access.\n\n
----
-\n\n## 🚀 Næste Skridt: Sæt Environment Variable\n\n\n\n### På Render.com\n\n\n\n1. **Login til Render Dashboard**
-   - https://dashboard.render.com\n\n\n\n2. **Find "tekup-renos" service**
-\n\n3. **Environment Variables**
-\n\n4. **Tilføj eller opdater:**
-\n\n```bash
-GOOGLE_CALENDAR_ID=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com\n\n```
-\n\n5. **Save Changes** → Auto-redeploy (~2 min)\n\n
----
-\n\n## ✅ Verificer Service Account Access\n\n\n\n### Check At Service Account Kan Tilgå Calendar\n\n\n\nDin service account (`renos@renos-465008.iam.gserviceaccount.com`) skal have adgang til denne calendar.
-
-**To Options:**
-\n\n#### Option A: Domain-Wide Delegation (Recommended) ✅\n\n\n\nHvis du allerede har setup domain-wide delegation med Google Calendar scope, så virker det automatisk!
-
-**Required Scope:**\n\n```
-https://www.googleapis.com/auth/calendar\n\n```
-
-Dette scope giver adgang til ALLE calendars i din domain (rendetalje.dk).
-\n\n#### Option B: Direct Calendar Sharing\n\n\n\nAlternativt kan du dele calendar direkte med service account:
-\n\n1. Gå til Calendar Settings\n\n2. "Delt med" section\n\n3. Klik "Tilføj personer og grupper"\n\n4. Indtast: `renos@renos-465008.iam.gserviceaccount.com`\n\n5. Vælg: "Kan ændre og administrere deling"\n\n6. Send invitation
-
----
-\n\n## 🧪 Test Calendar Integration\n\n\n\n### Test 1: List Calendar Events\n\n\n\n```bash\n\n# Via CLI tool\n\nnpm run data:calendar\n\n\n\n# Expected output: List of events in RenOS calendar\n\n```\n\n\n\n### Test 2: Create Test Event\n\n\n\n```bash\n\n# Via API endpoint\n\ncurl -X POST https://tekup-renos.onrender.com/api/bookings/test \\n\n  -H "Content-Type: application/json" \
-  -d '{
-    "summary": "Test Booking",
-    "start": "2025-10-15T10:00:00",
-    "duration": 120
-  }'
-\n\n# Expected: Event created successfully\n\n```\n\n\n\n### Test 3: Check Calendar\n\n\n\n1. Åbn Google Calendar: https://calendar.google.com\n\n2. Find "RenOS Automatisk Booking" calendar\n\n3. Se om test event vises\n\n4. Delete test event
-
----
-\n\n## 📊 Fordele Ved Dedicated Calendar\n\n\n\n### Før (Primary Calendar)\n\n- ❌ Blandet private + business events\n\n- ❌ Risk for booking conflicts\n\n- ❌ Hard to filter RenOS bookings\n\n- ❌ No separation of concerns\n\n\n\n### Efter (Dedicated RenOS Calendar) ✅\n\n- ✅ Kun automated bookings\n\n- ✅ Easy to view all RenOS bookings\n\n- ✅ Separate permissions\n\n- ✅ Can share publicly without exposing private events\n\n- ✅ Better analytics (count bookings, etc.)\n\n- ✅ Auto-accept enabled\n\n
----
-\n\n## 🎨 Embed På Website (Optional)\n\n\n\n### HTML Iframe\n\n\n\n```html\n\n<!-- Vis RenOS calendar på Rendetalje.dk -->\n\n<iframe 
-  src="https://calendar.google.com/calendar/embed?src=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff%40group.calendar.google.com&ctz=Europe%2FCopenhagen" 
-  style="border: 0" 
-  width="800" 
-  height="600" 
-  frameborder="0" 
-  scrolling="no">
-</iframe>\n\n```
-
-**Use Case:** Kunder kan se ledige tider direkte på website!\n\n\n\n### Styling Options\n\n\n\nDu kan tilpasse embed med parametre:\n\n- `&mode=WEEK` - Vis uge view\n\n- `&mode=MONTH` - Vis måned view\n\n- `&showTitle=0` - Skjul titel\n\n- `&showNav=1` - Vis navigation\n\n- `&showDate=1` - Vis dato selector\n\n- `&showPrint=0` - Skjul print button\n\n- `&showTabs=0` - Skjul tabs\n\n- `&showCalendars=0` - Skjul calendar list\n\n
-**Eksempel:**\n\n```
-https://calendar.google.com/calendar/embed?src=...&ctz=Europe/Copenhagen&mode=WEEK&showTitle=0&showNav=1\n\n```
-
----
-\n\n## 🔔 Notification Anbefalinger\n\n\n\n### Nuværende Setup (Good) ✅\n\n\n\n- ✅ Nye begivenheder → Mail\n\n- ✅ Ændrede begivenheder → Mail\n\n- ✅ Daglig agenda → Mail\n\n\n\n### Foreslåede Ændringer (Optional)\n\n\n\n**Enable Aflyste begivenheder notification:**\n\n1. Calendar Settings → "Andre notifikationer"\n\n2. "Aflyste begivenheder" → Vælg "Mail"\n\n3. Save
-
-**Hvorfor?** Team får besked når kunde aflyst booking.\n\n
-**Enable Begivenhedssvar notification:**\n\n1. "Begivenhedssvar" → Vælg "Mail"\n\n2. Save
-
-**Hvorfor?** Få besked når kunde bekræfter/afviser booking.\n\n
----
-\n\n## 🎯 Success Metrics\n\n\n\nEfter setup af environment variable:
-\n\n### ✅ Verificer At Det Virker\n\n\n\n1. **Backend Health Check:**
-   ```bash
-   curl https://tekup-renos.onrender.com/health
-   # Expected: {"status":"ok"}\n\n   ```\n\n\n\n2. **Create Test Booking:**
-   - Gå til RenOS dashboard\n\n   - Klik "Bookinger" → "Ny Booking"\n\n   - Udfyld form\n\n   - Klik "Opret Booking"\n\n\n\n3. **Check Google Calendar:**
-   - Åbn https://calendar.google.com\n\n   - Find "RenOS Automatisk Booking"\n\n   - Se om booking vises\n\n   - Check email for notification\n\n\n\n4. **Verify Auto-Accept:**
-   - Opret booking med overlappende tid\n\n   - Forvent fejl: "Time slot not available"\n\n   - Confirms conflict detection virker!\n\n
----
-\n\n## 🐛 Troubleshooting\n\n\n\n### Problem: "Calendar not found"\n\n\n\n**Løsning:**\n\n1. Verify service account har adgang (domain-wide delegation)\n\n2. Check at Calendar ID er korrekt i environment variable\n\n3. Verify service account email: `renos@renos-465008.iam.gserviceaccount.com`
-\n\n### Problem: "Insufficient permissions"\n\n\n\n**Løsning:**\n\n1. Share calendar direkte med service account\n\n2. Give "Kan ændre og administrere deling" permission\n\n3. Verify domain-wide delegation scope: `https://www.googleapis.com/auth/calendar`
-\n\n### Problem: Events ikke synlige i Google Calendar UI\n\n\n\n**Løsning:**\n\n1. Check at calendar er "enabled" (synlig) i venstre sidebar\n\n2. Refresh browser\n\n3. Check filter settings
-\n\n### Problem: Email notifications ikke modtaget\n\n\n\n**Løsning:**\n\n1. Check spam folder\n\n2. Verify email adresse i Calendar Settings → "Notifikationer"\n\n3. Enable specifik notification type
-
----
-\n\n## 📚 Relaterede Dokumenter\n\n\n\n- `IMPLEMENTATION_PLAN.md` - Komplet implementation guide\n\n- `docs/CALENDAR_BOOKING.md` - Calendar booking system dokumentation\n\n- `GAP_ANALYSIS_REPORT.md` - Feature gap analyse\n\n
----
-\n\n## 🎉 Konklusion\n\n\n\n**Status:** ✅ PERFECT SETUP!\n\n
-Du har nu:\n\n- ✅ Dedicated RenOS booking calendar\n\n- ✅ Auto-accept enabled\n\n- ✅ Email notifications configured\n\n- ✅ Proper permissions\n\n- ✅ Public/private access configured\n\n- ✅ Copenhagen timezone\n\n- ✅ Ready for automated booking!\n\n
-**Næste skridt:**\n\n1. Sæt `GOOGLE_CALENDAR_ID` i Render environment\n\n2. Test booking creation\n\n3. Verify events vises i calendar\n\n4. 🎉 PROFIT!
-
----
-
-**Perfect setup! Klar til at booke automatisk! 🚀**
+# ✅ Google Calendar Setup - PERFEKT KONFIGURATION\n\n\n\n**Status:** ✅ KOMPLET  **Calendar:** RenOS Automatisk Booking  **Dato:** 2. oktober 2025\n\n---\n\n## 🎯 Hvad Er Oprettet\n\n\n\nDu har oprettet en **dedikeret Google Calendar** til RenOS booking system!\n\n\n\n### Calendar Detaljer\n\n\n\n**Navn:** RenOS Automatisk Booking  **Beskrivelse:** Rendetalje automatisk booking system  **Timezone:** (GMT+02:00) Centraleuropæisk tid - København  **Organisation:** rendetalje.dk\n\n**Calendar ID:**\n\n```c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com\n\n```---\n\n## ✅ Perfekt Konfiguration\n\n\n\n### 1. Delt Med (Permissions) ✅\n\n\n\n- **<empire1266@gmail.com>**\n\n  - Kan se al information om begivenheder\n\n  - Read access til calendar events\n\n\n\n- **<info@rendetalje.dk>**\n\n  - Kan ændre og administrere deling\n\n  - Full admin access\n\n\n\n### 2. Auto-Accept Enabled ✅\n\n\n\n```\n\n✅ Acceptér automatisk invitationer, som ikke er i konflikt\n\n```**Hvad Dette Betyder:**\n\n- RenOS kan automatisk booke tider\n\n- Ingen manuel godkendelse nødvendig\n\n- System afviser automatisk overlappende bookinger\n\n- Perfekt til automated booking system!\n\n\n\n### 3. Email Notifikationer Konfigureret ✅\n\n\n\n**Nye begivenheder:**\n\n- ✅ Mail notification når booking oprettes\n\n**Ændrede begivenheder:**\n\n- ✅ Mail notification når booking ændres\n\n**Aflyste begivenheder:**\n\n- ⚠️ INGEN notification (kan enablees hvis ønsket)\n\n**Begivenhedssvar:**\n\n- ⚠️ INGEN notification (kan enablees hvis ønsket)\n\n**Daglig agenda:**\n\n- ✅ Mail notification med dagens bookinger\n\n\n\n### 4. Adgangstilladelser ✅\n\n\n\n**Gør kalenderen offentligt tilgængelig:**\n\n- ✅ Kan se al information om begivenheder\n\n- Nyttigt for kunder at se ledige tider\n\n**Gør tilgængelig for Rendetalje:**\n\n- ✅ Kan se al information om begivenheder\n\n- Alle i organisationen kan se calendar\n\n---\n\n## 🔧 Integration Links\n\n\n\n### Offentlig Web Adresse\n\n```\n\nhttps://calendar.google.com/calendar/embed?src=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff%40group.calendar.google.com&ctz=Europe%2FCopenhagen\n\n```**Use Case:** Embed på Rendetalje.dk website\n\n\n\n### iCal Format (Offentlig)\n\n```\n\nhttps://calendar.google.com/calendar/ical/c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff%40group.calendar.google.com/public/basic.ics\n\n```**Use Case:** Integration med andre calendar apps\n\n\n\n### iCal Format (Hemmelig)\n\n```\n\nhttps://calendar.google.com/calendar/ical/c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff%40group.calendar.google.com/private-72eb1b7266ba67d9eaf978d12f478ec8/basic.ics\n\n```⚠️ **VIGTIGT:** Del ALDRIG denne URL! Den giver fuld read access.\n\n---\n\n## 🚀 Næste Skridt: Sæt Environment Variable\n\n\n\n### På Render.com\n\n\n\n1. **Login til Render Dashboard**- <https://dashboard.render.com>\n\n\n\n2. **Find "tekup-renos" service**\n\n3. **Environment Variables**\n\n4. **Tilføj eller opdater:**\n\n```bashGOOGLE_CALENDAR_ID=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com\n\n```\n\n5. **Save Changes** → Auto-redeploy (~2 min)\n\n---\n\n## ✅ Verificer Service Account Access\n\n\n\n### Check At Service Account Kan Tilgå Calendar\n\n\n\nDin service account (`renos@renos-465008.iam.gserviceaccount.com`) skal have adgang til denne calendar.**To Options:**\n\n#### Option A: Domain-Wide Delegation (Recommended) ✅\n\n\n\nHvis du allerede har setup domain-wide delegation med Google Calendar scope, så virker det automatisk!**Required Scope:**\n\n```https://www.googleapis.com/auth/calendar\n\n```Dette scope giver adgang til ALLE calendars i din domain (rendetalje.dk).\n\n#### Option B: Direct Calendar Sharing\n\n\n\nAlternativt kan du dele calendar direkte med service account:\n\n1. Gå til Calendar Settings\n\n2. "Delt med" section\n\n3. Klik "Tilføj personer og grupper"\n\n4. Indtast: `renos@renos-465008.iam.gserviceaccount.com`\n\n5. Vælg: "Kan ændre og administrere deling"\n\n6. Send invitation---\n\n## 🧪 Test Calendar Integration\n\n\n\n### Test 1: List Calendar Events\n\n\n\n```bash\n\n# Via CLI tool\n\nnpm run data:calendar\n\n\n\n# Expected output: List of events in RenOS calendar\n\n```\n\n\n\n### Test 2: Create Test Event\n\n\n\n```bash\n\n# Via API endpoint\n\ncurl -X POST <https://tekup-renos.onrender.com/api/bookings/test> \\n\n  -H "Content-Type: application/json" \  -d '{    "summary": "Test Booking",    "start": "2025-10-15T10:00:00",    "duration": 120  }'\n\n# Expected: Event created successfully\n\n```\n\n\n\n### Test 3: Check Calendar\n\n\n\n1. Åbn Google Calendar: <https://calendar.google.com>\n\n2. Find "RenOS Automatisk Booking" calendar\n\n3. Se om test event vises\n\n4. Delete test event---\n\n## 📊 Fordele Ved Dedicated Calendar\n\n\n\n### Før (Primary Calendar)\n\n- ❌ Blandet private + business events\n\n- ❌ Risk for booking conflicts\n\n- ❌ Hard to filter RenOS bookings\n\n- ❌ No separation of concerns\n\n\n\n### Efter (Dedicated RenOS Calendar) ✅\n\n- ✅ Kun automated bookings\n\n- ✅ Easy to view all RenOS bookings\n\n- ✅ Separate permissions\n\n- ✅ Can share publicly without exposing private events\n\n- ✅ Better analytics (count bookings, etc.)\n\n- ✅ Auto-accept enabled\n\n---\n\n## 🎨 Embed På Website (Optional)\n\n\n\n### HTML Iframe\n\n\n\n```html\n\n<!-- Vis RenOS calendar på Rendetalje.dk -->\n\n<iframe  src="https://calendar.google.com/calendar/embed?src=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff%40group.calendar.google.com&ctz=Europe%2FCopenhagen"  style="border: 0"  width="800"  height="600"  frameborder="0"  scrolling="no"></iframe>\n\n```**Use Case:** Kunder kan se ledige tider direkte på website!\n\n\n\n### Styling Options\n\n\n\nDu kan tilpasse embed med parametre:\n\n- `&mode=WEEK` - Vis uge view\n\n- `&mode=MONTH` - Vis måned view\n\n- `&showTitle=0` - Skjul titel\n\n- `&showNav=1` - Vis navigation\n\n- `&showDate=1` - Vis dato selector\n\n- `&showPrint=0` - Skjul print button\n\n- `&showTabs=0` - Skjul tabs\n\n- `&showCalendars=0` - Skjul calendar list\n\n**Eksempel:**\n\n```https://calendar.google.com/calendar/embed?src=...&ctz=Europe/Copenhagen&mode=WEEK&showTitle=0&showNav=1\n\n```---\n\n## 🔔 Notification Anbefalinger\n\n\n\n### Nuværende Setup (Good) ✅\n\n\n\n- ✅ Nye begivenheder → Mail\n\n- ✅ Ændrede begivenheder → Mail\n\n- ✅ Daglig agenda → Mail\n\n\n\n### Foreslåede Ændringer (Optional)\n\n\n\n**Enable Aflyste begivenheder notification:**\n\n1. Calendar Settings → "Andre notifikationer"\n\n2. "Aflyste begivenheder" → Vælg "Mail"\n\n3. Save**Hvorfor?** Team får besked når kunde aflyst booking.\n\n**Enable Begivenhedssvar notification:**\n\n1. "Begivenhedssvar" → Vælg "Mail"\n\n2. Save**Hvorfor?** Få besked når kunde bekræfter/afviser booking.\n\n---\n\n## 🎯 Success Metrics\n\n\n\nEfter setup af environment variable:\n\n### ✅ Verificer At Det Virker\n\n\n\n1. **Backend Health Check:**   ```bash   curl https://tekup-renos.onrender.com/health   # Expected: {"status":"ok"}\n\n   ```\n\n\n\n2. **Create Test Booking:**   - Gå til RenOS dashboard\n\n   - Klik "Bookinger" → "Ny Booking"\n\n   - Udfyld form\n\n   - Klik "Opret Booking"\n\n\n\n3. **Check Google Calendar:**   - Åbn https://calendar.google.com\n\n   - Find "RenOS Automatisk Booking"\n\n   - Se om booking vises\n\n   - Check email for notification\n\n\n\n4. **Verify Auto-Accept:**   - Opret booking med overlappende tid\n\n   - Forvent fejl: "Time slot not available"\n\n   - Confirms conflict detection virker!\n\n---\n\n## 🐛 Troubleshooting\n\n\n\n### Problem: "Calendar not found"\n\n\n\n**Løsning:**\n\n1. Verify service account har adgang (domain-wide delegation)\n\n2. Check at Calendar ID er korrekt i environment variable\n\n3. Verify service account email: `renos@renos-465008.iam.gserviceaccount.com`\n\n### Problem: "Insufficient permissions"\n\n\n\n**Løsning:**\n\n1. Share calendar direkte med service account\n\n2. Give "Kan ændre og administrere deling" permission\n\n3. Verify domain-wide delegation scope: `https://www.googleapis.com/auth/calendar`\n\n### Problem: Events ikke synlige i Google Calendar UI\n\n\n\n**Løsning:**\n\n1. Check at calendar er "enabled" (synlig) i venstre sidebar\n\n2. Refresh browser\n\n3. Check filter settings\n\n### Problem: Email notifications ikke modtaget\n\n\n\n**Løsning:**\n\n1. Check spam folder\n\n2. Verify email adresse i Calendar Settings → "Notifikationer"\n\n3. Enable specifik notification type---\n\n## 📚 Relaterede Dokumenter\n\n\n\n- `IMPLEMENTATION_PLAN.md` - Komplet implementation guide\n\n- `docs/CALENDAR_BOOKING.md` - Calendar booking system dokumentation\n\n- `GAP_ANALYSIS_REPORT.md` - Feature gap analyse\n\n---\n\n## 🎉 Konklusion\n\n\n\n**Status:** ✅ PERFECT SETUP!\n\nDu har nu:\n\n- ✅ Dedicated RenOS booking calendar\n\n- ✅ Auto-accept enabled\n\n- ✅ Email notifications configured\n\n- ✅ Proper permissions\n\n- ✅ Public/private access configured\n\n- ✅ Copenhagen timezone\n\n- ✅ Ready for automated booking!\n\n**Næste skridt:**\n\n1. Sæt `GOOGLE_CALENDAR_ID` i Render environment\n\n2. Test booking creation\n\n3. Verify events vises i calendar\n\n4. 🎉 PROFIT!---**Perfect setup! Klar til at booke automatisk! 🚀**

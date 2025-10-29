@@ -1,4 +1,4 @@
-# 🎯 TEKUP WORKSPACE - Komplet Omstrukturerings Plan
+﻿# 🎯 TEKUP WORKSPACE - Komplet Omstrukturerings Plan
 
 **Created:** 22. Oktober 2025, 23:13 CET  
 **Analyseret af:** AI Assistant  
@@ -10,6 +10,7 @@
 ## 📊 **EXECUTIVE SUMMARY**
 
 ### **Current State:**
+
 - 14 aktive projekter spredt i root directory
 - 2 legacy projekter (Tekup-org, Tekup Google AI)
 - 14+ tomme mapper
@@ -17,6 +18,7 @@
 - Blanding af production, development, og legacy
 
 ### **Target State:**
+
 - Organized Tekup/ folder med klar struktur
 - tekup-ai som central AI monorepo
 - Separate GitHub repos per major service (following OpenAI/Anthropic pattern)
@@ -24,6 +26,7 @@
 - Clean root directory
 
 ### **Expected Benefits:**
+
 - 80% reduktion i mental overhead
 - Klar separation mellem production og development
 - Nemmere at finde projekter
@@ -37,6 +40,7 @@
 ### **A. Production Services (4 - KEEP SEPARATE)**
 
 #### 1. **tekup-database** (v1.4.0)
+
 - **Status:** ✅ CRITICAL - Central database
 - **GitHub:** Separate repo ✅
 - **Size:** 97 items
@@ -46,28 +50,31 @@
 - **Action:** Keep separate, move to Tekup/production/
 
 #### 2. **TekupVault** (v0.1.0)
+
 - **Status:** ✅ LIVE - Knowledge layer
-- **GitHub:** github.com/JonasAbde/TekupVault ✅
+- **GitHub:** github.com/TekupDK/TekupVault ✅
 - **Size:** 117 items
-- **URL:** https://tekupvault.onrender.com
+- **URL:** <https://tekupvault.onrender.com>
 - **Value:** €120,000
 - **Last updated:** 22 Oct 2025
 - **Health:** 8.5/10
 - **Action:** Keep separate, move to Tekup/production/
 
 #### 3. **Tekup-Billy** (v1.4.3)
+
 - **Status:** ✅ LIVE - Billy.dk MCP
-- **GitHub:** github.com/JonasAbde/Tekup-Billy ✅
+- **GitHub:** github.com/TekupDK/Tekup-Billy ✅
 - **Size:** 215 items
-- **URL:** https://tekup-billy.onrender.com
+- **URL:** <https://tekup-billy.onrender.com>
 - **Value:** €150,000
 - **Last updated:** 22 Oct 2025
 - **Health:** 9.2/10
 - **Action:** Keep separate, move to Tekup/production/
 
 #### 4. **RendetaljeOS** (Monorepo)
+
 - **Status:** ✅ MONOREPO - Cleaning platform
-- **GitHub:** github.com/JonasAbde/rendetalje-os ✅
+- **GitHub:** github.com/TekupDK/rendetalje-os ✅
 - **Size:** 528 items (backend + frontend)
 - **Value:** €180,000
 - **Last updated:** 20 Oct 2025 (monorepo migration 16 Oct)
@@ -79,6 +86,7 @@
 ### **B. AI Projects (CONSOLIDATE TO MONOREPO)**
 
 #### 5. **tekup-ai** (Phase 1)
+
 - **Status:** 🟡 Monorepo structure ready
 - **Size:** 322 items
 - **Apps:** 0 (empty, structure only)
@@ -87,12 +95,14 @@
 - **Action:** ✅ CENTRAL AI MONOREPO - consolidate all AI here
 
 #### 6. **tekup-chat** (v1.1.0)
+
 - **Status:** ✅ Standalone Next.js app
 - **Size:** 58 items
 - **Tech:** Next.js 15 + ChatGPT interface
 - **Action:** ➡️ MOVE to tekup-ai/apps/ai-chat/
 
 #### 7. **Agent-Orchestrator**
+
 - **Status:** ✅ Electron desktop app
 - **Size:** 25+ items + dist
 - **Tech:** Electron + React + Render integration
@@ -100,18 +110,21 @@
 - **Action:** ➡️ MOVE to tekup-ai/apps/ai-orchestrator/
 
 #### 8. **rendetalje-ai-chat**
+
 - **Status:** 📋 Docs complete, 0% implementation
 - **Size:** 43 items
 - **Tech:** Next.js 15 + GPT-4o + 24 business memories
 - **Action:** ➡️ MOVE to tekup-ai/apps/rendetalje-chat/
 
 #### 9. **Tekup Google AI** (Legacy)
+
 - **Status:** 🔴 Legacy - features migrating
 - **Size:** 1,531 items (LARGE!)
 - **Contains:** LLM abstraction, AI agent logic
 - **Action:** 🔄 EXTRACT to tekup-ai/packages/ → ARCHIVE
 
 #### 10. **tekup-ai-assistant** (v1.5.0)
+
 - **Status:** ✅ Docs & configs hub
 - **Size:** 85 items
 - **Action:** 🤔 DECISION: Keep standalone OR merge docs to tekup-ai/docs/
@@ -121,18 +134,21 @@
 ### **C. Supporting Services (KEEP SEPARATE)**
 
 #### 11. **tekup-gmail-services** (v1.0.0)
+
 - **Status:** ✅ Consolidated monorepo
 - **Size:** 82 items
 - **Consolidated:** 4 repos → 1 (22 Oct 2025)
 - **Action:** Keep separate, move to Tekup/services/
 
 #### 12. **Tekup-Cloud**
+
 - **Status:** ✅ RenOS tools + docs
 - **Size:** 477 items
 - **Contains:** renos-calendar-mcp (5 AI tools)
 - **Action:** Keep separate, move to Tekup/development/
 
 #### 13. **tekup-cloud-dashboard** (Unreleased)
+
 - **Status:** 🟡 Production-ready
 - **Size:** 47 items
 - **Action:** Keep separate, move to Tekup/development/
@@ -142,12 +158,14 @@
 ### **D. Legacy Projects (ARCHIVE)**
 
 #### 14. **Tekup-org** (FAILED EXPERIMENT)
+
 - **Status:** 🔴 66 apps - not maintainable
 - **Size:** 3,228 items (MASSIVE!)
 - **Value to extract:** €360,000 (design system + schemas)
 - **Action:** 🗑️ ARCHIVE without extraction (per user request)
 
 #### 15. **tekup-gmail-automation**
+
 - **Status:** ✅ MIGRATED to tekup-gmail-services
 - **Size:** 73 items
 - **Action:** 🗑️ DELETE (already migrated)
@@ -157,6 +175,7 @@
 ### **E. Empty/Dead Folders (DELETE)**
 
 **14 empty folders identified:**
+
 - agent-orchestrator/ (0 items) - Will be moved first
 - ansel/ (0 items)
 - backups/ (0 items)
@@ -186,19 +205,19 @@ c:\Users\empir\
 ├── Tekup/                          ← NY HOVEDMAPPE
 │   │
 │   ├── production/                 ← Live production services
-│   │   ├── tekup-database/        (git: JonasAbde/tekup-database)
-│   │   ├── tekup-vault/           (git: JonasAbde/TekupVault)
-│   │   └── tekup-billy/           (git: JonasAbde/Tekup-Billy)
+│   │   ├── tekup-database/        (git: TekupDK/tekup-database)
+│   │   ├── tekup-vault/           (git: TekupDK/TekupVault)
+│   │   └── tekup-billy/           (git: TekupDK/Tekup-Billy)
 │   │
 │   ├── development/                ← Active development
-│   │   ├── rendetalje-os/         (git: JonasAbde/rendetalje-os)
-│   │   ├── tekup-ai/              (git: JonasAbde/tekup-ai) ⭐ MONOREPO
-│   │   ├── tekup-cloud/           (git: JonasAbde/Tekup-Cloud)
-│   │   └── tekup-cloud-dashboard/ (git: JonasAbde/tekup-cloud-dashboard)
+│   │   ├── rendetalje-os/         (git: TekupDK/rendetalje-os)
+│   │   ├── tekup-ai/              (git: TekupDK/tekup-ai) ⭐ MONOREPO
+│   │   ├── tekup-cloud/           (git: TekupDK/Tekup-Cloud)
+│   │   └── tekup-cloud-dashboard/ (git: TekupDK/tekup-cloud-dashboard)
 │   │
 │   ├── services/                   ← Supporting services
-│   │   ├── tekup-gmail-services/  (git: JonasAbde/tekup-gmail-services)
-│   │   └── tekup-ai-assistant/    (git: JonasAbde/tekup-ai-assistant)
+│   │   ├── tekup-gmail-services/  (git: TekupDK/tekup-gmail-services)
+│   │   └── tekup-ai-assistant/    (git: TekupDK/tekup-ai-assistant)
 │   │
 │   ├── archive/                    ← Legacy projects (read-only)
 │   │   ├── tekup-org/             (archived 22-10-2025)
@@ -222,7 +241,7 @@ c:\Users\empir\
 **Following OpenAI/Anthropic Pattern: Separate Repos**
 
 ```
-github.com/JonasAbde/
+github.com/TekupDK/
 │
 ├── tekup-database                  ← Shared infrastructure
 ├── TekupVault                      ← Knowledge layer
@@ -614,13 +633,14 @@ Move-Item "c:\Users\empir\tekup-ai-assistant" "c:\Users\empir\Tekup\services\tek
 # Create c:\Users\empir\Tekup\README.md
 ```
 
-*Content: Complete workspace overview, links to all projects, quick start guides*
+_Content: Complete workspace overview, links to all projects, quick start guides_
 
 ---
 
 #### **Step 5.2: Update All Project READMEs (60 min)**
 
 Update README.md in each project with:
+
 - New location
 - Updated paths
 - Links to related projects
@@ -645,6 +665,7 @@ Get-ChildItem -Recurse -Depth 2
 ## 📊 **PART 4: SUCCESS METRICS**
 
 ### **Technical Metrics:**
+
 - ✅ 0 projects in root (except Tekup/)
 - ✅ All projects organized in logical folders
 - ✅ tekup-ai monorepo with 3+ apps
@@ -652,12 +673,14 @@ Get-ChildItem -Recurse -Depth 2
 - ✅ No broken paths or dependencies
 
 ### **Organizational Metrics:**
+
 - ✅ Clear separation: production vs development
 - ✅ Legacy properly archived
 - ✅ All empty folders removed
 - ✅ Documentation organized
 
 ### **Time Metrics:**
+
 - ⏱️ Phase 1: 2 hours
 - ⏱️ Phase 2: 30 min
 - ⏱️ Phase 3: 3 hours
@@ -670,18 +693,22 @@ Get-ChildItem -Recurse -Depth 2
 ## 🚨 **PART 5: RISK MITIGATION**
 
 ### **Risk 1: Git History Loss**
+
 - **Mitigation:** All moves preserve .git folders
 - **Verification:** Check git log after each move
 
 ### **Risk 2: Broken Paths**
+
 - **Mitigation:** Update .env files and configs after moves
 - **Verification:** Test each app after moving
 
 ### **Risk 3: Dependency Issues**
+
 - **Mitigation:** Run pnpm install after workspace changes
 - **Verification:** Build each app to confirm
 
 ### **Risk 4: Data Loss**
+
 - **Mitigation:** NO deletion until after verification
 - **Backup:** Keep archives for 30 days
 
@@ -690,17 +717,20 @@ Get-ChildItem -Recurse -Depth 2
 ## 🎯 **PART 6: NEXT STEPS AFTER COMPLETION**
 
 ### **Week 1:**
+
 1. ✅ Structure complete
 2. ✅ Update all documentation
 3. ✅ Test all production services
 4. ✅ Verify all git repos
 
 ### **Week 2:**
+
 1. Complete Tekup Google AI extraction
 2. Finalize tekup-ai packages
 3. Setup CI/CD for tekup-ai monorepo
 
 ### **Week 3:**
+
 1. Deploy updated services
 2. Update Render.com paths if needed
 3. Monitor production stability
@@ -710,6 +740,7 @@ Get-ChildItem -Recurse -Depth 2
 ## ✅ **APPROVAL CHECKLIST**
 
 Before starting, confirm:
+
 - [ ] Backup strategy in place (archives kept for 30 days)
 - [ ] No active development that will be disrupted
 - [ ] Time allocated (8.5 hours over 1-2 days)

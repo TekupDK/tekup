@@ -8,6 +8,7 @@
 ## ✅ **FLYTTET IND I TEKUP/ MONOREPO:**
 
 ### **Projekter flyttet:**
+
 1. ✅ `tekup-database/` → `Tekup/apps/production/tekup-database/`
 2. ✅ `TekupVault/` → `Tekup/apps/production/tekup-vault/`
 3. ✅ `Tekup-Billy/` → `Tekup/apps/production/tekup-billy/`
@@ -23,11 +24,13 @@
 ## 📂 **TILBAGE I c:\Users\empir\ (UDEN FOR TEKUP):**
 
 ### **Tomme mapper (kan slettes):**
+
 - ❌ `Tekup-Cloud/` (0 items) - TOM
 - ❌ `Tekup-org/` (0 items) - TOM
 - ❌ `tekup-cloud-dashboard/` (0 items) - TOM (vi flyttede indholdet)
 
 ### **Gamle dokumenter (kan arkiveres eller slettes):**
+
 - 📄 `GIT_COMMIT_COMPLETE_2025-10-22.md` (8.8 KB)
 - 📄 `README_START_HERE.md` (8.5 KB)
 - 📄 `TEKUP_CLOUD_KOMPLET_ANALYSE.md` (21.7 KB)
@@ -39,6 +42,7 @@
 **Status:** Gamle arbejdsdokumenter fra før monorepo migration
 
 ### **Andre filer:**
+
 - 📄 `gmail_pdf_forwarder.py` (14.4 KB) - Script
 - 📄 `requirements.txt` (114 bytes)
 - 📄 `config.json` (323 bytes)
@@ -48,6 +52,7 @@
 ## 🎯 **ANBEFALING:**
 
 ### **1. Slet tomme mapper:**
+
 ```powershell
 cd c:\Users\empir
 rmdir Tekup-Cloud
@@ -56,6 +61,7 @@ rmdir tekup-cloud-dashboard
 ```
 
 ### **2. Flyt gamle docs til arkiv:**
+
 ```powershell
 # Opret arkiv i Tekup
 mkdir Tekup\archive\old-docs-2025-10-22
@@ -73,6 +79,7 @@ del WHAT_IS_NEW_IN_EACH_FOLDER.md
 ```
 
 ### **3. Tjek gmail scripts:**
+
 ```powershell
 # Hører de til tekup-gmail-services?
 # Hvis ja, flyt dem:
@@ -86,6 +93,7 @@ move config.json Tekup\services\tekup-gmail-services\scripts\
 ## 📊 **SAMMENLIGNING:**
 
 ### **FØR MIGRATION:**
+
 ```
 c:\Users\empir\
 ├── tekup-database/           ← Separate repo
@@ -101,12 +109,14 @@ c:\Users\empir\
 ```
 
 **Problem:**
+
 - ❌ 7 separate repos spredt rundt
 - ❌ Svært at synkronisere
 - ❌ Mange loose filer
 - ❌ Ingen struktur
 
 ### **EFTER MIGRATION:**
+
 ```
 c:\Users\empir\
 ├── Tekup/                    ← ÉT MONOREPO
@@ -130,6 +140,7 @@ c:\Users\empir\
 ```
 
 **Resultat:**
+
 - ✅ ÉT monorepo med alt samlet
 - ✅ Organiseret struktur
 - ✅ Klar til cleanup
@@ -140,6 +151,7 @@ c:\Users\empir\
 ## ✅ **HVAD MANGLER:**
 
 ### **Cleanup tasks:**
+
 1. ⏳ Slet 3 tomme mapper
 2. ⏳ Arkiver eller slet gamle docs
 3. ⏳ Flyt gmail scripts hvis relevante
@@ -170,6 +182,7 @@ c:\Users\empir\
 ## 📝 **KONKLUSION:**
 
 ### **Hvad vi HAR gjort:**
+
 - ✅ Flyttet 7 projekter ind i monorepo
 - ✅ Organiseret struktur (apps/services)
 - ✅ Oprettet GitHub repo
@@ -177,6 +190,7 @@ c:\Users\empir\
 - ✅ Konfigureret workspace
 
 ### **Hvad der MANGLER:**
+
 - ⏳ Rydde op i gamle mapper/filer
 - ⏳ Arkivere gamle docs
 - ⏳ Cleanup af c:\Users\empir\

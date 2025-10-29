@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2025-10-22
 
 ### Added
+
 - **Session Storage**: Automatic chat history persistence using localStorage
   - Chat history automatically saved after each message
   - History restored on page reload/browser restart
@@ -22,10 +23,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Consistent with message styling
 
 ### Changed
+
 - Updated README.md with new features and "Recent Updates" section
 - Improved header UI with conditional clear button rendering
 
 ### Technical Details
+
 - Implementation: React hooks (useEffect) with localStorage API
 - Storage key: `tekup-chat-history`
 - Data format: JSON array of Message objects
@@ -35,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-10-19
 
 ### Added
+
 - Initial release with ChatGPT-style interface
 - OpenAI GPT-4o integration with streaming responses
 - TekupVault RAG knowledge base integration
@@ -45,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-turn conversations with context
 
 ### Features
+
 - Clean, modern UI similar to ChatGPT/Claude
 - Searches 1,063 documents from 8 repositories
 - Context-aware responses with automatic citations
@@ -53,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Zod schema validation
 
 ### Technical Stack
+
 - Next.js 15 with App Router
 - React 18 with TypeScript
 - Tailwind CSS 4

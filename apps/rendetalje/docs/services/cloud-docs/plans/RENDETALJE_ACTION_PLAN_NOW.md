@@ -1,4 +1,5 @@
-# Rendetalje - Action Plan (Start Nu!)
+﻿# Rendetalje - Action Plan (Start Nu!)
+
 **Generated:** 22. Oktober 2025, kl. 06:30 CET  
 **Status:** Der er stadig aktiv udvikling i både standalone repos OG monorepo
 
@@ -26,6 +27,7 @@
 ### **Beslutning: BEGGE kan eksistere sammen! 🎉**
 
 **Hvorfor?**
+
 - Standalone repos er på GitHub (source of truth)
 - RendetaljeOS monorepo er optimal for LOCAL development
 - Vi kan synkronisere dem
@@ -73,6 +75,7 @@ git log --oneline -5 --since="2025-10-16"
 ```
 
 **Spørgsmål:**
+
 - Er der commits i standalone repos efter 16-10?
 - Er der commits i RendetaljeOS efter 16-10?
 - Hvilken har du brugt mest?
@@ -92,6 +95,7 @@ Get-ChildItem -Recurse -File | Sort-Object LastWriteTime -Descending | Select-Ob
 ```
 
 **Spørgsmål:**
+
 - Hvor er de nyeste ændringer?
 - Hvilken version har du arbejdet i?
 
@@ -102,6 +106,7 @@ Get-ChildItem -Recurse -File | Sort-Object LastWriteTime -Descending | Select-Ob
 #### **Option A: RendetaljeOS Som Primary** ✅ ANBEFALET
 
 **Fordele:**
+
 - Monorepo benefits (shared types, single install, turbo builds)
 - Bedre developer experience
 - Én kommando til at starte alt
@@ -138,6 +143,7 @@ git push origin main
 #### **Option B: Standalone Repos Som Primary**
 
 **Fordele:**
+
 - Simplere (ingen sync needed)
 - Matcher existing GitHub structure
 - Separate deployment pipelines
@@ -186,11 +192,13 @@ git submodule add <renos-frontend-github-url> apps/frontend
 ```
 
 **Fordele:**
+
 - Best of both worlds
 - Automatic sync med GitHub
 - Monorepo structure bevaret
 
 **Ulemper:**
+
 - Mere komplekst
 - Git submodules kan være tricky
 
@@ -198,7 +206,7 @@ git submodule add <renos-frontend-github-url> apps/frontend
 
 ### **FASE 3: RYDDE OP (15 min)**
 
-#### Uanset hvilken option du vælger:
+#### Uanset hvilken option du vælger
 
 ```powershell
 # 1. Delete duplicate RendetaljeOS-Mobile i Tekup-Cloud
@@ -225,7 +233,7 @@ Get-ChildItem -Filter "PORT_*.md" | Move-Item -Destination docs/technical/
 
 ### **FASE 4: DOKUMENTER BESLUTNINGEN (5 min)**
 
-#### Opdater README i alle repos:
+#### Opdater README i alle repos
 
 **RendetaljeOS/README.md:**
 
@@ -237,8 +245,8 @@ Get-ChildItem -Filter "PORT_*.md" | Move-Item -Destination docs/technical/
 This monorepo contains apps/backend and apps/frontend for local development.
 
 **Source of Truth:**
-- Backend: https://github.com/JonasAbde/renos-backend
-- Frontend: https://github.com/JonasAbde/renos-frontend
+- Backend: https://github.com/TekupDK/renos-backend
+- Frontend: https://github.com/TekupDK/renos-frontend
 
 **Usage:**
 ```bash
@@ -246,9 +254,11 @@ pnpm dev  # Start both apps
 ```
 
 **Workflow:**
+
 1. Develop in this monorepo
 2. Test everything together
 3. Push changes to standalone GitHub repos
+
 ```
 
 **renos-backend/README.md:**
@@ -287,12 +297,12 @@ cd apps/backend
 git remote -v  # Check if origin is set
 
 # If not set:
-git remote add origin https://github.com/JonasAbde/renos-backend.git
+git remote add origin https://github.com/TekupDK/renos-backend.git
 
 cd ../frontend
 git remote -v
 # If not set:
-git remote add origin https://github.com/JonasAbde/renos-frontend.git
+git remote add origin https://github.com/TekupDK/renos-frontend.git
 
 # 3. Start working!
 cd ../..
@@ -326,7 +336,7 @@ git push origin main
 
 Når du har besluttet strategi:
 
-### Hvis Option A (RendetaljeOS Primary):
+### Hvis Option A (RendetaljeOS Primary)
 
 - [x] ✅ Keep RendetaljeOS som primary
 - [ ] 🔧 Setup git remotes i apps/backend og apps/frontend
@@ -336,7 +346,7 @@ Når du har besluttet strategi:
 - [ ] 📦 Archive Tekup Google AI
 - [ ] 📂 Organize Tekup-Cloud documentation
 
-### Hvis Option B (Standalone Primary):
+### Hvis Option B (Standalone Primary)
 
 - [ ] 📦 Archive RendetaljeOS folder
 - [ ] 📝 Update README i renos-backend/renos-frontend
@@ -450,6 +460,7 @@ npm run dev
 **Min klare anbefaling: OPTION A**
 
 **Hvorfor:**
+
 - Du får monorepo benefits
 - GitHub repos forbliver intact (for CI/CD)
 - Clean workflow
@@ -462,4 +473,3 @@ Sig til hvilken option du vil have, så guider jeg dig gennem setup! 🚀
 
 **Action Plan Complete** ✅
 **Awaiting Your Decision** 🎯
-

@@ -1,4 +1,5 @@
 # 🎨 RenOS - Komplet Visuel & UI/UX Analyse
+
 \n\n
 \n\n*Genereret: 3. Oktober 2025*
 
@@ -503,7 +504,8 @@ Max-width: max-w-7xl for content
 \n\n1. Bruger klikker "+ Ny Lead" button (Leads page)
 \n\n   ↓
 \n\n2. CreateLeadModal åbner med form fields:
-   - Navn (required)
+
+- Navn (required)
 \n\n   - Email (required)
 \n\n   - Telefon (optional)
 \n\n   - Opgave type (dropdown)
@@ -520,7 +522,7 @@ Max-width: max-w-7xl for content
 \n\n7. Bruger klikker ✨ Sparkles icon (AI Quote)
    ↓
 \n\n8. AIQuoteModal åbner:
-   - Parsed customer info vises
+- Parsed customer info vises
 \n\n   - API kalder Gemini for quote generation
 \n\n   - Loading spinner vises
 \n\n   ↓
@@ -544,7 +546,8 @@ Max-width: max-w-7xl for content
 \n\n1. Bruger klikker "+ Ny Booking" (Bookings page)
 \n\n   ↓
 \n\n2. BookingModal åbner med form:
-   - Customer selector (autocomplete dropdown)
+
+- Customer selector (autocomplete dropdown)
 \n\n   - Service type dropdown
 \n\n   - Date picker (Calendar component)
 \n\n   - Time picker (start/end)
@@ -558,7 +561,7 @@ Max-width: max-w-7xl for content
 \n\n5. Bruger vælger dato i calendar picker
    ↓
 \n\n6. System tjekker Google Calendar for conflicts:
-   - GET /api/calendar/availability
+- GET /api/calendar/availability
 \n\n   - Viser ledige tidsslots
 \n\n   ↓
 \n\n7. Bruger vælger start time (f.eks. 10:00)
@@ -589,14 +592,15 @@ Max-width: max-w-7xl for content
 \n\n3. Bruger navigerer til Email Approval page
    ↓
 \n\n4. Liste af pending emails vises i cards:
-   - To/From
+
+- To/From
 \n\n   - Subject
 \n\n   - Preview (første 200 chars)
 \n\n   - Status badge
 \n\n   - Action buttons
 \n\n   ↓
 \n\n5. Bruger klikker på email card for at udvide:
-   - Full email content vises
+- Full email content vises
 \n\n   - Markdown rendered
 \n\n   ↓
 \n\n6. Bruger har 3 options:
@@ -605,7 +609,7 @@ Max-width: max-w-7xl for content
    c) ❌ Reject → Email markeres "Rejected"
    ↓
 \n\n7. Hvis Approved:
-   - Cron job sender email via Gmail API
+- Cron job sender email via Gmail API
 \n\n   - Status ændres til "Sent"
 \n\n   - Email forsvinder fra pending liste
 \n\n   ↓

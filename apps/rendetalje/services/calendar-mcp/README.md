@@ -1,4 +1,5 @@
 # RenOS Calendar Intelligence MCP
+
 ## Diagnostics & Performance Snapshot
 
 For a live system snapshot (øjebliksbillede):
@@ -26,7 +27,6 @@ Environment override:
 MCP_URL=http://localhost:3001 npm run snapshot:perf
 ```
 
-
 **Status**: 🚧 MVP Development (v0.1.0)  
 **Live**: TBD (Deployment planned efter FASE 1)
 
@@ -39,22 +39,27 @@ Et nervesystem der har lært fra 1000+ emails og bookinger, og som automatisk fo
 ## ⚡ De 5 Killer Features (MVP FASE 1)
 
 ### 1. 🗓️ Dato & Ugedag Validator
+
 **Problem**: 30+ kalenderfejl ("28. oktober er mandag" → NEJ, det er tirsdag!)  
 **Løsning**: Automatisk verificering af dato/ugedag match før booking oprettes
 
 ### 2. 🚫 Dobbeltbooking Checker
+
 **Problem**: Overlappende bookinger skaber kaos  
 **Løsning**: Real-time konflikt-detektion med 100% sikkerhed
 
 ### 3. 💰 Auto-Faktura Workflow
+
 **Problem**: 15+ manglende fakturaer per måned  
 **Løsning**: Automatisk faktura-oprettelse via Billy.dk MCP + daglig scanning
 
 ### 4. ⏰ Overtids Tracker & Voice Alerts
+
 **Problem**: Vinni: 9 timer vs 6 timer - ingen kommunikation  
 **Løsning**: Live tracking med Twilio voice alerts efter +1 time overtid
 
 ### 5. 🧠 Kunde-Memory Bank
+
 **Problem**: Glemmer "Jes = kun mandage", gentager samme fejl  
 **Løsning**: Intelligent database der husker alt og auto-injector info
 
@@ -68,6 +73,7 @@ Et nervesystem der har lært fra 1000+ emails og bookinger, og som automatisk fo
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
 - Google Calendar API credentials
 - Supabase account (free tier OK)
@@ -139,8 +145,9 @@ cd renos-calendar-mcp
 ```
 
 **URLs after deployment**:
-- Backend: https://renos-calendar-mcp.onrender.com
-- Dashboard: https://renos-calendar-dashboard.onrender.com
+
+- Backend: <https://renos-calendar-mcp.onrender.com>
+- Dashboard: <https://renos-calendar-dashboard.onrender.com>
 
 See `deployment/README.md` for detailed deployment guide.
 
@@ -220,12 +227,14 @@ npm run test:watch
 ## 📈 Success Metrics (FASE 1)
 
 ### Tekniske KPIs
+
 - ✅ 0 dobbeltbookinger
 - ✅ 100% fakturaer oprettet inden 24t
 - ✅ Alle overtid varslet inden +1t  
 - ✅ API response time < 200ms
 
 ### Forretnings KPIs
+
 - 💰 18.500 kr/måned sparet på fejl-elimination
 - ⏱️ 10+ timer/uge sparet på administration
 - 📊 0% kalenderfejl (vs 30+ per måned før)
@@ -233,6 +242,7 @@ npm run test:watch
 ## 🗺️ Roadmap
 
 ### ✅ FASE 1: MVP (Uge 1-2) - Current
+
 - [x] Repository struktur  
 - [ ] 5 core tools implementeret
 - [ ] Mobile PWA dashboard
@@ -244,12 +254,14 @@ npm run test:watch
 - [ ] Deploy til Render.com
 
 ### 🔜 FASE 2: Intelligence (Uge 3-4)
+
 - Team optimization
 - Lead routing  
 - Pattern learning
 - Risk signal detection
 
 ### 🔮 FASE 3: Scale (Uge 5-6)
+
 - ML predictions
 - Customer portal
 - Advanced analytics
@@ -258,6 +270,7 @@ npm run test:watch
 ## 🤝 Integration Points
 
 ### Tekup-Billy MCP (v1.4.0)
+
 ```typescript
 // Auto-faktura via Billy MCP
 const response = await billyMCP.createInvoice({
@@ -268,6 +281,7 @@ const response = await billyMCP.createInvoice({
 ```
 
 ### Google Calendar
+
 ```typescript
 // 2-way sync med "RenOS Automatisk Booking"
 const conflicts = await calendarService.checkConflicts(
@@ -276,6 +290,7 @@ const conflicts = await calendarService.checkConflicts(
 ```
 
 ### Shortwave (Background Analysis)
+
 ```typescript
 // Pattern learning fra 1000+ emails (background job)
 const patterns = await shortwaveAnalyzer.extractCustomerPatterns();
@@ -311,4 +326,3 @@ MIT License - Se LICENSE fil for detaljer
 ---
 
 **Status**: 🚧 Under Udvikling | **Target**: MVP live om 2 uger! 🚀
-

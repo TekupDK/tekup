@@ -147,7 +147,7 @@ Alle filer er committet (3df72ce), så de skulle være der. Hvis ikke, pull fra 
 
 ---
 
-## 🚀 You're Ready!
+## 🚀 You're Ready
 
 Når alle ✅ er checked, du er klar til:
 

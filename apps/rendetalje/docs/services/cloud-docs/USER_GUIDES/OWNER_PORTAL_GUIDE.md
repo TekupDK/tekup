@@ -1,7 +1,7 @@
 # 👑 Owner Portal - Complete User Guide
 
 **Target Users**: Ejere & Administratorer  
-**URL**: https://rendetaljeos.onrender.com/owner  
+**URL**: <https://rendetaljeos.onrender.com/owner>  
 **Access Level**: Full system access
 
 ---
@@ -11,6 +11,7 @@
 Owner Portal er dit command center for hele Rendetalje.dk forretningen. Her får du real-time indsigt i performance, kan styre team og kunder, og træffe informerede business decisions baseret på data.
 
 ### 🔑 Key Features
+
 - **📊 Real-time Dashboard**: KPIs, revenue, team performance
 - **👥 Customer Management**: Complete CRM funktionalitet
 - **👷 Team Oversight**: Live locations, performance, scheduling
@@ -23,14 +24,17 @@ Owner Portal er dit command center for hele Rendetalje.dk forretningen. Her får
 ## 🚀 Getting Started
 
 ### 1. Login & First Setup
-1. **Navigate** til https://rendetaljeos.onrender.com/owner
+
+1. **Navigate** til <https://rendetaljeos.onrender.com/owner>
 2. **Log ind** med dine owner credentials
 3. **Complete** din profil (navn, telefon, preferences)
 4. **Take** den guided tour af features
 5. **Setup** notification preferences
 
 ### 2. Dashboard Overview
+
 Efter login ser du hoveddasboardet med:
+
 - **KPI Cards**: Revenue, jobs, customers, team utilization
 - **Live Map**: Real-time team locations
 - **Recent Activity**: Latest jobs og customer interactions
@@ -42,42 +46,50 @@ Efter login ser du hoveddasboardet med:
 ## 📊 Dashboard & Analytics
 
 ### Real-time KPIs
+
 **Location**: Top of dashboard
 
 #### Revenue Metrics
+
 - **Today's Revenue**: Dagens indtjening fra completerede jobs
 - **Monthly Revenue**: Månedens total med % change fra sidste måned
 - **Average Job Value**: Gennemsnitlig job værdi
 - **Revenue Trend**: 7-dages trend graf
 
 #### Job Metrics  
+
 - **Jobs Today**: Antal jobs scheduled/completed i dag
 - **Completion Rate**: % af jobs completed on time
 - **Average Duration**: Gennemsnitlig job varighed
 - **Customer Satisfaction**: Gennemsnitlig rating fra kunder
 
 #### Team Metrics
+
 - **Team Utilization**: % af arbejdstid brugt på jobs
 - **Active Team Members**: Antal medarbejdere på arbejde
 - **Overtime Hours**: Timer over normal arbejdstid
 - **Efficiency Score**: Performance metric baseret på time vs. estimates
 
 ### 📈 Analytics Dashboard
+
 **Navigation**: Dashboard → Analytics
 
 #### Revenue Analysis
+
 - **Monthly Trends**: Revenue udvikling over tid
 - **Service Breakdown**: Indtjening per service type
 - **Customer Segments**: Revenue per customer segment
 - **Profitability**: Profit margins per job type
 
 #### Performance Metrics
+
 - **Team Performance**: Individual og team metrics
 - **Job Completion**: Success rates og timing
 - **Customer Retention**: Repeat customer analysis
 - **Growth Metrics**: Business growth indicators
 
 ### 📊 Custom Reports
+
 **Navigation**: Dashboard → Reports
 
 1. **Select Report Type**: Revenue, Team, Customer, Jobs
@@ -91,30 +103,36 @@ Efter login ser du hoveddasboardet med:
 ## 👥 Customer Management
 
 ### Customer Overview
+
 **Navigation**: Main Menu → Customers
 
 #### Customer List
+
 - **Search & Filter**: Find customers by name, email, phone
 - **Sort Options**: By name, last service, total revenue, satisfaction
 - **Quick Actions**: Call, email, schedule service, view history
 - **Bulk Actions**: Send newsletters, export data
 
 #### Customer Details
+
 **Click** på any customer for detailed view:
 
 ##### Profile Information
+
 - **Contact Details**: Name, email, phone, address
 - **Service Preferences**: Preferred times, special instructions
 - **Communication Log**: All interactions og messages
 - **Notes**: Internal notes og customer preferences
 
 ##### Service History
+
 - **All Jobs**: Complete history med dates, services, ratings
 - **Recurring Services**: Setup og management
 - **Invoices**: Payment history og outstanding amounts
 - **Photos**: Before/after photos from services
 
 ##### Analytics
+
 - **Customer Value**: Total revenue og average job value
 - **Satisfaction Trends**: Rating history over time
 - **Service Frequency**: How often they book services
@@ -123,6 +141,7 @@ Efter login ser du hoveddasboardet med:
 ### 📝 Customer Actions
 
 #### Create New Customer
+
 1. **Click** "Add Customer" button
 2. **Fill** basic information (name, email, phone)
 3. **Add** address og service preferences
@@ -130,14 +149,16 @@ Efter login ser du hoveddasboardet med:
 5. **Save** customer profile
 
 #### Schedule Service
+
 1. **Select** customer from list
-2. **Click** "Schedule Service" 
+2. **Click** "Schedule Service"
 3. **Choose** service type og date/time
 4. **Assign** team members
 5. **Add** special instructions
 6. **Confirm** booking
 
 #### Communication
+
 - **Direct Messages**: Send messages via platform
 - **Email**: Send emails directly from system
 - **SMS**: Send text messages (if configured)
@@ -148,24 +169,29 @@ Efter login ser du hoveddasboardet med:
 ## 👷 Team Management
 
 ### Team Overview
+
 **Navigation**: Main Menu → Team
 
 #### Live Team Tracking
+
 - **Map View**: Real-time locations af active team members
 - **Status Indicators**: Available, on job, break, offline
 - **Job Progress**: Current job status og estimated completion
 - **Route Optimization**: Suggested routes for efficiency
 
 #### Team Performance
+
 **Navigation**: Team → Performance
 
 ##### Individual Metrics
+
 - **Jobs Completed**: Daily, weekly, monthly counts
 - **Average Rating**: Customer satisfaction scores
 - **Efficiency**: Time management og productivity
 - **Revenue Generated**: Total revenue from their jobs
 
 ##### Team Analytics
+
 - **Utilization Rates**: How efficiently team time is used
 - **Overtime Tracking**: Monitor og manage overtime
 - **Skill Distribution**: Team capabilities og training needs
@@ -174,6 +200,7 @@ Efter login ser du hoveddasboardet med:
 ### 👤 Team Member Management
 
 #### Add New Team Member
+
 1. **Navigate** til Team → Add Member
 2. **Create** user account (email, password, role)
 3. **Set** hourly rate og skills
@@ -182,6 +209,7 @@ Efter login ser du hoveddasboardet med:
 6. **Send** welcome email med login info
 
 #### Manage Existing Members
+
 - **Edit Profile**: Update contact info, skills, rates
 - **Schedule Management**: Set availability og time off
 - **Performance Reviews**: Track metrics og feedback
@@ -190,6 +218,7 @@ Efter login ser du hoveddasboardet med:
 ### 📅 Scheduling & Assignments
 
 #### Daily Scheduling
+
 **Navigation**: Team → Schedule
 
 1. **View** dagens assignments per team member
@@ -199,6 +228,7 @@ Efter login ser du hoveddasboardet med:
 5. **Send** notifications til team members
 
 #### Route Optimization
+
 - **Automatic Routing**: System suggests optimal routes
 - **Manual Adjustments**: Override suggestions if needed
 - **Travel Time**: Accurate estimates between jobs
@@ -209,15 +239,18 @@ Efter login ser du hoveddasboardet med:
 ## 💰 Financial Management
 
 ### Billy.dk Integration
+
 **Navigation**: Main Menu → Billing
 
 #### Invoice Management
+
 - **Automatic Creation**: Invoices created on job completion
 - **Manual Invoices**: Create custom invoices
 - **Payment Tracking**: Monitor payment status
 - **Overdue Management**: Follow up on late payments
 
 #### Financial Reports
+
 - **Revenue Reports**: Daily, weekly, monthly breakdowns
 - **Profit Analysis**: Costs vs. revenue per job
 - **Tax Reports**: VAT og income tax summaries
@@ -226,6 +259,7 @@ Efter login ser du hoveddasboardet med:
 ### 📊 Profitability Analysis
 
 #### Job Profitability
+
 **Navigation**: Billing → Profitability
 
 - **Cost Breakdown**: Labor, materials, travel costs
@@ -234,6 +268,7 @@ Efter login ser du hoveddasboardet med:
 - **Optimization**: Suggestions for improving profitability
 
 #### Customer Profitability
+
 - **Customer Value**: Revenue per customer over time
 - **Service Costs**: Actual costs for each customer
 - **Retention Value**: Value of long-term customers
@@ -244,29 +279,34 @@ Efter login ser du hoveddasboardet med:
 ## 🤖 AI Friday Integration
 
 ### Business Intelligence Assistant
+
 **Location**: Chat widget (bottom right) eller dedicated AI Friday page
 
-#### What AI Friday Can Help With:
+#### What AI Friday Can Help With
 
 ##### Real-time Business Queries
+
 - **"Hvad er dagens omsætning?"** → Current revenue figures
 - **"Hvor mange jobs har vi completed i dag?"** → Job completion stats
 - **"Hvilke kunder har vi ikke set i 3 måneder?"** → Customer retention analysis
 - **"Hvem er vores mest profitable kunder?"** → Customer value ranking
 
 ##### Team Management
+
 - **"Hvor er teamet lige nu?"** → Live team locations
 - **"Hvem har overtime i denne uge?"** → Overtime tracking
 - **"Hvilke medarbejdere performer bedst?"** → Performance metrics
 - **"Er der konflikter i morgendagens schedule?"** → Schedule analysis
 
 ##### Customer Insights
+
 - **"Hvilke kunder klager mest?"** → Satisfaction analysis
 - **"Hvad er vores gennemsnitlige customer rating?"** → Quality metrics
 - **"Hvilke services er mest profitable?"** → Service analysis
 - **"Hvor mange nye kunder fik vi denne måned?"** → Growth metrics
 
 ### 🗣️ Voice Commands
+
 AI Friday supports Danish voice input:
 
 1. **Click** microphone icon in chat widget
@@ -275,7 +315,9 @@ AI Friday supports Danish voice input:
 4. **Follow up** with additional questions
 
 ### 📊 Data Access
+
 AI Friday has real-time access to:
+
 - Job data og status
 - Customer information og history  
 - Team performance metrics
@@ -288,27 +330,32 @@ AI Friday has real-time access to:
 ## 🔔 Notifications & Alerts
 
 ### Notification Types
+
 **Navigation**: Profile → Notifications
 
 #### Business Alerts
+
 - **Revenue Milestones**: Daily/monthly targets reached
 - **Job Completions**: When jobs are finished
 - **Customer Feedback**: New ratings eller complaints
 - **Team Updates**: Schedule changes, overtime alerts
 
 #### System Notifications
+
 - **Integration Issues**: Problems med Billy.dk eller other services
 - **Performance Alerts**: System slowdowns eller errors
 - **Security Alerts**: Login attempts eller security issues
 - **Update Notifications**: New features eller system updates
 
 ### 📱 Notification Channels
+
 - **In-App**: Notifications within RendetaljeOS
 - **Email**: Important alerts sent to email
 - **SMS**: Critical alerts via text message
 - **Push**: Mobile notifications (if mobile app installed)
 
 ### ⚙️ Notification Settings
+
 1. **Navigate** til Profile → Notification Settings
 2. **Choose** notification types you want to receive
 3. **Select** delivery channels for each type
@@ -320,15 +367,18 @@ AI Friday has real-time access to:
 ## 📊 Quality Control & Customer Satisfaction
 
 ### Quality Monitoring
+
 **Navigation**: Main Menu → Quality
 
 #### Job Quality Tracking
+
 - **Photo Reviews**: Before/after photos from all jobs
 - **Checklist Completion**: Ensure all tasks completed
 - **Time Analysis**: Jobs taking longer than estimated
 - **Customer Feedback**: Ratings og comments
 
 #### Quality Reports
+
 - **Team Performance**: Quality scores per team member
 - **Service Quality**: Quality by service type
 - **Trend Analysis**: Quality improvements over time
@@ -337,12 +387,14 @@ AI Friday has real-time access to:
 ### 😊 Customer Satisfaction
 
 #### Satisfaction Metrics
+
 - **Overall Rating**: Average customer satisfaction score
 - **Rating Trends**: Satisfaction changes over time
 - **Service Ratings**: Satisfaction per service type
 - **Team Ratings**: Customer feedback per team member
 
 #### Feedback Management
+
 - **Review Responses**: Respond to customer reviews
 - **Issue Resolution**: Track og resolve complaints
 - **Improvement Actions**: Implement feedback suggestions
@@ -353,30 +405,36 @@ AI Friday has real-time access to:
 ## 🔧 System Administration
 
 ### User Management
+
 **Navigation**: Settings → Users
 
 #### Manage User Accounts
+
 - **Add Users**: Create accounts for team members
 - **Edit Permissions**: Set role-based access levels
 - **Deactivate Users**: Disable accounts when needed
 - **Password Resets**: Help users with login issues
 
 #### Role Management
+
 - **Owner**: Full system access (you)
 - **Admin**: Administrative access, no financial data
 - **Employee**: Limited to employee portal og mobile
 - **Customer**: Access to customer portal only
 
 ### ⚙️ System Settings
+
 **Navigation**: Settings → System
 
 #### Business Configuration
+
 - **Company Information**: Name, address, contact details
 - **Service Types**: Configure available services og pricing
 - **Working Hours**: Set business hours og availability
 - **Holiday Schedule**: Configure holidays og closures
 
 #### Integration Settings
+
 - **Billy.dk**: Configure accounting integration
 - **Google Calendar**: Setup calendar synchronization
 - **Email Settings**: SMTP configuration for notifications
@@ -387,15 +445,18 @@ AI Friday has real-time access to:
 ## 📱 Mobile App Management
 
 ### Employee Mobile App
+
 **Navigation**: Settings → Mobile
 
 #### App Configuration
+
 - **Download Links**: Provide app store links to team
 - **Device Management**: Track registered devices
 - **Offline Settings**: Configure offline functionality
 - **Push Notifications**: Manage mobile notifications
 
 #### Mobile Analytics
+
 - **Usage Statistics**: How team uses mobile app
 - **Offline Activity**: Work done without internet
 - **Photo Uploads**: Images captured in field
@@ -408,18 +469,21 @@ AI Friday has real-time access to:
 ### Common Issues
 
 #### Login Problems
+
 1. **Check** email og password spelling
 2. **Try** password reset if needed
 3. **Clear** browser cache og cookies
 4. **Contact** support if issues persist
 
 #### Data Not Loading
+
 1. **Refresh** the page
 2. **Check** internet connection
 3. **Try** different browser
 4. **Contact** support with error details
 
 #### Integration Issues
+
 1. **Check** Billy.dk connection status
 2. **Verify** API keys are valid
 3. **Test** calendar synchronization
@@ -428,13 +492,15 @@ AI Friday has real-time access to:
 ### 📞 Getting Help
 
 #### In-App Support
+
 - **AI Friday**: Ask questions about system usage
 - **Help Documentation**: Built-in guides og tutorials
 - **Video Tutorials**: Step-by-step video guides
 - **FAQ Section**: Answers to common questions
 
 #### Direct Support
-- **Email**: dev@rendetalje.dk for technical issues
+
+- **Email**: <dev@rendetalje.dk> for technical issues
 - **Phone**: +45 XX XX XX XX for urgent problems
 - **Chat**: Live chat during business hours
 - **Training**: Schedule one-on-one training sessions
@@ -444,6 +510,7 @@ AI Friday has real-time access to:
 ## 🎯 Best Practices
 
 ### Daily Workflow
+
 1. **Morning Review**: Check dashboard KPIs og today's schedule
 2. **Team Check-in**: Review team assignments og any issues
 3. **Customer Follow-up**: Respond to messages og reviews
@@ -451,6 +518,7 @@ AI Friday has real-time access to:
 5. **Evening Review**: Review completed jobs og tomorrow's prep
 
 ### Weekly Tasks
+
 1. **Performance Review**: Analyze team og business metrics
 2. **Customer Outreach**: Follow up with inactive customers
 3. **Schedule Planning**: Plan next week's assignments
@@ -458,6 +526,7 @@ AI Friday has real-time access to:
 5. **Quality Assessment**: Review customer feedback og photos
 
 ### Monthly Activities
+
 1. **Business Analysis**: Deep dive into monthly performance
 2. **Team Reviews**: Individual performance discussions
 3. **Customer Analysis**: Identify retention opportunities
@@ -469,7 +538,9 @@ AI Friday has real-time access to:
 ## 🚀 Advanced Features
 
 ### Custom Dashboards
+
 Create personalized dashboards:
+
 1. **Navigate** til Dashboard → Customize
 2. **Drag & Drop** widgets to arrange layout
 3. **Configure** widget settings og data sources
@@ -477,7 +548,9 @@ Create personalized dashboards:
 5. **Share** dashboards with team members
 
 ### Automated Workflows
+
 Setup automation rules:
+
 1. **Navigate** til Settings → Automation
 2. **Create** triggers (e.g., job completion)
 3. **Define** actions (e.g., send invoice)
@@ -485,7 +558,9 @@ Setup automation rules:
 5. **Monitor** automation performance
 
 ### API Access
+
 For advanced integrations:
+
 1. **Navigate** til Settings → API
 2. **Generate** API keys
 3. **Review** API documentation
@@ -496,4 +571,4 @@ For advanced integrations:
 
 **Owner Portal Guide opdateret**: 22. Oktober 2025  
 **Version**: 1.0.0  
-**Support**: owner@rendetalje.dk
+**Support**: <owner@rendetalje.dk>

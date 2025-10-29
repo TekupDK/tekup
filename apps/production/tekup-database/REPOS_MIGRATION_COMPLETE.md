@@ -38,6 +38,7 @@ DATABASE_URL=postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=vault
 ```
 
 **Changes:**
+
 - ✅ Updated DATABASE_URL to use local tekup-database
 - ✅ Specified `vault` schema
 - ✅ Commented out Supabase credentials (kept for backup)
@@ -61,6 +62,7 @@ DATABASE_URL=postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=billy
 ```
 
 **Changes:**
+
 - ✅ Added DATABASE_URL for tekup-database
 - ✅ Specified `billy` schema
 - ✅ **PRESERVED encryption keys** (critical for API key decryption)
@@ -87,6 +89,7 @@ DATABASE_URL=postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=renos
 ```
 
 **Changes:**
+
 - ✅ Created new .env file based on .env.example
 - ✅ Set DATABASE_URL to tekup-database
 - ✅ Specified `renos` schema
@@ -145,6 +148,7 @@ pnpm db:studio
 ```
 
 Check that these schemas exist:
+
 - ✅ vault
 - ✅ billy  
 - ✅ renos
@@ -184,7 +188,8 @@ npm run dev
 
 If issues occur, you can rollback to Supabase:
 
-### TekupVault Rollback:
+### TekupVault Rollback
+
 ```env
 # Uncomment these lines in .env:
 DATABASE_URL=postgresql://postgres:Habibie12%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres
@@ -192,14 +197,16 @@ SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-### Tekup-Billy Rollback:
+### Tekup-Billy Rollback
+
 ```env
 # Uncomment these lines in .env:
 SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-### tekup-ai Rollback:
+### tekup-ai Rollback
+
 ```env
 # Replace DATABASE_URL with:
 DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres
@@ -211,13 +218,15 @@ DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.oaevagdgrasfppbrxbey.supab
 
 ## ✅ Benefits of Migration
 
-### Before:
+### Before
+
 - 3 separate Supabase projects
 - Inconsistent database management
 - Higher costs as projects scale
 - Difficult to maintain cross-project queries
 
-### After:
+### After
+
 - ✅ Single central database
 - ✅ All data in one place
 - ✅ Easy cross-schema queries
@@ -231,23 +240,30 @@ DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.oaevagdgrasfppbrxbey.supab
 ## 📝 Important Notes
 
 ### 1. **Encryption Keys Preserved**
+
 Tekup-Billy's encryption keys are **critical** and have been preserved:
+
 - Required for decrypting stored Billy.dk API keys
 - Never delete or change these keys without data migration
 
 ### 2. **Local Development**
+
 All repositories now use `localhost:5432` for development:
+
 - Ensure Docker is running: `docker-compose up -d`
 - Database must be started before running any app
 
 ### 3. **Production Deployment**
+
 For production, update DATABASE_URL to production database:
 ```env
 DATABASE_URL=postgresql://user:pass@production-host/db?schema=<schema_name>
 ```
 
 ### 4. **Schema Isolation**
+
 Each repository uses its own schema for data isolation:
+
 - No risk of table name conflicts
 - Independent migrations per schema
 - Clear ownership of data

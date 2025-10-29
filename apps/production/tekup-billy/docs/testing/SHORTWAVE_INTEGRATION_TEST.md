@@ -11,7 +11,7 @@ Verify that Shortwave AI can successfully use the Tekup-Billy MCP server to:
 
 ## Prerequisites
 
-✅ Tekup-Billy MCP server running: https://tekup-billy.onrender.com  
+✅ Tekup-Billy MCP server running: <https://tekup-billy.onrender.com>  
 ✅ Shortwave AI configured with MCP integration  
 ✅ Billy.dk organization ID: `IQgm5fsl5rJ3Ub33EfAEow`
 
@@ -23,9 +23,10 @@ Verify that Shortwave AI can successfully use the Tekup-Billy MCP server to:
 
 Send an email **TO your Shortwave inbox** with this content:
 
-**From:** test-customer@example.com  
+**From:** <test-customer@example.com>  
 **Subject:** Quote Request - Cleaning Service  
 **Body:**
+
 ```
 Hi,
 
@@ -42,6 +43,7 @@ Address: Testvej 123, 2100 København Ø
 ### Step 2: Ask Shortwave AI
 
 In Shortwave, ask:
+
 ```
 "Save this customer to Billy CRM"
 ```
@@ -59,12 +61,13 @@ or
 2. Call MCP tool: `create_customer`
 3. Create customer with details:
    - Name: John Test Customer
-   - Email: john.testcustomer@example.com
+   - Email: <john.testcustomer@example.com>
    - Phone: +45 12 34 56 78
    - Company: Test Cleaning ApS
 4. Return success message
 
 **What to look for in logs:**
+
 ```powershell
 # Check Render logs
 .\render-cli\cli_v2.4.2.exe logs --resources srv-d3kk30t6ubrc73e1qon0 --output text --tail
@@ -82,9 +85,10 @@ or
 ### Step 1: Send Another Email
 
 Send from same email as before:
-**From:** john.testcustomer@example.com  
+**From:** <john.testcustomer@example.com>  
 **Subject:** Follow-up Question  
 **Body:**
+
 ```
 Hi again,
 
@@ -109,12 +113,13 @@ or
 ### Step 3: Expected Behavior
 
 **Shortwave should:**
-1. Extract email: john.testcustomer@example.com
+1. Extract email: <john.testcustomer@example.com>
 2. Call MCP tool: `search_customers` with email filter
 3. Find existing customer (created in Test 1)
 4. Display customer details
 
 **What to look for in logs:**
+
 ```powershell
 # Look for:
 # - POST /api/v1/tools/search_customers
@@ -129,9 +134,10 @@ or
 
 ### Step 1: Send Email with New Phone
 
-**From:** john.testcustomer@example.com  
+**From:** <john.testcustomer@example.com>  
 **Subject:** Updated Contact Info  
 **Body:**
+
 ```
 Hi,
 
@@ -156,6 +162,7 @@ John Test Customer
 4. Return success confirmation
 
 **What to look for in logs:**
+
 ```powershell
 # Look for:
 # - POST /api/v1/tools/update_contact
@@ -199,10 +206,10 @@ Write-Host "Shortwave calls: $($shortwaveCalls.Count)"
 
 ### 2. Check Billy.dk Dashboard
 
-1. Go to: https://app.billy.dk/customers
+1. Go to: <https://app.billy.dk/customers>
 2. Search for "John Test Customer"
 3. Verify customer exists with correct details:
-   - Email: john.testcustomer@example.com
+   - Email: <john.testcustomer@example.com>
    - Phone: +45 98 76 54 32 (after Test 3)
    - Company: Test Cleaning ApS
 
@@ -263,6 +270,7 @@ ORDER BY created_at DESC;
 - "Tool not found" → MCP server version mismatch
 
 **Debug with manual test:**
+
 ```powershell
 # Test create_customer manually
 $response = Invoke-RestMethod -Uri "https://tekup-billy.onrender.com/api/v1/tools/create_customer" -Method Post `
@@ -319,6 +327,7 @@ If you don't have Shortwave access yet, test with ChatGPT or Claude:
 
 **Claude Desktop with MCP:**
 1. Configure `claude_desktop_config.json`:
+
    ```json
    {
      "mcpServers": {
@@ -329,6 +338,7 @@ If you don't have Shortwave access yet, test with ChatGPT or Claude:
      }
    }
    ```
+
 2. Ask: "List all customers in Billy CRM"
 
 ---

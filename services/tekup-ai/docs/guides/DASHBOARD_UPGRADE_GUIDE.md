@@ -9,6 +9,7 @@ Denne guide dokumenterer de nye funktioner tilføjet til RenOS dashboardet som e
 ### 1. **Økonomi-integration (Billy.dk)**
 
 #### Beskrivelse
+
 Integration med Billy.dk fakturasystem for automatisk omsætningsdata og real-time økonomisk tracking.
 
 #### Konfiguration
@@ -22,12 +23,14 @@ BILLY_ORGANIZATION_ID=your_organization_id
 ```
 
 #### Funktionalitet
+
 - **Automatisk revenue sync**: Henter betalt faktura-data fra Billy.dk
 - **Fallback til database**: Hvis Billy ikke er konfigureret, bruges lokal invoice/quote data
 - **Real-time opdatering**: Dashboard viser aktuelle økonomiske data
 - **Export-klar**: Data kan eksporteres til rapporter
 
 #### API Endpoints
+
 ```typescript
 // Get revenue data for dashboard
 GET /api/dashboard/revenue?period=7d
@@ -43,6 +46,7 @@ GET /api/dashboard/revenue?period=7d
 ```
 
 #### Service Implementering
+
 ```typescript
 import { billyService } from "@/services/billyService";
 
@@ -60,9 +64,11 @@ if (billyService.isConfigured()) {
 ### 2. **Booking-flow med Kundeinfo Validering**
 
 #### Beskrivelse
+
 Obligatorisk validering af kundeoplysninger ved booking-oprettelse for at eliminere "Ukendt kunde" fejl.
 
 #### Validering Regler
+
 1. **Booking kræver**: `customerId` ELLER `leadId`
 2. **Kunde/Lead skal have**:
    - ✅ Navn (påkrævet)
@@ -70,6 +76,7 @@ Obligatorisk validering af kundeoplysninger ved booking-oprettelse for at elimin
    - ✅ Telefon (påkrævet)
 
 #### Backend Validering
+
 ```typescript
 // src/api/bookingRoutes.ts
 POST /api/bookings
@@ -95,7 +102,9 @@ if (!customer.name || !customer.email || !customer.phone) {
 ```
 
 #### Frontend UI
+
 BookingModal komponenten har allerede:
+
 - ✅ Kunde-dropdown (påkrævet felt)
 - ✅ Service type selection
 - ✅ Dato/tid picker
@@ -106,15 +115,18 @@ BookingModal komponenten har allerede:
 ### 3. **Tilbuds-/Salgs-funktion med Status Tracking**
 
 #### Beskrivelse
+
 Komplet quote tracking system med pipeline visualisering, konverteringsstatistik og statusflow.
 
 #### Quote Status Flow
+
 ```
 DRAFT → SENT → ACCEPTED
               ↘ REJECTED
 ```
 
 #### Dashboard Komponent
+
 ```tsx
 import QuoteStatusTracker from '@/components/QuoteStatusTracker';
 
@@ -123,6 +135,7 @@ import QuoteStatusTracker from '@/components/QuoteStatusTracker';
 ```
 
 #### Features
+
 - **Status fordeling**: Viser antal tilbud pr. status
 - **Konverteringsrate**: Automatisk beregning af acceptance rate
 - **Gennemsnitsværdi**: Beregner avg. quote value
@@ -130,6 +143,7 @@ import QuoteStatusTracker from '@/components/QuoteStatusTracker';
 - **Real-time update**: Auto-refresh hvert 60 sekund
 
 #### API Endpoint
+
 ```typescript
 GET /api/dashboard/quotes/status-tracking
 
@@ -163,6 +177,7 @@ GET /api/dashboard/quotes/status-tracking
 ```
 
 #### Statistik Beregninger
+
 ```typescript
 // Conversion rate
 const conversionRate = (acceptedQuotes / totalQuotes) * 100;
@@ -192,6 +207,7 @@ Denne funktionalitet var allerede komplet implementeret:
 - ✅ **Follow-up tracker** (FollowUpTracker)
 
 #### Konfiguration
+
 ```bash
 # .env
 AUTO_RESPONSE_ENABLED=false  # Sikkerhed først!
@@ -200,7 +216,9 @@ ESCALATION_ENABLED=true      # Altid sikkert
 ```
 
 #### Dashboard Monitoring
+
 SystemStatus komponenten viser:
+
 - 🚦 Run mode status (dry-run/live)
 - ⚠️  Risk level (safe/caution/danger)
 - 📧 Email automation status
@@ -221,6 +239,7 @@ Cache system er fuldt implementeret via `cacheService.ts`:
 - ✅ **Performance metrics**
 
 #### Dashboard Visning
+
 ```tsx
 // Cache Performance Widget
 {cacheStats && (
@@ -237,6 +256,7 @@ Cache system er fuldt implementeret via `cacheService.ts`:
 ```
 
 #### Målsætning
+
 - ✅ **Target**: 80%+ cache hit rate
 - ✅ **Current**: Vises real-time på dashboard
 - ✅ **Monitoring**: Automatisk via dashboard
@@ -250,18 +270,21 @@ Cache system er fuldt implementeret via `cacheService.ts`:
 Komplet monitoring system er på plads:
 
 #### Komponenter
+
 1. **ConflictMonitor**: Real-time konflikt-tracking
 2. **EmailQualityMonitor**: Email kvalitets-score
 3. **RateLimitMonitor**: API rate limit tracking
 4. **SystemStatus**: Overall system health
 
 #### Funktioner
+
 - ✅ **Automatic escalation** til Jonas ved kritiske konflikter
 - ✅ **Email quality scoring**
 - ✅ **Conflict resolution workflow**
 - ✅ **Real-time notifikationer**
 
 #### Konflikt Typer
+
 ```typescript
 severity: 'low' | 'medium' | 'high' | 'critical'
 ```
@@ -271,6 +294,7 @@ severity: 'low' | 'medium' | 'high' | 'critical'
 ## 📊 Dashboard Layout
 
 ### Ny Sektion Rækkefølge
+
 ```
 1. Overview Stats (kunder, leads, bookings, quotes, revenue)
 2. Period Filter (24h, 7d, 30d, 90d)
@@ -292,6 +316,7 @@ severity: 'low' | 'medium' | 'high' | 'critical'
 ## 🔧 Installation & Setup
 
 ### 1. Backend Installation
+
 ```bash
 # Install dependencies
 npm install
@@ -304,6 +329,7 @@ npm run build
 ```
 
 ### 2. Frontend Installation
+
 ```bash
 cd client
 npm install
@@ -311,6 +337,7 @@ npm run build
 ```
 
 ### 3. Environment Setup
+
 ```bash
 # Copy example
 cp .env.example .env
@@ -326,6 +353,7 @@ AUTO_RESPONSE_ENABLED=false
 ```
 
 ### 4. Database Migration
+
 ```bash
 # If new schema changes are needed
 npm run db:push
@@ -336,6 +364,7 @@ npm run db:push
 ## 🧪 Testing
 
 ### Run Tests
+
 ```bash
 # Run all tests
 npm test
@@ -348,6 +377,7 @@ npm run test:watch
 ```
 
 ### Test Coverage
+
 ```
 ✓ Billy integration (4 tests)
 ✓ Booking validation (3 tests)
@@ -363,12 +393,14 @@ Total: 17 tests passing
 ## 📈 Performance Metrics
 
 ### Target Metrics
+
 - **Cache Hit Rate**: 80%+
 - **API Response Time**: <500ms
 - **Dashboard Load Time**: <2s
 - **Quote Conversion Rate**: Tracked real-time
 
 ### Current Implementation
+
 - ✅ All builds passing
 - ✅ TypeScript compilation successful
 - ✅ Frontend bundle: 475KB (acceptable)
@@ -379,6 +411,7 @@ Total: 17 tests passing
 ## 🚀 Production Deployment
 
 ### Checklist
+
 - [ ] Configure Billy.dk API key
 - [ ] Set `BILLY_ENABLED=true`
 - [ ] Verify `RUN_MODE=dry-run` initially
@@ -387,6 +420,7 @@ Total: 17 tests passing
 - [ ] Enable `RUN_MODE=live` after validation
 
 ### Monitoring
+
 - Dashboard auto-refreshes every 60 seconds
 - Cache stats updated real-time
 - Billy revenue syncs on demand
@@ -397,6 +431,7 @@ Total: 17 tests passing
 ## 🔍 Troubleshooting
 
 ### Billy Integration Issues
+
 ```typescript
 // Check if Billy is configured
 import { billyService } from '@/services/billyService';
@@ -407,6 +442,7 @@ if (!billyService.isConfigured()) {
 ```
 
 ### Booking Validation Errors
+
 ```typescript
 // Error: "Kundens kontaktoplysninger er ufuldstændige"
 // Solution: Ensure customer has:
@@ -416,6 +452,7 @@ if (!billyService.isConfigured()) {
 ```
 
 ### Quote Tracking Empty
+
 ```typescript
 // No quotes showing?
 // Check:
@@ -438,6 +475,7 @@ if (!billyService.isConfigured()) {
 ## 💡 Future Enhancements
 
 ### Potential Additions
+
 - [ ] Billy webhook for real-time invoice sync
 - [ ] Automated quote email generation
 - [ ] Quote approval workflow
@@ -451,6 +489,7 @@ if (!billyService.isConfigured()) {
 ## 📞 Support
 
 For spørgsmål eller problemer:
+
 1. Check denne guide
 2. Se related documentation
 3. Kontakt development team

@@ -5,6 +5,7 @@
 This is an **actionable implementation plan** with detailed coding tasks for building an Internal Sales Tracking System for Tekup's three business units. This system tracks sales of actual services (cleaning, IT consulting, catering) - it is NOT a software product to sell.
 
 ### Quick Reference
+
 - **Repository**: Create new repo `tekup-sales-tracking`
 - **Timeline**: 16 weeks across 4 phases
 - **Stack**: NestJS + Next.js + Supabase PostgreSQL + Render.com
@@ -17,9 +18,11 @@ This is an **actionable implementation plan** with detailed coding tasks for bui
 ### 1.1 Project Setup & Database Schema
 
 #### ✅ Task 1.1.1: Create Supabase Project
+
 **Priority**: Critical | **Duration**: 1 hour
 
 **Steps**:
+
 1. Go to supabase.com and create new project
    - Project Name: `tekup-sales-tracking`
    - Region: `Frankfurt (eu-central-1)`
@@ -38,6 +41,7 @@ This is an **actionable implementation plan** with detailed coding tasks for bui
 ---
 
 #### ✅ Task 1.1.2: Initialize Backend Project with NestJS
+
 **Priority**: Critical | **Duration**: 2 hours
 
 ```bash
@@ -80,11 +84,13 @@ tekup-sales-tracking-backend/
 ---
 
 #### ✅ Task 1.1.3: Define Prisma Database Schema
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **File**: `prisma/schema.prisma`
 
 Create complete schema with 7 core models:
+
 1. **Organization** - Business units (Tekup, Rendetalje, Foodtruck)
 2. **Customer** - Customers with B2B/B2C support
 3. **Service** - Service offerings per organization
@@ -94,6 +100,7 @@ Create complete schema with 7 core models:
 7. **AuditLog** - Security and compliance tracking
 
 **Key Schema Features**:
+
 - UUID primary keys
 - Organization-based data isolation
 - Enum types for status fields
@@ -112,6 +119,7 @@ npx prisma format
 ---
 
 #### ✅ Task 1.1.4: Create Database Migrations
+
 **Priority**: Critical | **Duration**: 1 hour
 
 ```bash
@@ -123,6 +131,7 @@ npx prisma generate
 ```
 
 **Verify Migration**:
+
 - Check Supabase dashboard for created tables
 - Verify all indexes created
 - Test foreign key constraints
@@ -132,11 +141,13 @@ npx prisma generate
 ---
 
 #### ✅ Task 1.1.5: Create Seed Data Script
+
 **Priority**: High | **Duration**: 2 hours
 
 **File**: `prisma/seed.ts`
 
 Seed data includes:
+
 1. Rendetalje organization
 2. 4 cleaning services (Standard, Deep, Window, Move-out)
 3. Admin user account
@@ -160,13 +171,16 @@ npx prisma studio
 ### 1.2 Backend API Development
 
 #### ✅ Task 1.2.1: Create Prisma Service Module
+
 **Priority**: Critical | **Duration**: 1 hour
 
 **Files**:
+
 - `src/database/prisma.service.ts`
 - `src/database/database.module.ts`
 
 **Features**:
+
 - Global module for app-wide access
 - Lifecycle hooks (onModuleInit, onModuleDestroy)
 - Connection management
@@ -187,9 +201,11 @@ async test() {
 ---
 
 #### ✅ Task 1.2.2: Implement Authentication Module
+
 **Priority**: Critical | **Duration**: 4 hours
 
 **Files**:
+
 - `src/auth/auth.service.ts` - Login logic
 - `src/auth/auth.controller.ts` - POST /auth/login endpoint
 - `src/auth/jwt.strategy.ts` - JWT validation
@@ -198,6 +214,7 @@ async test() {
 - `src/auth/auth.module.ts`
 
 **Features**:
+
 - Email/password authentication
 - JWT token generation (24h expiry)
 - Token payload includes: userId, organizationId, role
@@ -222,6 +239,7 @@ curl -X POST http://localhost:3000/auth/login \
 ---
 
 #### ✅ Task 1.2.3: Create Financial Calculator Utility
+
 **Priority**: High | **Duration**: 1 hour
 
 **File**: `src/common/utils/financial-calculator.ts`
@@ -254,6 +272,7 @@ expect(FinancialCalculator.calculateTotal(1000, 25)).toBe(1250);
 ---
 
 #### ✅ Task 1.2.4: Implement Sale Status Validator
+
 **Priority**: High | **Duration**: 1 hour
 
 **File**: `src/sales/utils/status-validator.ts`
@@ -286,6 +305,7 @@ export class SaleStatusValidator {
 ---
 
 #### ✅ Task 1.2.5: Implement Sales Module - Service Layer
+
 **Priority**: Critical | **Duration**: 4 hours
 
 **File**: `src/sales/sales.service.ts`
@@ -317,6 +337,7 @@ class SalesService {
 ```
 
 **Business Logic**:
+
 - Auto-generate sale numbers (prefix based on org type)
 - Calculate tax and totals automatically
 - Validate status transitions
@@ -328,14 +349,17 @@ class SalesService {
 ---
 
 #### ✅ Task 1.2.6: Implement Sales Module - DTOs
+
 **Priority**: Critical | **Duration**: 2 hours
 
 **Files**:
+
 - `src/sales/dto/create-sale.dto.ts`
 - `src/sales/dto/update-sale.dto.ts`
 - `src/sales/dto/sale-filters.dto.ts`
 
 **Validation Rules**:
+
 - Required fields: customerId, serviceId, status, saleDate, finalAmount
 - Amount validation: >= 0
 - Date validation: valid ISO string
@@ -372,6 +396,7 @@ export class CreateSaleDto {
 ---
 
 #### ✅ Task 1.2.7: Implement Sales Module - Controller
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **File**: `src/sales/sales.controller.ts`
@@ -419,14 +444,17 @@ export class SalesController {
 ---
 
 #### ✅ Task 1.2.8: Implement Customers Module
+
 **Priority**: High | **Duration**: 3 hours
 
 **Files**:
+
 - `src/customers/customers.service.ts`
 - `src/customers/customers.controller.ts`
 - `src/customers/dto/create-customer.dto.ts`
 
 **Features**:
+
 - CRUD operations for customers
 - Organization-based isolation
 - Search by name, email, phone
@@ -448,13 +476,16 @@ GET    /customers/:id/sales
 ---
 
 #### ✅ Task 1.2.9: Implement Services Module
+
 **Priority**: High | **Duration**: 2 hours
 
 **Files**:
+
 - `src/services/services.service.ts`
 - `src/services/services.controller.ts`
 
 **Features**:
+
 - List active services for organization
 - Filter by category
 - Service details with pricing
@@ -473,11 +504,13 @@ PATCH /services/:id (ADMIN only)
 ---
 
 #### ✅ Task 1.2.10: Implement Audit Logging Interceptor
+
 **Priority**: Medium | **Duration**: 2 hours
 
 **File**: `src/common/interceptors/audit-log.interceptor.ts`
 
 **Logged Actions**:
+
 - CREATE, UPDATE, DELETE operations on sales, customers
 - User login/logout
 - Status changes on sales
@@ -515,6 +548,7 @@ export class AuditLogInterceptor implements NestInterceptor {
 ### 1.3 Frontend Development (Next.js)
 
 #### ✅ Task 1.3.1: Initialize Next.js Project
+
 **Priority**: Critical | **Duration**: 2 hours
 
 ```bash
@@ -569,6 +603,7 @@ frontend/
 ---
 
 #### ✅ Task 1.3.2: Set Up Shadcn/ui Components
+
 **Priority**: High | **Duration**: 1 hour
 
 ```bash
@@ -590,6 +625,7 @@ npx shadcn-ui@latest add tabs
 ---
 
 #### ✅ Task 1.3.3: Create API Client with Axios
+
 **Priority**: Critical | **Duration**: 2 hours
 
 **File**: `lib/api.ts`
@@ -645,6 +681,7 @@ export const salesService = {
 ---
 
 #### ✅ Task 1.3.4: Set Up TanStack Query
+
 **Priority**: High | **Duration**: 1 hour
 
 **File**: `app/providers.tsx`
@@ -702,11 +739,13 @@ export function useCreateSale() {
 ---
 
 #### ✅ Task 1.3.5: Implement Login Page
+
 **Priority**: Critical | **Duration**: 2 hours
 
 **File**: `app/(auth)/login/page.tsx`
 
 **Features**:
+
 - Email and password inputs
 - Form validation with Zod
 - Login API call
@@ -715,6 +754,7 @@ export function useCreateSale() {
 - Error handling
 
 **UI Design**:
+
 - Centered card layout
 - Company logo
 - "Remember me" checkbox
@@ -725,11 +765,13 @@ export function useCreateSale() {
 ---
 
 #### ✅ Task 1.3.6: Create Dashboard Layout
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **File**: `app/(dashboard)/layout.tsx`
 
 **Components**:
+
 1. **Header**: Organization name, user profile, logout
 2. **Sidebar**: Navigation menu
    - Dashboard
@@ -740,6 +782,7 @@ export function useCreateSale() {
 3. **Main Content Area**: Page-specific content
 
 **Responsive Design**:
+
 - Desktop: Permanent sidebar
 - Mobile: Collapsible hamburger menu
 
@@ -748,6 +791,7 @@ export function useCreateSale() {
 ---
 
 #### ✅ Task 1.3.7: Build Main Dashboard Page
+
 **Priority**: Critical | **Duration**: 4 hours
 
 **File**: `app/(dashboard)/page.tsx`
@@ -799,11 +843,13 @@ Response: {
 ---
 
 #### ✅ Task 1.3.8: Build Sales List Page
+
 **Priority**: Critical | **Duration**: 4 hours
 
 **File**: `app/(dashboard)/sales/page.tsx`
 
 **Features**:
+
 - Data table with columns:
   - Sale Number
   - Customer Name
@@ -833,11 +879,13 @@ Response: {
 ---
 
 #### ✅ Task 1.3.9: Build Create Sale Form
+
 **Priority**: Critical | **Duration**: 4 hours
 
 **File**: `app/(dashboard)/sales/new/page.tsx`
 
 **Form Fields**:
+
 1. Customer Selection (searchable dropdown)
 2. Service Selection (dropdown, filtered by org)
 3. Sale Status (dropdown)
@@ -851,11 +899,13 @@ Response: {
 11. Customer Notes (textarea)
 
 **Real-time Calculations**:
+
 - Tax amount (auto-calculated)
 - Total with tax (auto-calculated)
 - Show pricing preview
 
 **Validation**:
+
 - All required fields
 - Amount >= 0
 - Valid dates
@@ -865,6 +915,7 @@ Response: {
 ---
 
 #### ✅ Task 1.3.10: Build Sale Detail Page
+
 **Priority**: High | **Duration**: 3 hours
 
 **File**: `app/(dashboard)/sales/[id]/page.tsx`
@@ -910,6 +961,7 @@ Response: {
 ---
 
 #### ✅ Task 1.3.11: Build Basic Reports Page
+
 **Priority**: Medium | **Duration**: 3 hours
 
 **File**: `app/(dashboard)/reports/page.tsx`
@@ -933,6 +985,7 @@ Response: {
    - Top 10
 
 **Export Functionality**:
+
 - CSV export button for each report
 
 **Deliverable**: Basic reporting dashboard
@@ -942,14 +995,17 @@ Response: {
 ### 1.4 Testing & Deployment
 
 #### ✅ Task 1.4.1: Write Backend Unit Tests
+
 **Priority**: High | **Duration**: 4 hours
 
 **Test Files**:
+
 - `src/auth/auth.service.spec.ts`
 - `src/sales/sales.service.spec.ts`
 - `src/customers/customers.service.spec.ts`
 
 **Test Coverage**:
+
 - Service methods (CRUD operations)
 - Business logic (sale number generation, financial calculations)
 - Status validation
@@ -968,9 +1024,11 @@ npm run test:cov
 ---
 
 #### ✅ Task 1.4.2: Write Frontend Component Tests
+
 **Priority**: Medium | **Duration**: 3 hours
 
 **Test Files**:
+
 - `components/sales/sales-list.test.tsx`
 - `components/sales/create-sale-form.test.tsx`
 - `app/(dashboard)/page.test.tsx`
@@ -978,6 +1036,7 @@ npm run test:cov
 **Testing Library**: Jest + React Testing Library
 
 **Test Coverage**:
+
 - Component rendering
 - User interactions
 - Form validation
@@ -988,6 +1047,7 @@ npm run test:cov
 ---
 
 #### ✅ Task 1.4.3: Create Docker Configuration
+
 **Priority**: High | **Duration**: 2 hours
 
 **File**: `backend/Dockerfile`
@@ -1046,9 +1106,11 @@ docker-compose up
 ---
 
 #### ✅ Task 1.4.4: Deploy to Render.com
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **Backend Deployment**:
+
 1. Create new Web Service on Render
 2. Connect to GitHub repository
 3. Settings:
@@ -1063,6 +1125,7 @@ docker-compose up
      - NODE_ENV=production
 
 **Frontend Deployment**:
+
 1. Create new Static Site on Render
 2. Settings:
    - Name: `tekup-sales-frontend`
@@ -1076,6 +1139,7 @@ docker-compose up
 ---
 
 #### ✅ Task 1.4.5: Set Up GitHub Actions CI/CD
+
 **Priority**: High | **Duration**: 2 hours
 
 **File**: `.github/workflows/backend.yml`
@@ -1117,11 +1181,13 @@ jobs:
 ---
 
 #### ✅ Task 1.4.6: Create User Documentation
+
 **Priority**: High | **Duration**: 4 hours
 
 **File**: `docs/USER_GUIDE.md`
 
 **Sections**:
+
 1. **Getting Started**
    - Logging in
    - Dashboard overview
@@ -1155,9 +1221,11 @@ jobs:
 ### 2.1 Database & Backend Extensions
 
 #### ✅ Task 2.1.1: Add Lead Entity to Schema
+
 **Priority**: Critical | **Duration**: 1 hour
 
 Update `prisma/schema.prisma`:
+
 - Lead model already defined in Phase 1
 - Create migration: `npx prisma migrate dev --name add-leads`
 
@@ -1166,14 +1234,17 @@ Update `prisma/schema.prisma`:
 ---
 
 #### ✅ Task 2.1.2: Implement Leads Module (Backend)
+
 **Priority**: Critical | **Duration**: 4 hours
 
 **Files**:
+
 - `src/leads/leads.service.ts`
 - `src/leads/leads.controller.ts`
 - `src/leads/dto/create-lead.dto.ts`
 
 **Features**:
+
 - CRUD operations for leads
 - Lead scoring algorithm
 - Follow-up tracking
@@ -1194,6 +1265,7 @@ POST   /leads/:id/convert (convert to sale)
 ---
 
 #### ✅ Task 2.1.3: Implement Lead-to-Sale Conversion
+
 **Priority**: Critical | **Duration**: 2 hours
 
 **File**: `src/leads/leads.service.ts`
@@ -1245,17 +1317,20 @@ async convertToSale(leadId: string, organizationId: string, userId: string) {
 ---
 
 #### ✅ Task 2.1.4: Seed Tekup and Foodtruck Organizations
+
 **Priority**: High | **Duration**: 2 hours
 
 **File**: `prisma/seed-phase2.ts`
 
 **Tekup Services**:
+
 - IT Consulting (hourly)
 - Software Development (project-based)
 - System Integration (custom)
 - IT Support (monthly subscription)
 
 **Foodtruck Fiesta Services**:
+
 - Event Catering (per person)
 - Private Events (fixed)
 - Corporate Catering (custom)
@@ -1273,11 +1348,13 @@ npx ts-node prisma/seed-phase2.ts
 ### 2.2 Frontend Multi-Organization Support
 
 #### ✅ Task 2.2.1: Implement Organization Switcher
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **File**: `components/layout/organization-switcher.tsx`
 
 **Features**:
+
 - Dropdown in header showing current organization
 - Switch between organizations (if user has multi-org access)
 - Update global state on switch
@@ -1297,11 +1374,13 @@ interface OrganizationStore {
 ---
 
 #### ✅ Task 2.2.2: Build Lead List Page
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **File**: `app/(dashboard)/leads/page.tsx`
 
 **Features**:
+
 - Table with columns:
   - Contact Name
   - Email/Phone
@@ -1327,11 +1406,13 @@ interface OrganizationStore {
 ---
 
 #### ✅ Task 2.2.3: Build Lead Creation Form
+
 **Priority**: High | **Duration**: 2 hours
 
 **File**: `app/(dashboard)/leads/new/page.tsx`
 
 **Form Fields**:
+
 - Contact name (required)
 - Email
 - Phone
@@ -1346,11 +1427,13 @@ interface OrganizationStore {
 ---
 
 #### ✅ Task 2.2.4: Build Lead Detail Page with Conversion
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **File**: `app/(dashboard)/leads/[id]/page.tsx`
 
 **Features**:
+
 - Lead information display
 - Follow-up history
 - **"Convert to Sale" button** (prominent)
@@ -1358,6 +1441,7 @@ interface OrganizationStore {
 - Notes section
 
 **Conversion Modal**:
+
 - Confirm conversion
 - Preview sale to be created
 - Option to adjust details before converting
@@ -1367,9 +1451,11 @@ interface OrganizationStore {
 ---
 
 #### ✅ Task 2.2.5: Enhance Reports for Multi-Org
+
 **Priority**: Medium | **Duration**: 2 hours
 
 **Updates**:
+
 - Add organization filter to all reports
 - Show aggregated data across all orgs (for admins)
 - Comparative charts (org vs org)
@@ -1383,11 +1469,13 @@ interface OrganizationStore {
 ### 2.3 Email Integration (RenOS Pattern)
 
 #### ✅ Task 2.3.1: Create Email Parser for Lead Extraction
+
 **Priority**: Medium | **Duration**: 3 hours
 
 **File**: `src/integrations/email/email-parser.service.ts`
 
 **Features**:
+
 - Parse email subject and body
 - Extract contact information (name, email, phone)
 - Identify service interest keywords
@@ -1421,6 +1509,7 @@ async processIncomingEmail(email: EmailData) {
 ---
 
 #### ✅ Task 2.3.2: Set Up Email Webhook Endpoint
+
 **Priority**: Medium | **Duration**: 2 hours
 
 **File**: `src/integrations/email/email.controller.ts`
@@ -1445,15 +1534,18 @@ async handleEmailWebhook(@Body() emailData: any) {
 ### 2.4 Security Audit
 
 #### ✅ Task 2.4.1: Verify Organization Data Isolation
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **Tests**:
+
 1. User from Org A cannot access Org B data
 2. API queries automatically filter by organizationId
 3. Database RLS policies enforce isolation
 4. No data leakage in error messages
 
 **Audit Checklist**:
+
 - [ ] All queries include organizationId filter
 - [ ] Guards protect all routes
 - [ ] Token includes organizationId
@@ -1468,11 +1560,13 @@ async handleEmailWebhook(@Body() emailData: any) {
 ### 3.1 Billy.dk Invoice Automation
 
 #### ✅ Task 3.1.1: Implement Billy Invoice Service
+
 **Priority**: Critical | **Duration**: 4 hours
 
 **File**: `src/integrations/billy/billy.service.ts`
 
 **Features**:
+
 - Create invoice in Billy.dk when sale status → COMPLETED
 - Sync customer to Billy contacts
 - Add line items for services
@@ -1513,11 +1607,13 @@ async createInvoiceForSale(saleId: string) {
 ---
 
 #### ✅ Task 3.1.2: Implement Payment Status Sync
+
 **Priority**: Critical | **Duration**: 3 hours
 
 **File**: `src/integrations/billy/billy-sync.service.ts`
 
 **Features**:
+
 - Poll Billy.dk every 15 minutes for payment status
 - Update sale payment_status when paid
 - Handle partial payments
@@ -1550,6 +1646,7 @@ async syncPaymentStatuses() {
 ---
 
 #### ✅ Task 3.1.3: Implement Billy Webhook Handler
+
 **Priority**: High | **Duration**: 2 hours
 
 **File**: `src/integrations/billy/billy-webhook.controller.ts`
@@ -1582,11 +1679,13 @@ async handlePaymentWebhook(@Body() webhookData: any) {
 ### 3.2 Google Calendar Integration
 
 #### ✅ Task 3.2.1: Implement Calendar Service
+
 **Priority**: High | **Duration**: 4 hours
 
 **File**: `src/integrations/calendar/calendar.service.ts`
 
 **Features**:
+
 - Create event when sale status → SCHEDULED
 - Include customer and service details
 - Invite assigned staff member
@@ -1630,6 +1729,7 @@ async createEventForSale(saleId: string) {
 ---
 
 #### ✅ Task 3.2.2: Implement Availability Checker
+
 **Priority**: Medium | **Duration**: 2 hours
 
 **Feature**: Check staff availability before scheduling
@@ -1656,11 +1756,13 @@ async getAvailableSlots(date: Date, staffId?: string) {
 ### 3.3 Automated Notifications & Reminders
 
 #### ✅ Task 3.3.1: Implement Email Notification Service
+
 **Priority**: High | **Duration**: 3 hours
 
 **File**: `src/notifications/email-notification.service.ts`
 
 **Email Templates**:
+
 1. New lead assigned
 2. Quote sent to customer
 3. Sale accepted
@@ -1686,11 +1788,13 @@ async sendEmail(template: EmailTemplate, data: any) {
 ---
 
 #### ✅ Task 3.3.2: Implement Follow-up Reminder System
+
 **Priority**: Medium | **Duration**: 2 hours
 
 **File**: `src/notifications/reminder.service.ts`
 
 **Features**:
+
 - Check for overdue follow-ups daily
 - Send reminder emails to assigned staff
 - Update lead with reminder sent timestamp
@@ -1718,9 +1822,11 @@ async sendFollowUpReminders() {
 ### 3.4 Mobile Optimization
 
 #### ✅ Task 3.4.1: Optimize UI for Mobile Devices
+
 **Priority**: High | **Duration**: 4 hours
 
 **Updates**:
+
 - Responsive tables (collapse to cards on mobile)
 - Touch-friendly buttons (minimum 44px)
 - Mobile navigation (hamburger menu)
@@ -1728,6 +1834,7 @@ async sendFollowUpReminders() {
 - Test on iOS Safari and Android Chrome
 
 **Breakpoints**:
+
 - Mobile: < 640px
 - Tablet: 640px - 1024px
 - Desktop: > 1024px
@@ -1737,9 +1844,11 @@ async sendFollowUpReminders() {
 ---
 
 #### ✅ Task 3.4.2: Implement Mobile Quick Actions
+
 **Priority**: Medium | **Duration**: 2 hours
 
 **Features**:
+
 - Swipe actions on list items
 - Quick status change from mobile
 - One-tap phone/email from customer view
@@ -1754,11 +1863,13 @@ async sendFollowUpReminders() {
 ### 4.1 Advanced Analytics Dashboard
 
 #### ✅ Task 4.1.1: Build Executive Dashboard
+
 **Priority**: High | **Duration**: 4 hours
 
 **File**: `app/(dashboard)/analytics/page.tsx`
 
 **KPIs**:
+
 1. **Monthly Revenue**: Current vs previous month
 2. **Conversion Rate**: Leads → Sales (%)
 3. **Average Sale Value**: Mean finalAmount
@@ -1767,6 +1878,7 @@ async sendFollowUpReminders() {
 6. **Sales Cycle Length**: Days from lead to paid
 
 **Visualizations**:
+
 - Revenue trend (line chart)
 - Sales by status (funnel chart)
 - Revenue by organization (pie chart)
@@ -1777,6 +1889,7 @@ async sendFollowUpReminders() {
 ---
 
 #### ✅ Task 4.1.2: Implement Customer Lifetime Value Calculation
+
 **Priority**: High | **Duration**: 2 hours
 
 **File**: `src/analytics/analytics.service.ts`
@@ -1811,9 +1924,11 @@ async calculateCustomerLTV(customerId: string) {
 ---
 
 #### ✅ Task 4.1.3: Build Sales Trend Analysis
+
 **Priority**: High | **Duration**: 3 hours
 
 **Features**:
+
 - Revenue over time (daily/weekly/monthly/yearly)
 - Sales volume over time
 - Trend lines and forecasting
@@ -1829,9 +1944,11 @@ GET /analytics/sales-trends?period=monthly&start=2025-01-01&end=2025-12-31
 ---
 
 #### ✅ Task 4.1.4: Implement Service Performance Report
+
 **Priority**: Medium | **Duration**: 2 hours
 
 **Report Shows**:
+
 - Sales count by service
 - Revenue by service
 - Average sale value by service
@@ -1843,9 +1960,11 @@ GET /analytics/sales-trends?period=monthly&start=2025-01-01&end=2025-12-31
 ---
 
 #### ✅ Task 4.1.5: Build Sales Rep Performance Tracking
+
 **Priority**: Medium | **Duration**: 3 hours
 
 **Metrics per Staff Member**:
+
 - Total sales closed
 - Total revenue generated
 - Conversion rate
@@ -1861,11 +1980,13 @@ GET /analytics/sales-trends?period=monthly&start=2025-01-01&end=2025-12-31
 ### 4.2 Export & Data Management
 
 #### ✅ Task 4.2.1: Implement CSV Export for Sales
+
 **Priority**: High | **Duration**: 2 hours
 
 **File**: `src/exports/csv-export.service.ts`
 
 **Features**:
+
 - Export sales data to CSV
 - Include all fields
 - Apply current filters
@@ -1881,16 +2002,19 @@ GET /sales/export?format=csv&status=PAID&dateFrom=2025-01-01
 ---
 
 #### ✅ Task 4.2.2: Implement PDF Report Generation
+
 **Priority**: Medium | **Duration**: 3 hours
 
 **Library**: Use `pdfkit` or similar
 
 **Reports**:
+
 - Monthly sales summary
 - Customer statement
 - Executive report
 
 **Features**:
+
 - Company branding
 - Charts and tables
 - Downloadable PDF
@@ -1900,9 +2024,11 @@ GET /sales/export?format=csv&status=PAID&dateFrom=2025-01-01
 ---
 
 #### ✅ Task 4.2.3: Build Custom Report Builder (Basic)
+
 **Priority**: Low | **Duration**: 4 hours
 
 **Features**:
+
 - Select data fields to include
 - Choose filters
 - Pick date range
@@ -1916,11 +2042,13 @@ GET /sales/export?format=csv&status=PAID&dateFrom=2025-01-01
 ### 4.3 Performance Optimization
 
 #### ✅ Task 4.3.1: Implement Redis Caching
+
 **Priority**: High | **Duration**: 3 hours
 
 **File**: `src/cache/cache.service.ts`
 
 **Cache Strategy**:
+
 - Dashboard statistics (TTL: 5 minutes)
 - Service list (TTL: 1 hour)
 - Reports (TTL: 15 minutes)
@@ -1942,9 +2070,11 @@ async getCachedOrFetch<T>(key: string, fetchFn: () => Promise<T>, ttl: number): 
 ---
 
 #### ✅ Task 4.3.2: Optimize Database Queries
+
 **Priority**: High | **Duration**: 3 hours
 
 **Optimizations**:
+
 - Add missing indexes
 - Use eager loading (include relations)
 - Implement pagination everywhere
@@ -1970,6 +2100,7 @@ const sales = await this.prisma.sale.findMany({
 ---
 
 #### ✅ Task 4.3.3: Implement Database Indexing Strategy
+
 **Priority**: High | **Duration**: 2 hours
 
 **Add Indexes**:
@@ -1990,17 +2121,20 @@ EXPLAIN ANALYZE SELECT * FROM sales WHERE organization_id = '...' AND sale_date 
 ---
 
 #### ✅ Task 4.3.4: Conduct Load Testing
+
 **Priority**: High | **Duration**: 3 hours
 
 **Tool**: Use `k6` or `Artillery`
 
 **Test Scenarios**:
+
 1. Dashboard load with 5000 sales
 2. Sales list with filters
 3. Report generation
 4. Concurrent users (10, 50, 100)
 
 **Target Performance**:
+
 - Dashboard < 2 seconds
 - API responses < 500ms (p95)
 - Support 100 concurrent users
@@ -2012,9 +2146,11 @@ EXPLAIN ANALYZE SELECT * FROM sales WHERE organization_id = '...' AND sale_date 
 ## Post-Implementation Tasks
 
 ### ✅ Final Testing & QA
+
 **Duration**: 1 week
 
 **Test Plan**:
+
 - [ ] End-to-end user flows
 - [ ] Cross-browser testing (Chrome, Firefox, Safari, Edge)
 - [ ] Mobile testing (iOS, Android)
@@ -2027,15 +2163,18 @@ EXPLAIN ANALYZE SELECT * FROM sales WHERE organization_id = '...' AND sale_date 
 ---
 
 ### ✅ User Training
+
 **Duration**: 1 week
 
 **Training Sessions**:
+
 1. Rendetalje staff (2 hours)
 2. Tekup staff (2 hours)
 3. Foodtruck Fiesta staff (2 hours)
 4. Admin training (3 hours)
 
 **Materials**:
+
 - Video tutorials
 - User guide (already created)
 - Quick reference cards
@@ -2045,9 +2184,11 @@ EXPLAIN ANALYZE SELECT * FROM sales WHERE organization_id = '...' AND sale_date 
 ---
 
 ### ✅ Production Launch
+
 **Duration**: 1 day
 
 **Launch Checklist**:
+
 - [ ] All tests passing
 - [ ] Production environment configured
 - [ ] Database backup automated
@@ -2066,18 +2207,21 @@ EXPLAIN ANALYZE SELECT * FROM sales WHERE organization_id = '...' AND sale_date 
 ## Maintenance & Support Plan
 
 ### Weekly Tasks
+
 - Monitor error logs (Sentry)
 - Review performance metrics
 - Check database backups
 - User support tickets
 
 ### Monthly Tasks
+
 - Security updates
 - Performance optimization
 - Feature requests review
 - User feedback analysis
 
 ### Quarterly Tasks
+
 - Security audit
 - Infrastructure review
 - Cost optimization
@@ -2088,16 +2232,19 @@ EXPLAIN ANALYZE SELECT * FROM sales WHERE organization_id = '...' AND sale_date 
 ## Success Metrics (6-Month Review)
 
 ### Adoption Metrics
+
 - [ ] 95%+ of sales logged in system
 - [ ] 80%+ daily active users
 - [ ] 40%+ mobile usage
 
 ### Efficiency Metrics
+
 - [ ] < 2 minutes to create sale
 - [ ] < 1 hour from completion to invoice
 - [ ] 90% reduction in missed follow-ups
 
 ### Business Metrics
+
 - [ ] +10% lead-to-sale conversion rate
 - [ ] Customer retention tracking active
 - [ ] Revenue forecasting ±10% accuracy
@@ -2107,6 +2254,7 @@ EXPLAIN ANALYZE SELECT * FROM sales WHERE organization_id = '...' AND sale_date 
 ## Technology Stack Reference
 
 ### Backend Dependencies
+
 ```json
 {
   "@nestjs/common": "^10.0.0",
@@ -2125,6 +2273,7 @@ EXPLAIN ANALYZE SELECT * FROM sales WHERE organization_id = '...' AND sale_date 
 ```
 
 ### Frontend Dependencies
+
 ```json
 {
   "next": "^15.0.0",

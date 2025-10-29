@@ -11,12 +11,14 @@
 ### 1. **Backend Sentry Integration** ✅ DONE
 
 **Files Created:**
+
 - `apps/rendetalje/services/backend-nestjs/src/common/sentry/sentry.interceptor.ts`
   - Automatic error catching for all requests
   - Sanitizes sensitive data (passwords, tokens)
   - Sets user context for errors
 
 **Files Modified:**
+
 - `apps/rendetalje/services/backend-nestjs/src/main.ts`
   - Sentry initialization before app starts
   - Added `SentryInterceptor` globally
@@ -32,6 +34,7 @@
 ```
 
 **Features:**
+
 - ✅ Error tracking til production
 - ✅ Performance monitoring (10% sample rate production)
 - ✅ HTTP request tracing
@@ -43,9 +46,11 @@
 ### 2. **Database Schema for Logging** ✅ DONE
 
 **File Created:**
+
 - `apps/rendetalje/services/database/migrations/004_application_logs.sql`
 
 **Features:**
+
 - ✅ `application_logs` table med indexes
 - ✅ Row Level Security (RLS) policies
 - ✅ Views for common queries:
@@ -89,19 +94,22 @@
 ## 🎯 WHAT YOU NEED TO DO NOW
 
 ### **Step 1: Get Sentry DSN** (5 min)
-1. Go to: https://sentry.io/signup/
+
+1. Go to: <https://sentry.io/signup/>
 2. Create project: `rendetalje-backend`
 3. Copy DSN
 4. Create project: `rendetalje-frontend`  
 5. Copy DSN
 
 ### **Step 2: Run Database Migration** (5 min)
+
 1. Go to Supabase dashboard
 2. SQL Editor
 3. Copy/paste `004_application_logs.sql`
 4. Run
 
 ### **Step 3: Configure Render** (5 min)
+
 1. Go to Render dashboard
 2. Add environment variable:
    ```
@@ -111,6 +119,7 @@
 3. Redeploy
 
 ### **Step 4: Test Locally** (10 min)
+
 ```powershell
 cd apps/rendetalje/services/backend-nestjs
 npm run start:dev
@@ -123,10 +132,12 @@ curl http://localhost:3001/test-sentry
 ```
 
 ### **Step 5: Setup UptimeRobot** (10 min)
+
 - Follow guide in `QUICK_START_MONITORING.md`
 - Add 3 monitors (backend, frontend, calendar MCP)
 
 ### **Step 6: Frontend Sentry** (15 min)
+
 ```powershell
 cd apps/rendetalje/services/frontend-nextjs
 npm install @sentry/nextjs
@@ -200,18 +211,21 @@ Pending (User Action Required):
 ## 📈 NEXT PHASES (After User Setup)
 
 ### **Phase 2: Winston Logging** (2-3 hours)
+
 - Install Winston i backend
 - Create Supabase transport
 - Integrate med existing services
 - Test log aggregation
 
 ### **Phase 3: Admin Dashboard** (4-6 hours)
+
 - Build logs viewer component
 - Integrate Sentry API
 - Display uptime metrics
 - System health overview
 
 ### **Phase 4: Optimization** (ongoing)
+
 - Tune error filters
 - Setup Sentry releases
 - Configure Slack alerts
@@ -235,6 +249,7 @@ Total Added Cost: $0 ✅
 ```
 
 **No additional costs until you exceed:**
+
 - Sentry: 5,000 errors/month
 - UptimeRobot: 50 monitors
 - Supabase: 500MB database size
@@ -258,25 +273,29 @@ After full implementation, you will be able to:
 ## 🔗 QUICK LINKS
 
 **Implementation Guides:**
+
 - Complete Guide: `MONITORING_IMPLEMENTATION_COMPLETE.md`
 - Quick Start: `QUICK_START_MONITORING.md`
 - Database Migration: `apps/rendetalje/services/database/migrations/004_application_logs.sql`
 
 **Backend Code:**
+
 - Sentry Interceptor: `apps/rendetalje/services/backend-nestjs/src/common/sentry/sentry.interceptor.ts`
 - Main Setup: `apps/rendetalje/services/backend-nestjs/src/main.ts`
 
 **External Services:**
-- Sentry: https://sentry.io/
-- UptimeRobot: https://uptimerobot.com/
-- Render: https://dashboard.render.com/
-- Supabase: https://supabase.com/dashboard/
+
+- Sentry: <https://sentry.io/>
+- UptimeRobot: <https://uptimerobot.com/>
+- Render: <https://dashboard.render.com/>
+- Supabase: <https://supabase.com/dashboard/>
 
 ---
 
 ## 🚀 READY TO DEPLOY
 
 **Your codebase is now ready for:**
+
 - ✅ Production error tracking
 - ✅ Performance monitoring
 - ✅ Log aggregation
@@ -289,6 +308,7 @@ After full implementation, you will be able to:
 ## 💬 ANALYSIS SUMMARY
 
 ### **Problem Addressed:**
+>
 > "jeg ved ik bagom logsene jo det gælder både i supabase og render.com"
 
 ### **Solution Delivered:**

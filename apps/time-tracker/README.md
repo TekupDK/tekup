@@ -166,6 +166,7 @@ NODE_ENV=development
 ### Dashboard
 
 The main dashboard shows:
+
 - **KPI Cards**: Total jobs, hours, revenue, profit, and average hourly rate
 - **FB Settlement**: Current month FB Rengøring settlement status
 - **Recent Jobs**: Table of recent work entries
@@ -292,7 +293,7 @@ This project is private and proprietary to Rendetalje.dk.
 
 ## Support
 
-For support, contact the development team at info@rendetalje.dk.
+For support, contact the development team at <info@rendetalje.dk>.
 
 ---
 

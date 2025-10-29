@@ -5,6 +5,7 @@
 This app requires the following assets to be created and placed in the `assets/` directory:
 
 ### 1. **App Icon** (`icon.png`)
+
 - **Size**: 1024x1024 pixels
 - **Format**: PNG with transparency
 - **Usage**: Main app icon for both iOS and Android
@@ -12,6 +13,7 @@ This app requires the following assets to be created and placed in the `assets/`
 - **Recommended**: Use your company logo or a cleaning-related icon
 
 ### 2. **Splash Screen** (`splash.png`)
+
 - **Size**: 1284x2778 pixels (iPhone 14 Pro Max resolution)
 - **Format**: PNG
 - **Background**: White (#FFFFFF)
@@ -19,6 +21,7 @@ This app requires the following assets to be created and placed in the `assets/`
 - **Design**: Should include app logo/icon centered
 
 ### 3. **Adaptive Icon** (`adaptive-icon.png`)
+
 - **Size**: 1024x1024 pixels
 - **Format**: PNG with transparency
 - **Usage**: Android adaptive icon (foreground layer)
@@ -26,12 +29,14 @@ This app requires the following assets to be created and placed in the `assets/`
 - **Note**: Background color is set to white in app.json
 
 ### 4. **Favicon** (`favicon.png`)
+
 - **Size**: 48x48 pixels
 - **Format**: PNG
 - **Usage**: Web version favicon
 - **Design**: Simplified version of app icon
 
 ### 5. **Notification Icon** (`notification-icon.png`)
+
 - **Size**: 96x96 pixels
 - **Format**: PNG with transparency
 - **Usage**: Android push notification icon
@@ -59,6 +64,7 @@ This app requires the following assets to be created and placed in the `assets/`
 ### Option 2: Using Online Tools
 
 **Recommended tools:**
+
 - [AppIcon.co](https://appicon.co/) - Generate all icon sizes
 - [MakeAppIcon.com](https://makeappicon.com/) - Free icon generator
 - [Canva](https://www.canva.com/) - Design splash screen
@@ -81,20 +87,23 @@ mkdir -p assets
 
 ## Design Recommendations
 
-### Color Palette (from app theme):
+### Color Palette (from app theme)
+
 - **Primary**: `#3B82F6` (blue)
 - **Success**: `#10B981` (green)
 - **Warning**: `#F59E0B` (orange)
 - **Error**: `#EF4444` (red)
 - **Neutral**: `#6B7280` (gray)
 
-### Icon Style:
+### Icon Style
+
 - Modern, flat design
 - High contrast
 - Recognizable at small sizes
 - Represents cleaning/service industry
 
-### Suggested Icon Concepts:
+### Suggested Icon Concepts
+
 1. Stylized "R" letter
 2. Cleaning tool (broom, mop) in modern style
 3. House/building with sparkle
@@ -150,6 +159,7 @@ eas build --profile development --platform ios
 ## Need Help?
 
 If you need professional assets created:
+
 - Hire a designer on Fiverr or Upwork
 - Use AI tools like Midjourney or DALL-E
 - Contact your company's design team

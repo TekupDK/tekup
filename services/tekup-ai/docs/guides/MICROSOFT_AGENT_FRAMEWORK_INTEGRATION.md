@@ -19,6 +19,7 @@ Microsoft Agent Framework integrationen giver Renos adgang til enterprise-grade 
 ### Hybrid Approach
 
 Systemet bruger en hybrid tilgang der giver mulighed for:
+
 - **Legacy Mode**: Bruger eksisterende Renos system
 - **Hybrid Mode**: Kombinerer Microsoft og Legacy systemer
 - **Microsoft Mode**: Fuldt Microsoft Agent Framework
@@ -261,6 +262,7 @@ logger.info({
 ### Metrics
 
 Systemet samler automatisk metrics for:
+
 - Agent performance
 - Customer satisfaction
 - Business KPIs

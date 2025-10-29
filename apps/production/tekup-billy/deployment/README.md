@@ -1,4 +1,4 @@
-# Tekup-Billy MCP Server - Deployment Configuration
+﻿# Tekup-Billy MCP Server - Deployment Configuration
 
 Denne mappe indeholder alle deployment-relaterede konfigurationsfiler og guides til Tekup-Billy MCP Server.
 
@@ -126,7 +126,7 @@ git push origin main
 **2. Setup Render.com**
 
 - Create ny Web Service
-- Connect til GitHub repository (JonasAbde/Tekup-Billy)
+- Connect til GitHub repository (TekupDK/Tekup-Billy)
 - Select Docker environment
 - Region: Frankfurt (EU Central)
 - Instance: Starter

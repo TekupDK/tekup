@@ -36,7 +36,7 @@
 
 ### Step 1: Create UptimeRobot Account
 
-1. Go to: https://uptimerobot.com/signUp
+1. Go to: <https://uptimerobot.com/signUp>
 2. Sign up with: `jonas@tekup.dk` (or your email)
 3. Verify email
 4. Login

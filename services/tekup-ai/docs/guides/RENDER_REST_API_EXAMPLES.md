@@ -5,6 +5,7 @@
 This document contains ready-to-use REST API scripts for common RenOS operations.
 
 **Prerequisites:**
+
 - API key created: [https://dashboard.render.com/account/api-keys](https://dashboard.render.com/account/api-keys)
 - `jq` installed for JSON parsing: `choco install jq` (Windows) or `brew install jq` (Mac)
 
@@ -50,6 +51,7 @@ curl -s "https://api.render.com/v1/services?limit=50" \
 ```
 
 **Save these IDs:**
+
 - Backend: `tekup-renos` → `srv-xxxxx`
 - Frontend: `tekup-renos-frontend` → `srv-yyyyy`
 - Database: `rendetalje-db` → `dpg-zzzzz`

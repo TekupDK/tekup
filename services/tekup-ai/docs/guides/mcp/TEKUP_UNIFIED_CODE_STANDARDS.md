@@ -12,6 +12,7 @@
 Dette dokument definerer unified coding standards for alle TekUp projekter baseret på faktiske patterns fundet i eksisterende production code.
 
 **Repositories Analyseret:**
+
 - ✅ Tekup-Billy (MCP Server, TypeScript)
 - ✅ RenOS Backend (API, TypeScript + Prisma)
 - ✅ RenOS Frontend (React, TypeScript)
@@ -61,25 +62,31 @@ const authenticateMiddleware = (req, res, next) => { };
 ### Interface vs Type
 
 **Use Interfaces For:**
+
 - Domain models (entities)
+
 ```typescript
 interface BillyInvoice { id: string; amount: number; }
 interface Customer { name: string; email: string; }
 ```
 
 **Use Types For:**
+
 - Unions og enums
+
 ```typescript
 type InvoiceState = 'draft' | 'approved' | 'sent' | 'paid';
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 ```
 
 - Complex combinations
+
 ```typescript
 type ApiResponse<T> = { success: true; data: T } | { success: false; error: string };
 ```
 
 - Utility types
+
 ```typescript
 type Nullable<T> = T | null;
 type Optional<T> = T | undefined;
@@ -122,6 +129,7 @@ export const apiClient = new ApiClient();
 ```
 
 **Default Exports Only For:**
+
 - React components
 - Express routers (sometimes)
 
@@ -517,6 +525,7 @@ export default router;
 ```
 
 **Version Pinning:**
+
 - Use `^` for minor updates: `"zod": "^3.22.0"`
 - Pin exact versions for critical deps if needed
 
@@ -634,14 +643,18 @@ app.use('/api/', limiter);
 ## 🧪 Testing Standards
 
 ### Framework Choice
+
 **Vitest (Preferred):**
+
 - Modern, fast
 - Used by: TekupVault, RenOS Backend
 
 **Jest (Legacy):**
+
 - Older projects
 
 ### Test Organization
+
 ```
 tests/
 ├── integration/          # Integration tests
@@ -653,6 +666,7 @@ tests/
 ```
 
 ### Test Naming
+
 ```typescript
 describe('BillyClient', () => {
   describe('createInvoice', () => {
@@ -686,12 +700,14 @@ log.error('Operation failed', error, { context, args });
 ```
 
 ### Log Levels
+
 - `error` - Failures requiring attention
 - `warn` - Potential issues
 - `info` - Important operations
 - `debug` - Detailed debugging (dev only)
 
 ### Structured Logging
+
 **Always include context:**
 ```typescript
 log.info('Invoice created', {
@@ -732,7 +748,9 @@ model Lead {
 ```
 
 ### Indexes
+
 **Always index:**
+
 - Foreign keys
 - Fields used in WHERE clauses
 - Composite keys for complex queries
@@ -748,6 +766,7 @@ model Lead {
 ## 📦 Project Standards
 
 ### Package Manager
+
 - **Default:** npm
 - **Monorepo:** pnpm (TekupVault)
 - **Performance:** pnpm preferred for large projects
@@ -808,12 +827,14 @@ model Lead {
 ## 📋 Checklist for New TekUp Projects
 
 ### Setup
+
 - [ ] TypeScript 5.3+ with strict mode
 - [ ] Install Zod for validation
 - [ ] Setup ESLint + Prettier
 - [ ] Choose logger (Pino or Winston)
 
 ### Code Standards
+
 - [ ] Follow naming conventions
 - [ ] Use interfaces for domain models
 - [ ] Zod schemas for all inputs
@@ -821,6 +842,7 @@ model Lead {
 - [ ] Try/catch on all async functions
 
 ### Security
+
 - [ ] Helmet for security headers
 - [ ] CORS configuration
 - [ ] Rate limiting
@@ -828,6 +850,7 @@ model Lead {
 - [ ] Input validation
 
 ### Documentation
+
 - [ ] README with setup instructions
 - [ ] API documentation (if applicable)
 - [ ] Environment variables documented (.env.example)

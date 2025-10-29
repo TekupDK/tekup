@@ -3,6 +3,7 @@
 Develop a feature across backend, frontend, and mobile simultaneously using parallel agents.
 
 ## Arguments
+
 - `feature`: Feature name/description (required)
 
 ## Multi-Agent Strategy
@@ -10,6 +11,7 @@ Develop a feature across backend, frontend, and mobile simultaneously using para
 Launch 3 parallel agents (Task tool with subagent_type=general-purpose):
 
 ### Agent 1: Backend Development
+
 ```
 Implement {feature} backend API:
 1. Create NestJS controller + service + DTOs
@@ -22,6 +24,7 @@ Path: apps/rendetalje/services/backend-nestjs
 ```
 
 ### Agent 2: Frontend Development  
+
 ```
 Implement {feature} frontend UI:
 1. Create Next.js page/component
@@ -35,6 +38,7 @@ Path: apps/rendetalje/services/frontend-nextjs
 ```
 
 ### Agent 3: Mobile Development
+
 ```
 Implement {feature} mobile screen:
 1. Create React Native component
@@ -49,6 +53,7 @@ Path: apps/rendetalje/services/mobile
 ## Coordination
 
 Main Claude orchestrates:
+
 1. Launch all 3 agents in parallel
 2. Monitor progress
 3. Resolve integration issues
@@ -60,6 +65,7 @@ Main Claude orchestrates:
 ## Knowledge Integration
 
 Before starting, search KNOWLEDGE_INDEX.json for:
+
 - Similar features implemented before
 - Architecture patterns to follow
 - Common integration issues

@@ -393,16 +393,19 @@ RENDER_API_KEY=your_api_key_here
 ## 📚 Additional Resources
 
 ### MCP Server
+
 - [RENDER_MCP_INTEGRATION.md](./RENDER_MCP_INTEGRATION.md) - Full MCP guide
 - [RENDER_MCP_QUICK_SETUP.md](./RENDER_MCP_QUICK_SETUP.md) - 5-minute setup
 - [Render MCP Docs](https://docs.render.com/mcp)
 
 ### REST API
+
 - [Render API Reference](https://api-docs.render.com/)
 - [OpenAPI Spec](https://api-docs.render.com/openapi/6140fb3daeae351056086186)
 - [API Authentication](https://docs.render.com/api)
 
 ### RenOS-Specific
+
 - [.github/copilot-instructions.md](../.github/copilot-instructions.md) - Development guide
 - [DEPLOYMENT.md](../DEPLOYMENT.md) - Deployment procedures
 
@@ -411,17 +414,20 @@ RENDER_API_KEY=your_api_key_here
 ## 💡 Pro Tips
 
 ### Tip 1: Share API Key Carefully
+
 - Use same key for both MCP and REST API
 - Store in password manager
 - Rotate every 90 days
 - Never commit to Git
 
 ### Tip 2: Start Interactive, Automate Later
+
 1. Use MCP to explore and understand
 2. Once you know what you need, script it with REST API
 3. Best of both worlds!
 
 ### Tip 3: Combine Both in Workflows
+
 ```bash
 # Use REST API for automation
 DEPLOY_ID=$(curl -X POST "..." | jq -r '.deploy.id')
@@ -431,11 +437,13 @@ echo "Check status with: 'Show deploy status for ${DEPLOY_ID}'"
 ```
 
 ### Tip 4: Use REST API for Webhooks
+
 - Webhooks require REST API (no MCP equivalent)
 - Requires Render Pro plan
 - Great for Slack notifications, CI/CD triggers
 
 ### Tip 5: Document Your Scripts
+
 ```bash
 #!/bin/bash
 # deploy-and-verify.sh

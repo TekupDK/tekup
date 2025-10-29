@@ -25,7 +25,7 @@ En moderne, produktionsklar dashboard-applikation til Tekup Cloud-platformen, by
 
 ## 📋 Forudsætninger
 
-- Node.js 18+ 
+- Node.js 18+
 - npm eller yarn
 - Supabase-konto og projekt
 
@@ -46,7 +46,7 @@ En moderne, produktionsklar dashboard-applikation til Tekup Cloud-platformen, by
    ```bash
    cp .env.example .env
    ```
-   
+
    Udfyld `.env` filen med dine Supabase-credentials:
    ```env
    VITE_SUPABASE_URL=your_supabase_url
@@ -88,11 +88,13 @@ Dashboardet bruger Supabase Auth til sikker brugerautentificering:
 ## 📊 Data Integration
 
 ### Supabase Integration
+
 - Real-time database-forbindelse
 - Automatisk data-synkronisering
 - Optimistisk UI-opdateringer
 
 ### External APIs
+
 - **TekupVault**: Knowledge base og dokumentsøgning
 - **Billy.dk**: Fakturering og regnskab
 - **Google APIs**: Kalender og email-integration
@@ -100,21 +102,25 @@ Dashboardet bruger Supabase Auth til sikker brugerautentificering:
 ## 🚀 Deployment
 
 ### Production Build
+
 ```bash
 npm run build
 ```
 
 ### Preview Build
+
 ```bash
 npm run preview
 ```
 
 ### Deployment til Vercel
+
 1. Forbind repository til Vercel
 2. Tilføj miljøvariabler i Vercel dashboard
 3. Deploy automatisk ved push til main branch
 
 ### Deployment til Netlify
+
 1. Build command: `npm run build`
 2. Publish directory: `dist`
 3. Tilføj miljøvariabler i Netlify dashboard
@@ -145,9 +151,11 @@ npm run lint:fix
 ## 🔧 Konfiguration
 
 ### Miljøvariabler
+
 Se `.env.example` for alle tilgængelige konfigurationsmuligheder.
 
 ### Feature Flags
+
 ```env
 VITE_FEATURE_ANALYTICS=true
 VITE_FEATURE_BILLING=true
@@ -173,11 +181,13 @@ VITE_FEATURE_CHAT=true
 ## 📝 API Dokumentation
 
 ### Authentication Endpoints
+
 - `POST /auth/login` - Bruger login
 - `POST /auth/register` - Bruger registrering
 - `POST /auth/logout` - Bruger logout
 
 ### Dashboard Endpoints
+
 - `GET /api/kpis` - Hent KPI-metrics
 - `GET /api/activities` - Hent nylige aktiviteter
 - `GET /api/agents` - Hent AI-agent status
@@ -199,7 +209,8 @@ Dette projekt er licenseret under MIT License - se [LICENSE](LICENSE) filen for 
 ## 📞 Support
 
 For support og spørgsmål:
-- Email: support@tekup.dk
+
+- Email: <support@tekup.dk>
 - Documentation: [docs.tekup.dk](https://docs.tekup.dk)
 - Issues: [GitHub Issues](https://github.com/tekup/tekup-cloud-dashboard/issues)
 

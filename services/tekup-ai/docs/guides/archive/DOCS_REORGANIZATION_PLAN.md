@@ -12,6 +12,7 @@ Organisere alle 334+ markdown filer i en logisk, søgbar struktur der gør det n
 **docs/ directory:** 43+ .md filer (delvist organiseret)
 
 **Problemer:**
+
 - ❌ Svært at finde relevant dokumentation
 - ❌ Mange duplikater og forældede filer
 - ❌ Ingen klar struktur eller hierarki
@@ -155,52 +156,64 @@ docs/
 ## 🎯 Kategoriserings Regler
 
 ### 📂 **architecture/** - System Design
+
 - Filnavne: `VISUAL_*, CSS_*, COMPLETE_SYSTEM_*`
 - Indhold: Arkitektur diagrammer, system design, tekniske analyser
 
 ### 📚 **guides/** - Dokumentation
+
 - **user/**: End-user dokumentation
 - **setup/**: Installation & konfiguration
 - **developer/**: Udvikler dokumentation
 
 ### 🚀 **deployment/** - Deployment
+
 - **guides/**: Deployment instruktioner
 - **status/**: Deployment status
 - **fixes/**: Deployment fixes
 
 ### ✨ **features/** - Feature Docs
+
 - Organiseret efter feature (ai-chat, email, calendar, etc.)
 - Implementation docs, gap analysis, status
 
 ### 🏃 **sprints/** - Sprint Tracking
+
 - Organiseret efter sprint nummer
 - Progress reports, completion reports, task docs
 
 ### ✅ **testing/** - Test Docs
+
 - Test guides, results, reports
 - E2E, integration, unit test docs
 
 ### 📅 **sessions/** - Session Logs
+
 - Organiseret efter dato (YYYY-MM/)
 - Kun til historisk reference
 
 ### 📊 **status/** - Status Reports
+
 - **current/**: Aktuelle status
 - **archive/**: Gamle status rapporter
 
 ### 🔧 **fixes/** - Bug Fixes
+
 - Bug fix rapporter
 - Patch dokumentation
 
 ### 📋 **planning/** - Planlægning
+
 - Gap analysis, TODO tracking
 - Implementation plans
 - Next steps
 
 ### 🔒 **security/** - Sikkerhed
+
 - Security policies, fixes, audits
 
 ### 🗄️ **archive/** - Arkiv
+
 - Forældede docs
 - Gamle versioner
 - Deprecated features
@@ -210,23 +223,28 @@ docs/
 ## 🔄 Migration Plan
 
 ### Phase 1: Struktur (5 min)
+
 1. ✅ Opret alle mapper under `docs/`
 2. ✅ Opret README.md i hver hovedmappe
 
 ### Phase 2: Kategorisering (10 min)
+
 3. ✅ Generer PowerShell script til auto-kategorisering
 4. ✅ Review og juster kategorier manuelt
 
 ### Phase 3: Migration (5 min)
+
 5. ✅ Kør move script
 6. ✅ Verificer ingen filer mangler
 
 ### Phase 4: Index (10 min)
+
 7. ✅ Opret master `docs/README.md`
 8. ✅ Opret category indexes
 9. ✅ Tilføj beskrivelser
 
 ### Phase 5: Cleanup (5 min)
+
 10. ✅ Fjern duplikater
 11. ✅ Arkiver forældede docs
 12. ✅ Opdater links i kode

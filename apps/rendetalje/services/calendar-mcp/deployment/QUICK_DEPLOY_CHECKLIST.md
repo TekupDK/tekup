@@ -46,7 +46,7 @@ Hurtig tjekliste for deployment af RenOS Calendar MCP.
 - [ ] **Deploy to Render** (Choose one method)
 
   **Method A: Blueprint (Recommended)**
-  1. Go to https://dashboard.render.com/
+  1. Go to <https://dashboard.render.com/>
   2. New → Blueprint
   3. Connect GitHub repo: Tekup-Cloud
   4. Render detects `render.yaml`
@@ -102,28 +102,32 @@ Hurtig tjekliste for deployment af RenOS Calendar MCP.
 
 After successful deployment:
 
-- **Backend**: https://renos-calendar-mcp.onrender.com
-- **Dashboard**: https://renos-calendar-dashboard.onrender.com
-- **Health**: https://renos-calendar-mcp.onrender.com/health
-- **API Docs**: https://renos-calendar-mcp.onrender.com/tools
+- **Backend**: <https://renos-calendar-mcp.onrender.com>
+- **Dashboard**: <https://renos-calendar-dashboard.onrender.com>
+- **Health**: <https://renos-calendar-mcp.onrender.com/health>
+- **API Docs**: <https://renos-calendar-mcp.onrender.com/tools>
 
 ## Troubleshooting
 
 ### Build fails
+
 - Check TypeScript errors: `npm run build`
 - Fix linting: `npm run lint` (if configured)
 
 ### Supabase migration fails
+
 - **Fallback**: Manual migration
-  1. Go to https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/editor
+  1. Go to <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/editor>
   2. Run `docs/SUPABASE_SCHEMA.sql` manually
 
 ### Render deployment fails
+
 - Check logs: `render logs --service renos-calendar-mcp --tail`
 - Verify environment variables are set
 - Check Dockerfile builds locally: `docker build -t test .`
 
 ### Health check fails
+
 - Wait 2-3 minutes for service to start
 - Check Render dashboard for errors
 - Verify PORT=3001 is set
@@ -146,7 +150,6 @@ After successful deployment:
 
 ## Support
 
-- Render issues: https://render.com/docs
-- Supabase issues: https://supabase.com/docs
+- Render issues: <https://render.com/docs>
+- Supabase issues: <https://supabase.com/docs>
 - Project docs: See `../README.md` and `../docs/`
-

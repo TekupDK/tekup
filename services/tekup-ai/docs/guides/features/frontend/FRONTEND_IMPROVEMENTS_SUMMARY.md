@@ -9,6 +9,7 @@
 ### **1. Skeleton Loaders** ⭐⭐⭐⭐⭐
 
 #### **Nye Komponenter**\n\n```typescript\n\n// client/src/components/ui/Skeleton.tsx\n\n- Skeleton (base component)\n\n- StatCardSkeleton\n\n- ListItemSkeleton  \n\n- CacheStatsSkeleton\n\n```text\n
+
 **Features**:\n\n- ✅ Smooth pulse animation\n\n- ✅ Matches actual content layout\n\n- ✅ Professional loading states\n\n- ✅ Reusable across app
 
 **Impact**: **Stor forbedring af perceived performance!** Brugere ser ikke tom skærm mere.
@@ -18,6 +19,7 @@
 ### **2. Error Boundaries** ⭐⭐⭐⭐⭐
 
 #### **Ny Komponent**\n\n```typescript\n\n// client/src/components/ErrorBoundary.tsx\n\n```text\n
+
 **Features**:\n\n- ✅ Catches React render errors\n\n- ✅ Prevents hele app fra at crashe\n\n- ✅ User-friendly fejl UI med:\n\n  - AlertTriangle icon\n\n  - Error message\n\n  - "Prøv igen" knap\n\n  - "Gå til forsiden" knap\n\n  - Fejl-ID til debugging\n\n- ✅ Dansk lokalisering
 
 **Implementation**:\n\n- ✅ Wraps entire `<App />` \n\n- ✅ Class component (required for error boundaries)\n\n- ✅ Logs errors til console

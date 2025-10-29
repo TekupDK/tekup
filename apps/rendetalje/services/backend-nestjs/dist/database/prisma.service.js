@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PrismaService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-const client_1 = require("@tekup/database/node_modules/@prisma/client");
+const client_1 = require("@prisma/client");
 let PrismaService = PrismaService_1 = class PrismaService extends client_1.PrismaClient {
     constructor(configService) {
         super({
@@ -22,9 +22,10 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                     url: configService.get("DATABASE_URL"),
                 },
             },
-            log: process.env.NODE_ENV === "development" ? ["query", "info", "warn", "error"] : ["error"],
+            log: process.env.NODE_ENV === "development"
+                ? ["query", "info", "warn", "error"]
+                : ["error"],
         });
-        this.configService = configService;
         this.logger = new common_1.Logger(PrismaService_1.name);
     }
     async onModuleInit() {

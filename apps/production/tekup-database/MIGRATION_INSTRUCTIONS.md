@@ -105,6 +105,7 @@ EOF
 ## Tables Created
 
 ### 1. customer_intelligence
+
 **Purpose:** Store customer preferences, patterns, and memory
 
 ```sql
@@ -121,6 +122,7 @@ CREATE TABLE renos.customer_intelligence (
 ```
 
 ### 2. booking_validations
+
 **Purpose:** Log booking validation attempts and results
 
 ```sql
@@ -136,6 +138,7 @@ CREATE TABLE renos.booking_validations (
 ```
 
 ### 3. overtime_logs
+
 **Purpose:** Track overtime incidents and notifications
 
 ```sql
@@ -155,6 +158,7 @@ CREATE TABLE renos.overtime_logs (
 ```
 
 ### 4. learned_patterns
+
 **Purpose:** Machine learning pattern storage
 
 ```sql
@@ -172,6 +176,7 @@ CREATE TABLE renos.learned_patterns (
 ```
 
 ### 5. undo_actions
+
 **Purpose:** Support undo/rollback operations
 
 ```sql
@@ -245,6 +250,7 @@ pnpm db:migrate deploy
 ## Monitoring
 
 After migration, monitor:
+
 - Supabase Dashboard → Database → Logs
 - Check for any migration errors
 - Verify table row counts (should be 0 initially)
@@ -255,7 +261,8 @@ After migration, monitor:
 ## Support
 
 For issues, contact:
-- Jonas Abde (empire1266@gmail.com)
+
+- Jonas Abde (<empire1266@gmail.com>)
 - Claude Code documentation
 
 ---

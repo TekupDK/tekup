@@ -39,6 +39,7 @@ cp .env.example .env.local
 ```
 
 **To find your IP:**
+
 - **Mac/Linux:** `ifconfig | grep "inet "`
 - **Windows:** `ipconfig | findstr IPv4`
 
@@ -56,6 +57,7 @@ npm start
 ```
 
 This will:
+
 - Start the Expo development server
 - Open a browser with QR code
 - Show available commands
@@ -86,13 +88,14 @@ npm run android
 
 ---
 
-## 🎉 That's It!
+## 🎉 That's It
 
 The app should now be running on your device/simulator.
 
 ### Default Test Account
 
 If your backend has test data, try logging in:
+
 - **Email:** `test@rendetalje.dk`
 - **Password:** `password123`
 
@@ -103,18 +106,24 @@ If your backend has test data, try logging in:
 ## Common Issues
 
 ### Issue: "Network request failed"
+
 **Solution:** Make sure:
+
 1. Backend API is running on port 3001
 2. Your computer and device are on same network
 3. `.env.local` has correct IP address
 
 ### Issue: "Location permission denied"
+
 **Solution:**
+
 - iOS: Go to Settings → Privacy → Location → Expo Go → While Using
 - Android: App Settings → Permissions → Location → Allow
 
 ### Issue: "Expo Go not connecting"
+
 **Solution:**
+
 - Restart Expo dev server: `npm start -c`
 - Make sure both devices are on same WiFi
 - Try using tunnel mode: `npm start --tunnel`
@@ -177,8 +186,8 @@ npm test
 ## Getting Help
 
 - Check `COMPLETION_REPORT.md` for known issues
-- See Expo docs: https://docs.expo.dev
-- Join Expo Discord: https://chat.expo.dev
+- See Expo docs: <https://docs.expo.dev>
+- Join Expo Discord: <https://chat.expo.dev>
 
 ---
 

@@ -78,9 +78,9 @@ npm run dev
 
 **Access:**
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:3001
-- API Documentation: http://localhost:3001/api/docs
+- Frontend: <http://localhost:3000>
+- Backend API: <http://localhost:3001>
+- API Documentation: <http://localhost:3001/api/docs>
 
 ---
 
@@ -385,7 +385,7 @@ Proprietary - Tekup Portfolio © 2025
 
 **Issues:** [GitHub Issues](https://github.com/TekupDK/tekup/issues)  
 **Documentation:** [docs/](./docs/)  
-**Email:** support@tekup.dk
+**Email:** <support@tekup.dk>
 
 ---
 

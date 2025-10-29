@@ -1,4 +1,5 @@
 # Tekup Workspace - Complete Repository Index
+
 **Generated:** 22. Oktober 2025, kl. 04:45 CET  
 **Total Repositories:** 12  
 **Scan Method:** Filesystem + Git + Package Analysis
@@ -25,6 +26,7 @@
 ## 1. Tekup-Billy
 
 ### Basic Information
+
 - **Name**: `@tekup/billy-mcp`
 - **Version**: 1.4.2
 - **Path**: `C:\Users\empir\Tekup-Billy`
@@ -34,9 +36,11 @@
 - **Last Modified**: 22. Oktober 2025
 
 ### Purpose
+
 Billy.dk API integration for AI agents via Model Context Protocol (MCP) with Redis horizontal scaling. Provides 32 MCP tools for invoice, customer, product, and revenue management.
 
 ### Technical Stack
+
 ```yaml
 Language: TypeScript
 Runtime: Node.js >=18.0.0
@@ -49,6 +53,7 @@ Deployment: Render.com Docker
 ```
 
 ### Dependencies (Key)
+
 - `@modelcontextprotocol/sdk` ^1.20.0
 - `express` ^5.1.0
 - `axios` ^1.6.0
@@ -60,6 +65,7 @@ Deployment: Render.com Docker
 - `zod` ^3.22.0
 
 ### File Structure
+
 ```
 Tekup-Billy/
 ├── src/                 # TypeScript source (31 files)
@@ -79,6 +85,7 @@ Tests: 8 test files
 ```
 
 ### Scripts
+
 ```bash
 npm run build           # TypeScript compilation
 npm run start          # Production stdio MCP
@@ -91,12 +98,14 @@ npm run docker:build   # Build Docker image
 ```
 
 ### Production Endpoints
-- **URL**: https://tekup-billy.onrender.com
-- **Health**: https://tekup-billy.onrender.com/health
-- **Tools**: https://tekup-billy.onrender.com/api/v1/tools (POST)
+
+- **URL**: <https://tekup-billy.onrender.com>
+- **Health**: <https://tekup-billy.onrender.com/health>
+- **Tools**: <https://tekup-billy.onrender.com/api/v1/tools> (POST)
 - **Protocol**: MCP over HTTP + Stdio
 
 ### Features
+
 - 32 MCP Tools:
   - 8 Invoice operations
   - 4 Customer operations
@@ -111,6 +120,7 @@ npm run docker:build   # Build Docker image
 - 30% faster responses (v1.4.0)
 
 ### Integration Points
+
 - ✅ Claude.ai Web (custom connector)
 - ✅ ChatGPT (custom connector)
 - ✅ Claude Desktop (stdio MCP)
@@ -118,6 +128,7 @@ npm run docker:build   # Build Docker image
 - ✅ TekupVault (indexed, 188 files)
 
 ### Issues & Recommendations
+
 - **Git Status**: Clean ✅
 - **Documentation**: Excellent (85+ files)
 - **Tests**: 6/6 passing ✅
@@ -129,6 +140,7 @@ npm run docker:build   # Build Docker image
 ## 2. TekupVault
 
 ### Basic Information
+
 - **Name**: `tekupvault`
 - **Version**: 0.1.0
 - **Path**: `C:\Users\empir\TekupVault`
@@ -138,9 +150,11 @@ npm run docker:build   # Build Docker image
 - **Last Modified**: 18. Oktober 2025
 
 ### Purpose
+
 Central intelligent knowledge layer for Tekup Portfolio. Automatically indexes, consolidates, and enables semantic search across 14 GitHub repositories using OpenAI embeddings and pgvector.
 
 ### Technical Stack
+
 ```yaml
 Language: TypeScript
 Runtime: Node.js 18+
@@ -152,6 +166,7 @@ Deployment: Render.com (API + Worker)
 ```
 
 ### Dependencies (Key)
+
 - `@supabase/supabase-js` (database)
 - `openai` (embeddings)
 - `@octokit/rest` (GitHub API)
@@ -161,6 +176,7 @@ Deployment: Render.com (API + Worker)
 - `cors` (API security)
 
 ### Monorepo Structure
+
 ```
 TekupVault/
 ├── apps/
@@ -179,6 +195,7 @@ Tests: 31 passing
 ```
 
 ### Scripts
+
 ```bash
 pnpm install           # Install all deps
 pnpm build             # Build all packages
@@ -188,14 +205,16 @@ pnpm check:ports       # Port conflict check
 ```
 
 ### Production Endpoints
-- **API**: https://tekupvault.onrender.com
+
+- **API**: <https://tekupvault.onrender.com>
 - **Worker**: Background service (no public URL)
-- **Health**: https://tekupvault.onrender.com/health
+- **Health**: <https://tekupvault.onrender.com/health>
 - **Search**: POST /api/search
 - **Sync Status**: GET /api/sync-status
 - **MCP**: /.well-known/mcp.json
 
 ### Features
+
 - 14 GitHub repositories indexed
 - 1,063+ files synced
 - OpenAI embeddings (text-embedding-3-small)
@@ -206,7 +225,9 @@ pnpm check:ports       # Port conflict check
 - Rate limiting
 
 ### Indexed Repositories (14)
+
 **Tier 1 (Core - 4):**
+
 1. Tekup-Billy
 2. renos-backend
 3. renos-frontend
@@ -227,12 +248,14 @@ pnpm check:ports       # Port conflict check
 14. Jarvis-lite
 
 ### Integration Points
+
 - ✅ All 14 repos auto-synced
 - ✅ Claude Desktop (MCP stdio)
 - ✅ ChatGPT (OpenAI-compatible search)
 - ✅ Cursor AI (MCP integration ready)
 
 ### Issues & Recommendations
+
 - **Git Status**: Modified README.md (🟡 commit pending)
 - **Phase 3**: Complete (MCP integration) ✅
 - **Phase 4**: Pending (Web UI with React + Tailwind)
@@ -243,6 +266,7 @@ pnpm check:ports       # Port conflict check
 ## 3. RendetaljeOS
 
 ### Basic Information
+
 - **Name**: `rendetalje-os`
 - **Version**: 1.0.0
 - **Path**: `C:\Users\empir\RendetaljeOS`
@@ -252,9 +276,11 @@ pnpm check:ports       # Port conflict check
 - **Last Modified**: 22. Oktober 2025
 
 ### Purpose
+
 Full-featured AI-powered automation system for Rendetalje.dk. Handles Gmail integration, email automation, customer management, booking system, and calendar sync.
 
 ### Technical Stack
+
 ```yaml
 Language: TypeScript + JavaScript
 Runtime: Node.js >=18
@@ -265,12 +291,14 @@ Frontend: React 19 + Vite + Radix UI + Tailwind
 ```
 
 ### Dependencies
+
 - **Total**: 965 packages installed
 - **Backend**: Prisma 6.16.3, Express 4.19.2, @google/generative-ai 0.24.1
 - **Frontend**: React 19, Vite, Radix UI, Tailwind
 - **AI**: OpenAI 4.28.4, Gemini integration
 
 ### Monorepo Structure
+
 ```
 RendetaljeOS/
 ├── apps/
@@ -290,6 +318,7 @@ Workspaces: 3 (backend, frontend, shared-types)
 ```
 
 ### Scripts
+
 ```bash
 pnpm install           # Install deps (965 packages)
 pnpm dev               # Start all apps
@@ -299,11 +328,13 @@ pnpm supabase:gen-types # Generate Supabase types
 ```
 
 ### URLs
-- **Frontend**: http://localhost:5173 (Vite dev server)
-- **Backend API**: http://localhost:3001
+
+- **Frontend**: <http://localhost:5173> (Vite dev server)
+- **Backend API**: <http://localhost:3001>
 - **Prisma Studio**: `cd apps/backend && pnpm db:studio`
 
 ### Features
+
 - Gmail integration (Google APIs)
 - Email automation & auto-response
 - Customer management (CRM features)
@@ -316,6 +347,7 @@ pnpm supabase:gen-types # Generate Supabase types
 - Invoice integration (via Billy MCP)
 
 ### Integration Points
+
 - ✅ Gmail API
 - ✅ Google Calendar API
 - ✅ Supabase Database
@@ -324,10 +356,11 @@ pnpm supabase:gen-types # Generate Supabase types
 - 🟡 Billy MCP (integration planned)
 
 ### Issues & Recommendations
+
 - **Git Status**: Modified files in frontend/ (🟡 commit pending)
 - **Untracked Files**: CHANGELOG.md, DEBUGGING_SUMMARY.md, TESTING_REPORT.md
 - **-Mobile Folder**: Duplicate or separate? (186 files, needs clarification)
-- **Recommendation**: 
+- **Recommendation**:
   - Commit frontend changes
   - Clarify mobile app relationship
   - Deploy backend to Render
@@ -338,6 +371,7 @@ pnpm supabase:gen-types # Generate Supabase types
 ## 4. RenOS Calendar MCP
 
 ### Basic Information
+
 - **Name**: `@renos/calendar-mcp`
 - **Version**: 0.1.0
 - **Path**: `C:\Users\empir\Tekup-Cloud\renos-calendar-mcp`
@@ -347,9 +381,11 @@ pnpm supabase:gen-types # Generate Supabase types
 - **Last Modified**: 22. Oktober 2025
 
 ### Purpose
+
 AI-powered calendar intelligence for RenOS. Provides 5 specialized tools for booking validation, conflict checking, invoice automation, overtime tracking, and customer memory.
 
 ### Technical Stack
+
 ```yaml
 Language: TypeScript
 Runtime: Node.js 18
@@ -362,6 +398,7 @@ Testing: Jest + Supertest
 ```
 
 ### Dependencies (Key)
+
 - `@modelcontextprotocol/sdk`
 - `express` + `router`
 - `dotenv`, `zod` (config)
@@ -371,6 +408,7 @@ Testing: Jest + Supertest
 - `tailwindcss` (UI)
 
 ### Docker Services
+
 ```
 renos-calendar-mcp/
 ├── mcp-server     # Port 3001 (MCP HTTP API)
@@ -384,6 +422,7 @@ Port Configuration: ✅ Fully configurable via .env
 ```
 
 ### Scripts
+
 ```bash
 npm run build              # TypeScript compilation
 npm run start:http         # Start HTTP server
@@ -396,13 +435,15 @@ npm run snapshot:perf      # Performance snapshot
 ```
 
 ### Production Status
-- **Current**: http://localhost:3001 (local only)
+
+- **Current**: <http://localhost:3001> (local only)
 - **Planned**: Deploy to Render.com
 - **Docker**: ✅ Complete
 - **Port System**: ✅ Complete
 - **Tests**: ✅ Integration tests passing
 
 ### Features
+
 - 5 AI Tools:
   1. **Validate Booking Date**: Check day/date consistency, customer patterns
   2. **Check Booking Conflicts**: Calendar conflict detection
@@ -415,6 +456,7 @@ npm run snapshot:perf      # Performance snapshot
 - UI/UX enhancements (dark mode, animations)
 
 ### Integration Status
+
 - ✅ Google Calendar (Service Account)
 - ✅ Supabase (connected, tables pending creation)
 - ❌ Billy.dk MCP (disabled for v1)
@@ -422,6 +464,7 @@ npm run snapshot:perf      # Performance snapshot
 - 🟡 **Operational Status**: 2/5 tools working, 3 need Supabase tables
 
 ### Issues & Recommendations
+
 - **Critical**: Create Supabase tables:
   - `customer_intelligence` (for Customer Memory tool)
   - `overtime_logs` (for Overtime Risk tool)
@@ -435,6 +478,7 @@ npm run snapshot:perf      # Performance snapshot
 ## 5. Agent-Orchestrator
 
 ### Basic Information
+
 - **Name**: `tekup-agent-orchestrator`
 - **Version**: 1.0.0
 - **Path**: `C:\Users\empir\Agent-Orchestrator`
@@ -444,9 +488,11 @@ npm run snapshot:perf      # Performance snapshot
 - **Last Modified**: 21. Oktober 2025
 
 ### Purpose
+
 Visual interface for multi-agent AI orchestration. Desktop application for managing and monitoring AI agents.
 
 ### Technical Stack
+
 ```yaml
 Language: TypeScript + React
 Runtime: Electron 38.2.2
@@ -457,6 +503,7 @@ Build: electron-builder 26.0.12
 ```
 
 ### Dependencies (Key)
+
 - `electron` ^38.2.2
 - `react` ^19.2.0
 - `vite` ^7.1.10
@@ -466,6 +513,7 @@ Build: electron-builder 26.0.12
 - `socket.io` ^4.8.1
 
 ### File Structure
+
 ```
 Agent-Orchestrator/
 ├── electron/         # Electron main & preload
@@ -482,6 +530,7 @@ Total Components: ~20
 ```
 
 ### Scripts
+
 ```bash
 npm run dev              # Vite + Electron dev
 npm run build            # TypeScript + Vite build
@@ -489,11 +538,13 @@ npm run build:electron   # Full Electron app build
 ```
 
 ### Build Status
+
 - **Executable**: ✅ Built (dist/win-unpacked/)
 - **Size**: ~200MB (includes Electron runtime)
 - **Platform**: Windows (ready for macOS/Linux builds)
 
 ### Features
+
 - Visual agent dashboard
 - Agent card components
 - Message flow visualization
@@ -502,10 +553,12 @@ npm run build:electron   # Full Electron app build
 - Socket.io for real-time updates
 
 ### Integration Points
+
 - 🟡 Render API (integration layer)
 - 🟡 Agent services (to be connected)
 
 ### Issues & Recommendations
+
 - **Git Status**: Clean ✅
 - **Purpose**: Nice-to-have, not critical for core business
 - **Priority**: LOW
@@ -516,6 +569,7 @@ npm run build:electron   # Full Electron app build
 ## 6. tekup-cloud-dashboard
 
 ### Basic Information
+
 - **Name**: `vite-react-typescript-starter`
 - **Version**: 0.0.0
 - **Path**: `C:\Users\empir\tekup-cloud-dashboard`
@@ -525,9 +579,11 @@ npm run build:electron   # Full Electron app build
 - **Last Modified**: 20. Oktober 2025
 
 ### Purpose
+
 Cloud dashboard for Tekup services. Provides agent monitoring, analytics, system health, integrations, leads, and settings management.
 
 ### Technical Stack
+
 ```yaml
 Language: TypeScript
 Framework: React 18.3.1 + Vite 5.4.2
@@ -538,6 +594,7 @@ Icons: Lucide React 0.344.0
 ```
 
 ### Dependencies
+
 - `react` ^18.3.1
 - `react-router-dom` ^7.9.4
 - `@supabase/supabase-js` ^2.57.4
@@ -546,6 +603,7 @@ Icons: Lucide React 0.344.0
 - `vite` ^5.4.2
 
 ### File Structure
+
 ```
 tekup-cloud-dashboard/
 ├── src/
@@ -568,6 +626,7 @@ Pages: 8 (Dashboard, Agents, Analytics, Integrations, Leads, Settings, SystemHea
 ```
 
 ### Scripts
+
 ```bash
 npm run dev        # Vite dev server
 npm run build      # Production build
@@ -576,12 +635,14 @@ npm run typecheck  # TypeScript check
 ```
 
 ### Git Status (🟡 Modified)
+
 ```
 Modified: README.md, package.json, src/App.tsx, src/lib/supabase.ts, src/pages/Dashboard.tsx
 Untracked: .env.example, API_DOCUMENTATION.md, CHANGELOG.md
 ```
 
 ### Features
+
 - Agent monitoring dashboard
 - Analytics & KPIs
 - System health monitoring
@@ -591,10 +652,12 @@ Untracked: .env.example, API_DOCUMENTATION.md, CHANGELOG.md
 - Responsive UI (Tailwind)
 
 ### Integration Points
+
 - ✅ Supabase (authentication + database)
 - 🟡 Agent services (API integration needed)
 
 ### Issues & Recommendations
+
 - **Git Status**: Uncommitted changes (🟡)
 - **Action**: Commit changes, create .env from .env.example
 - **Deployment**: Not yet deployed (ready for Vercel/Netlify)
@@ -606,6 +669,7 @@ Untracked: .env.example, API_DOCUMENTATION.md, CHANGELOG.md
 ## 7. tekup-ai-assistant
 
 ### Basic Information
+
 - **Name**: (No package.json in root)
 - **Version**: N/A
 - **Path**: `C:\Users\empir\tekup-ai-assistant`
@@ -615,9 +679,11 @@ Untracked: .env.example, API_DOCUMENTATION.md, CHANGELOG.md
 - **Last Modified**: 19. Oktober 2025
 
 ### Purpose
+
 AI assistant configuration hub, MCP client implementations, and documentation repository for Tekup ecosystem.
 
 ### File Structure
+
 ```
 tekup-ai-assistant/
 ├── configs/
@@ -643,6 +709,7 @@ Scripts: 5 (Python + PowerShell)
 ```
 
 ### MCP Client: Billy
+
 ```yaml
 Location: mcp-clients/billy/
 Language: TypeScript
@@ -653,6 +720,7 @@ Purpose: Billy.dk MCP client for AI integrations
 ```
 
 ### Documentation Categories
+
 1. **Analysis**: RENOS backend/frontend, Billy, TekupVault
 2. **API**: Billy API reference
 3. **Architecture**: System diagrams (Mermaid)
@@ -662,6 +730,7 @@ Purpose: Billy.dk MCP client for AI integrations
 7. **Testing**: Qwen implementation, test results
 
 ### Features
+
 - MCP configuration templates (Claude, Ollama, Open WebUI)
 - Billy.dk MCP client
 - Comprehensive documentation (40+ files)
@@ -670,12 +739,14 @@ Purpose: Billy.dk MCP client for AI integrations
 - Integration examples
 
 ### Integration Points
+
 - ✅ Claude Desktop (config provided)
 - ✅ Ollama (config provided)
 - ✅ Open WebUI (Docker Compose provided)
 - ✅ Billy MCP (client implemented)
 
 ### Issues & Recommendations
+
 - **Git Status**: Clean ✅
 - **Purpose**: Documentation/configuration hub
 - **Priority**: LOW
@@ -686,6 +757,7 @@ Purpose: Billy.dk MCP client for AI integrations
 ## 8. tekup-gmail-automation
 
 ### Basic Information
+
 - **Name**: (Python project - pyproject.toml)
 - **Version**: N/A
 - **Path**: `C:\Users\empir\tekup-gmail-automation`
@@ -695,9 +767,11 @@ Purpose: Billy.dk MCP client for AI integrations
 - **Last Modified**: 21. Oktober 2025
 
 ### Purpose
+
 Gmail PDF forwarding automation, receipt processing, and email handling. Hybrid project with Python core and Node.js MCP server.
 
 ### Technical Stack
+
 ```yaml
 Primary: Python 3.x
 Secondary: Node.js (gmail-mcp-server/)
@@ -706,6 +780,7 @@ APIs: Gmail API, Google Photos API, Economic API
 ```
 
 ### File Structure
+
 ```
 tekup-gmail-automation/
 ├── src/
@@ -726,6 +801,7 @@ Node.js Files: ~20 (MCP server)
 ```
 
 ### Python Scripts (src/)
+
 - `gmail_forwarder.py` - Main forwarder logic
 - `gmail_pdf_mcp_forwarder.py` - MCP-enabled forwarder
 - `scheduler.py` - Cron job scheduler
@@ -734,6 +810,7 @@ Node.js Files: ~20 (MCP server)
 - Invoice analysis & reconciliation
 
 ### Node.js MCP Server (gmail-mcp-server/)
+
 ```yaml
 Language: TypeScript
 Purpose: MCP server for Gmail operations
@@ -742,6 +819,7 @@ Package: gmail-mcp-server (separate package.json)
 ```
 
 ### Features
+
 - Gmail PDF forwarding
 - Email filtering and labeling
 - Google Photos receipt processing
@@ -751,16 +829,18 @@ Package: gmail-mcp-server (separate package.json)
 - MCP server for AI integrations
 
 ### Integration Points
+
 - ✅ Gmail API
 - ✅ Google Photos API
 - ✅ Economic API
 - 🟡 MCP server (available but unclear if actively used)
 
 ### Issues & Recommendations
+
 - **Git Status**: ⚠️ NOT A GIT REPOSITORY
 - **Action Required**: `git init` or archive if unused
 - **Priority**: LOW (if inactive), MEDIUM (if active)
-- **Recommendation**: 
+- **Recommendation**:
   - Verify if actively used
   - Initialize git repository if active
   - Archive if superseded by other projects
@@ -771,6 +851,7 @@ Package: gmail-mcp-server (separate package.json)
 ## 9. Tekup-org
 
 ### Basic Information
+
 - **Name**: `tekup-monorepo`
 - **Version**: (No version in package.json)
 - **Path**: `C:\Users\empir\Tekup-org`
@@ -780,9 +861,11 @@ Package: gmail-mcp-server (separate package.json)
 - **Last Modified**: 20. Oktober 2025
 
 ### Purpose
+
 MASSIVE monorepo containing 30+ apps and 18+ packages. Includes lead management, CRM, scheduling, MCP servers, dashboards, testing frameworks, and more.
 
 ### Technical Stack
+
 ```yaml
 Language: TypeScript + JavaScript
 Runtime: Node.js >=20.10.0
@@ -793,6 +876,7 @@ Testing: Playwright, Jest, Vitest
 ```
 
 ### Monorepo Structure
+
 ```
 Tekup-org/
 ├── apps/                 # 30+ applications
@@ -822,6 +906,7 @@ Package.json Files: 75+
 ```
 
 ### Major Apps
+
 1. **tekup-crm-api** (NestJS backend)
 2. **tekup-crm-web** (Next.js frontend)
 3. **cloud-dashboard** (React dashboard)
@@ -829,6 +914,7 @@ Package.json Files: 75+
 5. ... 26+ more apps
 
 ### Major Packages
+
 1. **@tekup/config** - Shared configuration
 2. **@tekup/observability** - Monitoring & metrics
 3. **@tekup/ui** - Shared UI components
@@ -839,6 +925,7 @@ Package.json Files: 75+
 8. ... 11+ more packages
 
 ### Scripts (Root)
+
 ```bash
 pnpm install           # Install all deps
 pnpm dev               # Dev mode (all apps)
@@ -851,6 +938,7 @@ pnpm health:scan       # Health check all services
 ```
 
 ### Git Status (🟡 Untracked)
+
 ```
 Untracked:
 - EXTRACTION_SCRIPTS.md
@@ -864,12 +952,13 @@ Untracked:
 ```
 
 ### Issues & Recommendations
+
 - **Complexity**: ⚠️ EXTREME (30+ apps is too much)
 - **Maintenance**: ⚠️ HIGH burden (75+ package.json files)
 - **Performance**: ⚠️ Slow installs/builds
 - **Clarity**: ⚠️ Unclear which apps are active
 - **Priority**: 🔴 CRITICAL
-- **Recommendation**: 
+- **Recommendation**:
   - **Extract Core Apps**: Identify 3-5 active apps, move to separate repos
   - **Archive Rest**: Archive or delete unused apps
   - **Simplify Packages**: Keep only essential shared packages
@@ -881,6 +970,7 @@ Untracked:
 ## 10. Tekup Google AI
 
 ### Basic Information
+
 - **Name**: `rendetalje-assistant`
 - **Version**: 0.1.0
 - **Path**: `C:\Users\empir\Tekup Google AI`
@@ -890,9 +980,11 @@ Untracked:
 - **Last Modified**: 20. Oktober 2025
 
 ### Purpose
+
 Original RenOS system for Rendetalje.dk. Now superseded by RendetaljeOS monorepo. Contains extensive documentation and deployment history.
 
 ### Technical Stack
+
 ```yaml
 Language: TypeScript + JavaScript
 Runtime: Node.js
@@ -903,6 +995,7 @@ Deployment: Render.com (1,198 render.com references)
 ```
 
 ### File Structure
+
 ```
 Tekup Google AI/
 ├── client/                 # React 18 frontend
@@ -919,23 +1012,26 @@ Documentation: EXCESSIVE (over-documented)
 ```
 
 ### Documentation (⚠️ EXCESSIVE)
+
 - 67+ files named `*COMPLETE*.md`
 - 63+ files named `*STATUS*.md`
 - 291 files contain render.com URLs (1,198 total matches)
 - Likely outdated deployment information
 
 ### Git Status
+
 ```
 Modified: README.md
 Deleted: pnpm-lock.yaml
 ```
 
 ### Issues & Recommendations
+
 - **Status**: 🔴 LEGACY (superseded by RendetaljeOS)
 - **Documentation**: ⚠️ EXTREME over-documentation (130+ status/complete files)
 - **Deployment Info**: ⚠️ Outdated (1,198 render.com URL references)
 - **Priority**: 🔴 CRITICAL
-- **Recommendation**: 
+- **Recommendation**:
   - **Verify**: Check if any features missing from RendetaljeOS
   - **Migrate**: Move missing features to RendetaljeOS
   - **Archive**: Archive this repository (rename to `Tekup-Google-AI-ARCHIVED`)
@@ -947,6 +1043,7 @@ Deleted: pnpm-lock.yaml
 ## 11. Tekup-Cloud
 
 ### Basic Information
+
 - **Name**: `rendetaljeos`
 - **Version**: 1.0.0
 - **Path**: `C:\Users\empir\Tekup-Cloud`
@@ -956,9 +1053,11 @@ Deleted: pnpm-lock.yaml
 - **Last Modified**: 22. Oktober 2025
 
 ### Purpose
+
 Workspace root containing multiple sub-projects and extensive documentation. Primary project is renos-calendar-mcp (NEW).
 
 ### Contents
+
 ```
 Tekup-Cloud/
 ├── renos-calendar-mcp/     # NEW - Primary project (145 files)
@@ -980,6 +1079,7 @@ Sub-Projects: 3-5
 ```
 
 ### Git Status (🟡)
+
 ```
 Modified:
 - .gitignore
@@ -999,6 +1099,7 @@ Untracked (30+):
 ```
 
 ### Sub-Projects
+
 1. **renos-calendar-mcp/** (Primary - NEW)
    - RenOS Calendar MCP server
    - 145 files
@@ -1021,12 +1122,13 @@ Untracked (30+):
    - Needs verification
 
 ### Issues & Recommendations
+
 - **Git Status**: Many untracked files (🟡)
 - **Organization**: Mixing multiple projects in one repo (🟡)
 - **Duplicates**: RendetaljeOS-Mobile likely duplicate (⚠️)
 - **Clarity**: Purpose of backend/ and frontend/ unclear (⚠️)
 - **Priority**: MEDIUM
-- **Recommendation**: 
+- **Recommendation**:
   - **Commit**: Commit or delete untracked documentation files
   - **Organize**: Clarify purpose of backend/ and frontend/
   - **Remove Duplicates**: Delete RendetaljeOS-Mobile if duplicate
@@ -1038,8 +1140,9 @@ Untracked (30+):
 ## 12. Gmail-PDF Repositories
 
 ### Basic Information
+
 - **Names**: `Gmail-PDF-Auto`, `Gmail-PDF-Forwarder`
-- **Paths**: 
+- **Paths**:
   - `C:\Users\empir\Gmail-PDF-Auto`
   - `C:\Users\empir\Gmail-PDF-Forwarder`
 - **Status**: ⚫ UNKNOWN
@@ -1048,9 +1151,11 @@ Untracked (30+):
 - **Last Modified**: Unknown
 
 ### Purpose
+
 Unknown. No README files found, not git repositories. Possibly related to Gmail automation.
 
 ### File Structure
+
 ```
 Gmail-PDF-Auto/
 └── (unknown structure)
@@ -1060,10 +1165,11 @@ Gmail-PDF-Forwarder/
 ```
 
 ### Issues & Recommendations
+
 - **Status**: ⚫ UNKNOWN (no README, not git repos)
 - **Relationship**: Possibly related to tekup-gmail-automation (#8)
 - **Priority**: LOW (if unused), MEDIUM (if active)
-- **Recommendation**: 
+- **Recommendation**:
   - **Investigate**: Check folder contents, verify if active
   - **Options**:
     1. If unused: Delete folders
@@ -1076,33 +1182,39 @@ Gmail-PDF-Forwarder/
 ## SUMMARY STATISTICS
 
 ### Repository Count
+
 - **Total**: 12 workspace paths
 - **Git Repositories**: 10 (83%)
 - **Non-Git**: 2 (Gmail-PDF repos)
 
 ### Status Breakdown
+
 - 🟢 **Production**: 4 (Tekup-Billy, TekupVault, RendetaljeOS, RenOS Calendar MCP)
 - 🟡 **Development**: 4 (Agent-Orchestrator, tekup-cloud-dashboard, tekup-ai-assistant, tekup-gmail-automation)
 - 🔴 **Legacy**: 3 (Tekup-org, Tekup Google AI, Tekup-Cloud)
 - ⚫ **Unknown**: 1 (Gmail-PDF repos)
 
 ### Language Distribution
+
 - **TypeScript**: 9 repos (75%)
 - **Python**: 2 repos (16.7%)
 - **Unknown**: 1 repo (8.3%)
 
 ### Package Manager Distribution
+
 - **npm**: 5 repos (41.7%)
 - **pnpm**: 4 repos (33.3%)
 - **mixed**: 2 repos (16.7%)
 - **unknown**: 1 repo (8.3%)
 
 ### Documentation Statistics
+
 - **Total Markdown Files**: 300+
 - **Excessive Documentation**: Tekup Google AI (130+ status/complete files)
 - **Well-Documented**: Tekup-Billy (85+ files), TekupVault (comprehensive)
 
 ### Integration Points
+
 - **Production APIs**: 4 (Tekup-Billy, TekupVault, RenOS Backend, RenOS Calendar MCP pending)
 - **Render Deployments**: 4 (Tekup-Billy, TekupVault API + Worker, RenOS Calendar MCP pending)
 - **Supabase Projects**: 2 (shared instances)
@@ -1111,4 +1223,3 @@ Gmail-PDF-Forwarder/
 ---
 
 **Next:** Review Integration Map and Action Items
-

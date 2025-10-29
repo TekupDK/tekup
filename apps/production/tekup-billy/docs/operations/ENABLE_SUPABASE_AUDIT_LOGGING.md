@@ -10,7 +10,7 @@ This guide will enable audit logging to Supabase for all MCP tool calls.
 
 ### 1.1 Open Supabase SQL Editor
 
-1. Go to: https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey
+1. Go to: <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey>
 2. Click **"SQL Editor"** in left sidebar
 3. Click **"New query"**
 
@@ -24,6 +24,7 @@ This guide will enable audit logging to Supabase for all MCP tool calls.
 ### 1.3 Verify Success
 
 You should see output like:
+
 ```
 ✅ Audit logging table created successfully!
 existing_logs: 0
@@ -39,7 +40,7 @@ If you see errors:
 
 ### 2.1 Open Render Dashboard
 
-1. Go to: https://dashboard.render.com
+1. Go to: <https://dashboard.render.com>
 2. Navigate to: **Services** → **tekup-billy-mcp**
 3. Click **"Environment"** tab in left sidebar
 
@@ -81,6 +82,7 @@ Write-Host "Test call succeeded: $($response.valid)" -ForegroundColor Green
 ### 3.2 Check Supabase Logs
 
 In Supabase SQL Editor, run:
+
 ```sql
 SELECT 
     created_at,
@@ -100,6 +102,7 @@ You should see your `validate_auth` call logged!
 ## Step 4: Query Logs (Usage Examples)
 
 ### Today's Tool Usage
+
 ```sql
 SELECT 
     tool_name,
@@ -113,6 +116,7 @@ ORDER BY calls DESC;
 ```
 
 ### Last 24 Hours Performance
+
 ```sql
 SELECT 
     tool_name,
@@ -126,6 +130,7 @@ ORDER BY avg_ms DESC;
 ```
 
 ### Error Rate by Tool
+
 ```sql
 SELECT 
     tool_name,
@@ -143,6 +148,7 @@ ORDER BY error_rate_percent DESC;
 ```
 
 ### Usage by Hour (Peak Times)
+
 ```sql
 SELECT 
     EXTRACT(HOUR FROM created_at) as hour,
@@ -208,6 +214,7 @@ WHERE created_at < NOW() - INTERVAL '90 days';
 ### Storage Usage
 
 Check table size:
+
 ```sql
 SELECT 
     pg_size_pretty(pg_total_relation_size('billy_audit_logs')) as total_size,
@@ -227,12 +234,14 @@ FROM billy_audit_logs;
    - Look for errors like "SUPABASE_URL not set"
 
 2. **Check environment variable:**
+
    ```powershell
    # Test from Render service shell
    echo $ENABLE_SUPABASE_LOGGING  # Should output: true
    ```
 
 3. **Verify Supabase credentials:**
+
    ```powershell
    # Test connection
    curl "$env:SUPABASE_URL/rest/v1/" `
@@ -243,11 +252,13 @@ FROM billy_audit_logs;
 ### RLS Policy Issues
 
 If you can't query logs, check RLS policies:
+
 ```sql
 SELECT * FROM pg_policies WHERE tablename = 'billy_audit_logs';
 ```
 
 Temporarily disable RLS for testing:
+
 ```sql
 ALTER TABLE billy_audit_logs DISABLE ROW LEVEL SECURITY;
 ```

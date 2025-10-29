@@ -29,29 +29,34 @@ Both provide consistent metrics across different server architectures while bein
 ## Metrics Collected
 
 ### Resource Usage
+
 - **Memory Usage**: Heap used/total, percentage
 - **CPU Usage**: Approximation based on process usage
 - **Uptime**: Server uptime in human-readable format
 
 ### Request/Response Metrics (HTTP Servers)
+
 - **Total Requests**: Count of all HTTP requests
 - **Success/Failure**: Request success and failure counts
 - **Response Time**: Average response time in milliseconds
 - **Requests Per Minute**: Calculated throughput
 
 ### Tool Performance Metrics
+
 - **Tools Executed**: Total tool executions
 - **Tool Success Rate**: Percentage of successful executions
 - **Execution Times**: Per-tool timing statistics (min, max, average)
 - **Tool Performance**: Most/least efficient tools
 
 ### Health Status
+
 - **Status Levels**: `healthy`, `degraded`, `unhealthy`
 - **Status Factors**: Error rates, memory usage, performance thresholds
 
 ## HTTP Endpoints
 
 ### Health Check
+
 ```http
 GET /health
 ```
@@ -78,22 +83,26 @@ GET /health
 ```
 
 ### Detailed Metrics
+
 ```http
 GET /metrics
 ```
 
 Returns comprehensive performance metrics including:
+
 - All timing data
 - Tool-specific statistics
 - Resource usage details
 - Error information
 
 ### Dashboard Summary
+
 ```http
 GET /metrics/summary
 ```
 
 Returns dashboard-optimized summary with:
+
 - Human-readable status
 - Performance trends
 - Top tools by usage
@@ -186,6 +195,7 @@ const performanceMonitor = new StdioPerformanceMonitor(
 ### Automatic Health Assessment
 
 The system automatically determines server health based on:
+
 - Error rates (tools and HTTP requests)
 - Memory usage thresholds
 - Performance degradation indicators
@@ -194,6 +204,7 @@ The system automatically determines server health based on:
 ### Tool-Specific Monitoring
 
 Each tool execution is monitored individually:
+
 - Execution time tracking
 - Success/failure rates
 - Performance trends
@@ -202,6 +213,7 @@ Each tool execution is monitored individually:
 ### Real-time Alerts
 
 Built-in alerting for:
+
 - High error rates (>20% warning, >50% critical)
 - Memory usage spikes (>75% warning, >90% critical)
 - Slow tool performance (tools taking >10 seconds average)
@@ -282,11 +294,13 @@ function ServerDashboard() {
 ## Best Practices
 
 ### 1. Monitoring Intervals
+
 - **Health Checks**: Every 30 seconds
 - **Detailed Metrics**: Every 5 minutes
 - **Performance Analysis**: Every 15 minutes
 
 ### 2. Alert Thresholds
+
 - **Memory Usage Warning**: 75%
 - **Memory Usage Critical**: 90%
 - **Error Rate Warning**: 20%
@@ -295,11 +309,13 @@ function ServerDashboard() {
 - **Response Time Critical**: 10 seconds
 
 ### 3. Performance Optimization
+
 - Monitor tool execution times to identify performance bottlenecks
 - Track memory usage trends to prevent memory leaks
 - Use response time data to optimize server configurations
 
 ### 4. Error Handling
+
 - All monitoring operations include error handling
 - Failed monitoring calls don't affect core server functionality
 - Graceful degradation when monitoring is unavailable
@@ -352,6 +368,7 @@ MONITORING_LOG_LEVEL=debug
 ## Future Enhancements
 
 Planned improvements:
+
 1. **Distributed Tracing**: Track requests across multiple services
 2. **Advanced Analytics**: Machine learning for anomaly detection
 3. **Custom Metrics**: Allow servers to register custom business metrics
@@ -361,6 +378,7 @@ Planned improvements:
 ## Support
 
 For issues with performance monitoring:
+
 1. Check server logs for monitoring-related errors
 2. Verify monitoring endpoints are accessible
 3. Ensure monitoring dependencies are properly installed
@@ -368,4 +386,4 @@ For issues with performance monitoring:
 
 ---
 
-*This monitoring system is designed to provide comprehensive visibility into MCP server performance while maintaining minimal overhead and maximum reliability.*
+_This monitoring system is designed to provide comprehensive visibility into MCP server performance while maintaining minimal overhead and maximum reliability._

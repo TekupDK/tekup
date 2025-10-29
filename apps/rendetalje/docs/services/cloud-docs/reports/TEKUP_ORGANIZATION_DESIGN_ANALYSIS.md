@@ -1,4 +1,5 @@
-# 🏢 TEKUP ORGANISATION - Design & Arkitektur Analyse
+﻿# 🏢 TEKUP ORGANISATION - Design & Arkitektur Analyse
+
 **Dato**: 18. Oktober 2025  
 **Formål**: Forstå hvordan alle Tekup-komponenter spiller sammen  
 **Scope**: Organisatorisk design - INGEN kodeændringer
@@ -6,6 +7,7 @@
 ---
 
 ## 📋 INDHOLDSFORTEGNELSE
+
 1. [Nuværende Situation (AS-IS)](#nuværende-situation)
 2. [Tilsigtet Vision (TO-BE)](#tilsigtet-vision)
 3. [Komponent Relation Diagram](#komponent-relationer)
@@ -302,6 +304,7 @@ SEPARATE REPOS (dokumentation/public):
 **Mål**: Forstå arkitekturen uden at ændre kode
 
 ✅ **Opgaver**:
+
 - [✅] Identificer alle komponenter (DONE)
 - [✅] Map relationer mellem systemer (DONE)
 - [✅] Dokument nuværende vs. tilsigtet tilstand (DETTE DOKUMENT)
@@ -316,6 +319,7 @@ SEPARATE REPOS (dokumentation/public):
 **Mål**: Tag inventory og beslut hvad der skal beholdes
 
 ✅ **Opgaver**:
+
 1. **Health Check på alle 11 repos**:
    ```bash
    # For hvert repo:
@@ -347,6 +351,7 @@ SEPARATE REPOS (dokumentation/public):
 **Mål**: Opret den nye `Tekup-Platform` monorepo
 
 #### **Step 1: Bootstrap Monorepo**
+
 ```bash
 # Opret ny monorepo struktur
 mkdir Tekup-Platform
@@ -357,25 +362,27 @@ pnpm dlx create-turbo@latest
 ```
 
 #### **Step 2: Migrer Core Apps (én ad gangen)**
+
 ```bash
 # Priority 1: TekupVault (mest kompleks)
 git subtree add --prefix apps/tekup-vault \
-  https://github.com/JonasAbde/TekupVault.git main
+  https://github.com/TekupDK/TekupVault.git main
 
 # Priority 2: renos-backend
 git subtree add --prefix apps/renos-backend \
-  https://github.com/JonasAbde/renos-backend.git main
+  https://github.com/TekupDK/renos-backend.git main
 
 # Priority 3: renos-frontend
 git subtree add --prefix apps/renos-frontend \
-  https://github.com/JonasAbde/renos-frontend.git main
+  https://github.com/TekupDK/renos-frontend.git main
 
 # Priority 4: Tekup-Billy
 git subtree add --prefix apps/tekup-billy \
-  https://github.com/JonasAbde/Tekup-Billy.git main
+  https://github.com/TekupDK/Tekup-Billy.git main
 ```
 
 #### **Step 3: Ekstraher Shared Packages**
+
 ```typescript
 // Identificer duplikeret kode:
 // - Prisma schemas (backend + vault)
@@ -387,6 +394,7 @@ git subtree add --prefix apps/tekup-billy \
 ```
 
 #### **Step 4: Konsolider Dokumentation**
+
 ```bash
 # Saml alt fra:
 # - Tekup-Cloud/ → docs/
@@ -402,7 +410,7 @@ git subtree add --prefix apps/tekup-billy \
 
 **Mål**: Opdater Render.com til at deploye fra monorepo
 
-#### **Render.com Opdateringer**:
+#### **Render.com Opdateringer**
 
 ```yaml
 # render.yaml (monorepo root)
@@ -434,7 +442,8 @@ services:
     dockerContext: .
 ```
 
-#### **GitHub Actions**:
+#### **GitHub Actions**
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy to Render
@@ -461,7 +470,8 @@ jobs:
 
 **Mål**: Ryd op i gamle repos og workspaces
 
-#### **GitHub Archives**:
+#### **GitHub Archives**
+
 ```bash
 # Arkiver disse repos (Settings → Archive):
 - Tekup-OS
@@ -471,7 +481,8 @@ jobs:
 - tekup-renos-dashboard (hvis duplikat)
 ```
 
-#### **Lokal Cleanup**:
+#### **Lokal Cleanup**
+
 ```powershell
 # Slet gamle workspaces (efter backup):
 Remove-Item -Recurse -Force C:\Users\empir\Tekup-Cloud
@@ -481,7 +492,7 @@ Remove-Item -Recurse -Force C:\Users\empir\RendetaljeOS
 # Evt. git clone separate repos til arkiv mappe:
 mkdir C:\Users\empir\Tekup-Archive
 cd C:\Users\empir\Tekup-Archive
-git clone --mirror https://github.com/JonasAbde/Tekup-OS.git
+git clone --mirror https://github.com/TekupDK/Tekup-OS.git
 # ... osv for alle arkiverede repos
 ```
 
@@ -494,6 +505,7 @@ git clone --mirror https://github.com/JonasAbde/Tekup-OS.git
 **Mål**: Opdater al dokumentation til ny struktur
 
 ✅ **Opgaver**:
+
 - Opdater README.md i Tekup-Platform
 - Lav `CONTRIBUTING.md` guide
 - Opret `MIGRATION_GUIDE.md` for teammedlemmer
@@ -561,6 +573,7 @@ Code sharing:     Built-in (import from @tekup/*)
 ## 📝 NÆSTE SKRIDT
 
 ### **Umiddelbart (i dag):**
+
 1. ✅ **Læs denne analyse** - forstå big picture
 2. 🔍 **Audit de 3 dashboards**:
    ```bash
@@ -573,12 +586,14 @@ Code sharing:     Built-in (import from @tekup/*)
 3. 📊 **Besvar de 4 beslutningspunkter ovenfor**
 
 ### **I morgen:**
+
 4. 🗂️ **Start FASE 1**: Repository audit
 5. 📋 **Opret project board** (GitHub Projects):
    - Columns: Backlog, In Progress, Review, Done
    - Tasks fra hver fase
 
 ### **Næste uge:**
+
 6. 🚀 **Start FASE 2**: Opret Tekup-Platform monorepo
 7. 🔄 **Migrer første app** (start med TekupVault)
 
@@ -589,6 +604,7 @@ Code sharing:     Built-in (import from @tekup/*)
 ### **Hvorfor Monorepo?**
 
 ✅ **Fordele**:
+
 - Single source of truth
 - Atomic commits (ændre backend + frontend samtidig)
 - Shared tooling (ESLint, TypeScript config)
@@ -596,6 +612,7 @@ Code sharing:     Built-in (import from @tekup/*)
 - Turborepo caching = 5-10x hurtigere builds
 
 ⚠️ **Ulemper**:
+
 - Større initial setup
 - Kræver disciplin (code owners, folder structure)
 - Git history bliver tungere (men git subtree bevarer historik)
@@ -607,6 +624,7 @@ Code sharing:     Built-in (import from @tekup/*)
 - Teams der arbejder 100% isoleret
 
 **Dit tilfælde**: Monorepo giver MENING fordi:
+
 - Samme tech stack (TypeScript, Node.js, React)
 - Deler dependencies (Prisma, Supabase, Clerk)
 - Behov for tæt integration (TekupVault ↔ RenOS ↔ Billy)
@@ -624,11 +642,13 @@ Code sharing:     Built-in (import from @tekup/*)
 ## 📞 SUPPORT & SPØRGSMÅL
 
 **Hvis du er i tvivl om:**
+
 - Hvilken fase du skal starte med
 - Hvordan man laver git subtree migration
 - Render.com monorepo setup
 
 **Så spørg mig!** Jeg kan:
+
 - Lave detaljerede guides til hver fase
 - Hjælpe med at auditere specifikke repos
 - Generere migration scripts
@@ -637,6 +657,7 @@ Code sharing:     Built-in (import from @tekup/*)
 ---
 
 **🎯 TL;DR:**
+
 - Du har 11 repos spredt ud - det er kaos
 - Idéel tilstand: 1 unified `Tekup-Platform` monorepo
 - 5 faser: Planlægning (done) → Audit → Migration → Deploy → Cleanup

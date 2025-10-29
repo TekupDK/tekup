@@ -9,6 +9,7 @@ Denne guide hjælper med at løse almindelige problemer og fejl i RenOS Calendar
 ### 1. Build Fejl
 
 #### TypeScript Compilation Errors
+
 ```bash
 # Problem: TypeScript compilation fejl
 error TS2339: Property 'x' does not exist on type 'y'
@@ -19,6 +20,7 @@ npm run build
 ```
 
 #### Jest Test Failures
+
 ```bash
 # Problem: Tests fejler
 FAIL tests/integration.test.ts
@@ -31,6 +33,7 @@ npm test -- --verbose
 ### 2. Environment Variable Fejl
 
 #### Missing Environment Variables
+
 ```bash
 # Problem: Environment variables ikke fundet
 Error: GOOGLE_PRIVATE_KEY is not defined
@@ -41,6 +44,7 @@ cat .env
 ```
 
 #### Invalid Environment Variables
+
 ```bash
 # Problem: Ugyldige credentials
 Error: Invalid Google service account key
@@ -53,6 +57,7 @@ Error: Invalid Google service account key
 ### 3. Database Connection Fejl
 
 #### Supabase Connection Issues
+
 ```bash
 # Problem: Kan ikke forbinde til Supabase
 Error: Failed to connect to Supabase
@@ -64,6 +69,7 @@ echo $SUPABASE_SERVICE_KEY
 ```
 
 #### Database Schema Issues
+
 ```bash
 # Problem: Tables ikke fundet
 Error: Table 'customer_intelligence' does not exist
@@ -76,6 +82,7 @@ Error: Table 'customer_intelligence' does not exist
 ### 4. API Integration Fejl
 
 #### Google Calendar API Errors
+
 ```bash
 # Problem: Google Calendar API fejl
 Error: 403 Forbidden
@@ -87,6 +94,7 @@ Error: 403 Forbidden
 ```
 
 #### Billy.dk API Errors
+
 ```bash
 # Problem: Billy.dk API fejl
 Error: 401 Unauthorized
@@ -98,6 +106,7 @@ Error: 401 Unauthorized
 ```
 
 #### Twilio Voice Errors
+
 ```bash
 # Problem: Twilio voice fejl
 Error: 401 Unauthorized
@@ -111,6 +120,7 @@ Error: 401 Unauthorized
 ### 5. Deployment Fejl
 
 #### Render.com Deployment Issues
+
 ```bash
 # Problem: Build fejler på Render
 Error: Build failed
@@ -121,6 +131,7 @@ render logs --service renos-calendar-mcp
 ```
 
 #### Environment Variables på Render
+
 ```bash
 # Problem: Environment variables ikke sat på Render
 Error: NODE_ENV is not defined
@@ -133,6 +144,7 @@ render env set renos-calendar-mcp NODE_ENV production
 ### 6. Performance Issues
 
 #### Slow API Responses
+
 ```bash
 # Problem: API er langsom
 Response time > 5 seconds
@@ -144,6 +156,7 @@ Response time > 5 seconds
 ```
 
 #### Memory Issues
+
 ```bash
 # Problem: Out of memory
 Error: JavaScript heap out of memory
@@ -155,6 +168,7 @@ NODE_OPTIONS="--max-old-space-size=4096" npm start
 ### 7. Mobile PWA Issues
 
 #### PWA Not Installing
+
 ```bash
 # Problem: PWA kan ikke installeres
 Error: Service worker not found
@@ -166,6 +180,7 @@ Error: Service worker not found
 ```
 
 #### Dashboard Not Loading
+
 ```bash
 # Problem: Dashboard loader ikke
 Error: Failed to load dashboard
@@ -179,6 +194,7 @@ Error: Failed to load dashboard
 ## Debug Commands
 
 ### 1. Health Check
+
 ```bash
 # Check system health
 curl https://renos-calendar-mcp.onrender.com/health
@@ -197,6 +213,7 @@ curl https://renos-calendar-mcp.onrender.com/health
 ```
 
 ### 2. Log Analysis
+
 ```bash
 # Check application logs
 render logs --service renos-calendar-mcp --tail
@@ -206,6 +223,7 @@ render logs --service renos-calendar-mcp | grep ERROR
 ```
 
 ### 3. Database Debug
+
 ```bash
 # Test Supabase connection
 supabase db execute --sql "SELECT NOW();"
@@ -215,6 +233,7 @@ supabase db execute --sql "SELECT * FROM information_schema.tables WHERE table_n
 ```
 
 ### 4. API Testing
+
 ```bash
 # Test Google Calendar API
 curl -H "Authorization: Bearer $GOOGLE_ACCESS_TOKEN" \
@@ -228,6 +247,7 @@ curl -H "X-Access-Token: $BILLY_API_KEY" \
 ## Performance Monitoring
 
 ### 1. Response Time Monitoring
+
 ```typescript
 // Add timing to API calls
 const startTime = Date.now();
@@ -240,6 +260,7 @@ if (duration > 5000) {
 ```
 
 ### 2. Memory Usage Monitoring
+
 ```typescript
 // Monitor memory usage
 const memoryUsage = process.memoryUsage();
@@ -251,6 +272,7 @@ logger.info('Memory usage', {
 ```
 
 ### 3. Database Query Performance
+
 ```typescript
 // Monitor database queries
 const startTime = Date.now();
@@ -265,6 +287,7 @@ if (queryTime > 1000) {
 ## Error Recovery
 
 ### 1. Automatic Retry
+
 ```typescript
 // Retry failed API calls
 async function retryOperation(operation, maxRetries = 3) {
@@ -280,6 +303,7 @@ async function retryOperation(operation, maxRetries = 3) {
 ```
 
 ### 2. Fallback Mechanisms
+
 ```typescript
 // Fallback for failed services
 async function validateBookingWithFallback(input) {
@@ -293,6 +317,7 @@ async function validateBookingWithFallback(input) {
 ```
 
 ### 3. Circuit Breaker
+
 ```typescript
 // Circuit breaker for external services
 class CircuitBreaker {
@@ -323,6 +348,7 @@ class CircuitBreaker {
 ## Monitoring Setup
 
 ### 1. Health Check Endpoints
+
 ```typescript
 // Comprehensive health check
 app.get('/health/detailed', async (req, res) => {
@@ -345,6 +371,7 @@ app.get('/health/detailed', async (req, res) => {
 ```
 
 ### 2. Metrics Collection
+
 ```typescript
 // Collect performance metrics
 const metrics = {
@@ -375,6 +402,7 @@ app.use((req, res, next) => {
 ## Support og Kontakt
 
 ### 1. Log Collection
+
 ```bash
 # Collect logs for support
 render logs --service renos-calendar-mcp > logs.txt
@@ -383,6 +411,7 @@ npm test > test.log 2>&1
 ```
 
 ### 2. System Information
+
 ```bash
 # Collect system info
 node --version
@@ -392,6 +421,7 @@ supabase --version
 ```
 
 ### 3. Environment Check
+
 ```bash
 # Check environment
 echo "NODE_ENV: $NODE_ENV"

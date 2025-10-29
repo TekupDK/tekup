@@ -14,8 +14,9 @@
 ## ✅ Hvad Vi TOG Med (Implementeret)
 
 ### 1. **Pagination Features** ✅
+
 - **Status:** PORTERET til pages/ struktur
-- **Location:** 
+- **Location:**
   - `client/src/pages/Leads/Leads.tsx` ✅
   - `client/src/pages/Bookings/Bookings.tsx` ✅
   - `client/src/pages/Customers/Customers.tsx` ✅
@@ -26,6 +27,7 @@
   - Smart pagination controls
 
 ### 2. **Column Sorting** ✅
+
 - **Status:** PORTERET til pages/ struktur
 - **Location:** Samme som pagination
 - **Features:**
@@ -36,6 +38,7 @@
   - Toggle asc/desc direction
 
 ### 3. **CSV Export** ✅
+
 - **Status:** PORTERET til pages/ struktur
 - **Location:** Samme som pagination
 - **Features:**
@@ -47,6 +50,7 @@
   - Danish number/date formatting
 
 ### 4. **CSV Export Utility** ✅
+
 - **Status:** OPDATERET signatur
 - **File:** `client/src/lib/csvExport.ts`
 - **Changes:**
@@ -71,12 +75,14 @@
 **Status:** Disse filer eksisterer stadig men bruges IKKE længere
 
 **Hvorfor deprecated:**
+
 - Blev brugt FØR vi merged origin/main
 - Origin/main refactored til pages/ folder struktur
 - Vi porterede ALLE features til pages/ versioner
 - Router peger nu på pages/ versioner
 
 **Hvad de indeholder (som vi ALLEREDE har porteret):**
+
 - ✅ Pagination (25, 50, 100, 200 rows)
 - ✅ Column sorting med arrow icons
 - ✅ CSV export med danske headers
@@ -103,11 +109,13 @@ stash@{0}: On main: Stashing cursor AI generated files before merge
 **Status:** I stash, ikke committed
 
 **Hvorfor stashed:**
+
 - Cursor AI generede gigantiske filer (12MB, 10MB, etc.)
 - Stashed før merge for at undgå konflikter
 - Nogle ændringer blev re-implementeret i ny form
 
-**Action Required:** 
+**Action Required:**
+
 - ⚠️ Review stash indhold
 - 🔄 Cherry-pick nyttige ændringer hvis nødvendigt
 - 🗑️ Drop stash hvis ikke relevant
@@ -117,6 +125,7 @@ stash@{0}: On main: Stashing cursor AI generated files before merge
 ## 📁 Current File Structure
 
 ### Pages/ (NYE - I BRUG) ✅
+
 ```
 client/src/pages/
 ├── Leads/Leads.tsx           ✅ Sorting + CSV + Pagination
@@ -130,6 +139,7 @@ client/src/pages/
 ```
 
 ### Components/ (GAMLE - DEPRECATED) ⚠️
+
 ```
 client/src/components/
 ├── Leads.tsx        ❌ DEPRECATED (erstattet af pages/Leads/)
@@ -266,6 +276,7 @@ npm run build
 ## ✅ Summary
 
 **Hvad vi TOG med:**
+
 - ✅ Pagination features (porteret til pages/)
 - ✅ Column sorting (porteret til pages/)
 - ✅ CSV export (porteret til pages/)
@@ -273,17 +284,20 @@ npm run build
 - ✅ Alle features fra merge (37 commits)
 
 **Hvad vi IKKE tog med (men er OK):**
+
 - ⚠️ Gamle components/Leads.tsx (deprecated)
 - ⚠️ Gamle components/Bookings.tsx (deprecated)
 - ⚠️ Gamle components/Customers.tsx (deprecated)
 - 💾 Stashed Cursor AI files (i stash, ikke critical)
 
 **Impact på systemet:**
+
 - ✅ INGEN - Router bruger pages/ versioner
 - ✅ Alle features fungerer 100%
 - 🗑️ Deprecated filer er "dead code"
 
 **Anbefaling:**
+
 1. ✅ Slet deprecated components/ filer (sikker cleanup)
 2. ✅ Review stash og drop hvis ikke relevant
 3. ✅ Push cleanup til remote

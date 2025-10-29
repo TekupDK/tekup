@@ -113,6 +113,7 @@ OLLAMA_MODEL=llama3.1:8b
 Factory function to create provider instance.
 
 **Parameters:**
+
 - `type`: `'openai' | 'gemini' | 'ollama'`
 - `config`: Provider-specific configuration
 

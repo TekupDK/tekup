@@ -1,4 +1,4 @@
-# 📋 TekupVault Requirements from Tekup-Billy
+﻿# 📋 TekupVault Requirements from Tekup-Billy
 
 **Date:** 16. Oktober 2025  
 **From:** Tekup-Billy MCP Server Team  
@@ -33,7 +33,7 @@ Tekup-Billy needs TekupVault to provide semantic search capabilities across our 
 ### 3. GitHub Sync Not Working
 
 **Current:** Mock data being returned  
-**Expected:** Real sync from JonasAbde/Tekup-Billy repository  
+**Expected:** Real sync from TekupDK/Tekup-Billy repository  
 **Impact:** No actual indexing happening
 
 ---
@@ -89,7 +89,7 @@ GET https://tekupvault-api.onrender.com/api/sync-status?repository=Tekup-Billy
 
 ```json
 {
-  "repository": "JonasAbde/Tekup-Billy",
+  "repository": "TekupDK/Tekup-Billy",
   "last_sync": "2025-10-16T09:00:00Z",
   "files_indexed": 133,
   "status": "success",
@@ -195,7 +195,7 @@ Access-Control-Allow-Headers: Content-Type, Authorization
 ## 📞 Contact & Support
 
 **Tekup-Billy Team:**
-- Repository: <https://github.com/JonasAbde/Tekup-Billy>
+- Repository: <https://github.com/TekupDK/Tekup-Billy>
 - Production: <https://tekup-billy.onrender.com>
 - Contact: Jonas Abde
 

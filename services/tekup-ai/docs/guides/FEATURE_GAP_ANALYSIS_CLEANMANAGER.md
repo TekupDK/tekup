@@ -10,6 +10,7 @@
 ## 📊 Executive Summary
 
 **TL;DR:**
+
 - CleanManager har **7 hovedfeatures** vi mangler
 - **3 er kritiske** for at erstatte CleanManager 100%
 - **4 er nice-to-have** men ikke dealbreakers
@@ -38,6 +39,7 @@
 ```
 
 **Hvorfor det er vigtigt:**
+
 - Jonas skal bruge samme plan for faste kunder
 - Spar tid ved at genbruge templates
 - Konsistent kvalitet (samme checklist hver gang)
@@ -128,6 +130,7 @@ POST   /api/bookings/:id/apply-plan - Apply plan til booking
 ```
 
 **Hvorfor det er vigtigt:**
+
 - Jonas skal vide hvor lang tid jobs FAKTISK tager
 - Forbedre estimater over tid
 - Undgå at underbyde (hvis jobs tager længere end forventet)
@@ -217,6 +220,7 @@ GET    /api/reports/time-analysis       - Time analytics
 ```
 
 **Hvorfor det er vigtigt:**
+
 - Jonas skal sende fakturaer efter jobs
 - Professionel PDF format
 - Track betalinger
@@ -349,6 +353,7 @@ POST   /api/invoices/:id/send-reminder  - Send reminder
 ```
 
 **Hvorfor det ikke er kritisk:**
+
 - Jonas har lille inventory (solo business)
 - Kan trackes manuelt
 - Ikke en blocking feature
@@ -391,6 +396,7 @@ model InventoryItem {
 ```
 
 **Hvorfor det ikke er kritisk:**
+
 - Web version er mobile-friendly
 - Jonas kan bruge browser
 - Native app er overkill for fase 1
@@ -423,6 +429,7 @@ Option 3: Capacitor (wrap existing React app)
 ```
 
 **Hvorfor det ikke er kritisk:**
+
 - Email fungerer fint for Jonas' use case
 - SMS koster penge (Twilio ~0.05 kr/SMS)
 - Kunder læser emails
@@ -464,6 +471,7 @@ export async function sendSMS(to: string, body: string) {
 ```
 
 **Hvorfor det ikke er kritisk:**
+
 - Manual quality control i fase 1
 - Jonas kender sine kunder personligt
 - Kan tilføjes senere
@@ -502,6 +510,7 @@ model QualityReport {
 ### 🚀 **RenOS UNIKKE FORDELE**
 
 #### 1. AI Email Auto-Response
+
 ```
 🤖 Gemini AI genererer personaliserede tilbud
 📧 95% reduktion i manuel email-håndtering
@@ -516,6 +525,7 @@ model QualityReport {
 ---
 
 #### 2. Intelligent Lead Monitoring
+
 ```
 🔍 Automatisk parsing af Leadmail.no emails
 📊 Lead source detection (Rengøring.nu, AdHelp, etc.)
@@ -528,6 +538,7 @@ model QualityReport {
 ---
 
 #### 3. Smart Calendar Booking
+
 ```
 📅 AI conflict detection
 🎯 Next available slot finder
@@ -539,6 +550,7 @@ model QualityReport {
 ---
 
 #### 4. Real-Time Dashboard
+
 ```
 📊 5 intelligente widgets
 🔄 Auto-refresh (30-60 sek)
@@ -551,6 +563,7 @@ model QualityReport {
 ---
 
 #### 5. Price Point
+
 ```
 💰 RenOS: 0-700 kr/md (freemium)
 💰 CleanManager: 400-600 kr/md (fixed)
@@ -567,6 +580,7 @@ Savings: 50-70% for solo/SMB
 **Priority: Replace CleanManager's core functionality**
 
 #### Week 1-2: Rengøringsplaner & Time Tracking
+
 ```
 ✅ Database schema (CleaningPlan, Task, Break)
 ✅ API endpoints
@@ -575,6 +589,7 @@ Savings: 50-70% for solo/SMB
 ```
 
 **Deliverables:**
+
 - [ ] Create cleaning plan templates
 - [ ] Assign plans til kunder
 - [ ] Start/stop timer på jobs
@@ -583,6 +598,7 @@ Savings: 50-70% for solo/SMB
 ---
 
 #### Week 3-4: Fakturering
+
 ```
 ✅ Database schema (Invoice, InvoiceLineItem)
 ✅ Billy.dk API integration
@@ -592,6 +608,7 @@ Savings: 50-70% for solo/SMB
 ```
 
 **Deliverables:**
+
 - [ ] Generate faktura fra afsluttet booking
 - [ ] Send professional PDF via email
 - [ ] Track betalingsstatus
@@ -602,6 +619,7 @@ Savings: 50-70% for solo/SMB
 ### **Phase 2: Nice-to-Have (4-6 uger)**
 
 #### Week 5-6: Kvalitetsrapporter
+
 ```
 ✅ QualityReport model
 ✅ Photo upload (before/after)
@@ -610,6 +628,7 @@ Savings: 50-70% for solo/SMB
 ```
 
 #### Week 7-8: Mobile Optimization
+
 ```
 ✅ PWA setup (offline support)
 ✅ Mobile-first UI improvements
@@ -622,6 +641,7 @@ Savings: 50-70% for solo/SMB
 ### **Phase 3: Advanced Features (8-12 uger)**
 
 #### Month 3-4: Full Mobile App
+
 ```
 ✅ React Native setup
 ✅ iOS + Android builds
@@ -629,6 +649,7 @@ Savings: 50-70% for solo/SMB
 ```
 
 #### Month 4: Inventory & SMS
+
 ```
 ✅ Inventory management
 ✅ Twilio SMS integration
@@ -640,6 +661,7 @@ Savings: 50-70% for solo/SMB
 ## 💰 COST COMPARISON
 
 ### **CleanManager Total Cost**
+
 ```
 Månedlig: 400-600 kr/md
 Årlig: 4,800-7,200 kr
@@ -647,6 +669,7 @@ Månedlig: 400-600 kr/md
 ```
 
 ### **RenOS Total Cost (for Jonas)**
+
 ```
 Development: Gratis (Tekup bygger det)
 Hosting: ~200 kr/md (Render + Database)
@@ -683,16 +706,19 @@ Savings: 12,000-24,000 kr over 5 år (50-67% besparelse)
 ### **Long-term Strategy**
 
 **Month 1-3:** Replace CleanManager 100%
+
 - ✅ All critical features parity
 - ✅ Smooth migration
 - ✅ No functionality loss
 
 **Month 4-6:** Surpass CleanManager
+
 - ✅ AI features they don't have
 - ✅ Better UX
 - ✅ Cheaper pricing
 
 **Month 7-12:** Scale & monetize
+
 - ✅ Offer to other cleaning companies
 - ✅ Freemium model
 - ✅ Recurring revenue
@@ -702,6 +728,7 @@ Savings: 12,000-24,000 kr over 5 år (50-67% besparelse)
 ## ✅ SUCCESS METRICS
 
 ### **Parity with CleanManager**
+
 ```
 ✅ All core workflows covered
 ✅ Same data tracked
@@ -710,6 +737,7 @@ Savings: 12,000-24,000 kr over 5 år (50-67% besparelse)
 ```
 
 ### **Beyond CleanManager**
+
 ```
 🚀 AI automation (they don't have)
 🚀 Better UX (modern stack)
@@ -724,6 +752,7 @@ Savings: 12,000-24,000 kr over 5 år (50-67% besparelse)
 **Question:** "Hvilke features har de som vi ikke har?"
 
 **Answer:**
+
 - **7 features mangler** (3 kritiske, 4 nice-to-have)
 - **3-4 ugers udvikling** for fuld paritet
 - **Men vi har 5 features de IKKE har** (AI, lead monitoring, smart booking, etc.)

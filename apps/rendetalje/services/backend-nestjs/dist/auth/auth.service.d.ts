@@ -1,6 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../database/prisma.service';
 import { CreateUserDto, LoginDto, UpdateProfileDto } from './dto';
 import { User } from './entities/user.entity';
 export interface JwtPayload {
@@ -13,10 +12,10 @@ export interface AuthResponse {
     accessToken: string;
 }
 export declare class AuthService {
-    private readonly prisma;
     private readonly jwtService;
     private readonly configService;
-    constructor(prisma: PrismaService, jwtService: JwtService, configService: ConfigService);
+    private supabase;
+    constructor(jwtService: JwtService, configService: ConfigService);
     register(createUserDto: CreateUserDto): Promise<AuthResponse>;
     login(loginDto: LoginDto): Promise<AuthResponse>;
     refreshToken(userId: string): Promise<{

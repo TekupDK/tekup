@@ -5,19 +5,21 @@ AI-powered chat assistant for the Tekup portfolio with integrated knowledge base
 ## 🎉 Recent Updates (October 22, 2025)
 
 **NEW Session Storage Features:**
+
 - ✅ **Auto-save Chat History** - Your conversations are automatically saved to localStorage
 - ✅ **Auto-restore on Reload** - Chat history persists across browser sessions
 - ✅ **Clear History Button** - One-click reset with trash icon in header
 - ✅ **Enhanced Loading Indicator** - Visual feedback during AI processing
 - ✅ **Zero Configuration** - Works out of the box, no setup required
 
-**Status:** ✅ Production Ready | **Version:** 1.1.0 | **Running:** http://localhost:3000
+**Status:** ✅ Production Ready | **Version:** 1.1.0 | **Running:** <http://localhost:3000>
 
 ---
 
 ## Features
 
 ✅ **ChatGPT-like Interface**
+
 - Clean, modern UI similar to ChatGPT, Claude, and Copilot
 - Real-time streaming responses
 - Markdown + code syntax highlighting
@@ -26,12 +28,14 @@ AI-powered chat assistant for the Tekup portfolio with integrated knowledge base
 - **NEW:** Clear chat history button with visual feedback
 
 ✅ **TekupVault Integration**
+
 - Searches 1,063 documents from 8 repositories
 - Semantic search with pgvector
 - Automatic source citations
 - Context-aware responses
 
 ✅ **Advanced Capabilities**
+
 - **Session Storage:** Chat history automatically saved and restored
 - **Clear History:** One-click chat reset with trash icon
 - Voice input (Danish language support)
@@ -41,6 +45,7 @@ AI-powered chat assistant for the Tekup portfolio with integrated knowledge base
 - Export conversations (planned)
 
 ✅ **Tekup-Specific**
+
 - Knows TIER system (1-5 repository prioritization)
 - Understands strategic context
 - Prevents costly mistakes (e.g., deleting valuable repos)
@@ -272,6 +277,7 @@ curl -X POST http://localhost:3000/api/chat \
 ## Roadmap
 
 ### Phase 1: MVP ✅ (Week 1)
+
 - [x] Core chat interface
 - [x] Streaming responses
 - [x] TekupVault integration
@@ -279,18 +285,21 @@ curl -X POST http://localhost:3000/api/chat \
 - [x] Session management
 
 ### Phase 2: Enhanced Features (Week 2)
+
 - [ ] File upload & analysis
 - [ ] Improved voice input (Whisper API)
 - [ ] Code execution sandbox
 - [ ] Export conversations (Markdown/PDF)
 
 ### Phase 3: Advanced (Week 3)
+
 - [ ] Chat search
 - [ ] Smart suggestions
 - [ ] Usage analytics
 - [ ] Team collaboration
 
 ### Phase 4: Production (Week 4)
+
 - [ ] Authentication (NextAuth)
 - [ ] User management
 - [ ] Rate limiting
@@ -309,6 +318,7 @@ curl -X POST http://localhost:3000/api/chat \
 | **Cost/Month** | ~$87-105 | $25 | $20 | $10 |
 
 **Unique Advantages:**
+
 - Only solution with full Tekup portfolio knowledge
 - Prevents costly mistakes (e.g., €360K Tekup-org deletion)
 - Enforces Tekup coding standards
@@ -317,6 +327,7 @@ curl -X POST http://localhost:3000/api/chat \
 ## Troubleshooting
 
 ### Issue: Streaming not working
+
 ```bash
 # Check API route logs
 # Verify OpenAI API key
@@ -324,6 +335,7 @@ curl -X POST http://localhost:3000/api/chat \
 ```
 
 ### Issue: TekupVault search returns no results
+
 ```bash
 # Verify TekupVault is running
 curl https://tekupvault.onrender.com/api/health
@@ -339,6 +351,7 @@ curl -X POST https://tekupvault.onrender.com/api/search \
 ```
 
 ### Issue: Voice input not working
+
 ```bash
 # Requires HTTPS in production (or localhost for dev)
 # Chrome/Edge only (uses webkitSpeechRecognition)

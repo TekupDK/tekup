@@ -17,11 +17,13 @@ C:/Users/Jonas-dev/tekup-master/        → master
 ```
 
 **Latest Commits (Pushed to GitHub):**
+
 - `e179430` - **release/stabilize-2025-10-26** - fix(mobile): resolve all TypeScript errors ✅
 - `40778a8` - **feature branch** - chore: add Kilocode configuration ✅
 - `master` - Branch: `8f0ba12`
 
 **Stashed Changes:**
+
 - `stash@{0}` - WIP: mcp.json fixes and mobile compatibility updates
 
 ---
@@ -88,6 +90,7 @@ cd tekup-release
 **Latest Commit:** `e179430`
 
 **Key Features:**
+
 - All mobile TypeScript errors resolved
 - Expo startup stabilized
 - Merged from master
@@ -112,6 +115,7 @@ npm start
 **Latest Commit:** `40778a8`
 
 **Key Files:**
+
 - `.kilocodemodes` - Custom Kilocode modes (code-reviewer, test-engineer, etc.)
 - `kilo-code-settings.json` - Shared settings
 - `SESSION_SNAPSHOT_2025-10-26.md` - Full status report
@@ -119,6 +123,7 @@ npm start
 - Docker setup
 
 **Use For:**
+
 - Testing Kilocode custom modes
 - Reviewing mobile implementation
 - Prisma migration work
@@ -135,6 +140,7 @@ npm install
 **Latest Commit:** `8f0ba12`
 
 **Use For:**
+
 - Clean slate testing
 - PR base branch
 - Production reference
@@ -146,6 +152,7 @@ npm install
 **On Feature Branch:** `.kilocodemodes` file included!
 
 **Available Custom Modes:**
+
 1. **code-reviewer** - Senior engineer code reviews
 2. **frontend-specialist** - React/TypeScript/CSS expert
 3. **test-engineer** - QA and testing focus
@@ -172,15 +179,19 @@ docker-compose up --build
 ### Port Allocation (Same as PC2)
 
 **Mobile:**
+
 - Expo: 19000-19002, 8081
 
 **Backend:**
+
 - NestJS: 3001
 
 **Frontend:**
+
 - Next.js: 3002
 
 **Services:**
+
 - PostgreSQL: 5432
 - Redis: 6379
 
@@ -243,30 +254,35 @@ git push
 
 ## 📝 Important Notes
 
-### ✅ Already Available on GitHub:
+### ✅ Already Available on GitHub
+
 1. Kilocode configuration (`.kilocodemodes`)
 2. Release branch with TS fixes
 3. Feature branch with mobile app
 4. Session snapshot documentation
 
-### 🔴 NOT on GitHub (PC2 Only):
+### 🔴 NOT on GitHub (PC2 Only)
+
 1. Stashed changes (`stash@{0}`) - mcp.json fixes
 2. Local worktree setup (you need to recreate on PC1)
 3. Local node_modules (reinstall with `npm install`)
 
-### 💡 Pro Tips for PC1:
+### 💡 Pro Tips for PC1
 
 **Your RTX 5070 Beast Mode:**
+
 - Docker builds will be **FAST** 🚀
 - Multiple services samtidig? No problem!
 - Expo Metro bundler on steroids
 - TypeScript compilation instant
 
 **Recommended IDE:**
+
 - VS Code med Kilocode extension
 - Open `tekup-feature` folder for best Kilocode experience
 
 **Network:**
+
 - Use LAN IP for mobile device testing
 - Configure `$env:HOST_IP` in PowerShell
 
@@ -304,6 +320,7 @@ npm start
 ## 📱 Testing on Mobile Device
 
 **Med PC1's NVIDIA Power:**
+
 - Android Studio emulator vil køre smooth
 - iOS Simulator (hvis macOS) - N/A på Windows
 - Physical device via Expo Go - brug PC1 LAN IP
@@ -312,14 +329,16 @@ npm start
 
 ## 🔗 Quick Links
 
-**GitHub Repo:** https://github.com/TekupDK/tekup.git
+**GitHub Repo:** <https://github.com/TekupDK/tekup.git>
 
 **Key Branches:**
+
 - `release/stabilize-2025-10-26` - Latest work ⭐
 - `claude/implement-momentary-feature-011CUSDGPgNNv8NS6psNVgfx` - Kilocode config
 - `master` - Stable base
 
 **Documentation:**
+
 - `SESSION_SNAPSHOT_2025-10-26.md` - Full status
 - `BRANCH_STATUS.md` - Feature branch details
 - `PORT_ALLOCATION_MASTER.md` - Port assignments

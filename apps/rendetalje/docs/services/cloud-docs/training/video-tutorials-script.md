@@ -3,12 +3,14 @@
 ## Tutorial Series Overview
 
 ### Target Audiences
+
 1. **Business Owners** - Strategic overview and management features
 2. **Office Staff** - Daily operations and customer service
 3. **Field Employees** - Mobile app usage and job execution
 4. **Customers** - Self-service portal usage
 
 ### Video Format Guidelines
+
 - **Duration**: 3-8 minutes per video
 - **Language**: Danish with English subtitles
 - **Quality**: 1080p minimum
@@ -20,6 +22,7 @@
 ## Series 1: Business Owner Tutorials
 
 ### Video 1.1: "Velkommen til RendetaljeOS - Oversigt for Ejere"
+
 **Duration**: 5 minutes
 
 **Script:**
@@ -48,6 +51,7 @@ Alt synkroniseres automatisk mellem kontor, felt og kunder."
 
 **[AI FRIDAY - 3:00-4:00]**
 "Meet Friday - din AI-assistent. Friday kan:
+
 - Besvare spørgsmål om din forretning
 - Lave rapporter på sekunder
 - Foreslå optimering af ruter
@@ -57,6 +61,7 @@ Prøv at spørge: 'Friday, hvor mange jobs har vi i dag?' eller 'Lav en rapport 
 
 **[INTEGRATION - 4:00-4:30]**
 "RendetaljeOS integrerer med:
+
 - Billy.dk for automatisk fakturering
 - Google Calendar for planlægning
 - SMS-gateway for kundekommunikation
@@ -68,6 +73,7 @@ Prøv at spørge: 'Friday, hvor mange jobs har vi i dag?' eller 'Lav en rapport 
 ---
 
 ### Video 1.2: "Kundestyring - Fra Lead til Loyal Kunde"
+
 **Duration**: 6 minutes
 
 **Script:**
@@ -79,6 +85,7 @@ Prøv at spørge: 'Friday, hvor mange jobs har vi i dag?' eller 'Lav en rapport 
 "Lad os tilføje en ny kunde. Klik 'Kunder' og 'Tilføj kunde'.
 
 Udfyld de grundlæggende oplysninger:
+
 - Navn og kontaktinfo
 - Adresse - systemet foreslår automatisk
 - Særlige ønsker eller noter
@@ -97,6 +104,7 @@ Bemærk kundens tilfredshedsscore og sidste service-dato."
 
 **[COMMUNICATION - 2:30-3:30]**
 "God kommunikation skaber loyale kunder. Klik 'Tilføj kommunikation' for at logge:
+
 - Telefonsamtaler
 - Emails
 - SMS'er
@@ -108,6 +116,7 @@ Beskriv altid samtalen og eventuelle aftaler. Dette hjælper hele teamet med at 
 "Kundetilfredshed måles automatisk. Efter hvert job får kunden en kort undersøgelse.
 
 Se ratings og kommentarer under kundens profil. Ved dårlige ratings:
+
 1. Kontakt kunden samme dag
 2. Forstå problemet
 3. Tilbyd en løsning
@@ -115,6 +124,7 @@ Se ratings og kommentarer under kundens profil. Ved dårlige ratings:
 
 **[CUSTOMER INSIGHTS - 4:30-5:30]**
 "Brug kundedata strategisk:
+
 - Identificer dine mest profitable kunder
 - Se trends i servicebehov
 - Planlæg proaktiv kontakt
@@ -130,6 +140,7 @@ Friday kan hjælpe: 'Friday, hvem er mine mest tilfredse kunder?' eller 'Hvilke 
 ## Series 2: Field Employee Tutorials
 
 ### Video 2.1: "RendetaljeOS Mobile App - Din Daglige Partner"
+
 **Duration**: 4 minutes
 
 **Script:**
@@ -182,6 +193,7 @@ Appen synkroniserer automatisk, også uden internet."
 ---
 
 ### Video 2.2: "Navigation og GPS - Effektiv Ruteplanlægning"
+
 **Duration**: 3 minutes
 
 **Script:**
@@ -211,6 +223,7 @@ Appen registrerer automatisk når du ankommer og opdaterer job-status."
 
 **[GPS TRACKING - 2:00-2:45]**
 "GPS-tracking hjælper kontoret med:
+
 - At give kunder præcise ankomsttider
 - At optimere fremtidige ruter
 - At dokumentere arbejdstid og kørsel
@@ -225,6 +238,7 @@ Din placering deles kun i arbejdstiden og kun med kontoret."
 ## Series 3: Customer Tutorials
 
 ### Video 3.1: "Kundeportal - Book og Administrer Din Rengøring"
+
 **Duration**: 4 minutes
 
 **Script:**
@@ -245,6 +259,7 @@ Du får straks en bekræftelse på email og SMS."
 
 **[TRACKING SERVICE - 1:30-2:15]**
 "På dagen for rengøring kan du:
+
 - Se hvornår teamet ankommer
 - Følge deres position på kortet
 - Få besked når de starter og afslutter
@@ -254,6 +269,7 @@ Alt opdateres i realtid."
 
 **[COMMUNICATION - 2:15-3:00]**
 "Kommuniker nemt med dit rengøringsteam:
+
 - Send beskeder gennem portalen
 - Ring direkte fra job-siden
 - Tilføj permanente instruktioner til dit hjem
@@ -263,6 +279,7 @@ Prøv at spørge Friday: 'Hvornår kommer I næste gang?' eller 'Hvad koster en 
 
 **[FEEDBACK - 3:00-3:45]**
 "Efter hver rengøring:
+
 1. Vurder arbejdet fra 1-5 stjerner
 2. Tilføj kommentarer hvis ønsket
 3. Upload billeder hvis relevant
@@ -278,6 +295,7 @@ Se din servicehistorik og alle tidligere vurderinger under 'Mine bookinger'."
 ## Series 4: Advanced Features
 
 ### Video 4.1: "AI Friday Assistant - Din Intelligente Hjælper"
+
 **Duration**: 5 minutes
 
 **Script:**
@@ -289,6 +307,7 @@ Se din servicehistorik og alle tidligere vurderinger under 'Mine bookinger'."
 "Friday er tilgængelig overalt i systemet. Klik på Friday-ikonet eller tryk F1.
 
 Eksempler på hvad du kan spørge om:
+
 - 'Hvor mange jobs har vi i dag?'
 - 'Hvem er vores mest tilfredse kunder?'
 - 'Lav en rapport over sidste måneds omsætning'
@@ -333,12 +352,14 @@ Friday har adgang til al kundedata og kan give kontekstuelle svar."
 ## Production Guidelines
 
 ### Video Recording Setup
+
 1. **Screen Recording**: Use OBS Studio or similar
 2. **Audio**: High-quality USB microphone
 3. **Resolution**: 1920x1080, 30fps
 4. **Format**: MP4 with H.264 encoding
 
 ### Post-Production Checklist
+
 - [ ] Add RendetaljeOS intro (3 seconds)
 - [ ] Include captions in Danish
 - [ ] Add English subtitles
@@ -347,17 +368,20 @@ Friday har adgang til al kundedata og kan give kontekstuelle svar."
 - [ ] Export in multiple resolutions (1080p, 720p, 480p)
 
 ### Distribution Channels
+
 1. **YouTube** - Public channel with playlists
 2. **Vimeo** - Private videos for customer portal
 3. **In-app** - Embedded help videos
 4. **Training portal** - Structured learning paths
 
 ### Maintenance Schedule
+
 - **Monthly**: Review analytics and user feedback
 - **Quarterly**: Update videos for new features
 - **Annually**: Complete refresh of all content
 
 ### Metrics to Track
+
 - View completion rates
 - User engagement (likes, comments)
 - Support ticket reduction
@@ -366,4 +390,4 @@ Friday har adgang til al kundedata og kan give kontekstuelle svar."
 
 ---
 
-*For video production support, contact: training@rendetalje.dk*
+*For video production support, contact: <training@rendetalje.dk>*

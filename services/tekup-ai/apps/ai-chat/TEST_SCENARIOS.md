@@ -10,6 +10,7 @@
 ## 🎯 Testing Philosophy
 
 ### Industry Standards Applied
+
 - **ChatGPT:** Conversational flow, context retention, streaming responses
 - **Claude:** Long-form analysis, code understanding, project-aware context
 - **GitHub Copilot:** Code completion, inline suggestions, developer workflows
@@ -17,6 +18,7 @@
 - **Cursor/Manus:** Multi-file awareness, codebase understanding
 
 ### Success Criteria
+
 ```yaml
 Performance:
   - First response < 2 seconds
@@ -44,18 +46,21 @@ UX:
 ### 1. **Marcus (Senior Developer)** 🧑‍💻
 
 **Background:**
+
 - 5+ years TypeScript/React experience
 - Works on Tekup-Billy and TekupVault
 - Heavy keyboard user
 - Needs quick, precise answers
 
 **Daily Usage:**
+
 - 20-30 queries/day
 - Primarily code-related
 - Uses voice occasionally
 - Exports conversations weekly
 
 **Expectations:**
+
 - Fast code examples
 - Accurate API documentation
 - Context-aware suggestions
@@ -66,18 +71,21 @@ UX:
 ### 2. **Jonas (Business Owner/CTO)** 💼
 
 **Background:**
+
 - Technical founder
 - Manages 8 repositories (€780K portfolio)
 - Strategic decision maker
 - Limited daily coding time
 
 **Daily Usage:**
+
 - 5-10 queries/day
 - Strategic questions
 - Portfolio analysis
 - Architecture decisions
 
 **Expectations:**
+
 - High-level insights
 - ROI calculations
 - Risk assessments
@@ -88,18 +96,21 @@ UX:
 ### 3. **Sarah (New Developer)** 👩‍🎓
 
 **Background:**
+
 - Junior developer (1 year experience)
 - Recently joined team
 - Learning Tekup architecture
 - Needs guidance and documentation
 
 **Daily Usage:**
+
 - 15-25 queries/day
 - "How do I...?" questions
 - Documentation lookup
 - Code explanations
 
 **Expectations:**
+
 - Patient, detailed explanations
 - Step-by-step guides
 - Links to relevant docs
@@ -110,18 +121,21 @@ UX:
 ### 4. **Anna (Project Manager)** 📊
 
 **Background:**
+
 - Non-technical background
 - Manages Tekup-Billy development
 - Needs status updates
 - Coordinates between teams
 
 **Daily Usage:**
+
 - 5-8 queries/day
 - Status inquiries
 - Task planning
 - Integration checks
 
 **Expectations:**
+
 - Plain language responses
 - Visual representations
 - Status summaries
@@ -132,18 +146,21 @@ UX:
 ### 5. **Lars (Support Agent)** 🎧
 
 **Background:**
+
 - Customer support for Billy.dk
 - Technical aptitude
 - Needs quick answers
 - Handles 20+ tickets/day
 
 **Daily Usage:**
+
 - 30-50 queries/day
 - Customer issue lookup
 - API troubleshooting
 - Documentation sharing
 
 **Expectations:**
+
 - Instant responses
 - Copy-paste ready answers
 - Customer-friendly language
@@ -215,6 +232,7 @@ Step 4: Code Export
 ```
 
 **Pass Criteria:**
+
 - All 4 steps completed successfully
 - Marcus doesn't need external documentation
 - Code examples work without modification
@@ -284,6 +302,7 @@ Step 4: Action Plan
 ```
 
 **Pass Criteria:**
+
 - Clear go/no-go decision provided
 - All numbers cited from docs
 - Recommendations are actionable
@@ -356,6 +375,7 @@ Step 4: Documentation Discovery
 ```
 
 **Pass Criteria:**
+
 - Sarah understands architecture
 - Makes first PR successfully
 - Feels supported throughout
@@ -426,6 +446,7 @@ Step 4: Report Generation
 ```
 
 **Pass Criteria:**
+
 - Anna gets full status in < 2 minutes
 - No need to ask technical team
 - Report is stakeholder-ready
@@ -493,6 +514,7 @@ Step 4: Escalation Path
 ```
 
 **Pass Criteria:**
+
 - Lars resolves 80% of issues without escalation
 - < 3 minutes per ticket
 - Customer-friendly language

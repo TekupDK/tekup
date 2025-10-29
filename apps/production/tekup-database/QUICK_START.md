@@ -9,6 +9,7 @@
 Du har åbnet `tekup-database` workspace i VS Code.
 
 **Status:**
+
 - ✅ Dependencies installeret (pnpm install done)
 - ✅ .env fil oprettet
 - ⚠️ Docker Desktop skal startes
@@ -18,12 +19,14 @@ Du har åbnet `tekup-database` workspace i VS Code.
 
 ## 📋 Step 1: Start Docker Desktop
 
-### Hvad du ser nu:
+### Hvad du ser nu
+
 En fejl: "unable to get image 'ankane/pgvector:v0.7.4'"
 
-### Hvad du skal gøre:
+### Hvad du skal gøre
 
 **Windows:**
+
 1. Tryk **Windows-tast**
 2. Skriv: `Docker Desktop`
 3. Tryk **Enter**
@@ -31,6 +34,7 @@ En fejl: "unable to get image 'ankane/pgvector:v0.7.4'"
    - Du ser en grøn status nederst: "Engine running"
 
 **Hvordan ved jeg det er klar?**
+
 - Docker Desktop viser: 🟢 "Docker Desktop is running"
 - Systemtray icon (nederst til højre) er grøn
 
@@ -38,7 +42,8 @@ En fejl: "unable to get image 'ankane/pgvector:v0.7.4'"
 
 ## 📋 Step 2: Godkend Prisma Build Scripts
 
-### Hvad du ser nu:
+### Hvad du ser nu
+
 ```
 ? Choose which packages to build
   ( ) @prisma/client
@@ -47,7 +52,7 @@ En fejl: "unable to get image 'ankane/pgvector:v0.7.4'"
   ( ) prisma
 ```
 
-### Hvad du skal gøre:
+### Hvad du skal gøre
 
 1. **Tryk `Space`** på disse 3 (marker med X):
    - [X] @prisma/client
@@ -62,13 +67,14 @@ En fejl: "unable to get image 'ankane/pgvector:v0.7.4'"
 
 ## 📋 Step 3: Start Database (Docker)
 
-### I VS Code Terminal:
+### I VS Code Terminal
 
 ```bash
 docker-compose up -d
 ```
 
-### Hvad du ser:
+### Hvad du ser
+
 ```
 ✔ Network tekup-network           Created
 ✔ Volume tekup-postgres-data      Created  
@@ -82,13 +88,14 @@ docker-compose up -d
 
 ## 📋 Step 4: Check Database Er Klar
 
-### I VS Code Terminal:
+### I VS Code Terminal
 
 ```bash
 docker ps
 ```
 
-### Hvad du SKAL se:
+### Hvad du SKAL se
+
 ```
 CONTAINER ID   IMAGE                       STATUS
 xxxxx         ankane/pgvector:v0.7.4      Up 10 seconds (healthy)
@@ -101,13 +108,14 @@ xxxxx         dpage/pgadmin4:latest       Up 10 seconds
 
 ## 📋 Step 5: Generer Prisma Client
 
-### I VS Code Terminal:
+### I VS Code Terminal
 
 ```bash
 pnpm db:generate
 ```
 
-### Hvad du ser:
+### Hvad du ser
+
 ```
 Environment variables loaded from .env
 Prisma schema loaded from prisma\schema.prisma
@@ -121,23 +129,25 @@ Prisma schema loaded from prisma\schema.prisma
 
 ## 📋 Step 6: Kør Database Migrations
 
-### I VS Code Terminal:
+### I VS Code Terminal
 
 ```bash
 pnpm db:migrate
 ```
 
-### Hvad du ser:
+### Hvad du ser
+
 ```
 ? Enter a name for the new migration:
 ```
 
-### Hvad du skal gøre:
+### Hvad du skal gøre
 
 1. **Skriv:** `initial_setup`
 2. **Tryk Enter**
 
-### Resultat du SKAL se:
+### Resultat du SKAL se
+
 ```
 ✅ The following migration(s) have been created and applied from new schema changes:
 
@@ -154,27 +164,29 @@ migrations/
 
 ## 📋 Step 7: Åbn Database Browser (Prisma Studio)
 
-### I VS Code Terminal:
+### I VS Code Terminal
 
 ```bash
 pnpm db:studio
 ```
 
-### Hvad du ser:
+### Hvad du ser
+
 ```
 Prisma Studio is up on http://localhost:5555
 ```
 
-### Hvad du skal gøre:
+### Hvad du skal gøre
 
 1. **VS Code viser popup:** "Open in Browser?"
    - **Klik: "Open"**
 
 2. **ELLER** åbn browser og gå til: `http://localhost:5555`
 
-### Hvad du SKAL se:
+### Hvad du SKAL se
 
 En web-side med:
+
 - **vault** schema
   - documents (0)
   - embeddings (0)
@@ -200,7 +212,7 @@ Tjek at alt virker:
 - [ ] `docker ps` viser 2 containers (healthy)
 - [ ] Prisma Client genereret (ingen fejl)
 - [ ] Migrations kørt (initial_setup created)
-- [ ] Prisma Studio åben på http://localhost:5555
+- [ ] Prisma Studio åben på <http://localhost:5555>
 - [ ] Kan se tabeller i vault, billy, shared schemas
 
 **Hvis ALLE er ✅:** Du er DONE! Database er klar til brug.
@@ -214,6 +226,7 @@ Tjek at alt virker:
 **Fejl:** "docker: command not found" eller lignende
 
 **Løsning:**
+
 1. Luk VS Code
 2. Start Docker Desktop
 3. Vent til den er grøn
@@ -317,6 +330,7 @@ pnpm db:seed
 ### 3. Forbind Første Service
 
 Nu er databasen klar til at modtage data fra:
+
 - TekupVault
 - Tekup-Billy
 - RenOS

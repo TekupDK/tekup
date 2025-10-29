@@ -1,111 +1,1 @@
-# 🔐 Quick Auth Setup Guide for Tekup RenOS\n\n\n\n**For Internal Team Use**  
-**Last Updated**: October 1, 2025
-
----
-\n\n## 🌐 Dashboard Access URLs\n\n\n\n### Frontend Dashboard\n\n\n\n- **Primary**: <https://tekup-renos-1.onrender.com>\n\n- **Alternative**: <https://tekup-renos-frontend.onrender.com>\n\n\n\n### Backend API\n\n\n\n- **URL**: <https://tekup-renos.onrender.com>\n\n- **Health Check**: <https://tekup-renos.onrender.com/health>\n\n
----
-\n\n## 🔑 Current Authentication Status\n\n\n\n**Authentication**: ✅ **ENABLED** (`ENABLE_AUTH=true`)\n\n
-**What this means**:
-\n\n- Dashboard routes are protected\n\n- API requires Bearer token\n\n- Unauthorized requests get 401 error\n\n
----
-\n\n## 🚀 Quick Access Methods\n\n\n\n### Option 1: Disable Auth for Internal Testing (Recommended for Now)\n\n\n\n**For Render.com**:
-\n\n1. Go to Render Dashboard: <https://dashboard.render.com>\n\n2. Select **tekup-renos** service (backend)\n\n3. Go to **Environment** tab\n\n4. Find `ENABLE_AUTH` variable\n\n5. Change value from `true` to `false`\n\n6. Click **Save Changes**\n\n7. Service will automatically redeploy (~2 minutes)
-
-**Result**: Your team can access dashboard without login during pilot phase.
-
----
-\n\n### Option 2: Use Shared Token (More Secure)\n\n\n\nIf you want to keep auth enabled:
-\n\n#### Step 1: Generate Secure Token\n\n\n\n```powershell\n\n# Run in PowerShell to generate random token\n\n$token = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 48 | ForEach-Object {[char]$_})\n\nWrite-Host "Your secure token: $token"\n\n```\n\n\n\n#### Step 2: Update authMiddleware.ts\n\n\n\nAdd this code to check for admin token:
-\n\n```typescript
-// Add after line 18 in src/middleware/authMiddleware.ts
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
-
-// Then in requireAuth function, add this check after extracting token:
-if (ADMIN_TOKEN && token === ADMIN_TOKEN) {
-    logger.info({ type: "admin_auth", path: req.path }, "Admin authenticated");
-    next();
-    return;
-}\n\n```
-\n\n#### Step 3: Add to Render Environment\n\n\n\n1. Go to **tekup-renos** service → **Environment**\n\n2. Add new variable:
-   - **Key**: `ADMIN_TOKEN`\n\n   - **Value**: [paste your generated token]\n\n3. Save and redeploy
-\n\n#### Step 4: Share Token with Team\n\n\n\nSave token in password manager (1Password, LastPass, etc.) and share with team members.
-\n\n#### Step 5: Use Token in Requests\n\n\n\n**Frontend**: Store in localStorage
-\n\n```javascript
-localStorage.setItem('authToken', 'YOUR_TOKEN_HERE');\n\n```
-
-**API Calls**: Include in headers
-\n\n```javascript
-fetch('https://tekup-renos.onrender.com/api/dashboard/stats', {
-  headers: {
-    'Authorization': `Bearer YOUR_TOKEN_HERE`
-  }
-})\n\n```
-
----
-\n\n## 🎯 Recommended Approach by Phase\n\n\n\n### 🏃‍♂️ Right Now (Pilot Phase)\n\n\n\n**Recommendation**: **Option 1** (Disable Auth)\n\n
-**Why**:
-\n\n- ✅ Quick team access\n\n- ✅ Focus on testing core features\n\n- ✅ No complex setup needed\n\n- ✅ Can add proper auth later\n\n
-**Steps**:
-\n\n1. Set `ENABLE_AUTH=false` in Render\n\n2. Access dashboard freely at <https://tekup-renos-1.onrender.com>\n\n3. Test Gmail integration, AI responses, bookings\n\n4. Iterate quickly without auth friction
-
----
-\n\n### 📅 Week 2-3 (Team Rollout)\n\n\n\n**Recommendation**: **Option 2** (Shared Token)\n\n
-**Why**:
-\n\n- 🔒 Basic security\n\n- 👥 Works for small team (2-5 people)\n\n- ⚡ Still simple to use\n\n- 🛡️ Better than no auth\n\n
----
-\n\n### 🚀 Month 2+ (Full Production)\n\n\n\n**Recommendation**: Clerk or Custom JWT
-
-**Why**:
-\n\n- 👤 Individual user accounts\n\n- 📊 Audit trails (who did what)\n\n- 🔐 Proper security\n\n- 📈 Scalable for growth\n\n
-See `AUTHENTICATION_GUIDE.md` for full implementation.
-
----
-\n\n## 🐛 Troubleshooting\n\n\n\n### Frontend Shows "Unauthorized" Error\n\n\n\n**If you disabled auth**:
-\n\n- Wait 2-3 minutes for Render to redeploy\n\n- Hard refresh browser (Ctrl+Shift+R)\n\n- Check Render logs confirm `ENABLE_AUTH: false`\n\n
-**If using token**:
-\n\n- Verify token is correct (no extra spaces)\n\n- Check token is in Authorization header\n\n- Check browser console for errors\n\n
----
-\n\n### Backend Returns 401 on All Requests\n\n\n\n**Cause**: Auth is enabled but frontend not sending token
-
-**Solution**:
-\n\n1. Check if `ENABLE_AUTH=true` in Render\n\n2. Either disable auth OR implement token in frontend\n\n3. Check CORS allows your frontend domain
-
----
-\n\n### Can't Find Environment Tab in Render\n\n\n\n**Location**:
-\n\n1. Go to dashboard.render.com\n\n2. Click on **tekup-renos** service (the backend one, not frontend)\n\n3. Click **Environment** in left sidebar\n\n4. You'll see list of all environment variables
-
----
-\n\n## 📱 Access Instructions for Team\n\n\n\n### For Dashboard Users (Non-Technical)\n\n\n\n**Step 1**: Open your browser
-
-**Step 2**: Go to: `https://tekup-renos-1.onrender.com`
-
-**Step 3**:
-\n\n- **If auth disabled**: Dashboard loads immediately ✅\n\n- **If auth enabled**: Enter shared token when prompted\n\n
-**Step 4**: Navigate the dashboard:
-\n\n- **Overview**: See stats, KPIs, recent activity\n\n- **Leads**: View and manage customer inquiries\n\n- **Bookings**: Calendar and appointments\n\n- **AI Responses**: Review and approve email replies\n\n
----
-\n\n## ⚙️ Current Environment Status\n\n\n\nFrom your logs, I can see:
-\n\n```
-✅ NODE_ENV: production
-✅ PORT: 3000
-✅ ENABLE_AUTH: true  ← Currently ENABLED
-✅ RUN_MODE: dry-run
-✅ HAS_DATABASE: true (Neon PostgreSQL)
-✅ HAS_GEMINI: true (AI working)
-⚠️ GOOGLE_CALENDAR_ID: missing (needs fix in Todo #6)\n\n```
-
----
-\n\n## 🎯 My Recommendation for YOU Right Now\n\n\n\n**Action**: Temporarily disable auth for easy testing
-
-**How**:
-\n\n1. Open: <https://dashboard.render.com>\n\n2. Go to **tekup-renos** (backend service)\n\n3. Click **Environment** tab\n\n4. Find `ENABLE_AUTH`, change to `false`\n\n5. Save → Wait 2 minutes → Refresh dashboard
-
-**Then**:
-\n\n- Test all features freely\n\n- Get team familiar with dashboard\n\n- Add proper auth in Week 2\n\n
-**Why this works**:
-\n\n- ✅ You're the only user right now (pilot phase)\n\n- ✅ Internal tool, not public-facing\n\n- ✅ Can always enable auth later\n\n- ✅ Removes friction during development\n\n
----
-\n\n## 📞 Need Help?\n\n\n\n- **Render Issues**: Check <https://status.render.com>\n\n- **Auth Setup**: See `AUTHENTICATION_GUIDE.md`\n\n- **General Setup**: See `RENDER_DEPLOYMENT.md`\n\n
----
-
-**Next Steps**: After auth is configured, move to **Todo #3: Test Gmail Integration**! 🚀
+# 🔐 Quick Auth Setup Guide for Tekup RenOS\n\n\n\n**For Internal Team Use**  **Last Updated**: October 1, 2025---\n\n## 🌐 Dashboard Access URLs\n\n\n\n### Frontend Dashboard\n\n\n\n- **Primary**: <https://tekup-renos-1.onrender.com>\n\n- **Alternative**: <https://tekup-renos-frontend.onrender.com>\n\n\n\n### Backend API\n\n\n\n- **URL**: <https://tekup-renos.onrender.com>\n\n- **Health Check**: <https://tekup-renos.onrender.com/health>\n\n---\n\n## 🔑 Current Authentication Status\n\n\n\n**Authentication**: ✅ **ENABLED** (`ENABLE_AUTH=true`)\n\n**What this means**:\n\n- Dashboard routes are protected\n\n- API requires Bearer token\n\n- Unauthorized requests get 401 error\n\n---\n\n## 🚀 Quick Access Methods\n\n\n\n### Option 1: Disable Auth for Internal Testing (Recommended for Now)\n\n\n\n**For Render.com**:\n\n1. Go to Render Dashboard: <https://dashboard.render.com>\n\n2. Select **tekup-renos** service (backend)\n\n3. Go to **Environment** tab\n\n4. Find `ENABLE_AUTH` variable\n\n5. Change value from `true` to `false`\n\n6. Click **Save Changes**\n\n7. Service will automatically redeploy (~2 minutes)**Result**: Your team can access dashboard without login during pilot phase.---\n\n### Option 2: Use Shared Token (More Secure)\n\n\n\nIf you want to keep auth enabled:\n\n#### Step 1: Generate Secure Token\n\n\n\n```powershell\n\n# Run in PowerShell to generate random token\n\n$token = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 48 | ForEach-Object {[char]$_})\n\nWrite-Host "Your secure token: $token"\n\n```\n\n\n\n#### Step 2: Update authMiddleware.ts\n\n\n\nAdd this code to check for admin token:\n\n```typescript// Add after line 18 in src/middleware/authMiddleware.tsconst ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';// Then in requireAuth function, add this check after extracting token:if (ADMIN_TOKEN && token === ADMIN_TOKEN) {    logger.info({ type: "admin_auth", path: req.path }, "Admin authenticated");    next();    return;}\n\n```\n\n#### Step 3: Add to Render Environment\n\n\n\n1. Go to **tekup-renos** service → **Environment**\n\n2. Add new variable:- **Key**: `ADMIN_TOKEN`\n\n   - **Value**: [paste your generated token]\n\n3. Save and redeploy\n\n#### Step 4: Share Token with Team\n\n\n\nSave token in password manager (1Password, LastPass, etc.) and share with team members.\n\n#### Step 5: Use Token in Requests\n\n\n\n**Frontend**: Store in localStorage\n\n```javascriptlocalStorage.setItem('authToken', 'YOUR_TOKEN_HERE');\n\n```**API Calls**: Include in headers\n\n```javascriptfetch('https://tekup-renos.onrender.com/api/dashboard/stats', {  headers: {    'Authorization': `Bearer YOUR_TOKEN_HERE`  }})\n\n```---\n\n## 🎯 Recommended Approach by Phase\n\n\n\n### 🏃‍♂️ Right Now (Pilot Phase)\n\n\n\n**Recommendation**: **Option 1** (Disable Auth)\n\n**Why**:\n\n- ✅ Quick team access\n\n- ✅ Focus on testing core features\n\n- ✅ No complex setup needed\n\n- ✅ Can add proper auth later\n\n**Steps**:\n\n1. Set `ENABLE_AUTH=false` in Render\n\n2. Access dashboard freely at <https://tekup-renos-1.onrender.com>\n\n3. Test Gmail integration, AI responses, bookings\n\n4. Iterate quickly without auth friction---\n\n### 📅 Week 2-3 (Team Rollout)\n\n\n\n**Recommendation**: **Option 2** (Shared Token)\n\n**Why**:\n\n- 🔒 Basic security\n\n- 👥 Works for small team (2-5 people)\n\n- ⚡ Still simple to use\n\n- 🛡️ Better than no auth\n\n---\n\n### 🚀 Month 2+ (Full Production)\n\n\n\n**Recommendation**: Clerk or Custom JWT**Why**:\n\n- 👤 Individual user accounts\n\n- 📊 Audit trails (who did what)\n\n- 🔐 Proper security\n\n- 📈 Scalable for growth\n\nSee `AUTHENTICATION_GUIDE.md` for full implementation.---\n\n## 🐛 Troubleshooting\n\n\n\n### Frontend Shows "Unauthorized" Error\n\n\n\n**If you disabled auth**:\n\n- Wait 2-3 minutes for Render to redeploy\n\n- Hard refresh browser (Ctrl+Shift+R)\n\n- Check Render logs confirm `ENABLE_AUTH: false`\n\n**If using token**:\n\n- Verify token is correct (no extra spaces)\n\n- Check token is in Authorization header\n\n- Check browser console for errors\n\n---\n\n### Backend Returns 401 on All Requests\n\n\n\n**Cause**: Auth is enabled but frontend not sending token**Solution**:\n\n1. Check if `ENABLE_AUTH=true` in Render\n\n2. Either disable auth OR implement token in frontend\n\n3. Check CORS allows your frontend domain---\n\n### Can't Find Environment Tab in Render\n\n\n\n**Location**:\n\n1. Go to dashboard.render.com\n\n2. Click on **tekup-renos** service (the backend one, not frontend)\n\n3. Click **Environment** in left sidebar\n\n4. You'll see list of all environment variables---\n\n## 📱 Access Instructions for Team\n\n\n\n### For Dashboard Users (Non-Technical)\n\n\n\n**Step 1**: Open your browser**Step 2**: Go to: `https://tekup-renos-1.onrender.com`**Step 3**:\n\n- **If auth disabled**: Dashboard loads immediately ✅\n\n- **If auth enabled**: Enter shared token when prompted\n\n**Step 4**: Navigate the dashboard:\n\n- **Overview**: See stats, KPIs, recent activity\n\n- **Leads**: View and manage customer inquiries\n\n- **Bookings**: Calendar and appointments\n\n- **AI Responses**: Review and approve email replies\n\n---\n\n## ⚙️ Current Environment Status\n\n\n\nFrom your logs, I can see:\n\n```✅ NODE_ENV: production✅ PORT: 3000✅ ENABLE_AUTH: true  ← Currently ENABLED✅ RUN_MODE: dry-run✅ HAS_DATABASE: true (Neon PostgreSQL)✅ HAS_GEMINI: true (AI working)⚠️ GOOGLE_CALENDAR_ID: missing (needs fix in Todo #6)\n\n```---\n\n## 🎯 My Recommendation for YOU Right Now\n\n\n\n**Action**: Temporarily disable auth for easy testing**How**:\n\n1. Open: <https://dashboard.render.com>\n\n2. Go to **tekup-renos** (backend service)\n\n3. Click **Environment** tab\n\n4. Find `ENABLE_AUTH`, change to `false`\n\n5. Save → Wait 2 minutes → Refresh dashboard**Then**:\n\n- Test all features freely\n\n- Get team familiar with dashboard\n\n- Add proper auth in Week 2\n\n**Why this works**:\n\n- ✅ You're the only user right now (pilot phase)\n\n- ✅ Internal tool, not public-facing\n\n- ✅ Can always enable auth later\n\n- ✅ Removes friction during development\n\n---\n\n## 📞 Need Help?\n\n\n\n- **Render Issues**: Check <https://status.render.com>\n\n- **Auth Setup**: See `AUTHENTICATION_GUIDE.md`\n\n- **General Setup**: See `RENDER_DEPLOYMENT.md`\n\n---**Next Steps**: After auth is configured, move to **Todo #3: Test Gmail Integration**! 🚀

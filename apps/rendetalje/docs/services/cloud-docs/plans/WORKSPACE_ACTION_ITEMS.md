@@ -1,4 +1,5 @@
 # Tekup Workspace - Prioritized Action Items
+
 **Generated:** 22. Oktober 2025, kl. 05:15 CET  
 **Total Items:** 45  
 **Priority Levels:** Critical (🔴), High (🟠), Medium (🟡), Low (🟢)
@@ -19,6 +20,7 @@
 ## 🔴 CRITICAL (7 days)
 
 ### 1. Create Supabase Tables for RenOS Calendar MCP
+
 **Priority:** 🔴 CRITICAL  
 **Effort:** 2 hours  
 **Impact:** Unlocks 3/5 tools (60% functionality)
@@ -54,6 +56,7 @@ CREATE INDEX idx_overtime_logs_customer_id ON overtime_logs(customer_id);
 ```
 
 **Verification:**
+
 - Test `track_overtime_risk` tool
 - Test `get_customer_memory` tool
 - Confirm no PGRST205 errors
@@ -65,19 +68,23 @@ CREATE INDEX idx_overtime_logs_customer_id ON overtime_logs(customer_id);
 ---
 
 ### 2. Deploy RenOS Calendar MCP to Render.com
+
 **Priority:** 🔴 CRITICAL  
 **Effort:** 3 hours  
 **Impact:** Production-ready calendar intelligence service
 
 **Prerequisites:**
+
 - ✅ Docker Compose complete
 - ✅ Port configuration system complete
 - ❌ Supabase tables (Item #1)
 - ❌ Rate limiting implementation
 
 **Action:**
+
 1. Add rate limiting middleware (express-rate-limit)
 2. Create `render.yaml`:
+
 ```yaml
 services:
   - type: web
@@ -96,12 +103,14 @@ services:
       - key: GOOGLE_CALENDAR_CREDENTIALS
         sync: false
 ```
+
 3. Push to GitHub
 4. Create Render service
 5. Add environment variables from `.env`
 6. Deploy and verify
 
 **Verification:**
+
 - Health check: https://[service].onrender.com/health
 - Test all 5 tools via HTTP API
 - Monitor logs for errors
@@ -113,14 +122,17 @@ services:
 ---
 
 ### 3. Archive Tekup Google AI Repository
+
 **Priority:** 🔴 CRITICAL  
 **Effort:** 1 hour  
 **Impact:** Reduce confusion, clarify active projects
 
 **Action:**
+
 1. Verify no missing features vs. RendetaljeOS
 2. Rename repo: `Tekup-Google-AI-ARCHIVED-2025-10-22`
 3. Add README.md to root:
+
 ```markdown
 # ⚠️ ARCHIVED - Tekup Google AI
 
@@ -130,10 +142,12 @@ services:
 
 This repository is no longer maintained. All features have been migrated to RendetaljeOS.
 ```
+
 4. Commit and push archive notice
 5. Remove from active workspace (keep on disk for reference)
 
 **Verification:**
+
 - No active references in other repos
 - RendetaljeOS has all features
 - Documentation updated
@@ -145,11 +159,13 @@ This repository is no longer maintained. All features have been migrated to Rend
 ---
 
 ### 4. Extract Core Apps from Tekup-org
+
 **Priority:** 🔴 CRITICAL  
 **Effort:** 8 hours (spread over 2-3 days)  
 **Impact:** Massive complexity reduction (30+ apps → 3-5 repos)
 
 **Action:**
+
 1. **Audit Phase** (2 hours):
    - List all 30+ apps
    - Identify actively developed apps (likely 3-5)
@@ -169,6 +185,7 @@ This repository is no longer maintained. All features have been migrated to Rend
    - Document migration
 
 **Verification:**
+
 - New repos build successfully
 - Tests pass
 - No broken dependencies
@@ -180,11 +197,13 @@ This repository is no longer maintained. All features have been migrated to Rend
 ---
 
 ### 5. Initialize Git for Gmail Projects
+
 **Priority:** 🔴 CRITICAL  
 **Effort:** 30 minutes  
 **Impact:** Prevent data loss, enable version control
 
 **Action:**
+
 1. **Investigate:**
    ```bash
    cd C:\Users\empir\Gmail-PDF-Auto
@@ -213,6 +232,7 @@ This repository is no longer maintained. All features have been migrated to Rend
 ---
 
 ### 6. Commit tekup-cloud-dashboard Changes
+
 **Priority:** 🔴 CRITICAL  
 **Effort:** 15 minutes  
 **Impact:** Save work, enable deployment
@@ -226,6 +246,7 @@ git push origin main
 ```
 
 **Files to Commit:**
+
 - README.md
 - package.json
 - src/App.tsx
@@ -242,11 +263,13 @@ git push origin main
 ---
 
 ### 7. Organize Tekup-Cloud Documentation
+
 **Priority:** 🔴 CRITICAL  
 **Effort:** 1 hour  
 **Impact:** Reduce clutter, improve navigation
 
 **Action:**
+
 1. **Create Docs Folder:**
    ```bash
    cd C:\Users\empir\Tekup-Cloud
@@ -299,11 +322,13 @@ git push origin main
 ---
 
 ### 8. Clarify Tekup-Cloud Backend/Frontend Purpose
+
 **Priority:** 🔴 CRITICAL  
 **Effort:** 30 minutes  
 **Impact:** Prevent confusion about project structure
 
 **Action:**
+
 1. **Investigate:**
    ```bash
    cd C:\Users\empir\Tekup-Cloud\backend
@@ -337,11 +362,13 @@ git push origin main
 ## 🟠 HIGH (30 days)
 
 ### 9. Deploy RendetaljeOS Backend to Render
+
 **Priority:** 🟠 HIGH  
 **Effort:** 4 hours  
 **Impact:** Production-ready RenOS backend API
 
 **Action:**
+
 1. Create `render.yaml` in RendetaljeOS/apps/backend/
 2. Set up environment variables
 3. Configure Prisma migrations
@@ -354,11 +381,13 @@ git push origin main
 ---
 
 ### 10. Deploy tekup-cloud-dashboard to Vercel
+
 **Priority:** 🟠 HIGH  
 **Effort:** 2 hours  
 **Impact:** Production-ready dashboard UI
 
 **Action:**
+
 1. Connect GitHub repo to Vercel
 2. Configure environment variables
 3. Deploy and test
@@ -370,11 +399,13 @@ git push origin main
 ---
 
 ### 11. Consolidate RendetaljeOS Mobile App
+
 **Priority:** 🟠 HIGH  
 **Effort:** 3 hours  
 **Impact:** Clarify mobile app status
 
 **Action:**
+
 1. **Verify Duplication:**
    ```bash
    diff -r C:\Users\empir\RendetaljeOS\-Mobile C:\Users\empir\Tekup-Cloud\RendetaljeOS-Mobile
@@ -393,11 +424,13 @@ git push origin main
 ---
 
 ### 12. Implement RenOS Backend → Billy Integration
+
 **Priority:** 🟠 HIGH  
 **Effort:** 3 hours  
 **Impact:** Automated invoicing from RenOS
 
 **Action:**
+
 1. Add axios client for Tekup-Billy HTTP API
 2. Create invoice service wrapper
 3. Add invoice creation to booking flow
@@ -410,11 +443,13 @@ git push origin main
 ---
 
 ### 13. Implement RenOS Backend → Calendar MCP Integration
+
 **Priority:** 🟠 HIGH  
 **Effort:** 3 hours  
 **Impact:** AI-powered calendar intelligence in RenOS
 
 **Action:**
+
 1. Add axios client for Calendar MCP HTTP API
 2. Create calendar intelligence service
 3. Integrate validation into booking flow
@@ -427,6 +462,7 @@ git push origin main
 ---
 
 ### 14. Add Rate Limiting to RenOS Calendar MCP
+
 **Priority:** 🟠 HIGH  
 **Effort:** 1 hour  
 **Impact:** Security before production deployment
@@ -451,20 +487,24 @@ app.use('/api/v1/tools', limiter);
 ---
 
 ### 15. Set Up Sentry Error Tracking
+
 **Priority:** 🟠 HIGH  
 **Effort:** 2 hours (all services)  
 **Impact:** Proactive error monitoring
 
 **Services:**
+
 - Tekup-Billy
 - TekupVault (API + Worker)
 - RenOS Calendar MCP
 - RendetaljeOS Backend
 
 **Action:**
+
 1. Create Sentry project (or use existing)
 2. Install `@sentry/node` in each service
 3. Initialize in entry point:
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -474,6 +514,7 @@ Sentry.init({
   tracesSampleRate: 0.1,
 });
 ```
+
 4. Deploy and verify
 
 **Repository:** All production services  
@@ -483,11 +524,13 @@ Sentry.init({
 ---
 
 ### 16. Enable Billy Integration in RenOS Calendar MCP
+
 **Priority:** 🟠 HIGH  
 **Effort:** 2 hours  
 **Impact:** Automated invoice creation tool
 
 **Action:**
+
 1. Set `ENABLE_AUTO_INVOICE=true` in config
 2. Add `BILLY_MCP_API_KEY` environment variable
 3. Test `auto_create_invoice` tool
@@ -500,11 +543,13 @@ Sentry.init({
 ---
 
 ### 17. Enable Twilio Integration in RenOS Calendar MCP
+
 **Priority:** 🟠 HIGH (optional)  
 **Effort:** 2 hours  
 **Impact:** Voice alerts for overtime
 
 **Action:**
+
 1. Set `ENABLE_VOICE_ALERTS=true` in config
 2. Add Twilio credentials
 3. Test voice alert functionality
@@ -517,11 +562,13 @@ Sentry.init({
 ---
 
 ### 18. Add Redis to RenOS Calendar MCP
+
 **Priority:** 🟠 HIGH  
 **Effort:** 2 hours  
 **Impact:** Performance boost via caching
 
 **Action:**
+
 1. Add `ioredis` dependency
 2. Create Redis client utility
 3. Add caching layer for Supabase queries
@@ -534,11 +581,13 @@ Sentry.init({
 ---
 
 ### 19. Enable Redis for Tekup-Billy (All Deployments)
+
 **Priority:** 🟠 HIGH  
 **Effort:** 1 hour  
 **Impact:** Horizontal scaling for all users
 
 **Action:**
+
 1. Make Redis required (not optional)
 2. Add Redis URL to Render environment variables
 3. Update deployment docs
@@ -551,11 +600,13 @@ Sentry.init({
 ---
 
 ### 20. Build TekupVault Web UI (Phase 4)
+
 **Priority:** 🟠 HIGH  
 **Effort:** 8 hours  
 **Impact:** User-friendly search interface
 
 **Action:**
+
 1. Create new package: `apps/vault-web`
 2. Tech stack: React 18 + Vite + Tailwind
 3. Features:
@@ -574,6 +625,7 @@ Sentry.init({
 ## 🟡 MEDIUM (90 days)
 
 ### 21-25. Documentation Cleanup
+
 **Priority:** 🟡 MEDIUM  
 **Effort:** 4 hours total  
 **Impact:** Improved navigation, reduced clutter
@@ -592,6 +644,7 @@ Sentry.init({
 ---
 
 ### 26-30. Testing & Quality
+
 **Priority:** 🟡 MEDIUM  
 **Effort:** 8 hours total  
 **Impact:** Improved reliability
@@ -610,6 +663,7 @@ Sentry.init({
 ---
 
 ### 31-35. Performance Optimization
+
 **Priority:** 🟡 MEDIUM  
 **Effort:** 6 hours total  
 **Impact:** Faster response times
@@ -628,6 +682,7 @@ Sentry.init({
 ---
 
 ### 36-40. Monitoring & Observability
+
 **Priority:** 🟡 MEDIUM  
 **Effort:** 6 hours total  
 **Impact:** Better insights
@@ -648,6 +703,7 @@ Sentry.init({
 ## 🟢 LOW (Backlog)
 
 ### 41. Update Agent-Orchestrator
+
 **Priority:** 🟢 LOW  
 **Effort:** 2 hours  
 **Impact:** Nice-to-have UI
@@ -660,6 +716,7 @@ Sentry.init({
 ---
 
 ### 42. Archive tekup-gmail-automation (if unused)
+
 **Priority:** 🟢 LOW  
 **Effort:** 30 minutes  
 **Impact:** Reduced workspace clutter
@@ -672,6 +729,7 @@ Sentry.init({
 ---
 
 ### 43. Migrate to Monorepo (Optional)
+
 **Priority:** 🟢 LOW  
 **Effort:** 20 hours  
 **Impact:** Unified development experience
@@ -684,6 +742,7 @@ Sentry.init({
 ---
 
 ### 44. Implement Dark Mode (All UIs)
+
 **Priority:** 🟢 LOW  
 **Effort:** 4 hours  
 **Impact:** Better UX
@@ -696,6 +755,7 @@ Sentry.init({
 ---
 
 ### 45. Add i18n Support
+
 **Priority:** 🟢 LOW  
 **Effort:** 6 hours  
 **Impact:** International expansion
@@ -710,6 +770,7 @@ Sentry.init({
 ## TIMELINE OVERVIEW
 
 ### Week 1 (Oct 22-28)
+
 - ✅ Item #1: Create Supabase tables
 - ✅ Item #2: Deploy RenOS Calendar MCP
 - ✅ Item #3: Archive Tekup Google AI
@@ -717,6 +778,7 @@ Sentry.init({
 - ✅ Item #7: Organize Tekup-Cloud docs
 
 ### Week 2-4 (Oct 29 - Nov 18)
+
 - ✅ Item #4: Extract core apps from Tekup-org
 - ✅ Item #9: Deploy RendetaljeOS Backend
 - ✅ Item #10: Deploy dashboard
@@ -725,6 +787,7 @@ Sentry.init({
 - ✅ Item #15: Set up Sentry
 
 ### Month 2-3 (Nov 19 - Jan 19)
+
 - ✅ Item #20: Build TekupVault Web UI
 - ✅ Items #21-25: Documentation cleanup
 - ✅ Items #26-30: Testing & quality
@@ -736,18 +799,21 @@ Sentry.init({
 ## SUCCESS METRICS
 
 ### Immediate (7 days)
+
 - [ ] RenOS Calendar MCP deployed to production
 - [ ] All 5 tools operational (100%)
 - [ ] Tekup Google AI archived
 - [ ] tekup-cloud-dashboard committed
 
 ### Short Term (30 days)
+
 - [ ] 6 production services running (up from 4)
 - [ ] All services have error tracking (Sentry)
 - [ ] All services have rate limiting
 - [ ] Tekup-org reduced to 3-5 core repos
 
 ### Long Term (90 days)
+
 - [ ] TekupVault Web UI live
 - [ ] CI/CD pipelines for all services
 - [ ] Monitoring dashboards operational
@@ -756,4 +822,3 @@ Sentry.init({
 ---
 
 **Status:** 45 action items identified, prioritized, and assigned. Ready for execution.
-

@@ -13,151 +13,211 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
-const prisma_service_1 = require("../database/prisma.service");
+const supabase_js_1 = require("@supabase/supabase-js");
 const user_entity_1 = require("./entities/user.entity");
-const bcrypt = require("bcrypt");
 let AuthService = class AuthService {
-    constructor(prisma, jwtService, configService) {
-        this.prisma = prisma;
+    constructor(jwtService, configService) {
         this.jwtService = jwtService;
         this.configService = configService;
+        const supabaseUrl = this.configService.get('SUPABASE_URL');
+        const supabaseKey = this.configService.get('SUPABASE_SERVICE_KEY');
+        if (!supabaseUrl || !supabaseKey) {
+            throw new Error('❌ Supabase configuration missing! Set SUPABASE_URL and SUPABASE_SERVICE_KEY in .env');
+        }
+        this.supabase = (0, supabase_js_1.createClient)(supabaseUrl, supabaseKey, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+            },
+        });
+        console.log('✅ Supabase Auth initialized:', supabaseUrl);
     }
     async register(createUserDto) {
         const { email, password, name, role, phone } = createUserDto;
-        const existingUser = await this.prisma.renosUser.findUnique({
-            where: { email },
-        });
-        if (existingUser) {
-            throw new common_1.ConflictException('User with this email already exists');
-        }
-        const saltRounds = 10;
-        const passwordHash = await bcrypt.hash(password, saltRounds);
-        const user = await this.prisma.renosUser.create({
-            data: {
-                email,
+        const { data: authData, error: authError } = await this.supabase.auth.admin.createUser({
+            email,
+            password,
+            email_confirm: true,
+            user_metadata: {
                 name,
                 phone,
-                passwordHash,
                 role: role || user_entity_1.UserRole.EMPLOYEE,
                 isActive: true,
             },
         });
+        if (authError) {
+            if (authError.message?.includes('already registered') || authError.message?.includes('already been registered')) {
+                throw new common_1.ConflictException('User with this email already exists');
+            }
+            throw new common_1.ConflictException(`Failed to create user: ${authError.message}`);
+        }
+        if (!authData.user) {
+            throw new common_1.ConflictException('Failed to create user - no user data returned');
+        }
         const payload = {
-            sub: user.id,
-            email: user.email,
-            role: user.role,
+            sub: authData.user.id,
+            email: authData.user.email,
+            role: authData.user.user_metadata.role || user_entity_1.UserRole.EMPLOYEE,
         };
         const accessToken = this.jwtService.sign(payload);
-        const { passwordHash: _, ...userWithoutPassword } = user;
+        const user = {
+            id: authData.user.id,
+            email: authData.user.email,
+            name: authData.user.user_metadata.name || email.split('@')[0],
+            phone: authData.user.user_metadata.phone || null,
+            role: authData.user.user_metadata.role || user_entity_1.UserRole.EMPLOYEE,
+            isActive: true,
+            createdAt: new Date(authData.user.created_at),
+            updatedAt: new Date(),
+            lastLoginAt: null,
+        };
         return {
-            user: userWithoutPassword,
+            user,
             accessToken,
         };
     }
     async login(loginDto) {
         const { email, password } = loginDto;
-        const user = await this.prisma.renosUser.findUnique({
-            where: { email },
+        const { data: authData, error: authError } = await this.supabase.auth.signInWithPassword({
+            email,
+            password,
         });
-        if (!user) {
+        if (authError || !authData.user) {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
-        if (!user.isActive) {
+        if (authData.user.user_metadata.isActive === false) {
             throw new common_1.UnauthorizedException('Account is deactivated');
         }
-        const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-        if (!isPasswordValid) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
-        }
-        await this.prisma.renosUser.update({
-            where: { id: user.id },
-            data: { lastLoginAt: new Date() },
-        });
         const payload = {
-            sub: user.id,
-            email: user.email,
-            role: user.role,
+            sub: authData.user.id,
+            email: authData.user.email,
+            role: authData.user.user_metadata.role || user_entity_1.UserRole.EMPLOYEE,
         };
         const accessToken = this.jwtService.sign(payload);
-        const { passwordHash: _, ...userWithoutPassword } = user;
+        await this.supabase.auth.admin.updateUserById(authData.user.id, {
+            user_metadata: {
+                ...authData.user.user_metadata,
+                lastLoginAt: new Date().toISOString(),
+            },
+        });
+        const user = {
+            id: authData.user.id,
+            email: authData.user.email,
+            name: authData.user.user_metadata.name || email.split('@')[0],
+            phone: authData.user.user_metadata.phone || null,
+            role: authData.user.user_metadata.role || user_entity_1.UserRole.EMPLOYEE,
+            isActive: authData.user.user_metadata.isActive !== false,
+            createdAt: new Date(authData.user.created_at),
+            updatedAt: new Date(),
+            lastLoginAt: new Date(),
+        };
         return {
-            user: userWithoutPassword,
+            user,
             accessToken,
         };
     }
     async refreshToken(userId) {
-        const user = await this.prisma.renosUser.findUnique({
-            where: { id: userId },
-        });
-        if (!user) {
+        const { data: userData, error: userError } = await this.supabase.auth.admin.getUserById(userId);
+        if (userError || !userData.user) {
             throw new common_1.UnauthorizedException('User not found');
         }
-        if (!user.isActive) {
+        if (userData.user.user_metadata.isActive === false) {
             throw new common_1.UnauthorizedException('Account is deactivated');
         }
         const payload = {
-            sub: user.id,
-            email: user.email,
-            role: user.role,
+            sub: userData.user.id,
+            email: userData.user.email,
+            role: userData.user.user_metadata.role || user_entity_1.UserRole.EMPLOYEE,
         };
         const accessToken = this.jwtService.sign(payload);
         return { accessToken };
     }
     async validateUser(userId) {
-        const user = await this.prisma.renosUser.findUnique({
-            where: { id: userId },
-        });
-        if (!user) {
+        const { data: userData, error: userError } = await this.supabase.auth.admin.getUserById(userId);
+        if (userError || !userData.user) {
             throw new common_1.UnauthorizedException('User not found');
         }
-        if (!user.isActive) {
+        if (userData.user.user_metadata.isActive === false) {
             throw new common_1.UnauthorizedException('Account is deactivated');
         }
-        const { passwordHash: _, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        const user = {
+            id: userData.user.id,
+            email: userData.user.email,
+            name: userData.user.user_metadata.name || userData.user.email.split('@')[0],
+            phone: userData.user.user_metadata.phone || null,
+            role: userData.user.user_metadata.role || user_entity_1.UserRole.EMPLOYEE,
+            isActive: userData.user.user_metadata.isActive !== false,
+            createdAt: new Date(userData.user.created_at),
+            updatedAt: new Date(),
+            lastLoginAt: userData.user.user_metadata.lastLoginAt ? new Date(userData.user.user_metadata.lastLoginAt) : null,
+        };
+        return user;
     }
     async getUserById(id) {
-        const user = await this.prisma.renosUser.findUnique({
-            where: { id },
-        });
-        if (!user) {
+        const { data: userData, error: userError } = await this.supabase.auth.admin.getUserById(id);
+        if (userError || !userData.user) {
             throw new common_1.NotFoundException(`User with ID ${id} not found`);
         }
-        const { passwordHash: _, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        const user = {
+            id: userData.user.id,
+            email: userData.user.email,
+            name: userData.user.user_metadata.name || userData.user.email.split('@')[0],
+            phone: userData.user.user_metadata.phone || null,
+            role: userData.user.user_metadata.role || user_entity_1.UserRole.EMPLOYEE,
+            isActive: userData.user.user_metadata.isActive !== false,
+            createdAt: new Date(userData.user.created_at),
+            updatedAt: new Date(),
+            lastLoginAt: userData.user.user_metadata.lastLoginAt ? new Date(userData.user.user_metadata.lastLoginAt) : null,
+        };
+        return user;
     }
     async updateProfile(userId, updateProfileDto) {
-        const user = await this.prisma.renosUser.update({
-            where: { id: userId },
-            data: updateProfileDto,
+        const { data: userData, error: updateError } = await this.supabase.auth.admin.updateUserById(userId, {
+            user_metadata: {
+                ...updateProfileDto,
+                updatedAt: new Date().toISOString(),
+            },
         });
-        const { passwordHash: _, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        if (updateError || !userData.user) {
+            throw new common_1.NotFoundException('Failed to update user profile');
+        }
+        const user = {
+            id: userData.user.id,
+            email: userData.user.email,
+            name: userData.user.user_metadata.name || userData.user.email.split('@')[0],
+            phone: userData.user.user_metadata.phone || null,
+            role: userData.user.user_metadata.role || user_entity_1.UserRole.EMPLOYEE,
+            isActive: userData.user.user_metadata.isActive !== false,
+            createdAt: new Date(userData.user.created_at),
+            updatedAt: new Date(),
+            lastLoginAt: userData.user.user_metadata.lastLoginAt ? new Date(userData.user.user_metadata.lastLoginAt) : null,
+        };
+        return user;
     }
     async changePassword(userId, oldPassword, newPassword) {
-        const user = await this.prisma.renosUser.findUnique({
-            where: { id: userId },
-        });
-        if (!user) {
+        const { data: userData, error: userError } = await this.supabase.auth.admin.getUserById(userId);
+        if (userError || !userData.user) {
             throw new common_1.NotFoundException('User not found');
         }
-        const isPasswordValid = await bcrypt.compare(oldPassword, user.passwordHash);
-        if (!isPasswordValid) {
+        const { error: signInError } = await this.supabase.auth.signInWithPassword({
+            email: userData.user.email,
+            password: oldPassword,
+        });
+        if (signInError) {
             throw new common_1.UnauthorizedException('Current password is incorrect');
         }
-        const saltRounds = 10;
-        const passwordHash = await bcrypt.hash(newPassword, saltRounds);
-        await this.prisma.renosUser.update({
-            where: { id: userId },
-            data: { passwordHash },
+        const { error: updateError } = await this.supabase.auth.admin.updateUserById(userId, {
+            password: newPassword,
         });
+        if (updateError) {
+            throw new common_1.UnauthorizedException('Failed to change password');
+        }
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        jwt_1.JwtService,
+    __metadata("design:paramtypes", [jwt_1.JwtService,
         config_1.ConfigService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

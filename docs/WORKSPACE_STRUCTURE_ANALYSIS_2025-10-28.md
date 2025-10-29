@@ -1,4 +1,5 @@
 # 📊 Tekup Workspace Structure Analysis
+
 **Date:** October 28, 2025  
 **Context:** Post-TekupVault extraction analysis  
 **Purpose:** Optimize workspace organization and establish clear patterns
@@ -8,6 +9,7 @@
 ## 🎯 Executive Summary
 
 **Current State:**
+
 - ✅ TekupVault successfully extracted to standalone repo at `c:\Users\empir\tekup-vault`
 - ✅ Monorepo contains most Tekup projects (apps, services, MCP servers)
 - ⚠️ Inconsistent pattern: Some projects are standalone, most are in monorepo
@@ -22,13 +24,13 @@ The workspace currently uses a **hybrid approach** with most projects in the mon
 
 ### GitHub Organization: TekupDK
 
-| Repository | Type | Status | Size | Location |
-|------------|------|--------|------|----------|
-| **tekup** | Monorepo | Active | N/A | `c:\Users\empir\Tekup` |
-| **tekup-vault** | Standalone | Active | 1.05 GB | `c:\Users\empir\tekup-vault` |
-| **tekup-secrets** | Standalone | Private | N/A | `c:\Users\empir\Tekup\tekup-secrets` (nested) |
-| **tekup-mcp-servers** | Standalone | Private | N/A | `c:\Users\empir\Tekup\tekup-mcp-servers` (nested) |
-| **tekup-workspace-docs** | Standalone | Public | N/A | Not locally cloned |
+| Repository               | Type       | Status  | Size    | Location                                          |
+| ------------------------ | ---------- | ------- | ------- | ------------------------------------------------- |
+| **tekup**                | Monorepo   | Active  | N/A     | `c:\Users\empir\Tekup`                            |
+| **tekup-vault**          | Standalone | Active  | 1.05 GB | `c:\Users\empir\tekup-vault`                      |
+| **tekup-secrets**        | Standalone | Private | N/A     | `c:\Users\empir\Tekup\tekup-secrets` (nested)     |
+| **tekup-mcp-servers**    | Standalone | Private | N/A     | `c:\Users\empir\Tekup\tekup-mcp-servers` (nested) |
+| **tekup-workspace-docs** | Standalone | Public  | N/A     | Not locally cloned                                |
 
 ### Local Workspace: `c:\Users\empir\`
 
@@ -66,20 +68,24 @@ c:\Users\empir\
 ### 1. Monorepo Contents (TekupDK/tekup)
 
 **Production Apps:**
+
 - `tekup-billy` - MCP server for Billy.dk accounting API (TypeScript, Node.js)
 - `tekup-database` - Database schemas and migrations (PostgreSQL, Supabase)
 - ~~`tekup-vault`~~ - **REMOVED** (now standalone)
 
 **Application Categories:**
+
 - `apps/rendetalje/` - Complete cleaning service app (Backend NestJS, Frontend Next.js, Mobile Expo)
 - `apps/time-tracker/` - Time tracking application (Next.js)
 - `apps/web/tekup-cloud-dashboard/` - Cloud management dashboard
 
 **Backend Services:**
+
 - `services/tekup-ai/` - AI service monorepo
 - `services/tekup-gmail-services/` - Gmail integration services
 
 **Infrastructure:**
+
 - `archive/` - Legacy code and quarantined projects
 - `docs/` - Workspace documentation
 - `scripts/` - Automation scripts (PowerShell, Bash)
@@ -87,6 +93,7 @@ c:\Users\empir\
 ### 2. Nested Standalone Repositories
 
 **tekup-mcp-servers/** (6 packages):
+
 - `autonomous-browser-tester`
 - `base-mcp-server`
 - `code-intelligence-mcp`
@@ -95,6 +102,7 @@ c:\Users\empir\
 - `performance-monitor`
 
 **tekup-secrets/**:
+
 - Encrypted with `git-crypt`
 - Contains credentials, API keys, environment configs
 - Separate repo for security (access control)
@@ -102,6 +110,7 @@ c:\Users\empir\
 ### 3. Fully External Standalone
 
 **tekup-vault/** (`c:\Users\empir\tekup-vault`):
+
 - Central knowledge layer for Tekup Portfolio
 - 1.05 GB of data (docs, embeddings, Supabase functions)
 - Separate repo for independent deployment and access
@@ -112,11 +121,11 @@ c:\Users\empir\
 
 ### Current Hybrid Approach
 
-| Pattern | Projects | Pros | Cons |
-|---------|----------|------|------|
-| **Monorepo** | tekup-billy, tekup-database, rendetalje, time-tracker, cloud-dashboard, tekup-ai, gmail-services | Single clone, unified versioning, easy cross-project changes | Large repo size, slower Git operations, complexity |
-| **Nested Standalone** | tekup-mcp-servers, tekup-secrets | Independent versioning, separate access control | Git submodule complexity, nested .git confusion |
-| **Fully Standalone** | tekup-vault | Complete independence, clean deployment, focused development | Separate cloning, workspace management |
+| Pattern               | Projects                                                                                         | Pros                                                         | Cons                                               |
+| --------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------- |
+| **Monorepo**          | tekup-billy, tekup-database, rendetalje, time-tracker, cloud-dashboard, tekup-ai, gmail-services | Single clone, unified versioning, easy cross-project changes | Large repo size, slower Git operations, complexity |
+| **Nested Standalone** | tekup-mcp-servers, tekup-secrets                                                                 | Independent versioning, separate access control              | Git submodule complexity, nested .git confusion    |
+| **Fully Standalone**  | tekup-vault                                                                                      | Complete independence, clean deployment, focused development | Separate cloning, workspace management             |
 
 ---
 
@@ -125,12 +134,14 @@ c:\Users\empir\
 ### Option A: **Keep Current Hybrid (Recommended)**
 
 **Rationale:**
+
 - TekupVault needs independence (external API, separate deployment)
 - MCP servers benefit from shared packages (nested monorepo pattern)
 - Secrets require separate access control (security requirement)
 - Billy/database/apps work well in monorepo (shared context)
 
 **Actions Required:**
+
 1. ✅ **DONE:** Remove empty `apps/production/tekup-vault/` folder
 2. ✅ **DONE:** Update .gitignore to ignore old path
 3. ✅ **DONE:** Update documentation references to GitHub URLs
@@ -138,6 +149,7 @@ c:\Users\empir\
 5. 🔄 **TODO:** Create clear guidelines for when to use monorepo vs standalone
 
 **Structure:**
+
 ```
 c:\Users\empir\
 ├── Tekup/                     # Main monorepo (TekupDK/tekup)
@@ -150,12 +162,14 @@ c:\Users\empir\
 ```
 
 **Pros:**
+
 - ✅ Current structure already works this way
 - ✅ Minimal changes needed
 - ✅ Clear separation of concerns (deployment, security, development)
 - ✅ TekupVault can have independent release cycle
 
 **Cons:**
+
 - ⚠️ Need to manage multiple repo locations
 - ⚠️ VS Code workspace needs proper configuration
 - ⚠️ Cross-project references require GitHub URLs
@@ -165,11 +179,13 @@ c:\Users\empir\
 ### Option B: Extract More Projects to Standalone
 
 **Candidate Projects for Extraction:**
+
 - `tekup-billy` → Standalone (already production-ready MCP server)
 - `tekup-database` → Standalone (could be shared across projects)
 - `tekup-mcp-servers` → Keep as-is or move fully outside
 
 **Actions Required:**
+
 1. Extract `tekup-billy` to `c:\Users\empir\tekup-billy`
 2. Create `TekupDK/tekup-billy` GitHub repo
 3. Extract `tekup-database` to `c:\Users\empir\tekup-database`
@@ -177,11 +193,13 @@ c:\Users\empir\
 5. Update all cross-references and imports
 
 **Pros:**
+
 - ✅ Production services are independent
 - ✅ Easier deployment and versioning per service
 - ✅ Cleaner separation of concerns
 
 **Cons:**
+
 - ⚠️ Significant refactoring work
 - ⚠️ Need to manage 5+ separate repos
 - ⚠️ Shared code becomes more complex
@@ -192,16 +210,19 @@ c:\Users\empir\
 ### Option C: Consolidate Everything Back to Monorepo
 
 **Actions Required:**
+
 1. Move `tekup-vault` back to `apps/production/tekup-vault`
 2. Remove standalone GitHub repo
 3. Keep only `tekup-secrets` separate (security requirement)
 
 **Pros:**
+
 - ✅ Single location for all code
 - ✅ Easier workspace management
 - ✅ Simpler cross-project changes
 
 **Cons:**
+
 - ⚠️ Undoes recent extraction work
 - ⚠️ TekupVault loses deployment independence
 - ⚠️ Larger monorepo complexity
@@ -214,16 +235,19 @@ c:\Users\empir\
 ### Why This Works Best
 
 1. **TekupVault Independence**: The knowledge layer benefits from being standalone:
+
    - Separate deployment to Render.com
    - Independent API versioning
    - Can be shared with external teams without exposing entire codebase
 
 2. **Monorepo Benefits**: Billy, database, apps benefit from monorepo:
+
    - Shared context and easy cross-references
    - Unified development workflow
    - Faster iteration on related changes
 
 3. **Security Isolation**: tekup-secrets stays separate:
+
    - Access control via GitHub permissions
    - Git-crypt encryption independent of main repo
 
@@ -253,12 +277,14 @@ c:\Users\empir\
 ### Immediate Actions (Today)
 
 1. **Close processes locking old folder:**
+
    ```powershell
    # Check what's locking the folder
    Get-Process | Where-Object { $_.Path -like "*Tekup\apps\production\tekup-vault*" }
    ```
 
 2. **Remove empty folder:**
+
    ```powershell
    cd c:\Users\empir\Tekup\apps\production
    Remove-Item tekup-vault -Recurse -Force
@@ -287,11 +313,11 @@ c:\Users\empir\
 
 ## 📚 Reference Links
 
-- **TekupDK Organization:** https://github.com/TekupDK
-- **Main Monorepo:** https://github.com/TekupDK/tekup
-- **TekupVault Standalone:** https://github.com/TekupDK/tekup-vault
-- **MCP Servers:** https://github.com/TekupDK/tekup-mcp-servers
-- **Workspace Docs:** https://github.com/TekupDK/tekup-workspace-docs
+- **TekupDK Organization:** <https://github.com/TekupDK>
+- **Main Monorepo:** <https://github.com/TekupDK/tekup>
+- **TekupVault Standalone:** <https://github.com/TekupDK/tekup-vault>
+- **MCP Servers:** <https://github.com/TekupDK/tekup-mcp-servers>
+- **Workspace Docs:** <https://github.com/TekupDK/tekup-workspace-docs>
 
 ---
 

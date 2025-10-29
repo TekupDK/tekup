@@ -9,7 +9,6 @@ export declare class User {
     email: string;
     name: string;
     phone?: string;
-    passwordHash: string;
     role: UserRole;
     isActive: boolean;
     lastLoginAt?: Date;

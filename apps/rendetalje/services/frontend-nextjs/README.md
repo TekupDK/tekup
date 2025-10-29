@@ -34,7 +34,7 @@ Next.js 15 frontend for RendetaljeOS - Operations Management System for Rendetal
    ```bash
    cp .env.example .env.local
    ```
-   
+
    Update the environment variables with your Supabase credentials.
 
 3. **Run the development server:**
@@ -68,22 +68,26 @@ src/
 ## Dashboard Features
 
 ### KPI Cards
+
 - Total Revenue with month-over-month change
 - Jobs Completed with performance metrics
 - Team Utilization tracking
 - Customer Satisfaction scores
 
 ### Revenue Chart
+
 - Interactive line/bar charts
 - Multiple time periods (7d, 30d, 90d)
 - Revenue and job count correlation
 
 ### Team Map
+
 - Real-time team member locations
 - Status indicators (available, busy, break, offline)
 - Individual team member details
 
 ### Notification Center
+
 - Real-time notifications
 - Mark as read functionality
 - Different notification types (info, success, warning, error)
@@ -91,6 +95,7 @@ src/
 ## Authentication
 
 The app uses Supabase Auth with the following features:
+
 - Email/password authentication
 - Session management
 - Role-based access control
@@ -99,6 +104,7 @@ The app uses Supabase Auth with the following features:
 ## API Integration
 
 The frontend communicates with the NestJS backend through a centralized API client:
+
 - Automatic token management
 - Error handling
 - Type-safe requests

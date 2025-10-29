@@ -1,4 +1,5 @@
-# TekupVault GitHub Sync Expansion Report
+﻿# TekupVault GitHub Sync Expansion Report
+
 **Dato:** 18. oktober 2025  
 **Status:** ✅ COMPLETED  
 **Commit:** `f3bf115`
@@ -12,6 +13,7 @@ TekupVault er blevet opdateret til at synkronisere **14 aktive Tekup Portfolio r
 ## 🔄 Før vs. Efter
 
 ### Før (4 repositories)
+
 ```typescript
 { owner: 'JonasAbde', repo: 'renos-backend' }
 { owner: 'JonasAbde', repo: 'renos-frontend' }
@@ -20,9 +22,11 @@ TekupVault er blevet opdateret til at synkronisere **14 aktive Tekup Portfolio r
 ```
 
 ### Efter (14 repositories)
+
 Organiseret i **3 prioriteringslag**:
 
 #### 🎯 **Tier 1: Core Production Systems** (4 repos)
+
 | Repository | Beskrivelse | Seneste Push |
 |------------|-------------|--------------|
 | `Tekup-Billy` | Billy.dk MCP Server - HTTP REST API for AI agents | 2025-10-18 |
@@ -31,12 +35,14 @@ Organiseret i **3 prioriteringslag**:
 | `TekupVault` | Central Knowledge Layer (self-indexing) | 2025-10-17 |
 
 #### 📚 **Tier 2: Documentation & Configuration** (2 repos)
+
 | Repository | Beskrivelse | Seneste Push |
 |------------|-------------|--------------|
 | `tekup-unified-docs` | Unified Documentation across all Tekup projects | 2025-10-17 |
 | `tekup-ai-assistant` | AI Assistant Integration - docs, configs & guides | 2025-10-16 |
 
 #### 🚧 **Tier 3: Active Development** (8 repos)
+
 | Repository | Beskrivelse | Seneste Push |
 |------------|-------------|--------------|
 | `tekup-cloud-dashboard` | Cloud Dashboard (Vue/React) | 2025-10-16 |
@@ -53,7 +59,9 @@ Organiseret i **3 prioriteringslag**:
 ## 🎯 Hvad betyder dette?
 
 ### For AI Semantic Search
+
 TekupVault kan nu svare på spørgsmål om:
+
 - ✅ **Billy.dk integration** - MCP server, HTTP endpoints, tool calls
 - ✅ **RenOS arkitektur** - Backend API, frontend components, automation flows
 - ✅ **Tekup monorepo struktur** - 30+ apps, 18+ packages, pnpm workspaces
@@ -63,6 +71,7 @@ TekupVault kan nu svare på spørgsmål om:
 - ✅ **Educational projects** - Python AI assistants, Jupyter notebooks
 
 ### Estimeret Data Volume
+
 | Metric | Værdi |
 |--------|-------|
 | Total repositories | 14 |
@@ -77,16 +86,19 @@ TekupVault kan nu svare på spørgsmål om:
 ## 🔧 Tekniske Detaljer
 
 ### Konfigurationsfil
+
 **Location:** `packages/vault-core/src/config.ts`  
 **Variable:** `GITHUB_REPOS`  
 **Type:** `Array<{ owner: string; repo: string }>`
 
 ### Sync Frekvens
+
 - **Scheduled:** Hver 6. time (via `vault-worker`)
 - **Batch size:** 10 filer ad gangen
 - **Rate limit protection:** Ja (Octokit built-in + exponential backoff)
 
 ### Filtrering
+
 **Binære filer ekskluderet:**
 ```typescript
 BINARY_FILE_EXTENSIONS = [
@@ -100,6 +112,7 @@ BINARY_FILE_EXTENSIONS = [
 ```
 
 **Inkluderede filtyper:**
+
 - `.ts`, `.tsx`, `.js`, `.jsx` (TypeScript/JavaScript)
 - `.py`, `.ipynb` (Python)
 - `.md`, `.mdx` (Markdown dokumentation)
@@ -113,6 +126,7 @@ BINARY_FILE_EXTENSIONS = [
 ## 📈 Næste Skridt
 
 ### 1. Første Sync (Manual Trigger)
+
 ```bash
 cd c:\Users\empir\TekupVault
 pnpm dev:worker
@@ -124,6 +138,7 @@ curl -X POST http://localhost:3000/api/sync \
 ```
 
 ### 2. Monitorer Sync Status
+
 ```bash
 # Via API
 curl http://localhost:3000/api/sync-status
@@ -134,6 +149,7 @@ curl http://localhost:3000/api/sync-status
 ```
 
 ### 3. Test Semantic Search
+
 ```bash
 curl -X POST http://localhost:3000/api/search \
   -H "Content-Type: application/json" \
@@ -149,16 +165,17 @@ curl -X POST http://localhost:3000/api/search \
 ## 🚀 TekupDK Organization
 
 **Status:** 🆕 Nyoprettet, men tom  
-**URL:** https://github.com/TekupDK
+**URL:** <https://github.com/TekupDK>
 
 ### Migration Plan (Future)
+
 Når TekupDK organisation er klar til brug:
 
 1. **Transfer repositories:**
    ```bash
    # Via GitHub CLI
-   gh repo transfer JonasAbde/Tekup-Billy TekupDK
-   gh repo transfer JonasAbde/TekupVault TekupDK
+   gh repo transfer TekupDK/Tekup-Billy TekupDK
+   gh repo transfer TekupDK/TekupVault TekupDK
    # ... (repeat for all repos)
    ```
 
@@ -179,13 +196,17 @@ Når TekupDK organisation er klar til brug:
 ## 🔐 Security & Access
 
 ### Private Repositories
+
 **13 af 14 repositories er private**  
+
 - Kræver GitHub Personal Access Token med `repo` scope
 - Token gemt i `.env` som `GITHUB_TOKEN`
 - Token **må IKKE** committes til git
 
 ### Public Repositories
+
 2 repositories er public:
+
 - `rendetalje-os` - Professional cleaning management system
 - `Jarvis-lite` - Educational AI assistant project
 
@@ -194,11 +215,12 @@ Når TekupDK organisation er klar til brug:
 ## 📊 Database Schema
 
 ### vault_documents
+
 ```sql
 CREATE TABLE vault_documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   source TEXT NOT NULL,           -- 'github'
-  repository TEXT NOT NULL,       -- 'JonasAbde/Tekup-Billy'
+  repository TEXT NOT NULL,       -- 'TekupDK/Tekup-Billy'
   path TEXT NOT NULL,             -- 'src/index.ts'
   content TEXT NOT NULL,          -- File content
   sha TEXT,                       -- Git commit SHA
@@ -210,6 +232,7 @@ CREATE TABLE vault_documents (
 ```
 
 ### vault_embeddings
+
 ```sql
 CREATE TABLE vault_embeddings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -224,11 +247,12 @@ WITH (lists = 100);
 ```
 
 ### vault_sync_status
+
 ```sql
 CREATE TABLE vault_sync_status (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   source TEXT NOT NULL,           -- 'github'
-  repository TEXT NOT NULL,       -- 'JonasAbde/Tekup-Billy'
+  repository TEXT NOT NULL,       -- 'TekupDK/Tekup-Billy'
   status TEXT NOT NULL,           -- 'success' | 'in_progress' | 'error'
   last_sync_at TIMESTAMPTZ,
   error_message TEXT,
@@ -255,17 +279,21 @@ CREATE TABLE vault_sync_status (
 ## 📝 Changelog
 
 ### 2025-10-18 - Commit f3bf115
+
 **Added:**
+
 - 10 nye repositories til sync konfiguration
 - Prioriteringslag (Tier 1/2/3) for klarhed
 - Comments med push dates for hver repository
 - Self-indexing: TekupVault nu indekserer sig selv
 
 **Changed:**
+
 - `GITHUB_REPOS` array fra 4 til 14 repositories
 - Organiseret efter aktivitet og prioritet
 
 **Technical:**
+
 - Build vault-core package (TypeScript compilation successful)
 - No breaking changes - backward compatible
 
@@ -277,8 +305,8 @@ CREATE TABLE vault_sync_status (
 - **API Documentation:** [docs/API_DOCS.md](./docs/API_DOCS.md)
 - **Deployment Guide:** [docs/DEPLOYMENT_READY.md](./docs/DEPLOYMENT_READY.md)
 - **MCP Integration:** [CURSOR_MCP_SETUP_COMPLETE.md](./CURSOR_MCP_SETUP_COMPLETE.md)
-- **GitHub JonasAbde:** https://github.com/JonasAbde
-- **GitHub TekupDK:** https://github.com/TekupDK
+- **GitHub JonasAbde:** <https://github.com/JonasAbde>
+- **GitHub TekupDK:** <https://github.com/TekupDK>
 
 ---
 

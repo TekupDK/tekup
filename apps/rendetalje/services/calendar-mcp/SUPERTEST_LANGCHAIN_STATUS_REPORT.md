@@ -8,6 +8,7 @@
 ## ✅ HVAD ER IMPLEMENTERET
 
 ### **1. Supertest - API Testing** ✅
+
 - ✅ `supertest` og `@types/supertest` installeret
 - ✅ Test struktur oprettet: `tests/integration/`, `tests/unit/`, `tests/e2e/`
 - ✅ Health check test suite (`tests/integration/health.test.ts`)
@@ -16,6 +17,7 @@
 - ✅ Test runner script (`scripts/run-tests.ps1`)
 
 ### **2. LangChain - AI Framework** ✅
+
 - ✅ `langchain` og `@langchain/openai` installeret
 - ✅ `LangChainService.ts` oprettet med:
   - Simplified implementation (Node 18 compatible)
@@ -30,6 +32,7 @@
 ## ❌ BLOCKING ISSUE: MYSTERY AUTHENTICATION ERROR
 
 ### **Problem Description**
+
 Alle API tests fejler med `"Unauthorized: Invalid API key"` fejl, **MEN**:
 
 1. ✅ Authentication middleware er **FJERNET** fra koden
@@ -40,6 +43,7 @@ Alle API tests fejler med `"Unauthorized: Invalid API key"` fejl, **MEN**:
 ### **Evidence**
 
 #### **1. Container Test (SUCCESS)** ✅
+
 ```bash
 $ docker exec renos-calendar-mcp-mcp-server-1 curl localhost:3001/api/v1/tools/validate_booking_date -X POST -H "Content-Type: application/json" -d '{"date":"2025-10-21",...}'
 
@@ -48,6 +52,7 @@ Response:
 ```
 
 #### **2. Host Test (FAIL)** ❌
+
 ```powershell
 $ Invoke-WebRequest -Uri "http://localhost:3001/health" -Method GET
 
@@ -56,6 +61,7 @@ Response:
 ```
 
 #### **3. Code Verification** ✅
+
 ```bash
 $ docker exec renos-calendar-mcp-mcp-server-1 grep -n "Unauthorized" /app/dist/http-server.js
 
@@ -76,6 +82,7 @@ Response: (no matches)
 ### **Possible Causes**
 
 #### **Ruled Out:**
+
 - ❌ Authentication middleware in code (verified removed)
 - ❌ Docker image caching (pruned and rebuilt)
 - ❌ Nginx adding authentication (checked nginx.conf, no auth)
@@ -83,6 +90,7 @@ Response: (no matches)
 - ❌ Container logs (no authentication errors logged)
 
 #### **Possible:**
+
 - ⚠️ **Windows networking layer** adding proxy/authentication
 - ⚠️ **Windows Defender / Firewall** intercepting requests
 - ⚠️ **Corporate proxy** or **VPN** adding headers
@@ -94,6 +102,7 @@ Response: (no matches)
 ## 🎯 CURRENT STATUS
 
 ### **Test Results**
+
 ```
 Test Suites: 2 failed, 1 passed, 3 total
 Tests:       16 failed, 3 passed, 19 total
@@ -107,6 +116,7 @@ Passing Tests:
 ```
 
 ### **Docker Status**
+
 ```
 ✅ All containers running and healthy
 ✅ MCP server responding on port 3001 INTERNALLY
@@ -114,6 +124,7 @@ Passing Tests:
 ```
 
 ### **Code Status**
+
 ```
 ✅ TypeScript compiles without errors
 ✅ LangChain service implemented
@@ -158,12 +169,14 @@ Passing Tests:
 ## 🔍 NEXT DEBUGGING STEPS
 
 ### **Option 1: Bypass Port Mapping**
+
 Run tests INSIDE Docker container:
 ```bash
 docker exec renos-calendar-mcp-mcp-server-1 npm test
 ```
 
 ### **Option 2: Check Windows Networking**
+
 ```powershell
 # Check for proxy
 netsh winhttp show proxy
@@ -176,6 +189,7 @@ cat C:\Windows\System32\drivers\etc\hosts | Select-String "localhost"
 ```
 
 ### **Option 3: Use Different Port**
+
 Change Docker port mapping to test if port 3001 specifically has issues:
 ```yaml
 ports:
@@ -183,12 +197,14 @@ ports:
 ```
 
 ### **Option 4: Test with cURL Binary**
+
 ```bash
 # Download actual curl.exe (not PowerShell alias)
 curl.exe -v http://localhost:3001/health
 ```
 
 ### **Option 5: Disable Authentication Temporarily**
+
 Update tests to work WITH authentication (as workaround):
 ```typescript
 test('should validate with API key', async () => {
@@ -204,6 +220,7 @@ test('should validate with API key', async () => {
 ## 📈 BUSINESS IMPACT
 
 ### **Currently Working:**
+
 - ✅ MCP server functionality (verified internally)
 - ✅ All 5 core tools (validate, conflicts, invoice, overtime, customer)
 - ✅ Docker deployment
@@ -211,11 +228,13 @@ test('should validate with API key', async () => {
 - ✅ Chatbot interface
 
 ### **Not Working:**
+
 - ❌ Automated API testing from host
 - ❌ CI/CD integration (would fail same way)
 - ❌ External API calls (same port mapping issue)
 
 ### **Workarounds:**
+
 1. Run tests inside Docker container
 2. Test via browser/Postman (may work differently)
 3. Deploy to production and test there (different network)
@@ -225,16 +244,19 @@ test('should validate with API key', async () => {
 ## 💡 RECOMMENDATIONS
 
 ### **Immediate (TODAY):**
+
 1. ⏳ Test Option 3 (different port)
 2. ⏳ Test Option 4 (real curl)
 3. ⏳ Test Option 1 (tests in container)
 
 ### **Short-term (This Week):**
+
 1. ⏳ Deploy to Render.com (bypasses Windows networking)
 2. ⏳ Test from Linux environment (WSL or VM)
 3. ⏳ Investigate Windows Defender / corporate proxy
 
 ### **Long-term:**
+
 1. ⏳ Move development to Linux/Mac
 2. ⏳ Use WSL2 for Docker instead of Docker Desktop
 3. ⏳ Set up CI/CD testing on Linux runners
@@ -258,6 +280,7 @@ Blocker: Windows port forwarding issue
 ## 📚 FILES CREATED/MODIFIED
 
 ### **New Files:**
+
 - `tests/integration/health.test.ts`
 - `tests/integration/mcp-tools.test.ts`
 - `chatbot/src/services/LangChainService.ts`
@@ -267,6 +290,7 @@ Blocker: Windows port forwarding issue
 - `SUPERTEST_LANGCHAIN_STATUS_REPORT.md` (this file)
 
 ### **Modified Files:**
+
 - `package.json` (added test scripts)
 - `chatbot/package.json` (added LangChain)
 - `chatbot/src/components/ChatInterface.tsx` (LangChain integration)
@@ -279,6 +303,7 @@ Blocker: Windows port forwarding issue
 **Status**: Klar til at brugeren beslutter næste skridt
 
 **Options**:
+
 1. Continue debugging (Options 1-5 above)
 2. Accept workaround (tests in container)
 3. Deploy and test in production
@@ -290,4 +315,3 @@ Blocker: Windows port forwarding issue
 
 *Generated by AI Assistant*  
 *Date: 21. Oktober 2025, 21:50 CET*
-

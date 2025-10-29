@@ -5,18 +5,21 @@
 Du har nu et **produktionsklar monitoring system** til Rendetalje med:
 
 ### 1. **Error Tracking (Sentry)**
+
 - ✅ Backend: Automatic error catching med sanitization
 - ✅ Frontend: Client, server og edge runtime tracking
 - ✅ Session Replay: Optag bruger-sessions ved fejl
 - ✅ Performance Monitoring: Transaction tracing
 
 ### 2. **Centralized Logging (Winston + Supabase)**
+
 - ✅ Strukturerede logs i PostgreSQL
 - ✅ Full-text search på logs
 - ✅ Automatisk cleanup (30-dage retention)
 - ✅ User context tracking
 
 ### 3. **Uptime Monitoring (UptimeRobot)**
+
 - ✅ Health check endpoint implementeret
 - ✅ 5-minutters intervaller
 - ✅ Email alerts ved downtime
@@ -26,6 +29,7 @@ Du har nu et **produktionsklar monitoring system** til Rendetalje med:
 ## 📁 Filer Du Skal Kende
 
 ### **Backend Files:**
+
 ```
 backend-nestjs/
 ├── src/
@@ -40,6 +44,7 @@ backend-nestjs/
 ```
 
 ### **Frontend Files:**
+
 ```
 frontend-nextjs/
 ├── sentry.client.config.ts                # ✅ Browser tracking
@@ -51,6 +56,7 @@ frontend-nextjs/
 ```
 
 ### **Database:**
+
 ```
 database/
 └── migrations/
@@ -58,6 +64,7 @@ database/
 ```
 
 ### **Documentation:**
+
 ```
 services/
 ├── DEPLOYMENT_CHECKLIST.md                # 📋 Din step-by-step guide
@@ -71,15 +78,19 @@ services/
 ## 🚀 Næste Skridt (BRUGER SKAL GØRE)
 
 ### **1. Få Sentry DSN Nøgler** (5 min)
-Gå til https://sentry.io → Opret konto → Opret to projekter → Kopiér DSN
+
+Gå til <https://sentry.io> → Opret konto → Opret to projekter → Kopiér DSN
 
 ### **2. Deploy Database Migration** (3 min)
+
 Supabase SQL Editor → Paste `004_application_logs.sql` → Run
 
 ### **3. Tilføj Environment Variables** (5 min)
+
 Render.com → Environment tab → Tilføj SENTRY_DSN mv.
 
 ### **4. Deploy til Production** (3 min)
+
 ```bash
 git add .
 git commit -m "feat: Add monitoring system"
@@ -87,7 +98,8 @@ git push origin main
 ```
 
 ### **5. Setup UptimeRobot** (5 min)
-https://uptimerobot.com → Add monitors for backend + frontend
+
+<https://uptimerobot.com> → Add monitors for backend + frontend
 
 **📖 Følg `DEPLOYMENT_CHECKLIST.md` for detaljer!**
 
@@ -96,6 +108,7 @@ https://uptimerobot.com → Add monitors for backend + frontend
 ## 🧪 Test Det Nu (Lokalt)
 
 ### **Test Backend Sentry:**
+
 ```powershell
 # 1. Sæt miljøvariable
 $env:SENTRY_DSN="<få-fra-sentry.io>"
@@ -109,6 +122,7 @@ curl http://localhost:3000/test-sentry
 ```
 
 ### **Test Frontend Sentry:**
+
 ```powershell
 # 1. Opret .env.local
 cd apps/rendetalje/services/frontend-nextjs
@@ -124,14 +138,16 @@ npm run start
 ## 📊 Analytics & Dashboards
 
 ### **Sentry Dashboard:**
-- **URL**: https://sentry.io/organizations/[din-org]/issues/
-- **Funktioner**: 
+
+- **URL**: <https://sentry.io/organizations/[din-org]/issues/>
+- **Funktioner**:
   - Real-time error feed
   - Stack traces med source maps
   - Session replays ved fejl
   - Performance metrics
 
 ### **Supabase Logs:**
+
 ```sql
 -- Query logs:
 SELECT * FROM application_logs 
@@ -147,7 +163,8 @@ SELECT * FROM recent_errors;
 ```
 
 ### **UptimeRobot Dashboard:**
-- **URL**: https://uptimerobot.com/dashboard
+
+- **URL**: <https://uptimerobot.com/dashboard>
 - **Funktioner**:
   - Uptime percentage (målsætning: 99.9%)
   - Response time graphs
@@ -165,6 +182,7 @@ SELECT * FROM recent_errors;
 | **Total** | | **$0/måned** | |
 
 ### **Når Du Skal Skalere:**
+
 - **Sentry Team**: $26/måned (50,000 errors, 100GB replays)
 - **UptimeRobot Pro**: $7/måned (1-min intervals, 50 monitors)
 
@@ -173,6 +191,7 @@ SELECT * FROM recent_errors;
 ## 🎓 Hvordan Systemet Virker
 
 ### **1. Error Flow (Backend):**
+
 ```
 Request → NestJS Controller
   ↓ (error thrown)
@@ -186,6 +205,7 @@ Email alert hvis kritisk
 ```
 
 ### **2. Logging Flow:**
+
 ```
 Logger.error() called
   ↓
@@ -199,6 +219,7 @@ Query via SQL or Supabase dashboard
 ```
 
 ### **3. Frontend Error Flow:**
+
 ```
 React Component throws error
   ↓
@@ -216,18 +237,21 @@ Fallback UI shown to user
 ## 🔍 Eksempel Use Cases
 
 ### **Scenario 1: User Rapporterer Bug**
+
 1. User siger: "Jeg kan ikke oprette job"
 2. Du går til **Sentry** → søger på user email
 3. Ser stack trace → finder fejl i `jobs.controller.ts` linje 45
 4. Fix fejl → deploy → verificér i Sentry at fejlen er væk
 
 ### **Scenario 2: Backend Er Langsom**
+
 1. **UptimeRobot** sender email: "Response time > 3000ms"
 2. Du går til **Sentry** → Performance tab
 3. Ser at database query tager 2.5 sekunder
 4. Tilføj index → response time falder til 200ms
 
 ### **Scenario 3: Database Error**
+
 1. **Sentry** fanger: "relation 'customers' does not exist"
 2. Du går til **Supabase** → SQL Editor
 3. Kører migration igen
@@ -280,12 +304,14 @@ Efter deployment, verificér:
 ## 🎉 Hvad Du Har Opnået
 
 ### **Fra:**
+
 ❌ Ingen error tracking
 ❌ Logs spredt over Render og Supabase
 ❌ Ingen alerts ved downtime
 ❌ Manuelt troubleshooting
 
 ### **Til:**
+
 ✅ Automatic error catching og reporting
 ✅ Centralized logging med SQL queries
 ✅ Uptime monitoring med email alerts
@@ -294,7 +320,7 @@ Efter deployment, verificér:
 
 ---
 
-## 🚀 Ready to Deploy!
+## 🚀 Ready to Deploy
 
 **Næste Handling:** Åbn `DEPLOYMENT_CHECKLIST.md` og følg trin-for-trin guiden.
 

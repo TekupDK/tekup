@@ -1,73 +1,1 @@
-# 🔍 Deployment Troubleshooting Status\n\n\n\n## Current Situation\n\n\n\n**Time:** ~01:45 AM (2025-10-03)\n\n
-**Status:**
-\n\n- ✅ Health endpoint: Working\n\n- ✅ /api/dashboard/leads: Working (4 leads found)\n\n- ❌ /api/leads/process: **Still returning 500 error**\n\n\n\n## What We Fixed\n\n\n\n1. ✅ Identified root cause: `ERR_OSSL_UNSUPPORTED` (GOOGLE_PRIVATE_KEY format issue)\n\n2. ✅ Copied correct key format from local .env (1730 chars)\n\n3. ✅ User updated GOOGLE_PRIVATE_KEY on Render\n\n4. ⚠️  **Deployment status unclear** - may need manual trigger\n\n\n\n## Possible Issues\n\n\n\n### Issue 1: Deployment Not Triggered\n\n\n\n**Symptom:** Error persists after environment variable update\n\n
-**Cause:** Clicking "Save" on environment variables does NOT automatically redeploy. Service needs manual restart or deploy.\n\n
-**Solution:**
-\n\n```\n\n1. Go to: https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg\n\n2. Click "Manual Deploy" button (top right)\n\n3. Select "Deploy latest commit"\n\n4. Wait 2-3 minutes\n\n```
-\n\n### Issue 2: Key Format Still Wrong\n\n\n\n**Symptom:** Same `ERR_OSSL_UNSUPPORTED` error after deployment\n\n
-**Cause:**
-\n\n- Pasted key has `\\n` (double backslash) instead of `\n` (single)\n\n- Key was truncated during paste\n\n- Extra quotes or spaces added\n\n
-**Solution:**
-\n\n```powershell\n\n# Verify local key format\n\n$envContent = Get-Content ".env" -Raw\n\nif ($envContent -match 'GOOGLE_PRIVATE_KEY="(-----BEGIN.*?-----END PRIVATE KEY-----)"') {
-    $key = $matches[1]
-    Write-Host "Key preview (first 100 chars):"
-    Write-Host $key.Substring(0, 100)
-    
-    # Should show: -----BEGIN PRIVATE KEY-----\nMIIEvQIBAD...\n\n    # NOT: -----BEGIN PRIVATE KEY-----\\nMIIEvQIBAD...\n\n}\n\n```\n\n\n\n### Issue 3: Other Missing Environment Variables\n\n\n\n**Symptom:** Different error in logs after GOOGLE_PRIVATE_KEY fix\n\n
-**Cause:** Other required variables not set:\n\n\n\n- `GOOGLE_PROJECT_ID`\n\n- `GOOGLE_CLIENT_EMAIL`\n\n- `GOOGLE_IMPERSONATED_USER`\n\n- `GEMINI_KEY`\n\n
-**Solution:** Check Render environment variables match local `.env`\n\n\n\n## Next Steps\n\n\n\n### Step 1: Verify Deployment Happened\n\n\n\nCheck Render Events tab: <https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg/events>
-
-**Look for:**
-\n\n- Recent "Deploy succeeded" event (within last 5-10 min)\n\n- If no recent deploy: **Trigger manual deploy now**\n\n\n\n### Step 2: Check Latest Logs\n\n\n\nAfter deployment completes, check logs: <https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg/logs>
-
-**Look for:**
-\n\n- ✅ `"msg":"Assistant service is listening"` - Service started\n\n- ❌ `ERR_OSSL_UNSUPPORTED` - Key still wrong\n\n- ❌ Other errors - Different issue\n\n\n\n### Step 3: Compare Environment Variables\n\n\n\n**Required variables (check all are set):**
-\n\n```bash\n\n# Core\n\nDATABASE_URL=postgresql://...\n\nNODE_ENV=production
-PORT=3000
-\n\n# Google APIs\n\nGOOGLE_PROJECT_ID=renos-465008\n\nGOOGLE_CLIENT_EMAIL=renos@renos-465008.iam.gserviceaccount.com
-GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-GOOGLE_IMPERSONATED_USER=info@rendetalje.dk
-GOOGLE_CALENDAR_ID=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com
-\n\n# AI\n\nGEMINI_KEY=AIzaSy...\n\n\n\n# Other\n\nRUN_MODE=production\n\nDEFAULT_EMAIL_FROM=info@rendetalje.dk
-FRONTEND_URL=https://tekup-renos-frontend.onrender.com\n\n```
-\n\n### Step 4: Test Alternative Approach\n\n\n\nIf GOOGLE_PRIVATE_KEY continues to fail, try base64 encoding:
-\n\n```powershell\n\n# Encode key as base64\n\n$key = (Get-Content ".env" | Select-String "GOOGLE_PRIVATE_KEY=").ToString()\n\n$key = $key -replace 'GOOGLE_PRIVATE_KEY="(.*)"', '$1'
-$bytes = [System.Text.Encoding]::UTF8.GetBytes($key)
-$base64 = [Convert]::ToBase64String($bytes)
-Write-Host "Base64 key:"
-Write-Host $base64
-$base64 | Set-Clipboard\n\n```
-
-Then:
-\n\n1. Add new env var: `GOOGLE_PRIVATE_KEY_BASE64` = [paste]\n\n2. Update code to decode (requires code change + redeploy)\n\n\n\n## Quick Verification Commands\n\n\n\n```powershell\n\n# Test health (should work)\n\nInvoke-RestMethod https://tekup-renos.onrender.com/health\n\n\n\n# Test leads list (should work)\n\nInvoke-RestMethod https://tekup-renos.onrender.com/api/dashboard/leads\n\n\n\n# Test lead processing (currently fails)\n\n$body = @{emailBody="Test"} | ConvertTo-Json\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/leads/process" `
-  -Method Post -Body $body -ContentType "application/json"\n\n```
-\n\n## Decision Tree\n\n\n\n```\n\n500 Error on /api/leads/process?
-│
-├─ Check: Did you trigger Manual Deploy?
-│  │
-│  ├─ NO → Do it now, wait 3 min, retest
-│  │
-│  └─ YES → Check: When was last deploy?
-│            │
-│            ├─ > 10 min ago → Deployment succeeded
-│            │                 └─ Check logs for different error
-│            │
-│            └─ < 3 min ago → Still deploying
-│                             └─ Wait 2 more minutes
-│
-└─ After deployment succeeds, still 500?
-   └─ Check logs for error type:
-      │
-      ├─ Still "ERR_OSSL_UNSUPPORTED" → Key format still wrong
-      │                                   └─ Try base64 approach
-      │
-      ├─ Different error → Missing other env vars
-      │                    └─ Compare with local .env
-      │
-      └─ No errors in logs → Check route code
-                              └─ May need code fix\n\n```
-
----
-
-**Current Blocker:** Unclear if manual deployment was triggered after GOOGLE_PRIVATE_KEY update.\n\n
-**Immediate Action:** Confirm deployment status on Render dashboard.
+# 🔍 Deployment Troubleshooting Status\n\n\n\n## Current Situation\n\n\n\n**Time:** ~01:45 AM (2025-10-03)\n\n**Status:**\n\n- ✅ Health endpoint: Working\n\n- ✅ /api/dashboard/leads: Working (4 leads found)\n\n- ❌ /api/leads/process: **Still returning 500 error**\n\n\n\n## What We Fixed\n\n\n\n1. ✅ Identified root cause: `ERR_OSSL_UNSUPPORTED` (GOOGLE_PRIVATE_KEY format issue)\n\n2. ✅ Copied correct key format from local .env (1730 chars)\n\n3. ✅ User updated GOOGLE_PRIVATE_KEY on Render\n\n4. ⚠️  **Deployment status unclear** - may need manual trigger\n\n\n\n## Possible Issues\n\n\n\n### Issue 1: Deployment Not Triggered\n\n\n\n**Symptom:** Error persists after environment variable update\n\n**Cause:** Clicking "Save" on environment variables does NOT automatically redeploy. Service needs manual restart or deploy.\n\n**Solution:**\n\n```\n\n1. Go to: https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg\n\n2. Click "Manual Deploy" button (top right)\n\n3. Select "Deploy latest commit"\n\n4. Wait 2-3 minutes\n\n```\n\n### Issue 2: Key Format Still Wrong\n\n\n\n**Symptom:** Same `ERR_OSSL_UNSUPPORTED` error after deployment\n\n**Cause:**\n\n- Pasted key has `\\n` (double backslash) instead of `\n` (single)\n\n- Key was truncated during paste\n\n- Extra quotes or spaces added\n\n**Solution:**\n\n```powershell\n\n# Verify local key format\n\n$envContent = Get-Content ".env" -Raw\n\nif ($envContent -match 'GOOGLE_PRIVATE_KEY="(-----BEGIN.*?-----END PRIVATE KEY-----)"') {    $key = $matches[1]    Write-Host "Key preview (first 100 chars):"    Write-Host $key.Substring(0, 100)    # Should show: -----BEGIN PRIVATE KEY-----\nMIIEvQIBAD...\n\n    # NOT: -----BEGIN PRIVATE KEY-----\\nMIIEvQIBAD...\n\n}\n\n```\n\n\n\n### Issue 3: Other Missing Environment Variables\n\n\n\n**Symptom:** Different error in logs after GOOGLE_PRIVATE_KEY fix\n\n**Cause:** Other required variables not set:\n\n\n\n- `GOOGLE_PROJECT_ID`\n\n- `GOOGLE_CLIENT_EMAIL`\n\n- `GOOGLE_IMPERSONATED_USER`\n\n- `GEMINI_KEY`\n\n**Solution:** Check Render environment variables match local `.env`\n\n\n\n## Next Steps\n\n\n\n### Step 1: Verify Deployment Happened\n\n\n\nCheck Render Events tab: <https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg/events>**Look for:**\n\n- Recent "Deploy succeeded" event (within last 5-10 min)\n\n- If no recent deploy: **Trigger manual deploy now**\n\n\n\n### Step 2: Check Latest Logs\n\n\n\nAfter deployment completes, check logs: <https://dashboard.render.com/web/srv-d3dv61ffte5s73f1uccg/logs>**Look for:**\n\n- ✅ `"msg":"Assistant service is listening"` - Service started\n\n- ❌ `ERR_OSSL_UNSUPPORTED` - Key still wrong\n\n- ❌ Other errors - Different issue\n\n\n\n### Step 3: Compare Environment Variables\n\n\n\n**Required variables (check all are set):**\n\n```bash\n\n# Core\n\nDATABASE_URL=postgresql://...\n\nNODE_ENV=productionPORT=3000\n\n# Google APIs\n\nGOOGLE_PROJECT_ID=renos-465008\n\nGOOGLE_CLIENT_EMAIL=<renos@renos-465008.iam.gserviceaccount.com>GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"GOOGLE_IMPERSONATED_USER=<info@rendetalje.dk>GOOGLE_CALENDAR_ID=<c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com>\n\n# AI\n\nGEMINI_KEY=AIzaSy...\n\n\n\n# Other\n\nRUN_MODE=production\n\nDEFAULT_EMAIL_FROM=<info@rendetalje.dk>FRONTEND_URL=<https://tekup-renos-frontend.onrender.com>\n\n```\n\n### Step 4: Test Alternative Approach\n\n\n\nIf GOOGLE_PRIVATE_KEY continues to fail, try base64 encoding:\n\n```powershell\n\n# Encode key as base64\n\n$key = (Get-Content ".env" | Select-String "GOOGLE_PRIVATE_KEY=").ToString()\n\n$key = $key -replace 'GOOGLE_PRIVATE_KEY="(.*)"', '$1'$bytes = [System.Text.Encoding]::UTF8.GetBytes($key)$base64 = [Convert]::ToBase64String($bytes)Write-Host "Base64 key:"Write-Host $base64$base64 | Set-Clipboard\n\n```Then:\n\n1. Add new env var: `GOOGLE_PRIVATE_KEY_BASE64` = [paste]\n\n2. Update code to decode (requires code change + redeploy)\n\n\n\n## Quick Verification Commands\n\n\n\n```powershell\n\n# Test health (should work)\n\nInvoke-RestMethod https://tekup-renos.onrender.com/health\n\n\n\n# Test leads list (should work)\n\nInvoke-RestMethod https://tekup-renos.onrender.com/api/dashboard/leads\n\n\n\n# Test lead processing (currently fails)\n\n$body = @{emailBody="Test"} | ConvertTo-Json\n\nInvoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/leads/process" `  -Method Post -Body $body -ContentType "application/json"\n\n```\n\n## Decision Tree\n\n\n\n```\n\n500 Error on /api/leads/process?│├─ Check: Did you trigger Manual Deploy?│  ││  ├─ NO → Do it now, wait 3 min, retest│  ││  └─ YES → Check: When was last deploy?│            ││            ├─ > 10 min ago → Deployment succeeded│            │                 └─ Check logs for different error│            ││            └─ < 3 min ago → Still deploying│                             └─ Wait 2 more minutes│└─ After deployment succeeds, still 500?   └─ Check logs for error type:      │      ├─ Still "ERR_OSSL_UNSUPPORTED" → Key format still wrong      │                                   └─ Try base64 approach      │      ├─ Different error → Missing other env vars      │                    └─ Compare with local .env      │      └─ No errors in logs → Check route code                              └─ May need code fix\n\n```---**Current Blocker:** Unclear if manual deployment was triggered after GOOGLE_PRIVATE_KEY update.\n\n**Immediate Action:** Confirm deployment status on Render dashboard.

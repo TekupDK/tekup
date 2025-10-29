@@ -26,6 +26,7 @@
 ### Prerequisites
 
 #### Required Tools
+
 - [ ] **Node.js** >= 20.0.0 installed
   ```bash
   node --version  # Should be v20.x or higher
@@ -51,11 +52,13 @@
   ```
 
 #### Access Requirements
+
 - [ ] Access til **TekupDK GitHub organization**
 - [ ] Write permissions til Tekup monorepo
 - [ ] Access til **tekup-secrets** submodule
 
 #### Knowledge Requirements
+
 - [ ] Læst [TEKUP_MCP_SECURITY.md](./TEKUP_MCP_SECURITY.md) 🔴 KRITISK
 - [ ] Forståelse af [MCP Spec](https://spec.modelcontextprotocol.io/)
 - [ ] Basic TypeScript/Node.js kendskab
@@ -230,6 +233,7 @@ git log --all --full-history -S "43e7439bccb58a8a96dd57dd06dae10add009111"
 ```
 
 **If credentials found in git history:**
+
 - **STOP** and follow [TEKUP_MCP_SECURITY.md](./TEKUP_MCP_SECURITY.md) Section "Step 2.2: If Found in Git History"
 - Requires BFG Repo-Cleaner or git-filter-repo
 - Coordinate with team before force push!
@@ -1058,6 +1062,7 @@ Edit `C:\Users\empir\Tekup\.kilocode\mcp.json`:
 ```
 
 Restart Kilo Code and test:
+
 - "Search Tekup knowledge for best practices"
 - Should return placeholder MVP response
 
@@ -1070,6 +1075,7 @@ Restart Kilo Code and test:
 - [ ] Tested in IDE
 
 **Next Steps for Knowledge MCP:**
+
 1. Implement document scraping pipeline
 2. Setup Pinecone vector DB
 3. Implement OpenAI embeddings

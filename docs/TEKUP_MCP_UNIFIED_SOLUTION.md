@@ -3,7 +3,9 @@
 ## 🎯 Problem Løst: Single Source of Truth
 
 ### Problem Statement
+
 **BEFORE**: VS Code Copilot loadede MCP servere fra 4+ forskellige kilder:
+
 - Claude Desktop config (6 servere)
 - Cursor global (8 servere)
 - Windsurf (5 servere)
@@ -71,6 +73,7 @@
 Placeret i: `%USERPROFILE%\Tekup\tekup-mcp-servers\`
 
 **Custom servers**:
+
 1. **knowledge-mcp** - Semantic search i Tekup dokumentation
 2. **code-intelligence-mcp** - Code search og analyse
 3. **database-mcp** - Supabase integration
@@ -83,28 +86,33 @@ Placeret i: `%USERPROFILE%\Tekup\tekup-mcp-servers\`
 ## 🔧 Per-IDE Configuration Strategy
 
 ### VS Code / GitHub Copilot (Primary)
+
 **Config**: `%APPDATA%\Code\User\mcp.json`
 **Format**: `"servers"```key (unique to VS Code)
 **Discovery**: DISABLED
 **Servers**: 4 core servere (memory, sequential-thinking, filesystem, github)
 
 ### Claude Desktop (Documentation/Research)
+
 **Config**: `%APPDATA%\Claude\claude_desktop_config.json`
 **Format**: `"mcpServers"```key
 **Servers**: 6 servere (alle Tekup custom + web-scraper)
 **Use case**: Deep research, documentation writing
 
 ### Cursor (Legacy - til udfasning)
+
 **Config**: `%USERPROFILE%\.cursor\mcp.json`
 **Status**: ✅ Phase 2 Complete – Docker HTTP stack live
 **Servers**: 7 servere (inkl. tekup-billy, tekupvault HTTP)
 
 ### Windsurf (Legacy - til udfasning)
+
 **Config**: `%USERPROFILE%\.codeium\windsurf\mcp_config.json`
 **Status**: ✅ Phase 2 Complete – Docker HTTP stack live
 **Servers**: 5 servere
 
 ### Kilo Code CLI (Development)
+
 **Config**: `%USERPROFILE%\.kilocode\cli\mcp.json`
 **Format**: `"mcpServers"```key
 **Servers**: 4 servere (sync med VS Code)
@@ -127,9 +135,11 @@ Placeret i: `%USERPROFILE%\Tekup\tekup-mcp-servers\`
 ## 🐳 Docker Migration Plan (Phase 2)
 
 ### Goal
+
 **ALL** Tekup custom MCP servere kører i Docker containers.
 
 ### Architecture
+
 ```
 %USERPROFILE%\Tekup\tekup-mcp-servers\
 ├── docker-compose.yml          # Single source of truth
@@ -150,6 +160,7 @@ Placeret i: `%USERPROFILE%\Tekup\tekup-mcp-servers\`
 ```
 
 ### docker-compose.yml (Future)
+
 ```yaml
 version: '3.8'
 
@@ -182,6 +193,7 @@ services:
 ```
 
 ### VS Code Config (After Docker Migration)
+
 ```json
 {
   "servers": {
@@ -206,6 +218,7 @@ services:
 ```
 
 ### Benefits
+
 1. ✅ **Single command startup**: `docker-compose up -d`
 2. ✅ **No duplicate processes**: Docker manages lifecycle
 3. ✅ **Environment isolation**: Credentials in .env
@@ -215,6 +228,7 @@ services:
 ## 🔒 Security Improvements
 
 ### Environment Variables
+
 **ALL** credentials nu i Windows Environment Variables:
 
 ```powershell
@@ -229,11 +243,13 @@ $env:LOG_LEVEL
 ```
 
 ### Files to Update
+
 1. ❌ **REMOVE hardcoded GitHub PAT** fra Claude Desktop config
 2. ❌ **REMOVE hardcoded Supabase keys** fra configs
 3. ✅ **USE** environment variable references: `${VAR_NAME}`
 
 ### Filesystem Scope Reduction
+
 **BEFORE**: Claude Desktop + Windsurf havde adgang til `%USERPROFILE%```(HELE brugermappen!)
 
 **AFTER**: Kun `%USERPROFILE%\Tekup`
@@ -247,6 +263,7 @@ $env:LOG_LEVEL
 ## 📈 Migration Checklist
 
 ### Phase 1: Cleanup (Today) ✅
+
 - [x] Disable VS Code MCP discovery
 - [x] Document current state
 - [ ] Revoke exposed GitHub PAT token
@@ -256,6 +273,7 @@ $env:LOG_LEVEL
 - [ ] Reduce filesystem scope in Windsurf
 
 ### Phase 2: Docker Migration (This Week)
+
 - [ ] Create docker-compose.yml
 - [ ] Create Dockerfiles for each custom server
 - [ ] Test Docker setup locally
@@ -265,6 +283,7 @@ $env:LOG_LEVEL
 - [ ] Document Docker startup process
 
 ### Phase 3: Standardization (Next Week)
+
 - [ ] Decide: Keep or remove Cursor?
 - [ ] Decide: Keep or remove Windsurf?
 - [ ] Create Tekup MCP Standard Config template
@@ -273,6 +292,7 @@ $env:LOG_LEVEL
 - [ ] Update documentation
 
 ### Phase 4: Production Deployment (Future)
+
 - [ ] Deploy Docker containers to Render.com
 - [ ] Update configs with production URLs
 - [ ] Set up health monitoring
@@ -281,6 +301,7 @@ $env:LOG_LEVEL
 ## 🎯 Success Metrics
 
 ### Before (Yesterday)
+
 - ❌ 32 MCP Node.js processes running
 - ❌ 15-25 GB RAM usage
 - ❌ 8+ config files with inconsistent servers
@@ -288,6 +309,7 @@ $env:LOG_LEVEL
 - ❌ No single source of truth
 
 ### After (Today)
+
 - ✅ 2 MCP Node.js processes (VS Code only)
 - ✅ ~500 MB RAM usage
 - ✅ VS Code discovery disabled
@@ -295,6 +317,7 @@ $env:LOG_LEVEL
 - ⏳ GitHub PAT still needs revocation
 
 ### Target (After Docker Migration)
+
 - ✅ 4-5 Docker containers (managed by Docker)
 - ✅ <1 GB RAM total
 - ✅ ONE docker-compose.yml file
@@ -313,6 +336,7 @@ $env:LOG_LEVEL
 ## 📝 Next Actions
 
 ### IMMEDIATE (Now)
+
 ```powershell
 # 1. Restart VS Code to apply discovery disable
 # 2. Verify only 4 MCP tools show in Copilot
@@ -321,6 +345,7 @@ $env:LOG_LEVEL
 ```
 
 ### TODAY
+
 ```powershell
 # Update Claude Desktop config
 $claudeConfig = "%APPDATA%\Claude\claude_desktop_config.json"
@@ -333,6 +358,7 @@ $claudeConfig = "%APPDATA%\Claude\claude_desktop_config.json"
 ```
 
 ### THIS WEEK
+
 ```powershell
 # Start Docker migration
 cd %USERPROFILE%\Tekup\tekup-mcp-servers
@@ -361,12 +387,10 @@ pwsh -File Tekup/scripts/mcp-down.ps1  # stopper stacken
 ```
 
 HTTP endpoints (lokalt):
-- knowledge:        http://localhost:8051/mcp
-- code-intelligence: http://localhost:8052/mcp
-- database:         http://localhost:8053/mcp
+
+- knowledge:        <http://localhost:8051/mcp>
+- code-intelligence: <http://localhost:8052/mcp>
+- database:         <http://localhost:8053/mcp>
 
 Opdater IDE‑configs (Claude Desktop, VS Code, Cursor) til at bruge disse URLs og slå lokale npx‑servers fra.
-
-
-
 

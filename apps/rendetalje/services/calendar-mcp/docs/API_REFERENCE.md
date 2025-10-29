@@ -3,6 +3,7 @@
 Komplet dokumentation af alle 5 MCP tools.
 
 ## Table of Contents
+
 1. [validate_booking_date](#1-validate_booking_date)
 2. [check_booking_conflicts](#2-check_booking_conflicts)
 3. [auto_create_invoice](#3-auto_create_invoice)
@@ -159,7 +160,7 @@ Komplet dokumentation af alle 5 MCP tools.
 }
 ```
 
-### Eksempel: Dobbeltbooking detekteret!
+### Eksempel: Dobbeltbooking detekteret
 
 **Request**:
 ```json
@@ -339,7 +340,7 @@ Komplet dokumentation af alle 5 MCP tools.
 }
 ```
 
-### Eksempel: Overtids-alarm!
+### Eksempel: Overtids-alarm
 
 **Request**:
 ```json
@@ -499,7 +500,7 @@ Alle tools returnerer standardiseret fejl-format:
 }
 ```
 
-### Eksempel fejl:
+### Eksempel fejl
 
 ```json
 {
@@ -514,6 +515,7 @@ Alle tools returnerer standardiseret fejl-format:
 ## Rate Limiting
 
 HTTP API er rate limited til:
+
 - **100 requests per 15 minutter** per IP
 - Status 429 ved overskridelse
 
@@ -544,4 +546,3 @@ Når `confidence < 80%`, kræves manuel review:
 ---
 
 **Næste**: Se [INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md) for hvordan du integrerer med RenOS backend.
-

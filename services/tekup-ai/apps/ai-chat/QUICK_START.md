@@ -49,7 +49,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
 SUPABASE_SERVICE_KEY=eyJhbGc...
 ```
 
-**Get OpenAI Key:** https://platform.openai.com/api-keys  
+**Get OpenAI Key:** <https://platform.openai.com/api-keys>  
 **Get Supabase Keys:** Continue to Step 3 →
 
 ---
@@ -58,7 +58,7 @@ SUPABASE_SERVICE_KEY=eyJhbGc...
 
 ### A. Create Supabase Project
 
-1. Go to https://supabase.com
+1. Go to <https://supabase.com>
 2. Click "New Project"
 3. Name: `tekup-chat`
 4. Region: Frankfurt (closest to your servers)
@@ -93,7 +93,7 @@ Expected output:
 ○ Local:   http://localhost:3000
 ```
 
-**Open:** http://localhost:3000
+**Open:** <http://localhost:3000>
 
 ---
 
@@ -107,6 +107,7 @@ Hello! Who are you?
 ```
 
 **Expected:**
+
 - Response streams in real-time
 - Mentions "Tekup AI Assistant"
 - Takes 2-3 seconds
@@ -119,6 +120,7 @@ How do I create an invoice in Billy.dk?
 ```
 
 **Expected:**
+
 - Shows code example
 - Cites source file (e.g., "Tekup-Billy/src/tools/invoices.ts")
 - Copy button appears on code block
@@ -174,16 +176,19 @@ curl https://tekupvault.onrender.com/api/health
 ### Use It Daily! 🚀
 
 **Strategic Questions:**
+
 - "What should I work on today?"
 - "Should I delete [repo]?"
 - "Explain the TIER system"
 
 **Coding Help:**
+
 - "How do I [task] in [repo]?"
 - "Show me examples of [pattern]"
 - "Review this code: [paste]"
 
 **Learning:**
+
 - "Explain Tekup-Billy architecture"
 - "What's the tech stack?"
 - "Show me the database schema"
@@ -216,6 +221,7 @@ vercel
 ## Support
 
 **Questions?** Check:
+
 1. `README.md` (comprehensive guide)
 2. `TROUBLESHOOTING.md` (common issues)
 3. GitHub Issues (if open-sourced)

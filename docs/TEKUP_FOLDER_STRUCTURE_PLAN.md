@@ -46,6 +46,7 @@ c:\Users\empir\
 ### ✅ **PRODUCTION (3 mapper)**
 
 #### 1. **tekup-database** → `Tekup/production/tekup-database/`
+
 - **Version:** v1.4.0
 - **Status:** ✅ CRITICAL - Central database
 - **Seneste:** 22 Oct 2025 - All repos migrated
@@ -54,16 +55,18 @@ c:\Users\empir\
 - **Action:** FLYT til production/
 
 #### 2. **TekupVault** → `Tekup/production/tekup-vault/`
+
 - **Version:** v0.1.0
-- **Status:** ✅ LIVE - https://tekupvault.onrender.com
+- **Status:** ✅ LIVE - <https://tekupvault.onrender.com>
 - **Seneste:** 22 Oct 2025 - Database migrated
 - **Værdi:** €120,000
 - **Health:** 8.5/10
 - **Action:** FLYT til production/ + OMDØB til tekup-vault
 
 #### 3. **Tekup-Billy** → `Tekup/production/tekup-billy/`
+
 - **Version:** v1.4.3
-- **Status:** ✅ LIVE - https://tekup-billy.onrender.com
+- **Status:** ✅ LIVE - <https://tekup-billy.onrender.com>
 - **Seneste:** 22 Oct 2025 - Repo restructured
 - **Værdi:** €150,000
 - **Health:** 9.2/10
@@ -74,6 +77,7 @@ c:\Users\empir\
 ### 🟡 **DEVELOPMENT (4 mapper)**
 
 #### 4. **RendetaljeOS** → `Tekup/development/rendetalje-os/`
+
 - **Status:** 🟡 Monorepo migrated (16 Oct 2025)
 - **Seneste:** 16 Oct 2025 - 965 packages installed
 - **Værdi:** €180,000
@@ -81,6 +85,7 @@ c:\Users\empir\
 - **Action:** FLYT til development/ + OMDØB til rendetalje-os
 
 #### 5. **tekup-ai** → `Tekup/development/tekup-ai/`
+
 - **Status:** 🟡 Phase 1 complete
 - **Seneste:** 22 Oct 2025 - Database migrated
 - **Værdi:** €120,000
@@ -88,12 +93,14 @@ c:\Users\empir\
 - **Action:** FLYT til development/
 
 #### 6. **Tekup-Cloud** → `Tekup/development/tekup-cloud/`
+
 - **Status:** ✅ Docs hub + MCP server
 - **Seneste:** 22 Oct 2025 - 51 docs organized
 - **Health:** 8.5/10
 - **Action:** FLYT til development/ + OMDØB til tekup-cloud
 
 #### 7. **tekup-cloud-dashboard** → `Tekup/development/tekup-cloud-dashboard/`
+
 - **Status:** 🟡 Production-ready
 - **Seneste:** Oct 2025 - Real-time integration
 - **Health:** 6/10
@@ -104,18 +111,21 @@ c:\Users\empir\
 ### 🔧 **SERVICES (3 mapper)**
 
 #### 8. **tekup-gmail-services** → `Tekup/services/tekup-gmail-services/`
+
 - **Version:** v1.0.0
 - **Status:** ✅ Consolidated (22 Oct 2025)
 - **Health:** 9/10
 - **Action:** FLYT til services/
 
 #### 9. **tekup-chat** → `Tekup/services/tekup-chat/`
+
 - **Version:** v1.1.0
 - **Status:** ✅ Active (22 Oct 2025)
 - **Note:** Candidate for tekup-ai consolidation
 - **Action:** FLYT til services/
 
 #### 10. **tekup-ai-assistant** → `Tekup/services/tekup-ai-assistant/`
+
 - **Version:** v1.5.0
 - **Status:** ✅ Docs & configs (22 Oct 2025)
 - **Health:** 7/10
@@ -126,6 +136,7 @@ c:\Users\empir\
 ### 🔴 **ARCHIVE (3 mapper)**
 
 #### 11. **Tekup-org** → `Tekup/archive/tekup-org/`
+
 - **Status:** 🔴 FAILED EXPERIMENT
 - **Size:** 3,228 items (66 apps)
 - **Værdi:** €360,000 (skal ekstraheres!)
@@ -133,12 +144,14 @@ c:\Users\empir\
 - **Action:** EKSTRAHER VÆRDI → Derefter FLYT til archive/
 
 #### 12. **Tekup Google AI** → `Tekup/archive/tekup-google-ai/`
+
 - **Status:** 🔴 Legacy
 - **Size:** 1,531 items
 - **Note:** Features migreret til tekup-ai
 - **Action:** FLYT til archive/
 
 #### 13. **tekup-gmail-automation** → `Tekup/archive/tekup-gmail-automation/`
+
 - **Status:** ✅ Migreret til tekup-gmail-services
 - **Action:** FLYT til archive/ (eller SLET)
 
@@ -147,6 +160,7 @@ c:\Users\empir\
 ### 🗑️ **SLET DISSE (14 mapper)**
 
 Tomme mapper - ingen indhold:
+
 - `agent-orchestrator/` (0 items)
 - `ansel/` (0 items)
 - `backups/` (0 items)
@@ -276,16 +290,19 @@ c:\Users\empir\
 ## 🎯 **NÆSTE SKRIDT**
 
 **Option 1: Start Nu** ✅ ANBEFALET
+
 - Kør Fase 1-7 commands ovenfor
 - Implementér ny struktur
 - Test at alt virker
 
 **Option 2: Ekstraher Værdi Først** 🎯
+
 - Extract design system fra Tekup-org
 - Extract database schemas
 - Derefter flyt til archive
 
 **Option 3: Review Plan** 📖
+
 - Gennemgå plan med team
 - Juster hvis nødvendigt
 - Godkend og eksekvér

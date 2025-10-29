@@ -11,6 +11,7 @@
 ## ✅ Implementerede Endpoints
 
 ### 1. Basic Health Check
+
 ```http
 GET /health
 ```
@@ -28,6 +29,7 @@ GET /health
 ---
 
 ### 2. Comprehensive Health Check
+
 ```http
 GET /api/monitoring/health
 ```
@@ -64,6 +66,7 @@ GET /api/monitoring/health
 ---
 
 ### 3. Metrics Endpoint
+
 ```http
 GET /api/monitoring/metrics
 ```
@@ -100,6 +103,7 @@ GET /api/monitoring/metrics
 ---
 
 ### 4. Simple Status Check
+
 ```http
 GET /api/monitoring/status
 ```
@@ -117,6 +121,7 @@ GET /api/monitoring/status
 ---
 
 ### 5. UptimeRobot Webhook
+
 ```http
 POST /api/uptime/webhook
 ```
@@ -146,6 +151,7 @@ POST /api/uptime/webhook
 ## 🔧 Implementation Details
 
 ### Health Check Logic
+
 ```typescript
 // Database health check
 const dbStart = Date.now();
@@ -166,6 +172,7 @@ const overallStatus = dbStatus === "healthy" ? "healthy" : "degraded";
 ```
 
 ### Error Handling
+
 ```typescript
 try {
   // Health check logic
@@ -185,18 +192,21 @@ try {
 ## 📊 Health Status Levels
 
 ### 🟢 Healthy
+
 - Database: Connected and responding
 - Memory: < 80% usage
 - Response time: < 2 seconds
 - No critical errors
 
 ### 🟡 Degraded  
+
 - Database: Connected but slow
 - Memory: 80-90% usage
 - Response time: 2-5 seconds
 - Some non-critical errors
 
 ### 🔴 Unhealthy
+
 - Database: Disconnected or failing
 - Memory: > 90% usage
 - Response time: > 5 seconds
@@ -207,18 +217,22 @@ try {
 ## 🚨 Alert Thresholds
 
 ### Response Time Alerts
+
 - **Warning:** > 2 seconds
 - **Critical:** > 5 seconds
 
 ### Memory Usage Alerts
+
 - **Warning:** > 80%
 - **Critical:** > 90%
 
 ### Database Alerts
+
 - **Warning:** Response time > 1 second
 - **Critical:** Connection failure
 
 ### Error Rate Alerts
+
 - **Warning:** > 1% error rate
 - **Critical:** > 5% error rate
 
@@ -227,6 +241,7 @@ try {
 ## 🧪 Testing Endpoints
 
 ### Manual Testing
+
 ```bash
 # Test basic health
 curl -s https://tekup-renos.onrender.com/health | jq '.'
@@ -242,6 +257,7 @@ curl -s https://tekup-renos.onrender.com/api/monitoring/status | jq '.'
 ```
 
 ### Automated Testing
+
 ```bash
 # Run integration tests
 npm run test:frontend-integration
@@ -257,17 +273,20 @@ curl -X POST https://tekup-renos.onrender.com/api/uptime/webhook \
 ## 📈 Monitoring Integration
 
 ### UptimeRobot Setup
+
 1. **Backend Health:** `GET /health`
 2. **Database Health:** `GET /api/monitoring/health`
 3. **Frontend Health:** `GET /` (frontend URL)
 4. **Webhook:** `POST /api/uptime/webhook`
 
 ### Sentry Integration
+
 - **Error Tracking:** Automatic error capture
 - **Performance Monitoring:** Response time tracking
 - **Release Tracking:** Version monitoring
 
 ### Custom Dashboards
+
 - **Grafana:** Import health check data
 - **DataDog:** Custom metrics integration
 - **New Relic:** Application performance monitoring
@@ -277,6 +296,7 @@ curl -X POST https://tekup-renos.onrender.com/api/uptime/webhook \
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```bash
 # Optional: Sentry error tracking
 SENTRY_DSN=https://...
@@ -289,6 +309,7 @@ DATABASE_URL=postgresql://...
 ```
 
 ### Rate Limiting
+
 - **Health Endpoints:** No rate limiting (for monitoring)
 - **Metrics Endpoints:** 100 requests/minute
 - **Webhook Endpoints:** 10 requests/minute

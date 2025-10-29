@@ -2,14 +2,15 @@
 
 ## Step 1: Supabase SQL (2 minutes)
 
-### 1. Open browser:
+### 1. Open browser
+
 ```
 https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/editor
 ```
 
 ### 2. Click "SQL Editor" → "New query"
 
-### 3. Copy this ENTIRE block and paste:
+### 3. Copy this ENTIRE block and paste
 
 ```sql
 -- Supabase Audit Logging Setup
@@ -49,21 +50,24 @@ SELECT '✅ Setup complete!' as status, COUNT(*) as existing_logs FROM billy_aud
 
 ## Step 2: Render Environment (1 minute)
 
-### 1. Open browser:
+### 1. Open browser
+
 ```
 https://dashboard.render.com/web/srv-d3kk30t6ubrc73e1qon0/env
 ```
 
 ### 2. Click "Add Environment Variable"
 
-### 3. Paste these values:
+### 3. Paste these values
 
 **Key:**
+
 ```
 ENABLE_SUPABASE_LOGGING
 ```
 
 **Value:**
+
 ```
 true
 ```
@@ -76,7 +80,7 @@ true
 
 ## Step 3: Verify (30 seconds)
 
-### Run this in PowerShell:
+### Run this in PowerShell
 
 ```powershell
 # Test API call
@@ -96,7 +100,7 @@ Write-Host "Run: SELECT * FROM billy_audit_logs ORDER BY created_at DESC LIMIT 1
 
 ---
 
-## ✅ Done!
+## ✅ Done
 
 If you see your test call in Supabase, **audit logging is working!**
 

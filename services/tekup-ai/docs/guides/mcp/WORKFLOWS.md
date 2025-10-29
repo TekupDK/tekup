@@ -17,6 +17,7 @@ Praktiske eksempler på hvordan du bruger AI-assistenten til daglige opgaver.
 ### Scenario: Create Invoice for Completed Job
 
 **Current workflow (manual):**
+
 1. Open Billy.dk in browser (30 sek)
 2. Find customer in dropdown (30 sek)
 3. Enter invoice lines (3-5 min)
@@ -90,6 +91,7 @@ AI: [Queries RenOS for completed bookings]
 ### Scenario: Check Today's Schedule
 
 **Current workflow:**
+
 1. Open Google Calendar (15 sek)
 2. Check RenOS booking system (30 sek)
 3. Cross-reference (1 min)
@@ -176,6 +178,7 @@ Skal jeg sende besked til Mathias om flytning?
 ### Scenario: Fix TypeScript Error
 
 **Current workflow:**
+
 1. Read error message (30 sek)
 2. Search Stack Overflow (5 min)
 3. Try fix (2 min)
@@ -206,6 +209,7 @@ const handleEvent = (event) => {  // ✅ Fixed
 ```
 
 💡 Bonus check: Fandt også 2 lignende issues:
+
 - Linje 145: Samme pattern
 - Linje 203: Manglende type annotation
 
@@ -221,6 +225,7 @@ Skal jeg fixe alle 3?
 
 ```
 You: "Lav en Prisma migration til bookings table med:
+
 - customer_id (relation)
 - service_type (enum: BASIC, DEEP, MOVEOUT)
 - start_time (datetime)
@@ -288,18 +293,19 @@ AI:
    - Faktura: INV-2025-018
    - Forfalden: 20/9/2024 (117 dage!)
    - Sidste kontakt: 15/8/2024
-   
+
 2. Casper Thygesen - 1.396 DKK
    - Faktura: INV-2025-031
    - Forfalden: 15/9/2024 (122 dage!)
    - Sidste kontakt: Ingen registreret
-   
+
 3. Lasse Hansen - 1.696 DKK
    - Faktura: INV-2025-045
    - Forfalden: 1/10/2024 (106 dage!)
    - Sidste kontakt: 20/9/2024 (rykkerbrev sendt)
 
 🎯 ANBEFALINGER:
+
 - Peder: Send 2. rykker + rykkergebyr
 - Casper: Ring direkte (ingen email respons)
 - Lasse: Overvej inkasso
@@ -324,7 +330,7 @@ AI:
    - Dage siden: 141 dage ❌
    - Status: Intet svar
    - Værdi: ~2.500 DKK (deep clean 150m²)
-   
+
 2. Katrine Werge  
    - Tilbud sendt: 28/8/2024
    - Dage siden: 140 dage ❌
@@ -337,6 +343,7 @@ AI:
    - Værdi: ~3.000 DKK (moving clean)
 
 💡 FORSLAG:
+
 - Joel: Send "Stadig interesseret?" email
 - Katrine: Ring op direkte
 - Helle: RING NU! (det er tirsdag)
@@ -363,9 +370,10 @@ AI:
 
 💰 FAKTURAER:
 • 3 fakturaer fra i går skal oprettes:
-  - Maria (2 timer)
-  - Michael Roach (4 timer) 
-  - Eoin (2 timer)
+
+- Maria (2 timer)
+- Michael Roach (4 timer)
+- Eoin (2 timer)
 • Total: 2.790 DKK
 
 🔴 KRITISK:
@@ -382,6 +390,7 @@ AI:
 • Disk space: 127 GB free
 
 🎯 TOP 3 PRIORITETER:
+
 1. Ring til Helle kl 10:00
 2. Opret 3 fakturaer fra i går
 3. Afklar Jørn booking før 10:30
@@ -430,10 +439,12 @@ Better: "Flyt booking til tirsdag 21/1 kl 14:00 præcis"
 "Opret fakturaer fra i går, send rykkere til Peder og Lasse, og check om der er konflikter i næste uge"
 
 AI vil:
+
 1. Create invoices
 2. Send reminders  
 3. Check conflicts
 4. Report all results
+
 ```
 
 ---

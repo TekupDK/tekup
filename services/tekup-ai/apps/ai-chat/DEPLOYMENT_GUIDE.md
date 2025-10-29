@@ -12,7 +12,7 @@
 
 - Node.js 18+ installed
 - OpenAI API key
-- TekupVault API running (https://tekupvault.onrender.com)
+- TekupVault API running (<https://tekupvault.onrender.com>)
 - Supabase project (optional for persistence)
 
 ### Setup Steps
@@ -44,7 +44,7 @@ npm run dev
 
 - [ ] `OPENAI_API_KEY` - OpenAI API key (required)
 - [ ] `TEKUPVAULT_API_KEY` - TekupVault API key (required)
-- [ ] `TEKUPVAULT_API_URL` - Default: https://tekupvault.onrender.com
+- [ ] `TEKUPVAULT_API_URL` - Default: <https://tekupvault.onrender.com>
 - [ ] `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL (optional)
 - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anon key (optional)
 
@@ -92,6 +92,7 @@ vercel --prod
 ```
 
 **Post-Deployment:**
+
 - Custom domain: Add in Vercel dashboard
 - Analytics: Enable in Project Settings
 - Monitoring: Use Vercel Analytics

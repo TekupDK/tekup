@@ -61,6 +61,7 @@ MCP_API_KEY=renos-calendar-mcp-secret-key-2025
 ### Group 2: Tekup Database Environment (Reuse Existing)
 
 This group already exists and contains:
+
 - SUPABASE_URL
 - SUPABASE_ANON_KEY
 - SUPABASE_SERVICE_KEY
@@ -116,9 +117,9 @@ See deployment/MANUAL_SETUP_GUIDE.md (if you prefer clicking)
 
 After deployment, verify:
 
-- [ ] Backend health: https://renos-calendar-mcp.onrender.com/health
-- [ ] Tools endpoint: https://renos-calendar-mcp.onrender.com/tools
-- [ ] Dashboard loads: https://renos-calendar-dashboard.onrender.com
+- [ ] Backend health: <https://renos-calendar-mcp.onrender.com/health>
+- [ ] Tools endpoint: <https://renos-calendar-mcp.onrender.com/tools>
+- [ ] Dashboard loads: <https://renos-calendar-dashboard.onrender.com>
 - [ ] Supabase tables exist (5 tables)
 - [ ] Google Calendar sync works
 - [ ] No errors in Render logs
@@ -155,7 +156,8 @@ dir deployment\.secrets\
 ### Supabase migration fails
 
 Fallback: Manual migration
-1. Go to https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/editor
+
+1. Go to <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/editor>
 2. Open new query
 3. Copy-paste docs/SUPABASE_SCHEMA.sql
 4. Run
@@ -168,6 +170,7 @@ render logs --service renos-calendar-mcp --tail
 ```
 
 Common issues:
+
 - Missing environment variables
 - Docker build errors (check Dockerfile)
 - Health check timeout (increase start period)
@@ -176,10 +179,10 @@ Common issues:
 
 After deployment:
 
-- **Backend API**: https://renos-calendar-mcp.onrender.com
-- **Dashboard**: https://renos-calendar-dashboard.onrender.com
-- **Health Check**: https://renos-calendar-mcp.onrender.com/health
-- **API Docs**: https://renos-calendar-mcp.onrender.com/tools
+- **Backend API**: <https://renos-calendar-mcp.onrender.com>
+- **Dashboard**: <https://renos-calendar-dashboard.onrender.com>
+- **Health Check**: <https://renos-calendar-mcp.onrender.com/health>
+- **API Docs**: <https://renos-calendar-mcp.onrender.com/tools>
 
 ## CI/CD Integration
 
@@ -202,7 +205,6 @@ No GitHub Actions needed - Render handles it!
 
 ## Support
 
-- Render docs: https://render.com/docs
-- Supabase docs: https://supabase.com/docs
+- Render docs: <https://render.com/docs>
+- Supabase docs: <https://supabase.com/docs>
 - Project issues: Check ../PROJECT_STATUS.md
-

@@ -1,4 +1,5 @@
 # 🔍 RenOS Deployment Verification Checklist
+
 \n\n
 \n\n**Date**: October 1, 2025  
 **Status**: In Progress  
@@ -106,6 +107,7 @@
 **Status**: ✅ Verified
 
 **Smoke Test Results (3. oktober 2025)**
+
 - `GET /api/dashboard/stats/overview` → 200 OK, gyldig JSON
 - `GET /api/dashboard/leads/recent` → 200 OK, gyldig JSON
 - `GET /api/dashboard/bookings/upcoming` → 200 OK, gyldig JSON
@@ -185,7 +187,7 @@ $body = @{
     sessionId = "test-session-123"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "https://tekup-renos.onrender.com/api/chat" -Method Post -Body $body -ContentType "application/json"
+Invoke-RestMethod -Uri "<https://tekup-renos.onrender.com/api/chat>" -Method Post -Body $body -ContentType "application/json"
 \n\n```
 
 **Expected**: AI-generated response about window cleaning quote

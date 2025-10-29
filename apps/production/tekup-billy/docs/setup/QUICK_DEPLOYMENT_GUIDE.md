@@ -1,4 +1,4 @@
-# 🚀 Quick Deployment Guide - Security & DevOps Upgrade
+﻿# 🚀 Quick Deployment Guide - Security & DevOps Upgrade
 
 **TL;DR:** Alle audit-anbefalinger er nu implementeret. Følg disse steps for at aktivere.
 
@@ -27,7 +27,7 @@ git push origin main
 
 ### 4. Verify GitHub Actions (1 min)
 
-- Gå til: <https://github.com/JonasAbde/Tekup-Billy/actions>
+- Gå til: <https://github.com/TekupDK/Tekup-Billy/actions>
 - Check at workflows kører grønt ✅
 
 ---
@@ -163,6 +163,6 @@ For detaljer, se:
 
 ## 💬 Support
 
-Issues? → <https://github.com/JonasAbde/Tekup-Billy/issues>
+Issues? → <https://github.com/TekupDK/Tekup-Billy/issues>
 
 **Ready! 🎉**

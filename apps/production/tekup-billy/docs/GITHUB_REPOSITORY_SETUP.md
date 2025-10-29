@@ -1,4 +1,4 @@
-# GitHub Repository Configuration Guide
+﻿# GitHub Repository Configuration Guide
 
 Dette dokument beskriver de anbefalede GitHub repository settings for Tekup-Billy MCP som følger SaaS best practices for sikkerhed, kvalitet og compliance.
 
@@ -122,7 +122,7 @@ Gå til: **Settings → Collaborators and teams**
 ### Anbefalet team struktur
 
 **Admin:**
-- @JonasAbde (Owner)
+- @TekupDK (Owner)
 - Kan merge til main, ændre settings
 
 **Maintainers:**
@@ -236,7 +236,7 @@ For at aktivere alle anbefalinger i ét træk:
 
 ```bash
 # 1. Clone repository (hvis ikke allerede gjort)
-git clone https://github.com/JonasAbde/Tekup-Billy.git
+git clone https://github.com/TekupDK/Tekup-Billy.git
 cd Tekup-Billy
 
 # 2. Commit og push de nye workflows (hvis ikke allerede pushed)
@@ -271,8 +271,8 @@ git push origin main
 ## 🆘 Support
 
 Ved spørgsmål eller problemer med GitHub settings:
-- Kontakt repository owner: @JonasAbde
-- Opret issue: <https://github.com/JonasAbde/Tekup-Billy/issues>
+- Kontakt repository owner: @TekupDK
+- Opret issue: <https://github.com/TekupDK/Tekup-Billy/issues>
 
 ---
 

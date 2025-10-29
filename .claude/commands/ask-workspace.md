@@ -3,12 +3,15 @@
 Answer questions using workspace knowledge BEFORE asking user.
 
 ## Arguments
+
 - `question`: User's question (required)
 
 ## Search Process
 
 ### Step 1: Semantic Analysis
+
 Analyze question to determine category:
+
 - Setup/configuration → search setup_guides
 - Errors/problems → search troubleshooting
 - How it works → search architecture
@@ -19,6 +22,7 @@ Analyze question to determine category:
 ### Step 2: Multi-Source Search
 
 **A. Structured Data (Exact match)**
+
 1. GIT_STATUS_REPORT.json
 2. TYPESCRIPT_FIX_STATUS.md
 3. REMAINING_TYPESCRIPT_ERRORS.json  
@@ -40,6 +44,7 @@ Analyze question to determine category:
 ### Step 3: Synthesize Answer
 
 Combine results from all sources:
+
 - Priority: Structured data > Recent docs > General docs > Code
 - Include source references: "Found in {file}"
 - If conflicting info, note which is most recent
@@ -47,6 +52,7 @@ Combine results from all sources:
 ### Step 4: Confidence Rating
 
 Rate answer confidence:
+
 - ✅ **High**: Found in multiple sources, recent docs
 - ⚠️ **Medium**: Found in docs but may be outdated
 - ❌ **Low**: No relevant docs found

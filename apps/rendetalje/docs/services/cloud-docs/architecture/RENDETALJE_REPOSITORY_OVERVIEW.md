@@ -1,4 +1,5 @@
-# Rendetalje & Tekup - Complete Repository Overview
+﻿# Rendetalje & Tekup - Complete Repository Overview
+
 **Generated:** 22. Oktober 2025, kl. 06:00 CET  
 **Scope:** All local repositories + GitHub analysis
 
@@ -20,8 +21,9 @@
 ## 🏢 RENDETALJE-SPECIFIC REPOSITORIES (8 REPOS)
 
 ### 1. **RendetaljeOS** (Main Monorepo) ⭐
+
 **Path:** `C:\Users\empir\RendetaljeOS`  
-**GitHub:** JonasAbde/RendetaljeOS (assumed)  
+**GitHub:** TekupDK/RendetaljeOS (assumed)  
 **Status:** ✅ ACTIVE DEVELOPMENT  
 **Last Modified:** 20-10-2025 22:20
 
@@ -41,6 +43,7 @@ RendetaljeOS/
 **Purpose:** Complete operations management system for Rendetalje.dk
 
 **Features:**
+
 - Gmail integration & automation
 - Customer management (CRM)
 - Booking system with calendar sync
@@ -52,20 +55,23 @@ RendetaljeOS/
 ---
 
 ### 2. **renos-backend** ⭐ STANDALONE REPO
+
 **Path:** `C:\Users\empir\renos-backend`  
-**GitHub:** JonasAbde/renos-backend (607 files indexed in TekupVault)  
+**GitHub:** TekupDK/renos-backend (607 files indexed in TekupVault)  
 **Status:** ✅ ACTIVE DEVELOPMENT  
 **Last Modified:** 14-10-2025 23:15
 
 **Type:** Standalone TypeScript Backend API
 
 **Package Details:**
+
 - Name: `renos-backend`
 - Version: 1.0.0
 - Description: "RenOS Backend API - AI-powered automation system for Rendetalje.dk operations"
 - Author: Jonas Abde
 
 **Technology:**
+
 - TypeScript + Express
 - Prisma ORM (v6.16.3)
 - Supabase database
@@ -75,6 +81,7 @@ RendetaljeOS/
 - Node-cron for scheduling
 
 **Major Features (50+ npm scripts!):**
+
 - Email automation (ingest, matching, auto-response)
 - Booking management (availability, conflicts, stats)
 - Customer management (CRM, threads, import/export)
@@ -87,6 +94,7 @@ RendetaljeOS/
 - Database migration tools
 
 **Scripts Categories:**
+
 1. Database (migrate, seed, studio, audit, fix)
 2. Email (ingest, matching, test, approve, stats, monitor)
 3. Booking (list, availability, next-slot, check-slot, stats)
@@ -96,6 +104,7 @@ RendetaljeOS/
 7. Gemini/LLM (test, functions)
 
 **Integrations:**
+
 - Google Gmail API
 - Google Calendar API
 - Supabase
@@ -106,20 +115,23 @@ RendetaljeOS/
 ---
 
 ### 3. **renos-frontend** ⭐ STANDALONE REPO
+
 **Path:** `C:\Users\empir\renos-frontend`  
-**GitHub:** JonasAbde/renos-frontend (268 files indexed in TekupVault)  
+**GitHub:** TekupDK/renos-frontend (268 files indexed in TekupVault)  
 **Status:** ✅ ACTIVE DEVELOPMENT  
 **Last Modified:** 14-10-2025 23:33
 
 **Type:** Standalone React Frontend
 
 **Package Details:**
+
 - Name: `spark-template` (⚠️ Generic name)
 - Version: 0.0.0
 - Type: ES Module
 - React 19.0.0 + Vite
 
 **Technology:**
+
 - React 19 (latest)
 - Vite build tool
 - TypeScript
@@ -131,12 +143,14 @@ RendetaljeOS/
 - Framer Motion (animations)
 
 **UI Framework:**
+
 - Full Radix UI component suite (accordion, dialog, dropdown, tabs, etc.)
 - GitHub Spark (@github/spark)
 - Octokit (GitHub API)
 - shadcn/ui style components
 
 **Features:**
+
 - Multi-agent system (communication hub, orchestrator)
 - GitHub integration
 - Supabase integration
@@ -156,6 +170,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 ---
 
 ### 4. **rendetalje-ai-chat** 🆕 AI CHAT APP
+
 **Path:** `C:\Users\empir\rendetalje-ai-chat`  
 **GitHub:** Unknown  
 **Status:** ✅ ACTIVE DEVELOPMENT  
@@ -164,11 +179,13 @@ Agents: frontend, backend, testing, devops, integration, docs
 **Type:** Next.js AI Chat Application
 
 **Package Details:**
+
 - Name: `rendetalje-ai-chat`
 - Version: 1.0.0
 - Description: "Shortwave.ai-inspired AI chat assistant for Rendetalje.dk"
 
 **Technology:**
+
 - Next.js 15 (latest)
 - React 18.3
 - OpenAI API (v4.58.2)
@@ -181,6 +198,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 **Purpose:** AI-powered chat assistant inspired by Shortwave.ai
 
 **Features:**
+
 - OpenAI integration
 - Markdown rendering
 - Modern chat UI
@@ -189,6 +207,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 ---
 
 ### 5. **tekup-database** 📦 CENTRAL DATABASE
+
 **Path:** `C:\Users\empir\tekup-database`  
 **GitHub:** Unknown  
 **Status:** ✅ ACTIVE DEVELOPMENT  
@@ -197,6 +216,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 **Type:** Shared Prisma Database Package
 
 **Package Details:**
+
 - Name: `@tekup/database`
 - Version: 1.0.0
 - Description: "Central database service for Tekup Portfolio"
@@ -204,6 +224,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 - Private: true
 
 **Technology:**
+
 - Prisma ORM (v6.1.0)
 - TypeScript
 - Vitest (testing)
@@ -212,6 +233,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 **Purpose:** Central database schema and client for all Tekup/Rendetalje projects
 
 **Scripts:**
+
 - Database migrations (dev, prod)
 - Database seeding
 - Prisma Studio
@@ -220,6 +242,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 - Validation & formatting
 
 **Used By:**
+
 - renos-backend
 - RendetaljeOS backend
 - Other Tekup projects
@@ -229,6 +252,7 @@ Agents: frontend, backend, testing, devops, integration, docs
 ---
 
 ### 6. **renos-calendar-mcp** (Calendar Intelligence)
+
 **Path:** `C:\Users\empir\Tekup-Cloud\renos-calendar-mcp`  
 **GitHub:** Part of Tekup-Cloud repo (or separate?)  
 **Status:** ✅ ACTIVE DEVELOPMENT (NEW - Oct 22, 2025)
@@ -247,6 +271,7 @@ renos-calendar-mcp/
 **Purpose:** AI-powered calendar intelligence for RenOS
 
 **Features:**
+
 - 5 AI tools (booking validation, conflict checking, overtime, customer memory, auto-invoice)
 - HTTP REST API (MCP protocol)
 - Docker Compose (5 services: mcp-server, dashboard, chatbot, nginx, redis)
@@ -257,6 +282,7 @@ renos-calendar-mcp/
 ---
 
 ### 7. **RendetaljeOS-Mobile** (in Tekup-Cloud)
+
 **Path:** `C:\Users\empir\Tekup-Cloud\RendetaljeOS-Mobile`  
 **Status:** 🔴 DUPLICATE (should be deleted)
 
@@ -267,6 +293,7 @@ renos-calendar-mcp/
 ---
 
 ### 8. **Tekup Google AI** (Legacy RenOS)
+
 **Path:** `C:\Users\empir\Tekup Google AI`  
 **Status:** 🔴 LEGACY (superseded by RendetaljeOS)  
 **Last Modified:** 18-10-2025 23:44
@@ -282,6 +309,7 @@ renos-calendar-mcp/
 ## 🔗 RENDETALJE INTEGRATIONS (in other repos)
 
 ### 4. **Tekup Google AI** (Legacy RenOS)
+
 **Path:** `C:\Users\empir\Tekup Google AI`  
 **GitHub:** Unknown  
 **Status:** 🔴 LEGACY (superseded by RendetaljeOS)
@@ -295,11 +323,13 @@ renos-calendar-mcp/
 ---
 
 ### 5. **Tekup-Cloud** (Workspace)
+
 **Path:** `C:\Users\empir\Tekup-Cloud`  
 **GitHub:** Unknown  
 **Status:** 🟡 WORKSPACE CONTAINER
 
 **Contains:**
+
 - renos-calendar-mcp/ (primary Rendetalje project)
 - backend/ (possibly RendetaljeOS backend duplicate?)
 - frontend/ (possibly RendetaljeOS frontend duplicate?)
@@ -319,6 +349,7 @@ renos-calendar-mcp/
 | `Tekup-Cloud/RendetaljeOS-Mobile/` | 🔴 DUPLICATE | DELETE |
 
 **Mobile App Tech:**
+
 - React Native / Expo 51
 - 186 files
 - Comprehensive test suite (50+ tests)
@@ -332,16 +363,19 @@ renos-calendar-mcp/
 ## 🌐 GITHUB REPOSITORIES (from TekupVault index)
 
 ### Tier 1: Core Production (4 repos)
+
 1. **Tekup-Billy** - Billy.dk MCP Server
 2. **renos-backend** - RenOS Backend API (TypeScript + Prisma)
 3. **renos-frontend** - RenOS Frontend (React 18 + Vite)
 4. **TekupVault** - Central Knowledge Layer
 
 ### Tier 2: Documentation (2 repos)
+
 5. **tekup-unified-docs** - Unified documentation
 6. **tekup-ai-assistant** - AI assistant integration
 
 ### Tier 3: Active Development (8 repos)
+
 7. **tekup-cloud-dashboard** - Cloud dashboard
 8. **tekup-renos** - RenOS main system
 9. **tekup-renos-dashboard** - RenOS dashboard UI
@@ -368,7 +402,7 @@ renos-calendar-mcp/
 | **tekup-renos-dashboard** | GitHub (JonasAbde) | ❓ Unknown | Indexed by TekupVault |
 | **renos-calendar-mcp** | `Tekup-Cloud` subfolder | ✅ Active | NEW (Oct 22, 2025) |
 
-### Questions to Clarify:
+### Questions to Clarify
 
 1. **Are `renos-backend` and `renos-frontend` on GitHub the same as `RendetaljeOS/apps/backend` and `frontend`?**
    - OR are they separate repositories?
@@ -468,6 +502,7 @@ Rendetalje-related: 5-6 repos (renos-backend, renos-frontend, tekup-renos, tekup
 ```
 
 **Questions for User:**
+
 1. Er `renos-backend` og `renos-frontend` på GitHub separate repos eller dele af RendetaljeOS monorepo?
 2. Er `rendetalje-os` på GitHub samme som local `RendetaljeOS`?
 3. Hvad er forskellen mellem `tekup-renos` og `RendetaljeOS`?
@@ -532,4 +567,3 @@ Rename-Item "Tekup Google AI" "Tekup-Google-AI-ARCHIVED-2025-10-22"
 **Report Complete** ✅
 
 **Key Finding:** We have **3-5 active Rendetalje repos locally** + **2-6 on GitHub** (depending on duplicates/relationships). Total unique Rendetalje-specific repos: **5-8**.
-

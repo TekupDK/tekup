@@ -1,31 +1,92 @@
-# 🌐 RenOS Website Integration Plan\n\n\n\n**For**: Rendetalje.dk + RenOS Dashboard  
+# 🌐 RenOS Website Integration Plan
+
+\n\n
+\n\n**For**: Rendetalje.dk + RenOS Dashboard  
 **Timeline**: 3 Phases over 3 months
 
 ---
-\n\n## 🎯 Current State\n\n\n\n### Website 1: Rendetalje.dk (Public)\n\n\n\n- **Type**: Customer-facing business website\n\n- **Purpose**: Showcase services, capture leads\n\n- **Status**: Presumably already exists\n\n- **Action Needed**: NONE initially! RenOS works behind the scenes\n\n\n\n### Website 2: RenOS Dashboard (Internal)\n\n\n\n- **Type**: Internal admin dashboard\n\n- **Purpose**: Manage leads, emails, bookings\n\n- **Status**: ✅ DEPLOYED & WORKING\n\n- **URL**: <https://tekup-renos.onrender.com>\n\n- **Access**: Currently public (should add auth)\n\n
+
+\n\n## 🎯 Current State
+\n\n
+\n\n### Website 1: Rendetalje.dk (Public)
+\n\n
+\n\n- **Type**: Customer-facing business website
+\n\n- **Purpose**: Showcase services, capture leads
+\n\n- **Status**: Presumably already exists
+\n\n- **Action Needed**: NONE initially! RenOS works behind the scenes
+\n\n
+\n\n### Website 2: RenOS Dashboard (Internal)
+\n\n
+\n\n- **Type**: Internal admin dashboard
+\n\n- **Purpose**: Manage leads, emails, bookings
+\n\n- **Status**: ✅ DEPLOYED & WORKING
+\n\n- **URL**: <https://tekup-renos.onrender.com>
+\n\n- **Access**: Currently public (should add auth)
+\n\n
 ---
-\n\n## 📋 Phase 1: Launch Week (Days 1-7)\n\n\n\n### For Rendetalje.dk\n\n\n\n**Action: DO NOTHING** ✅\n\n
+
+\n\n## 📋 Phase 1: Launch Week (Days 1-7)
+\n\n
+\n\n### For Rendetalje.dk
+\n\n
+\n\n**Action: DO NOTHING** ✅
+\n\n
 **Why?**
-\n\n- RenOS reads Gmail automatically\n\n- Customers don't need to know about AI\n\n- No website changes required\n\n- Focus on testing RenOS itself\n\n
+
+\n\n- RenOS reads Gmail automatically
+\n\n- Customers don't need to know about AI
+\n\n- No website changes required
+\n\n- Focus on testing RenOS itself
+\n\n
 **Current Flow:**
-\n\n```
+
+\n\n```
 Customer → Visits Rendetalje.dk
          → Fills contact form
          → Email sent to info@rendetalje.dk
          → RenOS detects email automatically
          → AI generates response
          → You approve & send
-         → Customer receives response\n\n```
-\n\n### For RenOS Dashboard\n\n\n\n**Action: Use internally** 🔒\n\n
+         → Customer receives response
+\n\n```
+
+\n\n### For RenOS Dashboard
+\n\n
+\n\n**Action: Use internally** 🔒
+\n\n
 **Access it:**
-\n\n```bash\n\n# Option 1: Local development\n\nnpm run dev\n\n# Then open: http://localhost:5173\n\n\n\n# Option 2: Deployed version\n\n# Open: https://tekup-renos.onrender.com\n\n```\n\n
+
+\n\n```bash
+\n\n# Option 1: Local development
+\n\nnpm run dev
+\n\n# Then open: http://localhost:5173
+\n\n
+\n\n# Option 2: Deployed version
+\n\n# Open: https://tekup-renos.onrender.com
+\n\n```
+\n\n
 **Who should access:**
-\n\n- ✅ You (owner)\n\n- ✅ Admin staff\n\n- ✅ Customer service team\n\n- ❌ NOT customers (it's internal)\n\n
+
+\n\n- ✅ You (owner)
+\n\n- ✅ Admin staff
+\n\n- ✅ Customer service team
+\n\n- ❌ NOT customers (it's internal)
+\n\n
 ---
-\n\n## 📋 Phase 2: Month 1 Improvements\n\n\n\n### For Rendetalje.dk\n\n\n\n#### 1. Add Quick Response Badge\n\n\n\n**Why:** Build trust, set expectations\n\n
+
+\n\n## 📋 Phase 2: Month 1 Improvements
+\n\n
+\n\n### For Rendetalje.dk
+\n\n
+\n\n#### 1. Add Quick Response Badge
+\n\n
+\n\n**Why:** Build trust, set expectations
+\n\n
 **Implementation:**
-\n\n```html
-<!-- Add this to your contact form page -->\n\n<div class="renos-badge">
+
+\n\n```html
+<!-- Add this to your contact form page -->
+\n\n<div class="renos-badge">
   <style>
     .renos-badge {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -55,10 +116,16 @@ Customer → Visits Rendetalje.dk
   </div>
 </div>
 
-<!-- Place this right above or below your contact form -->\n\n```
-\n\n#### 2. Add Trust Signals Section\n\n\n\n**Why:** Show innovation, build credibility\n\n
+<!-- Place this right above or below your contact form -->
+\n\n```
+
+\n\n#### 2. Add Trust Signals Section
+\n\n
+\n\n**Why:** Show innovation, build credibility
+\n\n
 **Implementation:**
-\n\n```html
+
+\n\n```html
 <section class="trust-signals">
   <style>
     .trust-signals {
@@ -94,13 +161,21 @@ Customer → Visits Rendetalje.dk
   
   <div class="trust-card">
     <div class="trust-icon">✅</div>
-    <h3>500+ Tilfredse Kunder</h3>\n\n    <p>Proven track record siden [år]</p>
+    <h3>500+ Tilfredse Kunder</h3>
+\n\n    <p>Proven track record siden [år]</p>
   </div>
-</section>\n\n```
-\n\n#### 3. Optional: Add Live Chat Widget\n\n\n\n**Why:** Instant customer engagement\n\n
+</section>
+\n\n```
+
+\n\n#### 3. Optional: Add Live Chat Widget
+\n\n
+\n\n**Why:** Instant customer engagement
+\n\n
 **Implementation:**
-\n\n```html
-<!-- Add before </body> tag -->\n\n<div id="renos-chat-widget"></div>
+
+\n\n```html
+<!-- Add before </body> tag -->
+\n\n<div id="renos-chat-widget"></div>
 
 <script>
 (function() {
@@ -145,13 +220,29 @@ Customer → Visits Rendetalje.dk
     window.RenOSChat.init();
   }
 })();
-</script>\n\n```
-\n\n### For RenOS Dashboard\n\n\n\n#### 1. Add Authentication\n\n\n\n**Why:** Secure access, multi-user support\n\n
+</script>
+\n\n```
+
+\n\n### For RenOS Dashboard
+\n\n
+\n\n#### 1. Add Authentication
+\n\n
+\n\n**Why:** Secure access, multi-user support
+\n\n
 **Implementation:**
-\n\n```bash\n\n# Install Clerk (easiest auth solution)\n\ncd client\n\nnpm install @clerk/clerk-react
-\n\n# Create account at https://clerk.com (free tier)\n\n# Get your publishable key\n\n```\n\n
+
+\n\n```bash
+\n\n# Install Clerk (easiest auth solution)
+\n\ncd client
+\n\nnpm install @clerk/clerk-react
+
+\n\n# Create account at <https://clerk.com> (free tier)
+\n\n# Get your publishable key
+\n\n```
+\n\n
 **Update client/src/main.tsx:**
-\n\n```typescript
+
+\n\n```typescript
 import { ClerkProvider } from '@clerk/clerk-react';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -162,10 +253,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <App />
     </ClerkProvider>
   </React.StrictMode>
-);\n\n```
+);
+\n\n```
 
 **Update client/src/App.tsx:**
-\n\n```typescript
+
+\n\n```typescript
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 function App() {
@@ -184,7 +277,7 @@ function App() {
           </div>
         </div>
       </SignedOut>
-      
+
       <SignedIn>
         <div className="min-h-screen bg-gray-50">
           <header className="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
@@ -192,23 +285,32 @@ function App() {
             <UserButton afterSignOutUrl="/" />
           </header>
           
-          {/* Your existing dashboard components */}\n\n          <Dashboard />
+          {/* Your existing dashboard components */}
+\n\n          <Dashboard />
           <ChatInterface />
         </div>
       </SignedIn>
     </>
   );
-}\n\n```
-\n\n#### 2. Add User Roles & Permissions\n\n\n\n**Why:** Different access levels for team\n\n
+}
+\n\n```
+
+\n\n#### 2. Add User Roles & Permissions
+\n\n
+\n\n**Why:** Different access levels for team
+\n\n
 **Create roles in Clerk dashboard:**
-\n\n```
+
+\n\n```
 admin     → Full access (you)
 manager   → View all, approve emails
 staff     → View leads, basic actions
-viewer    → Read-only access\n\n```
+viewer    → Read-only access
+\n\n```
 
 **Implement role-based UI:**
-\n\n```typescript
+
+\n\n```typescript
 import { useUser } from '@clerk/clerk-react';
 
 function Dashboard() {
@@ -223,16 +325,22 @@ function Dashboard() {
       <ViewLeadsTable />
     </div>
   );
-}\n\n```
-\n\n#### 3. Add Analytics Dashboard\n\n\n\n**Why:** Track system performance\n\n
+}
+\n\n```
+
+\n\n#### 3. Add Analytics Dashboard
+\n\n
+\n\n**Why:** Track system performance
+\n\n
 **Add new tab: "Analytics"**
-\n\n```typescript
+
+\n\n```typescript
 // client/src/components/Analytics.tsx
 export function Analytics() {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">System Analytics</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Leads This Week"
@@ -271,39 +379,71 @@ export function Analytics() {
       </div>
     </div>
   );
-}\n\n```
+}
+\n\n```
 
 ---
-\n\n## 📋 Phase 3: Month 2-3 Advanced Features\n\n\n\n### For Rendetalje.dk\n\n\n\n#### 1. Booking Widget Integration\n\n\n\n**Why:** Let customers book directly on website\n\n
+
+\n\n## 📋 Phase 3: Month 2-3 Advanced Features
+\n\n
+\n\n### For Rendetalje.dk
+\n\n
+\n\n#### 1. Booking Widget Integration
+\n\n
+\n\n**Why:** Let customers book directly on website
+\n\n
 **Implementation:**
-\n\n```html
-<!-- Add booking widget -->\n\n<div id="renos-booking-widget">
-  <iframe 
+
+\n\n```html
+<!-- Add booking widget -->
+\n\n<div id="renos-booking-widget">
+  <iframe
     src="https://tekup-renos.onrender.com/embed/booking"
     width="100%"
     height="600"
     frameborder="0"
   ></iframe>
-</div>\n\n```
+</div>
+\n\n```
 
 **Backend endpoint to create:**
-\n\n```typescript
+
+\n\n```typescript
 // src/routes/embedRoutes.ts
 router.get('/embed/booking', (req, res) => {
   res.render('booking-embed', {
     availableSlots: getAvailableSlots(),
     services: getServices()
   });
-});\n\n```
-\n\n#### 2. Customer Portal\n\n\n\n**Why:** Self-service for existing customers\n\n
+});
+\n\n```
+
+\n\n#### 2. Customer Portal
+\n\n
+\n\n**Why:** Self-service for existing customers
+\n\n
 **Features:**
-\n\n- View upcoming bookings\n\n- Reschedule appointments\n\n- View invoice history\n\n- Chat with support\n\n
+
+\n\n- View upcoming bookings
+\n\n- Reschedule appointments
+\n\n- View invoice history
+\n\n- Chat with support
+\n\n
 **Access:**
-\n\n```
-https://rendetalje.dk/portal\n\n```
-\n\n### For RenOS Dashboard\n\n\n\n#### 1. Mobile App (PWA)\n\n\n\n**Why:** Access on the go\n\n
+
+\n\n```
+https://rendetalje.dk/portal
+\n\n```
+
+\n\n### For RenOS Dashboard
+\n\n
+\n\n#### 1. Mobile App (PWA)
+\n\n
+\n\n**Why:** Access on the go
+\n\n
 **Implementation:**
-\n\n```typescript
+
+\n\n```typescript
 // client/vite.config.ts
 import { VitePWA } from 'vite-plugin-pwa';
 
@@ -332,11 +472,18 @@ export default defineConfig({
       }
     })
   ]
-});\n\n```
+});
+\n\n```
 
-**Result:** Dashboard can be "installed" on phone/desktop!\n\n\n\n#### 2. Push Notifications\n\n\n\n**Why:** Alert team of new leads instantly\n\n
+**Result:** Dashboard can be "installed" on phone/desktop!
+\n\n
+\n\n#### 2. Push Notifications
+\n\n
+\n\n**Why:** Alert team of new leads instantly
+\n\n
 **Implementation:**
-\n\n```typescript
+
+\n\n```typescript
 // Request notification permission
 if ('Notification' in window) {
   Notification.requestPermission().then(permission => {
@@ -349,19 +496,41 @@ if ('Notification' in window) {
       });
     }
   });
-}\n\n```
-\n\n#### 3. Advanced Reporting\n\n\n\n**Why:** Data-driven decisions\n\n
+}
+\n\n```
+
+\n\n#### 3. Advanced Reporting
+\n\n
+\n\n**Why:** Data-driven decisions
+\n\n
 **Add reports:**
-\n\n- Lead source ROI\n\n- Email template performance\n\n- Booking patterns\n\n- Revenue forecasting\n\n- Customer lifetime value\n\n
+
+\n\n- Lead source ROI
+\n\n- Email template performance
+\n\n- Booking patterns
+\n\n- Revenue forecasting
+\n\n- Customer lifetime value
+\n\n
 ---
-\n\n## 🎨 Design Mockups\n\n\n\n### Option A: Minimal Integration\n\n\n\n```\n\nRendetalje.dk
+
+\n\n## 🎨 Design Mockups
+\n\n
+\n\n### Option A: Minimal Integration
+\n\n
+\n\n```
+\n\nRendetalje.dk
 └── [No visible changes]
     └── RenOS works silently in background
 
 RenOS Dashboard  
 └── Add login page
-└── Keep existing features\n\n```
-\n\n### Option B: Moderate Integration\n\n\n\n```\n\nRendetalje.dk
+└── Keep existing features
+\n\n```
+
+\n\n### Option B: Moderate Integration
+\n\n
+\n\n```
+\n\nRendetalje.dk
 ├── Quick Response Badge
 ├── Trust Signals Section
 └── Optional: Chat widget button
@@ -369,8 +538,13 @@ RenOS Dashboard
 RenOS Dashboard
 ├── Authentication (Clerk)
 ├── User roles
-└── Analytics tab\n\n```
-\n\n### Option C: Full Integration\n\n\n\n```\n\nRendetalje.dk
+└── Analytics tab
+\n\n```
+
+\n\n### Option C: Full Integration
+\n\n
+\n\n```
+\n\nRendetalje.dk
 ├── Live Chat Widget
 ├── Booking Widget
 ├── Customer Portal
@@ -381,30 +555,132 @@ RenOS Dashboard
 ├── Mobile PWA
 ├── Push Notifications
 ├── Advanced Analytics
-└── Multi-language support\n\n```
+└── Multi-language support
+\n\n```
 
 ---
-\n\n## 💰 Cost Considerations\n\n\n\n### Phase 1 (Free)\n\n\n\n- ✅ No changes to Rendetalje.dk\n\n- ✅ Use RenOS dashboard as-is\n\n- ✅ $0 additional cost\n\n\n\n### Phase 2 (~$10-20/month)\n\n\n\n- 🔐 Clerk Auth: Free tier (10,000 MAU)\n\n- 📊 Basic analytics: Included\n\n- 💸 Total: ~$0 initially\n\n\n\n### Phase 3 (~$50-100/month)\n\n\n\n- 📱 PWA: Free (built-in)\n\n- 🔔 Push Notifications: Free (Web Push API)\n\n- 📊 Advanced Analytics: ~$20/month (Mixpanel/Amplitude)\n\n- 🎨 Premium features: Variable\n\n
+
+\n\n## 💰 Cost Considerations
+\n\n
+\n\n### Phase 1 (Free)
+\n\n
+\n\n- ✅ No changes to Rendetalje.dk
+\n\n- ✅ Use RenOS dashboard as-is
+\n\n- ✅ $0 additional cost
+\n\n
+\n\n### Phase 2 (~$10-20/month)
+\n\n
+\n\n- 🔐 Clerk Auth: Free tier (10,000 MAU)
+\n\n- 📊 Basic analytics: Included
+\n\n- 💸 Total: ~$0 initially
+\n\n
+\n\n### Phase 3 (~$50-100/month)
+\n\n
+\n\n- 📱 PWA: Free (built-in)
+\n\n- 🔔 Push Notifications: Free (Web Push API)
+\n\n- 📊 Advanced Analytics: ~$20/month (Mixpanel/Amplitude)
+\n\n- 🎨 Premium features: Variable
+\n\n
 ---
-\n\n## 🚀 Recommended Path\n\n\n\n**My recommendation for you:**
-\n\n### Week 1: Just Launch ✅\n\n\n\n```bash\n\n# Do this:\n\n1. Keep Rendetalje.dk as-is\n\n2. Use RenOS dashboard locally or deployed\n\n3. Focus on testing the system\n\n4. Don't add complexity yet\n\n```
-\n\n### Month 1: Add Trust Signals 🎨\n\n\n\n```bash\n\n# Add to Rendetalje.dk:\n\n1. Quick Response Badge (30 min)\n\n2. Trust Signals section (1 hour)\n\n3. Update contact form messaging
-\n\n# Add to RenOS:\n\n1. Add Clerk authentication (2 hours)\n\n2. Invite your team\n\n```
-\n\n### Month 2-3: Advanced Features 🚀\n\n\n\n```bash\n\n# If system working well:\n\n1. Consider live chat widget\n\n2. Add booking widget\n\n3. Build customer portal\n\n4. Mobile PWA version\n\n```
+
+\n\n## 🚀 Recommended Path
+\n\n
+\n\n**My recommendation for you:**
+
+\n\n### Week 1: Just Launch ✅
+\n\n
+\n\n```bash
+\n\n# Do this:
+\n\n1. Keep Rendetalje.dk as-is
+\n\n2. Use RenOS dashboard locally or deployed
+\n\n3. Focus on testing the system
+\n\n4. Don't add complexity yet
+\n\n```
+
+\n\n### Month 1: Add Trust Signals 🎨
+\n\n
+\n\n```bash
+\n\n# Add to Rendetalje.dk:
+\n\n1. Quick Response Badge (30 min)
+\n\n2. Trust Signals section (1 hour)
+\n\n3. Update contact form messaging
+
+\n\n# Add to RenOS:
+\n\n1. Add Clerk authentication (2 hours)
+\n\n2. Invite your team
+\n\n```
+
+\n\n### Month 2-3: Advanced Features 🚀
+\n\n
+\n\n```bash
+\n\n# If system working well:
+\n\n1. Consider live chat widget
+\n\n2. Add booking widget
+\n\n3. Build customer portal
+\n\n4. Mobile PWA version
+\n\n```
 
 ---
-\n\n## 📞 Technical Implementation Support\n\n\n\n### Quick Wins (Do Today)\n\n\n\n1. **Add Response Badge to Rendetalje.dk**
-   - Copy HTML snippet from above\n\n   - Paste near contact form\n\n   - 15 minutes work\n\n\n\n2. **Secure RenOS Dashboard**
-   - Sign up for Clerk (free)\n\n   - Add authentication\n\n   - 30 minutes work\n\n\n\n### Medium Term (This Month)\n\n\n\n3. **Trust Signals Section**
-   - Design matching your brand\n\n   - Add social proof\n\n   - 1-2 hours\n\n\n\n4. **Analytics Dashboard**
-   - Add charts to RenOS\n\n   - Track key metrics\n\n   - Half day work\n\n\n\n### Long Term (Next Quarter)\n\n\n\n5. **Full Integration**
-   - Live chat widget\n\n   - Booking system\n\n   - Customer portal\n\n   - 1-2 weeks development\n\n
+
+\n\n## 📞 Technical Implementation Support
+\n\n
+\n\n### Quick Wins (Do Today)
+\n\n
+\n\n1. **Add Response Badge to Rendetalje.dk**
+
+- Copy HTML snippet from above
+\n\n   - Paste near contact form
+\n\n   - 15 minutes work
+\n\n
+\n\n2. **Secure RenOS Dashboard**
+- Sign up for Clerk (free)
+\n\n   - Add authentication
+\n\n   - 30 minutes work
+\n\n
+\n\n### Medium Term (This Month)
+\n\n
+\n\n3. **Trust Signals Section**
+- Design matching your brand
+\n\n   - Add social proof
+\n\n   - 1-2 hours
+\n\n
+\n\n4. **Analytics Dashboard**
+- Add charts to RenOS
+\n\n   - Track key metrics
+\n\n   - Half day work
+\n\n
+\n\n### Long Term (Next Quarter)
+\n\n
+\n\n5. **Full Integration**
+- Live chat widget
+\n\n   - Booking system
+\n\n   - Customer portal
+\n\n   - 1-2 weeks development
+\n\n
+
 ---
-\n\n## 🎯 Summary\n\n\n\n**For Rendetalje.dk:**
-\n\n- ✅ Keep it simple initially\n\n- ✅ Add trust signals when ready\n\n- ✅ Consider chat widget later\n\n
+
+\n\n## 🎯 Summary
+\n\n
+\n\n**For Rendetalje.dk:**
+
+\n\n- ✅ Keep it simple initially
+\n\n- ✅ Add trust signals when ready
+\n\n- ✅ Consider chat widget later
+\n\n
 **For RenOS Dashboard:**
-\n\n- ✅ Add authentication ASAP\n\n- ✅ Use for internal team\n\n- ✅ Gradually add features\n\n
+
+\n\n- ✅ Add authentication ASAP
+\n\n- ✅ Use for internal team
+\n\n- ✅ Gradually add features
+\n\n
 **Next Action:**
-\n\n```bash\n\n# Choose ONE:\n\n1. Add authentication to RenOS (recommended)\n\n2. Add response badge to Rendetalje.dk\n\n3. Just start using RenOS as-is\n\n```
+
+\n\n```bash
+\n\n# Choose ONE:
+\n\n1. Add authentication to RenOS (recommended)
+\n\n2. Add response badge to Rendetalje.dk
+\n\n3. Just start using RenOS as-is
+\n\n```
 
 **What would you like to tackle first?** 😊

@@ -19,11 +19,13 @@
 ## 🎯 Detailed Analysis
 
 ### 1. tekup-chat
+
 **Location:** `c:\Users\empir\tekup-chat`
 
 **Migration Status:** ✅ **COMPLETED** (October 23, 2025)
 
 **What was migrated:**
+
 - ✅ Next.js 15 chat interface → `apps/ai-chat/`
 - ✅ All React components → `apps/ai-chat/src/components/`
 - ✅ API routes → `apps/ai-chat/app/api/` and `apps/ai-chat/src/app/api/`
@@ -36,6 +38,7 @@
 - ✅ Build verified: `pnpm build` succeeds with zero TypeScript errors
 
 **What remains:**
+
 - Source code still in original location (ready for archival)
 
 **Recommendation:** 🗄️ **READY TO ARCHIVE NOW**
@@ -46,6 +49,7 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ```
 
 **Migration Fixes Applied:**
+
 1. Fixed `next.config.ts` → `next.config.js` (Next.js 14.0.4 compatibility)
 2. Updated `postcss.config.mjs` to use Tailwind v3 plugins
 3. Converted `@import "tailwindcss"` → `@tailwind base/components/utilities`
@@ -57,14 +61,17 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ---
 
 ### 2. TekupVault
+
 **Location:** `c:\Users\empir\TekupVault`
 
 **What was migrated:**
+
 - ✅ All documentation (`.md` files) → `docs/migration/`
 - ✅ `.env.example` → Consolidated into tekup-ai root
 - ✅ Architecture patterns documented
 
 **What remains:**
+
 - `apps/vault-api/` (Express REST API + GitHub sync)
 - `apps/vault-worker/` (Background ingestion worker)
 - `packages/vault-core/`, `packages/vault-ingest/`, `packages/vault-search/`
@@ -73,6 +80,7 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 **Recommendation:** 🗄️ **ARCHIVE after code migration**
 
 **Migration TODO:**
+
 1. Copy `apps/vault-api/src/` → `tekup-ai/apps/ai-vault/src/`
 2. Copy `apps/vault-worker/src/` → `tekup-ai/apps/ai-vault-worker/src/`
 3. Merge package code into `@tekup-ai/rag` package
@@ -81,14 +89,17 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ---
 
 ### 3. Tekup Google AI (RenOS)
+
 **Location:** `c:\Users\empir\Tekup Google AI`
 
 **What was migrated:**
+
 - ✅ LLM providers (`src/llm/*.ts`) → `packages/ai-llm/src/providers/`
 - ✅ Documentation → `docs/guides/`
 - ✅ `.env.example` → Consolidated
 
 **What remains (CRITICAL - still in active use):**
+
 - 🔴 **Production backend API** (`src/api/`, `src/controllers/`, `src/services/`)
 - 🔴 **Production frontend** (`client/src/`)
 - 🔴 **Agent system** (`src/agents/`) - needs migration to `apps/ai-agents`
@@ -99,12 +110,14 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 **Recommendation:** ⏸️ **KEEP ACTIVE - Gradual migration**
 
 **Migration Plan:**
+
 1. **Phase 2A** (Week 1): Copy agent code to `apps/ai-agents/`
 2. **Phase 2B** (Week 2): Extract workflows to `packages/ai-agents/`
 3. **Phase 3** (Week 3-4): Test new structure in tekup-ai
 4. **Phase 4** (Week 5+): Migrate production traffic gradually
 
 **DO NOT archive until:**
+
 - [ ] All agent code tested in tekup-ai
 - [ ] Production endpoints verified
 - [ ] Database migrated to unified schema
@@ -113,13 +126,16 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ---
 
 ### 4. tekup-ai-assistant
+
 **Location:** `c:\Users\empir\tekup-ai-assistant`
 
 **What was migrated:**
+
 - ✅ MCP server documentation → `docs/guides/mcp/`
 - ✅ Setup guides, architecture docs
 
 **What remains:**
+
 - MCP server implementations (4 servers: Billy, RenOS, System, Vault)
 - Python source code
 - Tool definitions
@@ -127,6 +143,7 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 **Recommendation:** 🗄️ **ARCHIVE - but extract MCP servers first**
 
 **Migration TODO:**
+
 1. Copy MCP server code to `tekup-ai/apps/ai-mcp-hub/servers/`
 2. Document server configurations
 3. Archive original repo
@@ -134,13 +151,16 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ---
 
 ### 5. renos-calendar-mcp
+
 **Location:** `c:\Users\empir\Tekup-Cloud\renos-calendar-mcp`
 
 **What was migrated:**
+
 - ✅ Documentation → `docs/guides/calendar/`
 - ✅ `.env.template` → Consolidated
 
 **What remains:**
+
 - **Standalone MCP server** (5 calendar intelligence tools)
 - **Production deployment** (separate from main RenOS)
 - Integration with Billy.dk, Twilio, Google Calendar
@@ -148,6 +168,7 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 **Recommendation:** ⏸️ **KEEP as standalone service**
 
 **Reason:** Calendar MCP server should remain independent for:
+
 - Microservice architecture (single responsibility)
 - Separate deployment lifecycle
 - Can be called from tekup-ai via MCP protocol
@@ -157,13 +178,16 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ---
 
 ### 6. RendetaljeOS
+
 **Location:** `c:\Users\empir\RendetaljeOS`
 
 **What was migrated:**
+
 - ✅ `.env.example` patterns → Consolidated
 - ✅ Architecture insights
 
 **What remains:**
+
 - **ENTIRE PRODUCTION MONOREPO** (30+ apps, 18+ packages)
 - Active development
 - Production deployments
@@ -175,12 +199,15 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ---
 
 ### 7. Tekup-org
+
 **Location:** `c:\Users\empir\Tekup-org`
 
 **What was migrated:**
+
 - ✅ Architecture patterns documented
 
 **What remains:**
+
 - **ENTIRE TEKUP PORTFOLIO MONOREPO**
 - Production services
 - Shared packages
@@ -192,21 +219,25 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ## 📋 Action Plan
 
 ### Immediate (This Week)
+
 - [ ] **Copy TekupVault source code** to `apps/ai-vault` and `apps/ai-vault-worker`
 - [ ] **Copy tekup-chat source code** to `apps/ai-chat`
 - [ ] **Extract MCP servers** from tekup-ai-assistant to `apps/ai-mcp-hub`
 
 ### Week 2
+
 - [ ] **Archive tekup-chat** (rename folder with -ARCHIVED suffix)
 - [ ] **Archive TekupVault** (after verifying new code works)
 - [ ] **Archive tekup-ai-assistant** (after MCP servers migrated)
 
 ### Week 3-4
+
 - [ ] **Gradual migration** of Tekup Google AI agents
 - [ ] **Test new structure** in tekup-ai
 - [ ] **Document migration path** for future reference
 
 ### Never Archive
+
 - ✅ **RendetaljeOS** - Production monorepo
 - ✅ **Tekup-org** - Portfolio monorepo
 - ⏸️ **renos-calendar-mcp** - Standalone microservice
@@ -214,6 +245,7 @@ Rename-Item "tekup-chat" -NewName "tekup-chat-ARCHIVED-2025-10-23"
 ## 🔐 Safety Checklist
 
 Before archiving ANY repo:
+
 - [ ] All code copied to tekup-ai
 - [ ] Documentation migrated
 - [ ] Tests passing in new location

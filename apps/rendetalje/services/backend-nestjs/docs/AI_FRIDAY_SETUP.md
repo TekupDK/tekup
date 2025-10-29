@@ -33,6 +33,7 @@ AI Friday is an intelligent assistant integrated into RendetaljeOS that provides
 ### Chat Endpoints
 
 #### POST `/api/v1/ai-friday/chat`
+
 Send message to AI Friday and get response.
 
 **Request:**
@@ -74,6 +75,7 @@ Send message to AI Friday and get response.
 ```
 
 #### POST `/api/v1/ai-friday/chat/stream`
+
 Streaming SSE responses for real-time chat experience.
 
 **Request:** Same as `/chat` endpoint
@@ -90,9 +92,11 @@ data: [DONE]
 ### Voice Endpoints
 
 #### POST `/api/v1/ai-friday/voice/transcribe`
+
 Convert audio to text (speech recognition).
 
 **Request:** `multipart/form-data`
+
 - `audio` - Audio file (WAV, MP3, etc.)
 - `language` - Language code (default: 'da' for Danish)
 
@@ -104,6 +108,7 @@ Convert audio to text (speech recognition).
 ```
 
 #### POST `/api/v1/ai-friday/voice/synthesize`
+
 Convert text to speech (TTS).
 
 **Request:**
@@ -119,6 +124,7 @@ Convert text to speech (TTS).
 ### Session Management
 
 #### GET `/api/v1/ai-friday/sessions?limit=20`
+
 Get user's recent chat sessions.
 
 **Response:**
@@ -141,6 +147,7 @@ Get user's recent chat sessions.
 ```
 
 #### GET `/api/v1/ai-friday/sessions/:id`
+
 Get session details with message history.
 
 **Response:**
@@ -172,6 +179,7 @@ Get session details with message history.
 ```
 
 #### PATCH `/api/v1/ai-friday/sessions/:id`
+
 Update session title or metadata.
 
 **Request:**
@@ -183,14 +191,17 @@ Update session title or metadata.
 ```
 
 #### DELETE `/api/v1/ai-friday/sessions/:id`
+
 Delete session and all messages (204 No Content).
 
 #### GET `/api/v1/ai-friday/sessions/search?q=job&limit=10`
+
 Search sessions by title.
 
 ### Admin Endpoints
 
 #### GET `/api/v1/ai-friday/analytics?from=2025-10-01&to=2025-10-31`
+
 Get AI Friday usage analytics (Owner/Admin only).
 
 **Response:**
@@ -215,6 +226,7 @@ Get AI Friday usage analytics (Owner/Admin only).
 ```
 
 #### GET `/api/v1/ai-friday/health`
+
 Check AI Friday service health (Owner/Admin only).
 
 **Response:**
@@ -288,6 +300,7 @@ export default () => ({
 AI Friday generates role-specific system prompts:
 
 ### Owner Context
+
 ```
 Du er Friday, en AI-assistent for RendetaljeOS.
 
@@ -302,6 +315,7 @@ Som ejer har du adgang til alle funktioner og kan se:
 ```
 
 ### Employee Context
+
 ```
 Som medarbejder kan du:
 - Se dine tildelte jobs
@@ -311,6 +325,7 @@ Som medarbejder kan du:
 ```
 
 ### Customer Context
+
 ```
 Som kunde kan du:
 - Booke nye rengøringsopgaver
@@ -358,32 +373,39 @@ Som kunde kan du:
 ```
 
 ### POST `/chat/stream`
+
 Same request, streaming response with SSE.
 
 ### POST `/transcribe`
+
 Multipart form data with audio file.
 
 ### POST `/synthesize`
+
 JSON with text + language, returns audio buffer.
 
 ### GET `/health`
+
 Returns 200 OK if service is healthy.
 
 ## TODOs
 
 ### High Priority
+
 - [ ] Configure external AI Friday API URL + API key
 - [ ] Implement job/customer context lookups with LeadsService
 - [ ] Implement AI actions (search_jobs, search_customers, create_job)
 - [ ] Add integration tests for chat flow
 
 ### Medium Priority
+
 - [ ] Add rate limiting for chat endpoints (prevent abuse)
 - [ ] Implement conversation summarization for long sessions
 - [ ] Add support for file attachments in chat
 - [ ] Create admin dashboard for analytics visualization
 
 ### Low Priority
+
 - [ ] Multi-language support (English, German, etc.)
 - [ ] Voice command shortcuts
 - [ ] Conversation export (PDF, JSON)
@@ -476,6 +498,7 @@ mediaRecorder.onstop = async () => {
 **Cause:** Missing `AI_FRIDAY_URL` or `AI_FRIDAY_API_KEY` in environment variables.
 
 **Fix:**
+
 1. Add environment variables to `.env`
 2. Restart backend server
 3. Verify configuration in logs
@@ -485,6 +508,7 @@ mediaRecorder.onstop = async () => {
 **Cause:** External AI Friday API is unreachable or returns error.
 
 **Fix:**
+
 1. Check AI Friday API health endpoint
 2. Verify network connectivity
 3. Check API key validity
@@ -495,6 +519,7 @@ mediaRecorder.onstop = async () => {
 **Cause:** Audio file format not supported or too large.
 
 **Fix:**
+
 1. Ensure audio is WAV, MP3, or M4A format
 2. Keep files under 10MB
 3. Sample rate: 16kHz recommended

@@ -8,9 +8,10 @@ Automatisk hente alle nødvendige API keys og credentials fra forskellige dashbo
 
 ## Task 1: Hent Google Calendar Service Account Key
 
-**URL**: https://console.cloud.google.com/iam-admin/serviceaccounts?project=renos-465008
+**URL**: <https://console.cloud.google.com/iam-admin/serviceaccounts?project=renos-465008>
 
 **Steps**:
+
 1. Find service account: `renos-319@renos-465008.iam.gserviceaccount.com`
 2. Klik på service account navnet
 3. Gå til "Keys" tab
@@ -29,9 +30,10 @@ MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCyeQeQ...
 
 ## Task 2: Verificer Supabase Credentials
 
-**URL**: https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/settings/api
+**URL**: <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/settings/api>
 
 **Steps**:
+
 1. Scroll til "Project API keys" section
 2. Find "anon public" key
 3. Copy key value
@@ -47,9 +49,10 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl...
 
 ## Task 3: Verificer Render Account
 
-**URL**: https://dashboard.render.com/
+**URL**: <https://dashboard.render.com/>
 
 **Steps**:
+
 1. Verificer at du er logged in
 2. Gå til "Environment" → "Environment Groups"
 3. Check at "Tekup Database Environment" group eksisterer
@@ -57,15 +60,17 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl...
 5. Return status: "Render account verified"
 
 **Notes**:
+
 - Ingen credentials skal hentes herfra
 - Bare verificer at groups eksisterer
 - De vil blive linket automatisk via render.yaml
 
 ## Task 4: Get Twilio Credentials (Optional)
 
-**URL**: https://console.twilio.com/
+**URL**: <https://console.twilio.com/>
 
 **Steps** (kun hvis voice alerts skal bruges):
+
 1. Find "Account SID" på dashboard
 2. Copy Account SID
 3. Find "Auth Token" (klik "Show" hvis skjult)
@@ -105,6 +110,7 @@ Efter alle tasks er færdige, return følgende JSON:
 ## Error Handling
 
 Hvis en task fejler:
+
 - Log fejlen med detaljer
 - Continue til næste task hvis muligt
 - Return `"ready_for_deployment": false` hvis kritiske credentials mangler
@@ -127,8 +133,8 @@ cd renos-calendar-mcp
 ```
 
 Dette vil automatisk:
+
 1. Bruge credentials fra .secrets/
 2. Deploy Supabase schema
 3. Guide gennem Render deployment
 4. Verificere alt virker
-

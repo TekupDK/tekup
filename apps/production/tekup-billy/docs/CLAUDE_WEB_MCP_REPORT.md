@@ -1,4 +1,4 @@
-# MCP Server Verification Report for Anthropic/Claude.ai Team
+﻿# MCP Server Verification Report for Anthropic/Claude.ai Team
 
 **Date:** October 11, 2025  
 **Server:** Tekup-Billy MCP Server  
@@ -364,8 +364,8 @@ Our MCP server provides 13 Billy.dk accounting tools:
 
 **Documentation:**
 
-- GitHub: <https://github.com/JonasAbde/Tekup-Billy>
-- MCP Guide: [docs/UNIVERSAL_MCP_PLUGIN_GUIDE.md](https://github.com/JonasAbde/Tekup-Billy/blob/main/docs/UNIVERSAL_MCP_PLUGIN_GUIDE.md)
+- GitHub: <https://github.com/TekupDK/Tekup-Billy>
+- MCP Guide: [docs/UNIVERSAL_MCP_PLUGIN_GUIDE.md](https://github.com/TekupDK/Tekup-Billy/blob/main/docs/UNIVERSAL_MCP_PLUGIN_GUIDE.md)
 
 **Test Commands:**
 All verification commands provided above can be run anytime against our production server.
@@ -390,6 +390,6 @@ All verification commands provided above can be run anytime against our producti
 Jonas Abde  
 Tekup/Rendetalje ApS  
 Email: <jonas@tekup.dk>  
-GitHub: @JonasAbde
+GitHub: @TekupDK
 
 **Thank you for reviewing this report. We're ready to collaborate on testing and implementation!**

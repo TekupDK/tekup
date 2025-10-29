@@ -29,6 +29,7 @@ RESULTAT: 1 Supabase projekt for alle 3 apps ✅
 ## 📋 Repo Status
 
 ### 1. **TekupVault**
+
 - **Current:** Separat Supabase projekt (Paris)
 - **Database:** 3 tabeller (documents, embeddings, sync_status)
 - **Tech:** Supabase client + pgvector
@@ -36,6 +37,7 @@ RESULTAT: 1 Supabase projekt for alle 3 apps ✅
 - **Effort:** 2-3 timer
 
 ### 2. **Tekup-Billy**
+
 - **Current:** Allerede på RenOS projekt (Frankfurt)
 - **Database:** 6+ tabeller (billy_*)
 - **Tech:** Supabase client + encryption
@@ -43,6 +45,7 @@ RESULTAT: 1 Supabase projekt for alle 3 apps ✅
 - **Effort:** 1 time
 
 ### 3. **RendetaljeOS**
+
 - **Current:** Allerede på RenOS projekt (Frankfurt)
 - **Database:** 19 Prisma models (leads, customers, bookings, etc.)
 - **Tech:** Prisma ORM → Supabase
@@ -56,6 +59,7 @@ RESULTAT: 1 Supabase projekt for alle 3 apps ✅
 ### **PHASE 1: Setup & Forberedelse** ⏱️ 1-2 timer
 
 #### 1.1 Backup Alle Data
+
 ```bash
 # Backup TekupVault projekt (Paris)
 cd c:/Users/empir/TekupVault
@@ -68,6 +72,7 @@ supabase db dump --db-url="postgresql://postgres:Habibie12%40@db.oaevagdgrasfppb
 ```
 
 #### 1.2 Verificer Current State
+
 ```sql
 -- Connect til RenOS projekt
 psql "postgresql://postgres:Habibie12%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres"
@@ -94,6 +99,7 @@ SELECT COUNT(*) FROM bookings;
 ```
 
 #### 1.3 Opret Migration Branches
+
 ```bash
 # TekupVault
 cd c:/Users/empir/TekupVault
@@ -119,6 +125,7 @@ git stash
 ### **PHASE 2: Migrer TekupVault** ⏱️ 2-3 timer
 
 #### 2.1 Opret Vault Tabeller i RenOS Projekt
+
 ```sql
 -- Connect til RenOS projekt
 psql "postgresql://postgres:Habibie12%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres"
@@ -199,6 +206,7 @@ CREATE POLICY "Authenticated users can read documents"
 ```
 
 #### 2.2 Migrer Data
+
 ```bash
 # Export data fra TekupVault projekt
 pg_dump "postgresql://postgres.twaoebtlusudzxshjral:...@db.twaoebtlusudzxshjral.supabase.co:5432/postgres" \
@@ -227,6 +235,7 @@ psql "postgresql://postgres:Habibie12%40@db.oaevagdgrasfppbrxbey.supabase.co:543
 ```
 
 #### 2.3 Update TekupVault App
+
 ```bash
 cd c:/Users/empir/TekupVault
 
@@ -250,6 +259,7 @@ DATABASE_URL=postgresql://postgres:Habibie12%40@db.oaevagdgrasfppbrxbey.supabase
 ```
 
 #### 2.4 Test TekupVault
+
 ```bash
 # Start local
 cd c:/Users/empir/TekupVault
@@ -272,6 +282,7 @@ curl http://localhost:3002/api/search?q=test
 Billy er allerede på RenOS projekt, så minimal migration:
 
 #### 3.1 Verify Current Setup
+
 ```bash
 cd c:/Users/empir/Tekup-Billy
 
@@ -281,6 +292,7 @@ cat .env | grep SUPABASE
 ```
 
 #### 3.2 Optimization (Optional)
+
 ```bash
 # Opdater til nyeste Supabase client
 pnpm update @supabase/supabase-js
@@ -297,6 +309,7 @@ pnpm test
 ### **PHASE 4: Opdater RendetaljeOS** ⏱️ 3-4 timer
 
 #### 4.1 Current Status Check
+
 ```bash
 cd c:/Users/empir/RendetaljeOS
 
@@ -309,6 +322,7 @@ cat apps/backend/prisma/schema.prisma | head -20
 ```
 
 #### 4.2 Option A: Keep Prisma (Minimal Change)
+
 ```bash
 # Verify connection virker
 cd apps/backend
@@ -321,6 +335,7 @@ pnpm dev
 ```
 
 #### 4.3 Option B: Migrate til @tekup/database (Advanced)
+
 ```bash
 # Install central database package
 cd apps/backend
@@ -342,6 +357,7 @@ pnpm add @tekup/database@file:../../../tekup-database
 ### **PHASE 5: Testing** ⏱️ 1-2 timer
 
 #### 5.1 Individual App Tests
+
 ```bash
 # Test 1: TekupVault
 cd c:/Users/empir/TekupVault
@@ -360,6 +376,7 @@ pnpm dev
 ```
 
 #### 5.2 Integration Tests
+
 ```bash
 # Test alle 3 apps køre samtidigt
 # Verify ingen connection pool issues
@@ -371,6 +388,7 @@ pnpm dev
 ### **PHASE 6: Documentation & Cleanup** ⏱️ 1 time
 
 #### 6.1 Update Documentation
+
 ```bash
 # TekupVault
 cd c:/Users/empir/TekupVault
@@ -393,6 +411,7 @@ git push
 ```
 
 #### 6.2 Cleanup Old Resources
+
 ```bash
 # Keep TekupVault Paris projekt i 30 dage (backup)
 # Documenter decommission plan
@@ -414,6 +433,7 @@ git push
 | **TOTAL** | **End-to-end** | **9-13h** | ⏳ **Ready** |
 
 **Anbefalet opdeling:**
+
 - Session 1 (4h): Phase 1-2 (TekupVault migration)
 - Session 2 (2h): Phase 3 (Billy optimization)
 - Session 3 (4h): Phase 4-5 (RendetaljeOS + testing)

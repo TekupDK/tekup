@@ -2,7 +2,7 @@
 
 **Date:** 19. Oktober 2025  
 **Testers:** Cascade AI (Autonomous) + Perplexity AI (Manual)  
-**Environment:** http://localhost:3000  
+**Environment:** <http://localhost:3000>  
 **Status:** ✅ Comprehensive Validation Complete
 
 ---
@@ -69,6 +69,7 @@ Status: ❌ FAIL
 **Root Cause Analysis:**
 
 Likely causes:
+
 1. OpenAI returns current date from its knowledge cutoff
 2. System prompt doesn't include current date
 3. API timeout on date-related queries
@@ -110,7 +111,8 @@ Autonomous test confirmed:
 
 Code blocks SHOULD render with syntax highlighting via markdown.
 
-**Possible Issue:** 
+**Possible Issue:**
+
 - Perplexity tested without ` ``` ` fenced code blocks?
 - Or AI didn't use proper markdown format?
 
@@ -128,7 +130,8 @@ Code blocks SHOULD render with syntax highlighting via markdown.
 
 **Status:** ❌ EXPECTED (feature not built)
 
-**Roadmap:** 
+**Roadmap:**
+
 - Phase 3 feature (8 hours)
 - Requires Supabase integration
 - Not a bug, just not implemented
@@ -172,6 +175,7 @@ if (!message || typeof message !== 'string') {
 ```
 
 But frontend doesn't warn users about:
+
 - Sensitive data (passwords, API keys)
 - PII (personal info)
 - File uploads (not implemented)
@@ -344,6 +348,7 @@ catch (error) {
 ## 🔬 Test Methodology Comparison
 
 ### Autonomous Tests (Cascade AI)
+
 ```yaml
 Approach: Automated PowerShell scripts
 Scenarios: 23 programmatic tests
@@ -368,6 +373,7 @@ Limitations:
 ```
 
 ### Manual Tests (Perplexity)
+
 ```yaml
 Approach: Human-like interaction
 Scenarios: ~15 realistic queries
@@ -393,6 +399,7 @@ Limitations:
 ### Combined Approach = Best Practice ✅
 
 The two testing methods complement each other:
+
 - Autonomous → Technical validation
 - Manual → UX validation
 - Together → Complete picture
@@ -402,11 +409,13 @@ The two testing methods complement each other:
 ## 📊 Updated Test Score
 
 ### Before Perplexity Tests
+
 ```
 Score: 22/23 (95.7%)
 ```
 
 ### After Perplexity Tests
+
 ```
 New Issues Found: 2
 - System query failures (P1)
@@ -439,11 +448,13 @@ const SYSTEM_PROMPT = `...
 ```
 
 **2. Fix TekupVault Auth** (30 min)
+
 - Get API key from Render.com
 - Update .env.local
 - Test sources appear
 
 **3. Better Error Messages** (1 hour)
+
 - Specific error types
 - User-friendly messages
 - Retry suggestions
@@ -451,11 +462,13 @@ const SYSTEM_PROMPT = `...
 ### This Week (6 hours)
 
 **4. Response Caching** (4 hours)
+
 - Cache common queries
 - Reduce avg response time
 - Target: <3s
 
 **5. Sensitive Data Detection** (2 hours) 🆕
+
 - Pattern matching
 - User warnings
 - Optional redaction
@@ -463,16 +476,19 @@ const SYSTEM_PROMPT = `...
 ### This Month (12 hours)
 
 **6. Session Persistence** (8 hours)
+
 - Supabase integration
 - Conversation sidebar
 - Search history
 
 **7. Enhanced Code Blocks** (2 hours)
+
 - Copy buttons
 - Better highlighting
 - Line numbers
 
 **8. Loading Improvements** (2 hours)
+
 - Progress text
 - "Searching TekupVault..."
 - Time estimates
@@ -484,6 +500,7 @@ const SYSTEM_PROMPT = `...
 ### For Jonas
 
 **Immediate Actions:**
+
 1. Fix system query bug (add date to prompt) ← NEW
 2. Fix TekupVault auth
 3. Test both fixes work
@@ -499,6 +516,7 @@ const SYSTEM_PROMPT = `...
 ### For Future Testing
 
 **Best Practice:**
+
 - Run autonomous tests first (technical validation)
 - Follow with manual testing (UX validation)
 - Cross-reference findings
@@ -550,11 +568,13 @@ $queries = @(
 **Overall Quality:** 8/10 (down from 8.5/10)
 
 **Why Lower:**
+
 - Perplexity found real system query bug
 - Sensitive data warnings missing
 - Error messages need work
 
 **Why Still Good:**
+
 - Core functionality solid
 - Security robust
 - Performance acceptable
@@ -599,6 +619,7 @@ Server: localhost:3000
 ### B. Test Data
 
 Perplexity's test queries:
+
 - "Forklar Tekups TIER-system"
 - "Vis et React-komponent eksempel"
 - "😊🎉💻🔥"

@@ -208,6 +208,7 @@
 3. **Rendetalje Backend:** `https://renos-backend.onrender.com/health` ✅ Up (100%)
 
 **Removed Services (not deployed):**
+
 - Calendar MCP (not yet in production)
 
 **Configuration:**
@@ -215,7 +216,7 @@
 - Monitor Type: HTTP(s)
 - Interval: 5 minutes
 - Timeout: 30 seconds
-- Alert Email: info@rendetalje.dk
+- Alert Email: <info@rendetalje.dk>
 - Alert Threshold: 1 failed check
 
 **Dashboard Status:** 3 Up, 0 Down, 0 Paused
@@ -249,7 +250,7 @@
 
 ~~**Method A: Supabase Dashboard (Recommended)**~~
 
-1. Go to https://supabase.com/dashboard
+1. Go to <https://supabase.com/dashboard>
 2. Select project: `oaevagdgrasfppbrxbey` (RenOS production)
 3. SQL Editor
 4. Copy/paste `004_application_logs.sql`
@@ -291,7 +292,7 @@ LOG_LEVEL=info
 
 **Steps:**
 
-1. https://dashboard.render.com
+1. <https://dashboard.render.com>
 2. Select service
 3. Environment tab
 4. Add variables
@@ -329,7 +330,7 @@ curl https://your-backend.onrender.com/health
 
 **Steps:**
 
-1. Go to https://uptimerobot.com/signUp
+1. Go to <https://uptimerobot.com/signUp>
 2. Create free account
 3. Add New Monitor for each service
 4. Configure email alerts
@@ -374,7 +375,7 @@ SENTRY_AUTH_TOKEN=... (for source maps)
 
 ## 📈 Success Criteria
 
-### After Completion You Will Have:
+### After Completion You Will Have
 
 ✅ **Error Tracking**
 

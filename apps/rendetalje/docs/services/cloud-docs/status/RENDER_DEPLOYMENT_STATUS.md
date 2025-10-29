@@ -1,4 +1,5 @@
-# 🚀 Tekup Render.com Deployment Status Report
+﻿# 🚀 Tekup Render.com Deployment Status Report
+
 **Genereret**: 17. Oktober 2025, 04:30  
 **Workspace**: Tekup (tea-d3dup37fte5s73f1iq20)  
 **Region**: Frankfurt
@@ -8,24 +9,28 @@
 ## 📊 Portfolio Overview
 
 ### Deployed Services: 4
+
 - **3 Web Services** (Node.js + Docker)
 - **1 Static Site** (React frontend)
 - **0 Databases** (using external Supabase)
 - **0 Key-Value Stores**
 
 ### Health Status
+
 - ✅ **3 Live & Healthy**
 - ⚠️ **1 Partially Functional** (TekupVault - recent restart)
 
 ---
 
 ## 🟢 Service #1: Tekup-Billy (MCP Server)
-**URL**: https://tekup-billy.onrender.com  
+
+**URL**: <https://tekup-billy.onrender.com>  
 **Status**: ✅ **LIVE & ACTIVE**  
 **Plan**: Starter ($7/mo)  
 **Region**: Frankfurt
 
 ### Deployment Info
+
 - **Service ID**: srv-d3kk30t6ubrc73e1qon0
 - **Created**: 10. Okt 2025 (17:25 UTC)
 - **Last Deploy**: 16. Okt 2025 (11:46 UTC) - **LIVE**
@@ -34,6 +39,7 @@
 - **Health Check**: /health
 
 ### Latest Deploy Commit
+
 ```
 docs: Session Complete Status - All Phase 2 work finished and saved
 - 165/165 statements converted
@@ -44,17 +50,19 @@ docs: Session Complete Status - All Phase 2 work finished and saved
 ```
 
 ### Production Activity (Last 24h)
+
 - **Total Requests**: 20+ successful
 - **Response Time**: 1-7ms (excellent!)
-- **Status Codes**: 
+- **Status Codes**:
   - 200 OK: 16 requests ✅
   - 202 Accepted: 3 requests ✅
   - 404 Not Found: 1 request (expected, DELETE endpoint)
-- **User Agents**: 
+- **User Agents**:
   - Claude-User (AI integration working!)
   - ktor-client (Windsurf/Codeium?)
 
 ### Key Observations
+
 ✅ **MCP HTTP server fungerer perfekt**  
 ✅ **Claude.ai bruger det aktivt** (34.162.102.82)  
 ✅ **Response times under 10ms**  
@@ -63,12 +71,14 @@ docs: Session Complete Status - All Phase 2 work finished and saved
 ---
 
 ## 🟢 Service #2: RenOS Backend
-**URL**: https://renos-backend.onrender.com  
+
+**URL**: <https://renos-backend.onrender.com>  
 **Status**: ✅ **LIVE & HEALTHY**  
 **Plan**: Starter ($7/mo)  
 **Region**: Frankfurt
 
 ### Deployment Info
+
 - **Service ID**: srv-d3kgr03e5dus73fl48v0
 - **Created**: 10. Okt 2025 (13:43 UTC)
 - **Last Deploy**: 14. Okt 2025 (21:26 UTC) - **LIVE**
@@ -79,6 +89,7 @@ docs: Session Complete Status - All Phase 2 work finished and saved
 - **Health Check**: /health/readyz
 
 ### Latest Deploy Commit
+
 ```
 fix: Implement quick wins from repository audit
 
@@ -94,12 +105,14 @@ fix: Implement quick wins from repository audit
 ```
 
 ### Production Status
+
 ✅ **Database connection healthy** (tested every 5 min)  
 ⚠️ **Gmail API failures** (recurring error every 20 min)  
 ✅ **Logging with Pino** (structured JSON)  
 ✅ **Auto-deploy fungerer**
 
 ### Error Analysis
+
 **Recurring Error (every 20 min)**:
 ```json
 {
@@ -111,6 +124,7 @@ fix: Implement quick wins from repository audit
 ```
 
 **Mulige årsager**:
+
 1. Gmail OAuth token expired
 2. Scheduled job kører, men mangler credentials
 3. Rate limit fra Google API
@@ -121,12 +135,14 @@ fix: Implement quick wins from repository audit
 ---
 
 ## 🟢 Service #3: RenOS Frontend
-**URL**: https://renos-frontend.onrender.com  
+
+**URL**: <https://renos-frontend.onrender.com>  
 **Status**: ✅ **LIVE**  
 **Type**: Static Site (FREE)  
 **Region**: Global CDN
 
 ### Deployment Info
+
 - **Service ID**: srv-d3kkp1h5pdvs739kgcl0
 - **Created**: 10. Okt 2025 (18:12 UTC)
 - **Last Deploy**: 14. Okt 2025 (21:34 UTC) - **LIVE**
@@ -134,6 +150,7 @@ fix: Implement quick wins from repository audit
 - **Publish Path**: ./dist
 
 ### Latest Deploy Commit
+
 ```
 📝 Test Documentation - Comprehensive UI Testing Guides
 
@@ -151,6 +168,7 @@ Covers:
 ```
 
 ### Key Features
+
 ✅ **Global CDN delivery** (fast worldwide)  
 ✅ **Customer management UI**  
 ✅ **Toast notifications (sonner)**  
@@ -160,12 +178,14 @@ Covers:
 ---
 
 ## ⚠️ Service #4: TekupVault (Knowledge Hub)
-**URL**: https://tekupvault.onrender.com  
+
+**URL**: <https://tekupvault.onrender.com>  
 **Status**: ⚠️ **RESTARTED RECENTLY** (was hibernating)  
 **Plan**: Free (spin down after inactivity)  
 **Region**: Frankfurt
 
 ### Deployment Info
+
 - **Service ID**: srv-d3nbh1er433s73bejq0g
 - **Created**: 14. Okt 2025 (20:54 UTC)
 - **Last Deploy**: **17. Okt 2025 (02:11 UTC)** - **LIVE** (nyeste!)
@@ -175,6 +195,7 @@ Covers:
 - **Health Check**: /health
 
 ### Latest Deploy Commit (NYE features!)
+
 ```
 feat: Implement MCP HTTP Server for TekupVault
 
@@ -192,13 +213,16 @@ feat: Implement MCP HTTP Server for TekupVault
 ```
 
 ### Recent Activity
+
 ✅ **Health checks responding** (200 OK, <1ms)  
 ❌ **MCP endpoint failing** (/.well-known/mcp.json → 502 Bad Gateway)  
 ⚠️ **Service was hibernated** (SIGTERM received 02:27:23)  
 ⚠️ **Now restarting** (free tier spins down after inactivity)
 
 ### Error Analysis
+
 **Failed Requests** (17. Okt 02:29):
+
 - Client IP: 85.184.177.246 (din IP!)
 - User-Agent: PowerShell/5.1
 - **3 × 502 errors**: /.well-known/mcp.json, /health
@@ -211,6 +235,7 @@ feat: Implement MCP HTTP Server for TekupVault
 ## 📈 Deployment Metrics
 
 ### Build Performance
+
 | Service | Build Time | Status |
 |---------|-----------|--------|
 | Tekup-Billy | ~1 min | ✅ Docker multi-stage |
@@ -219,6 +244,7 @@ feat: Implement MCP HTTP Server for TekupVault
 | TekupVault | ~2.5 min | ✅ pnpm monorepo |
 
 ### Response Times
+
 | Service | Avg | P95 | Status |
 |---------|-----|-----|--------|
 | Tekup-Billy | 3ms | 7ms | 🟢 Excellent |
@@ -226,6 +252,7 @@ feat: Implement MCP HTTP Server for TekupVault
 | TekupVault | 0-1ms | 1ms | 🟢 Excellent |
 
 ### Deployment Frequency
+
 | Service | Last 7 Days | Auto-Deploy |
 |---------|-------------|-------------|
 | Tekup-Billy | 1 deploy | ✅ main branch |
@@ -238,6 +265,7 @@ feat: Implement MCP HTTP Server for TekupVault
 ## 🚨 Critical Issues
 
 ### Priority 1: CRITICAL
+
 **None** 🎉 - All services operational!
 
 ### Priority 2: HIGH
@@ -268,17 +296,21 @@ feat: Implement MCP HTTP Server for TekupVault
 ## 💰 Cost Analysis
 
 ### Current Monthly Cost: **$14/mo**
+
 - Tekup-Billy (Starter): $7/mo
 - RenOS Backend (Starter): $7/mo
 - RenOS Frontend (Static): $0/mo
 - TekupVault (Free): $0/mo
 
 ### Recommended Upgrades: **$21/mo**
+
 - TekupVault → Starter: +$7/mo (always-on, no cold starts)
 - Total: **$21/mo**
 
 ### Alternative Architecture
+
 **Consolidate services** → Save money:
+
 - Run Tekup-Billy + TekupVault on 1 instance
 - Result: $14/mo (current) vs. $21/mo (upgrade all)
 
@@ -317,16 +349,19 @@ Start-Process https://renos-frontend.onrender.com
 ### Short-Term (This Month)
 
 **4. Upgrade TekupVault til Starter**
+
 - Eliminerer cold starts
 - Always-on for AI integrations
 - MCP endpoint altid tilgængelig
 
 **5. Set Up Monitoring**
+
 - Uptime Robot for health checks
 - Sentry for error tracking (already in code)
 - Custom dashboard for all services
 
 **6. Optimize Costs**
+
 - Consider combining Tekup-Billy + TekupVault
 - Use environment routing (/mcp vs. /billy)
 - Save $7/mo
@@ -334,16 +369,19 @@ Start-Process https://renos-frontend.onrender.com
 ### Long-Term (This Quarter)
 
 **7. Add Render Postgres**
+
 - Move from Supabase for co-location
 - Faster queries (same datacenter)
 - Simplified architecture
 
 **8. Implement CI/CD Testing**
+
 - GitHub Actions
 - Run tests before deploy
 - Automated rollback on failures
 
 **9. Load Testing**
+
 - Simulate concurrent MCP requests
 - Verify scaling behavior
 - Optimize response times
@@ -364,6 +402,7 @@ Start-Process https://renos-frontend.onrender.com
 ## 🔗 Quick Links
 
 ### Render Dashboard
+
 - [Tekup Workspace](https://dashboard.render.com/org/tea-d3dup37fte5s73f1iq20)
 - [Tekup-Billy](https://dashboard.render.com/web/srv-d3kk30t6ubrc73e1qon0)
 - [RenOS Backend](https://dashboard.render.com/web/srv-d3kgr03e5dus73fl48v0)
@@ -371,16 +410,18 @@ Start-Process https://renos-frontend.onrender.com
 - [TekupVault](https://dashboard.render.com/web/srv-d3nbh1er433s73bejq0g)
 
 ### Production URLs
-- https://tekup-billy.onrender.com
-- https://renos-backend.onrender.com
-- https://renos-frontend.onrender.com
-- https://tekupvault.onrender.com
+
+- <https://tekup-billy.onrender.com>
+- <https://renos-backend.onrender.com>
+- <https://renos-frontend.onrender.com>
+- <https://tekupvault.onrender.com>
 
 ### GitHub Repos
-- https://github.com/JonasAbde/Tekup-Billy
-- https://github.com/JonasAbde/renos-backend
-- https://github.com/JonasAbde/renos-frontend
-- https://github.com/JonasAbde/TekupVault
+
+- <https://github.com/TekupDK/Tekup-Billy>
+- <https://github.com/TekupDK/renos-backend>
+- <https://github.com/TekupDK/renos-frontend>
+- <https://github.com/TekupDK/TekupVault>
 
 ---
 

@@ -3,12 +3,14 @@
 ## ✅ Alle 3 Anbefalinger Implementeret
 
 ### 1. ⚡ Rate Limiting Fixet
+
 **Fil:** `scripts/safe-batch-invoice-analysis.ps1`
 - Øget delay: 300ms → 600ms
 - Forhindrer HTTP 429 fejl
 - Brug dette script fremover for batch-operationer
 
 ### 2. 📊 Supabase Audit Logging Klar
+
 **Filer:**
 - `scripts/supabase-setup-audit-logs.sql` - Database schema
 - `docs/operations/ENABLE_SUPABASE_AUDIT_LOGGING.md` - Setup guide
@@ -23,6 +25,7 @@
 - Historisk analyse
 
 ### 3. 🧪 Shortwave Test Klar
+
 **Fil:** `docs/testing/SHORTWAVE_INTEGRATION_TEST.md`
 
 **Test:**

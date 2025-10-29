@@ -71,11 +71,13 @@ Dette åbner Prisma Studio i browser (<http://localhost:5555>) hvor du kan se di
 ## Step 5: Opdater Render.com Environment Variables
 
 ### A) Gå til Render Dashboard
+
 1. Log ind på [Render.com](https://dashboard.render.com)
 2. Vælg dit backend service (f.eks. "renos-backend")
 3. Klik på "Environment" i venstre menu
 
 ### B) Opdater DATABASE_URL
+
 **⚠️ VIGTIGT:** Brug **Transaction Pooler** URL til Render (ikke direct connection)
 
 ```bash
@@ -84,6 +86,7 @@ DATABASE_URL=postgresql://postgres.oaevagdgrasfppbrxbey:ZyX9pQm4K7vN2wE8@aws-1-e
 ```
 
 **Hvorfor Transaction Pooler?**
+
 - ✅ Optimeret til serverless environments (Render)
 - ✅ Håndterer mange korte connections
 - ✅ IPv4 kompatibel (Render kræver dette)
@@ -132,6 +135,7 @@ npx prisma migrate deploy
 ## Step 7: Verify Production Deployment
 
 ### A) Check Logs
+
 I Render Dashboard, gå til "Logs" og kig efter:
 
 ```
@@ -179,6 +183,7 @@ pg_dump "postgresql://user:password@neon-host:5432/neon_db" > neon_backup.sql
 ### B) Import til Supabase
 
 **Via Supabase Dashboard:**
+
 1. Gå til [SQL Editor](https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/sql)
 2. Upload `neon_backup.sql`
 3. Klik "Run"

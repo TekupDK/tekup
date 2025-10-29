@@ -78,6 +78,7 @@
 ## 🎯 **KONSOLIDERINGS METRICS**
 
 ### **Reduktioner:**
+
 - **Repos:** 11 → 4 (64% reduktion)
 - **Apps/Services:** 66 → 4 (94% reduktion)
 - **Maintenance:** 40 timer/uge → 8 timer/uge (80% reduktion)
@@ -85,6 +86,7 @@
 - **Developer onboarding:** 4-6 timer → 30 minutter (90% reduktion)
 
 ### **Værdiskabelse:**
+
 - **Månedlige besparelser:** €7,500+ (developer time + infrastructure)
 - **Konsoliderings investment:** €15,000 (3-4 uger)
 - **ROI:** 500% inden for 2 måneder
@@ -98,12 +100,14 @@
 **Mål:** Health score 73 → 78/100
 
 **Week 1: Archive Legacy**
+
 - [x] Tekup-Billy v1.4.0 released (Oct 18, 2025)
 - [ ] Extract Tekup-org value (design system + schemas)
 - [ ] Archive Tekup-org repository
 - [ ] Git cleanup (1,196 → <100 uncommitted files)
 
 **Week 2-4: Testing Foundation**
+
 - [ ] RenOS Frontend test framework (30% coverage target)
 - [ ] RenOS Backend integration tests
 - [ ] TekupVault health monitoring
@@ -121,6 +125,7 @@
 **Mål:** Health score 78 → 82/100
 
 **Priorities:**
+
 - [ ] Deploy renos-calendar-mcp to production
 - [ ] Complete RendetaljeOS features (Gmail integration)
 - [ ] Tekup-Billy Phase 2: Circuit breaker + Resilience
@@ -139,6 +144,7 @@
 **Mål:** Health score 82 → 85/100, €1.15M værdi
 
 **Priorities:**
+
 - [ ] Complete monitoring for all repos
 - [ ] Implement CI/CD pipelines
 - [ ] Scale infrastructure
@@ -158,16 +164,18 @@
 ### **Production Services (4) - ✅ LIVE**
 
 #### 1. **TekupVault**
+
 - **Status:** ✅ Production (v0.1.0)
-- **URL:** https://tekupvault.onrender.com
+- **URL:** <https://tekupvault.onrender.com>
 - **Tech:** TypeScript Turborepo, OpenAI, pgvector
 - **Features:** Semantic search, 14 repos indexed
 - **Health:** 8.5/10
 - **Value:** €120,000
 
 #### 2. **Tekup-Billy**
+
 - **Status:** ✅ Production (v1.4.3)
-- **URL:** https://tekup-billy.onrender.com
+- **URL:** <https://tekup-billy.onrender.com>
 - **Tech:** TypeScript, MCP SDK, Redis, Supabase
 - **Features:** 32 MCP tools, horizontal scaling
 - **Health:** 9.2/10
@@ -175,16 +183,18 @@
 - **Roadmap:** Phase 1 complete, Phase 2-5 planned
 
 #### 3. **renos-backend**
+
 - **Status:** ✅ Production
-- **URL:** https://renos-backend.onrender.com
+- **URL:** <https://renos-backend.onrender.com>
 - **Tech:** Node.js, Express, Prisma, Supabase
 - **Features:** AI agents, Gmail/Calendar integration
 - **Health:** 8/10
 - **Value:** €90,000
 
 #### 4. **renos-frontend**
+
 - **Status:** ✅ Production
-- **URL:** https://renos-frontend.onrender.com
+- **URL:** <https://renos-frontend.onrender.com>
 - **Tech:** React 19, Vite, Tailwind CSS
 - **Features:** Multi-agent system, Radix UI
 - **Health:** 7.5/10
@@ -195,6 +205,7 @@
 ### **Active Development (2) - 🟡 BUILDING**
 
 #### 5. **RendetaljeOS (Monorepo)**
+
 - **Status:** 🟡 Monorepo migrated (Oct 16, 2025)
 - **Location:** `c:\Users\empir\RendetaljeOS`
 - **Tech:** pnpm workspaces + Turborepo
@@ -204,6 +215,7 @@
 - **Note:** Successful migration, 965 packages installed
 
 #### 6. **tekup-ai**
+
 - **Status:** 🟡 Active development
 - **Location:** `c:\Users\empir\tekup-ai`
 - **Tech:** pnpm + Turborepo monorepo
@@ -217,17 +229,20 @@
 ### **Supporting Services (3) - ✅ OPERATIONAL**
 
 #### 7. **tekup-database**
+
 - **Status:** ✅ Central database (v1.4.0)
 - **Tech:** PostgreSQL 16 + Prisma 6
 - **Schemas:** vault, billy, renos, crm, flow, shared
 - **Migration:** All 4 repos migrated (Oct 22, 2025)
 
 #### 8. **tekup-gmail-services**
+
 - **Status:** ✅ Consolidated monorepo
 - **Consolidates:** 4 repos → 1 unified repo
 - **Reduction:** 60% maintenance overhead
 
 #### 9. **Tekup-Cloud**
+
 - **Status:** ✅ Documentation + RenOS Calendar MCP
 - **Primary:** renos-calendar-mcp (Dockerized, ready)
 - **Features:** 5 AI tools for calendar intelligence
@@ -237,6 +252,7 @@
 ### **Legacy / Archive (2) - 🔴 TO BE ARCHIVED**
 
 #### 10. **Tekup-org**
+
 - **Status:** 🔴 FAILED EXPERIMENT - Skal arkiveres
 - **Size:** 66 apps, 1,040 uncommitted files, 344MB
 - **Value to extract:** €360,000
@@ -246,6 +262,7 @@
 - **Priority:** HIGH (Week 1 af 30-dages plan)
 
 #### 11. **Tekup Google AI**
+
 - **Status:** 🔴 Legacy - Migreret til tekup-ai
 - **Size:** 71 uncommitted files
 - **Action:** Archive efter verification
@@ -256,6 +273,7 @@
 ## 💰 **COST-BENEFIT ANALYSE**
 
 ### **Current State Costs:**
+
 ```
 Development Time: 40 timer/uge
 ├── Tekup-org maintenance: 20 timer/uge
@@ -271,6 +289,7 @@ Opportunity Cost: HØJ
 ```
 
 ### **Post-Consolidation Benefits:**
+
 ```
 Development Time: 8 timer/uge (-80%)
 ├── 4 services maintenance: 6 timer/uge
@@ -285,6 +304,7 @@ Opportunity Cost: LAV
 ```
 
 ### **Savings Calculation:**
+
 ```
 Månedlige besparelser:
 - Developer time: 32 timer × €75/time = €2,400
@@ -301,6 +321,7 @@ ROI: 500% inden for 2 måneder
 ## 🎯 **SUCCESS METRICS**
 
 ### **Technical Success:**
+
 ✅ 4 services deployed og healthy  
 ✅ <2 sekunder response times  
 ✅ 99.9% uptime  
@@ -309,6 +330,7 @@ ROI: 500% inden for 2 måneder
 ✅ Zero critical vulnerabilities
 
 ### **Business Success:**
+
 ✅ 80% reduktion i development overhead  
 ✅ 50% hurtigere feature delivery  
 ✅ 40% reduktion i infrastructure costs  
@@ -346,6 +368,7 @@ c:\Users\empir\
 ## 🚀 **IMMEDIATE ACTIONS (Denne Uge)**
 
 ### **Priority 1: Archive Tekup-org** 🔴
+
 1. Backup repository
 2. Extract design system (1,200+ lines CSS)
 3. Extract database schemas
@@ -359,6 +382,7 @@ c:\Users\empir\
 ---
 
 ### **Priority 2: RenOS Git Cleanup** 🟡
+
 1. Commit 71 uncommitted files i Tekup Google AI
 2. Commit 24 uncommitted files i RendetaljeOS
 3. Clean git state
@@ -368,6 +392,7 @@ c:\Users\empir\
 ---
 
 ### **Priority 3: Setup Monitoring** 🟢
+
 1. Sentry for TekupVault
 2. Better Stack logging for all services
 3. UptimeRobot availability checks
@@ -382,6 +407,7 @@ c:\Users\empir\
 ### **Strategisk Anbefaling: KONSOLIDÉR & FOKUSER** 🎯
 
 **Rationale:**
+
 1. ✅ **Tekup-org er failed experiment** - 66 apps er ikke maintainable
 2. ✅ **4 production services er nok** - TekupVault, Tekup-Billy, RenOS, tekup-ai
 3. ✅ **Simplicity beats complexity** - Fokus på execution over experimentation
@@ -389,6 +415,7 @@ c:\Users\empir\
 5. ✅ **RendetaljeOS migration success** - Monorepo model virker
 
 ### **Success Definition (3 måneder):**
+
 ```
 ✅ 4 healthy production services
 ✅ Unified dashboard med real data
@@ -405,21 +432,25 @@ c:\Users\empir\
 **Vælg din prioritet:**
 
 **A) 🗂️ Organiser Mapper NU** (Anbefalet først)
+
 - Implementér anbefalet mappestruktur
 - Flyt projekter til rigtige mapper
 - Clean root directory
 
 **B) 🚀 Archive Tekup-org**
+
 - Start 30-dages plan
 - Extract valuable components
 - Clean git hygiene
 
 **C) 📊 Setup Dashboard**
+
 - Upgrade tekup-cloud-dashboard
 - Real data integration
 - Deploy to production
 
 **D) 🛠️ Start Code Implementation**
+
 - Begin konkrete kodeændringer
 - Implement recommendations
 - Setup deployment pipelines

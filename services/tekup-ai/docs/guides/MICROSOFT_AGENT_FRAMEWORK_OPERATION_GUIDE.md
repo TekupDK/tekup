@@ -7,6 +7,7 @@ Microsoft Agent Framework er fuldt integreret i RenOS og giver enterprise-grade 
 ## 🏗️ **ARKITEKTUR**
 
 ### **Core Komponenter:**
+
 - **ThreadManager**: Thread-based state management
 - **AgentOrchestrator**: Multi-agent orchestration  
 - **TelemetryService**: Enterprise monitoring og observability
@@ -14,6 +15,7 @@ Microsoft Agent Framework er fuldt integreret i RenOS og giver enterprise-grade 
 - **HybridController**: Gradual migration controller
 
 ### **Integration Points:**
+
 - **Chat Controller**: Hybrid processing med fallback
 - **API Routes**: `/api/microsoft/*` endpoints
 - **Configuration**: Environment variables og runtime config
@@ -194,6 +196,7 @@ MICROSOFT_VERBOSE_LOGGING=false
 ### **Common Issues**
 
 #### **1. Microsoft Framework Not Initialized**
+
 ```bash
 # Symptoms: 502 errors on /api/microsoft/*
 # Solution: Check logs for initialization errors
@@ -201,6 +204,7 @@ curl https://tekup-renos.onrender.com/api/microsoft/status
 ```
 
 #### **2. Thread Management Issues**
+
 ```bash
 # Symptoms: "Thread not found" errors
 # Solution: Verify thread creation and persistence
@@ -208,6 +212,7 @@ curl https://tekup-renos.onrender.com/api/microsoft/threads/{threadId}
 ```
 
 #### **3. Telemetry Data Missing**
+
 ```bash
 # Symptoms: Empty metrics in telemetry endpoints
 # Solution: Check telemetry service initialization
@@ -215,6 +220,7 @@ curl https://tekup-renos.onrender.com/api/microsoft/telemetry
 ```
 
 #### **4. Plugin Registration Failed**
+
 ```bash
 # Symptoms: "Invalid plugin format" errors
 # Solution: Check plugin structure and dependencies
@@ -239,18 +245,21 @@ curl https://tekup-renos.onrender.com/api/microsoft/status
 ## 🔒 **SECURITY CONSIDERATIONS**
 
 ### **API Security**
+
 - All endpoints require authentication
 - Rate limiting applied
 - Input validation enforced
 - CORS properly configured
 
 ### **Data Privacy**
+
 - Thread data may contain sensitive information
 - Implement proper data retention policies
 - Consider GDPR compliance
 - Audit logging enabled
 
 ### **Plugin Security**
+
 - Validate plugin inputs
 - Sandbox plugin execution
 - Review plugin permissions
@@ -259,18 +268,21 @@ curl https://tekup-renos.onrender.com/api/microsoft/status
 ## 📈 **PERFORMANCE OPTIMIZATION**
 
 ### **Memory Management**
+
 - Thread data persists in memory
 - Consider `MICROSOFT_MAX_THREADS_PER_CUSTOMER` limit
 - Monitor memory usage in production
 - Implement cleanup policies
 
 ### **Execution Time**
+
 - Parallel agent execution improves performance
 - Consider `MICROSOFT_MAX_CONCURRENT_AGENTS` limit
 - Monitor execution times via telemetry
 - Optimize agent logic
 
 ### **Database Impact**
+
 - Thread data can be persisted to database
 - Consider retention policies
 - Monitor database performance
@@ -279,30 +291,35 @@ curl https://tekup-renos.onrender.com/api/microsoft/status
 ## 🚀 **BEST PRACTICES**
 
 ### **1. Gradual Migration**
+
 - Start with `ENABLE_MICROSOFT_HYBRID=true`
 - Enable features one by one
 - Monitor performance impact
 - Keep fallback mechanisms active
 
 ### **2. Configuration Management**
+
 - Use environment variables for settings
 - Document all configuration options
 - Test changes in staging first
 - Version control configuration
 
 ### **3. Monitoring**
+
 - Set up comprehensive monitoring
 - Create alerting rules
 - Regular health checks
 - Performance trend analysis
 
 ### **4. Plugin Development**
+
 - Follow plugin interface standards
 - Implement proper error handling
 - Add comprehensive logging
 - Test thoroughly before deployment
 
 ### **5. Thread Management**
+
 - Use meaningful thread IDs
 - Implement proper cleanup
 - Monitor thread lifecycle
@@ -311,18 +328,21 @@ curl https://tekup-renos.onrender.com/api/microsoft/status
 ## 📋 **MAINTENANCE CHECKLIST**
 
 ### **Daily**
+
 - [ ] Check system health metrics
 - [ ] Review error logs
 - [ ] Monitor performance trends
 - [ ] Verify API endpoints
 
 ### **Weekly**
+
 - [ ] Review telemetry data
 - [ ] Check plugin health
 - [ ] Analyze business metrics
 - [ ] Update documentation
 
 ### **Monthly**
+
 - [ ] Performance optimization review
 - [ ] Security audit
 - [ ] Capacity planning
@@ -331,18 +351,21 @@ curl https://tekup-renos.onrender.com/api/microsoft/status
 ## 🎯 **SUCCESS METRICS**
 
 ### **Technical Metrics**
+
 - **Uptime**: > 99.9%
 - **Response Time**: < 200ms
 - **Error Rate**: < 1%
 - **Memory Usage**: < 80%
 
 ### **Business Metrics**
+
 - **Lead Processing**: Automated
 - **Customer Satisfaction**: High
 - **Conversion Rate**: Improved
 - **Revenue**: Increased
 
 ### **Operational Metrics**
+
 - **Deployment Success**: 100%
 - **Configuration Changes**: Smooth
 - **Incident Response**: < 1 hour

@@ -19,6 +19,7 @@
 ## ✅ Hvad CleanManager GØR BEDRE
 
 ### 1. Medarbejderstyring
+
 - ✅ Mobile app til timeregistrering
 - ✅ GPS check-in/check-out
 - ✅ Automatisk lønsystem
@@ -29,6 +30,7 @@
 ---
 
 ### 2. Økonomi Integration
+
 - ✅ Automatisk fakturering fra timer
 - ✅ Integration til e-conomic/Dinero
 - ✅ Prismodeller (fast, time, m²)
@@ -38,6 +40,7 @@
 ---
 
 ### 3. Kvalitetsrapporter
+
 - ✅ Digital rapportskabeloner
 - ✅ Før/efter fotos
 - ✅ Kunde-signaturer
@@ -47,6 +50,7 @@
 ---
 
 ### 4. Lagerstyring
+
 - ✅ Inventory tracking
 - ✅ Bestillinger og leverandører
 
@@ -57,6 +61,7 @@
 ## 🚀 Hvad RenOS GØR BEDRE
 
 ### 1. AI Email Auto-Response
+
 ```
 🤖 Gemini AI genererer personaliserede tilbud
 📧 95% reduktion i manuel email-håndtering
@@ -69,6 +74,7 @@
 ---
 
 ### 2. Lead Monitoring System
+
 ```
 🔍 Automatisk parsing af Leadmail.no emails
 📊 Lead source detection (Rengøring.nu, AdHelp, etc.)
@@ -81,6 +87,7 @@
 ---
 
 ### 3. Smart Calendar Booking
+
 ```
 📅 AI-optimeret booking med conflict detection
 🎯 Next available slot finder
@@ -92,6 +99,7 @@
 ---
 
 ### 4. Real-Time Dashboard
+
 ```
 📊 5 intelligente widgets:
 - System Safety Status (risk monitoring)
@@ -106,6 +114,7 @@
 ---
 
 ### 5. Business Intelligence
+
 ```
 📈 Predictive analytics:
 - Lead conversion rate
@@ -121,6 +130,7 @@
 ## 💡 Strategisk Positionering
 
 ### Analogi
+
 ```
 CleanManager = Microsoft Office (productivity tools)
 RenOS = HubSpot (sales & growth tools)
@@ -134,6 +144,7 @@ Du bruger ikke HubSpot til at lave timesedler.
 ## 🤝 Co-Existence Strategi
 
 ### Pipeline Integration
+
 ```
 1. RenOS captures lead (AI-drevet)
 2. RenOS sender tilbud (automatisk)
@@ -144,6 +155,7 @@ Du bruger ikke HubSpot til at lave timesedler.
 ```
 
 ### Resultat
+
 - **RenOS** = Top-of-funnel (lead generation)
 - **CleanManager** = Operations (drift & administration)
 
@@ -152,6 +164,7 @@ Du bruger ikke HubSpot til at lave timesedler.
 ## 💰 Pris Sammenligning
 
 ### CleanManager (gættet)
+
 ```
 Grundmodul: 200-300 kr/md per bruger
 Tillægsmoduler: 50-100 kr/md hver
@@ -161,6 +174,7 @@ Typisk total: 400-600 kr/md (1-5 brugere)
 ```
 
 ### RenOS (foreslået)
+
 ```
 Free Tier: 0 kr
 - Op til 10 leads/måned
@@ -187,6 +201,7 @@ Growth: 700 kr/md
 ## 🎯 Target Market
 
 ### CleanManager's Idealkunde
+
 ```
 👥 10-100 medarbejdere
 📅 Faste erhvervskunder
@@ -195,6 +210,7 @@ Growth: 700 kr/md
 ```
 
 ### RenOS's Idealkunde
+
 ```
 👤 Solopreneurs eller 1-5 medarbejdere
 🏠 Private kunder (ad-hoc jobs)
@@ -225,6 +241,7 @@ Growth: 700 kr/md
 ## 📈 Markedsanalyse
 
 ### Total Addressable Market (TAM)
+
 ```
 Rengøringsvirksomheder i Danmark: ~3,500 firmaer
 
@@ -238,6 +255,7 @@ Overlap: ~500 firmaer (kan bruge begge)
 ```
 
 ### Konkurrence
+
 ```
 Pure competition: MINIMAL
 - Forskellige buyer personas
@@ -255,6 +273,7 @@ Collaboration opportunity: HIGH
 ## ✅ Konklusion
 
 ### IKKE Konkurrenter
+
 ```
 De løser forskellige problemer:
 
@@ -263,6 +282,7 @@ RenOS = Growth Engine (for at FINDE kunder)
 ```
 
 ### Winning Pitch
+
 ```
 "Hvis du har 50+ medarbejdere og brug for lønsystem, 
 brug CleanManager.
@@ -281,16 +301,19 @@ kan du seamless eksportere til CleanManager."
 ## 🚀 Action Items
 
 ### Denne uge
+
 - [ ] Tilføj "RenOS vs CleanManager" comparison chart på website
 - [ ] Skriv blog post om "Hvilken løsning passer til dit firma?"
 - [ ] Outreach til CleanManager for partnership talk
 
 ### Denne måned
+
 - [ ] Customer interviews: Hvorfor valgte de CleanManager?
 - [ ] Identify overlap customers
 - [ ] Co-marketing test: Fælles webinar?
 
 ### Dette år
+
 - [ ] Integration: RenOS → CleanManager export
 - [ ] Referral program med CleanManager
 - [ ] Case study: "0 til 50 kunder med RenOS"

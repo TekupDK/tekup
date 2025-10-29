@@ -54,6 +54,7 @@ Oprettet `.cspell.json` config fil med whitelist af alle legitime ord.
 - 8x MD031 (missing blank lines around code fences)
 
 **Løsning:**
+
 ```markdown
 # BEFORE
 ### A. Test Claude Integration
@@ -75,6 +76,7 @@ Oprettet `.cspell.json` config fil med whitelist af alle legitime ord.
 - Line 13: `https://tekup-billy.onrender.com` (bare URL)
 
 **Løsning:**
+
 ```markdown
 # BEFORE
 Production verified @ https://tekup-billy.onrender.com
@@ -91,12 +93,14 @@ Production verified @ <https://tekup-billy.onrender.com>
 
 **Problemer fixet:**
 1. Line 1: Fjernet `!` fra heading (MD026)
+
    ```markdown
    # BEFORE: ✅ PowerShell 7 Installeret!
    # AFTER:  ✅ PowerShell 7 Installeret
    ```
 
 2. Line 13: Fjernet space i code span (MD038)
+
    ```markdown
    # BEFORE: `Ctrl + ` (backtick)
    # AFTER:  `Ctrl + backtick`
@@ -119,6 +123,7 @@ Disse filer er gamle setup guides. Lader dem være for nu da de ikke er kritiske
 Eliminere alle falske "Unknown word" warnings.
 
 **Indhold:**
+
 ```json
 {
   "version": "0.2",
@@ -207,6 +212,7 @@ Hvis disse guides skal bruges aktivt, kan vi fixe dem senere. For nu er alle **k
 4. `.cspell.json` - NY fil (spell check config)
 
 **Næste step:**
+
 ```bash
 git add CHANGELOG.md VALGFRIE_OPGAVER_COMPLETE.md POWERSHELL7_SETUP_GUIDE.md .cspell.json
 git commit -m "fix: resolve markdown linting errors and add cSpell config

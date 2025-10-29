@@ -1,4 +1,4 @@
-# 📋 Billy MCP - Daily Operations Guide
+﻿# 📋 Billy MCP - Daily Operations Guide
 
 **Version:** 1.0  
 **Last Updated:** 21. oktober 2025  
@@ -611,7 +611,7 @@ Clear invoice descriptions
 
 **Billy MCP (Tekup):**
 - Server: <https://tekup-billy.onrender.com>
-- GitHub: <https://github.com/JonasAbde/Tekup-Billy>
+- GitHub: <https://github.com/TekupDK/Tekup-Billy>
 - Health: <https://tekup-billy.onrender.com/health>
 
 **AI Assistants:**

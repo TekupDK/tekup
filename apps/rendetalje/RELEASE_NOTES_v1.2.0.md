@@ -70,9 +70,9 @@ Open: `http://localhost:3001`
 
 **Login Credentials** (from backend seed data):
 
-- **Admin:** admin@rendetalje.dk / admin123
-- **Employee:** employee@rendetalje.dk / employee123
-- **Customer:** customer@rendetalje.dk / customer123
+- **Admin:** <admin@rendetalje.dk> / admin123
+- **Employee:** <employee@rendetalje.dk> / employee123
+- **Customer:** <customer@rendetalje.dk> / customer123
 
 ---
 

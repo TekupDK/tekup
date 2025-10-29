@@ -9,6 +9,7 @@
 ## 📊 NUVÆRENDE STATUS
 
 ### **Hvad Vi Har**
+
 - ✅ MCP Server med 5 AI tools
 - ✅ React Chatbot Interface
 - ✅ Plugin Manager System
@@ -17,6 +18,7 @@
 - ⚠️ Basic AI responses
 
 ### **Hvad Vi Mangler**
+
 - ❌ Automated testing framework
 - ❌ Integration tests
 - ❌ E2E tests
@@ -29,16 +31,19 @@
 ## 🎯 DEL 1: TESTING FRAMEWORKS
 
 ### **1. Jest + Supertest (Express API Testing)**
-**GitHub**: https://github.com/jestjs/jest  
-**Supertest**: https://github.com/ladjs/supertest  
+
+**GitHub**: <https://github.com/jestjs/jest>  
+**Supertest**: <https://github.com/ladjs/supertest>  
 
 #### **Hvorfor?**
+
 - ✅ Industry standard for TypeScript/JavaScript testing
 - ✅ Indbygget mocking og spies
 - ✅ Supertest perfekt til Express API testing
 - ✅ Vi har allerede Jest installeret!
 
 #### **Implementation**
+
 ```typescript
 // tests/api/mcp-server.test.ts
 import request from 'supertest';
@@ -89,6 +94,7 @@ describe('MCP Server API Tests', () => {
 ```
 
 #### **Installation**
+
 ```bash
 npm install --save-dev supertest @types/supertest
 npm install --save-dev ts-node @types/node
@@ -97,15 +103,18 @@ npm install --save-dev ts-node @types/node
 ---
 
 ### **2. Vitest (Modern Alternative til Jest)**
-**GitHub**: https://github.com/vitest-dev/vitest  
+
+**GitHub**: <https://github.com/vitest-dev/vitest>  
 
 #### **Hvorfor?**
+
 - ✅ 10x hurtigere end Jest
 - ✅ Native ESM support
 - ✅ Vite integration
 - ✅ Jest-compatible API
 
 #### **Implementation**
+
 ```typescript
 // vitest.config.ts
 import { defineConfig } from 'vitest/config';
@@ -125,9 +134,11 @@ export default defineConfig({
 ---
 
 ### **3. Playwright (E2E Testing)**
-**GitHub**: https://github.com/microsoft/playwright  
+
+**GitHub**: <https://github.com/microsoft/playwright>  
 
 #### **Hvorfor?**
+
 - ✅ Cross-browser testing
 - ✅ Auto-wait for elements
 - ✅ Mobile testing support
@@ -135,6 +146,7 @@ export default defineConfig({
 - ✅ Perfect for chatbot UI testing
 
 #### **Implementation**
+
 ```typescript
 // tests/e2e/chatbot.spec.ts
 import { test, expect } from '@playwright/test';
@@ -175,6 +187,7 @@ test('chatbot should show plugin manager', async ({ page }) => {
 ```
 
 #### **Installation**
+
 ```bash
 npm install --save-dev @playwright/test
 npx playwright install
@@ -183,15 +196,18 @@ npx playwright install
 ---
 
 ### **4. React Testing Library (Component Testing)**
-**GitHub**: https://github.com/testing-library/react-testing-library  
+
+**GitHub**: <https://github.com/testing-library/react-testing-library>  
 
 #### **Hvorfor?**
+
 - ✅ User-centric testing
 - ✅ Best practice for React
 - ✅ Integration med Jest/Vitest
 - ✅ Testing accessibility
 
 #### **Implementation**
+
 ```typescript
 // chatbot/src/components/__tests__/ChatInterface.test.tsx
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -235,10 +251,12 @@ describe('ChatInterface', () => {
 ## 🎯 DEL 2: AI FORBEDRING FRAMEWORKS
 
 ### **1. LangChain (Recommended)**
-**GitHub**: https://github.com/langchain-ai/langchainjs  
-**Docs**: https://js.langchain.com/
+
+**GitHub**: <https://github.com/langchain-ai/langchainjs>  
+**Docs**: <https://js.langchain.com/>
 
 #### **Hvorfor?**
+
 - ✅ Industry-leading LLM framework
 - ✅ TypeScript/JavaScript support
 - ✅ Chain of Thought reasoning
@@ -247,6 +265,7 @@ describe('ChatInterface', () => {
 - ✅ RAG (Retrieval Augmented Generation)
 
 #### **Key Features for RenOS**
+
 ```typescript
 // 1. Memory Management
 import { BufferMemory } from 'langchain/memory';
@@ -282,6 +301,7 @@ const executor = await initializeAgentExecutorWithOptions(
 ```
 
 #### **Implementation Plan**
+
 ```typescript
 // chatbot/src/services/LangChainService.ts
 import { ChatOpenAI } from "langchain/chat_models/openai";
@@ -317,9 +337,11 @@ export class LangChainService {
 ---
 
 ### **2. LlamaIndex (RAG Framework)**
-**GitHub**: https://github.com/run-llama/LlamaIndexTS  
+
+**GitHub**: <https://github.com/run-llama/LlamaIndexTS>  
 
 #### **Hvorfor?**
+
 - ✅ Best-in-class RAG framework
 - ✅ Document indexing
 - ✅ Context retrieval
@@ -327,6 +349,7 @@ export class LangChainService {
 - ✅ Perfect for customer intelligence!
 
 #### **Use Case for RenOS**
+
 ```typescript
 // Customer Intelligence RAG
 import { VectorStoreIndex, SimpleDirectoryReader } from "llamaindex";
@@ -358,9 +381,11 @@ const aiResponse = await llm.call([
 ---
 
 ### **3. Rasa (Open Source Conversational AI)**
-**GitHub**: https://github.com/RasaHQ/rasa  
+
+**GitHub**: <https://github.com/RasaHQ/rasa>  
 
 #### **Hvorfor?**
+
 - ✅ Complete conversational AI platform
 - ✅ Intent recognition
 - ✅ Entity extraction
@@ -368,6 +393,7 @@ const aiResponse = await llm.call([
 - ✅ Custom actions (MCP integration!)
 
 #### **Integration Example**
+
 ```yaml
 # domain.yml
 intents:
@@ -414,9 +440,11 @@ class ActionValidateBooking(Action):
 ---
 
 ### **4. Botpress (Conversational AI Platform)**
-**GitHub**: https://github.com/botpress/botpress  
+
+**GitHub**: <https://github.com/botpress/botpress>  
 
 #### **Hvorfor?**
+
 - ✅ Visual flow designer
 - ✅ Multi-channel support
 - ✅ Built-in NLU
@@ -428,6 +456,7 @@ class ActionValidateBooking(Action):
 ## 🎯 DEL 3: ANBEFALET IMPLEMENTATION PLAN
 
 ### **Phase 1: Basic Testing (1-2 dage)**
+
 ```bash
 # 1. Install testing dependencies
 cd renos-calendar-mcp
@@ -444,6 +473,7 @@ npm test
 ```
 
 ### **Phase 2: E2E Testing (2-3 dage)**
+
 ```bash
 # 1. Install Playwright
 npm install --save-dev @playwright/test
@@ -457,6 +487,7 @@ npx playwright test
 ```
 
 ### **Phase 3: AI Improvement (3-5 dage)**
+
 ```bash
 # 1. Install LangChain
 npm install langchain
@@ -472,6 +503,7 @@ npm install langchain
 ```
 
 ### **Phase 4: RAG Implementation (3-5 dage)**
+
 ```bash
 # 1. Install LlamaIndex
 npm install llamaindex
@@ -491,24 +523,28 @@ npm install llamaindex
 ## 📊 KONKRETE NÆSTE STEPS
 
 ### **Immediate (Denne uge)**
+
 1. ✅ Install Supertest
 2. ✅ Write 10 basic API tests
 3. ✅ Setup CI/CD for tests
 4. ✅ Run tests on every commit
 
 ### **Short-term (Næste 2 uger)**
+
 1. ⏳ Install Playwright
 2. ⏳ Write 5 E2E tests for chatbot
 3. ⏳ Add screenshot comparison
 4. ⏳ Setup automated testing
 
 ### **Medium-term (Næste måned)**
+
 1. ⏳ Integrate LangChain
 2. ⏳ Add conversation memory
 3. ⏳ Implement tool calling
 4. ⏳ Test AI quality improvements
 
 ### **Long-term (Næste kvartal)**
+
 1. ⏳ Implement RAG with LlamaIndex
 2. ⏳ Index all customer data
 3. ⏳ Advanced intent recognition
@@ -519,28 +555,32 @@ npm install llamaindex
 ## 🔗 RELEVANTE REPOS
 
 ### **Testing**
-- **Jest**: https://github.com/jestjs/jest
-- **Supertest**: https://github.com/ladjs/supertest
-- **Vitest**: https://github.com/vitest-dev/vitest
-- **Playwright**: https://github.com/microsoft/playwright
-- **React Testing Library**: https://github.com/testing-library/react-testing-library
+
+- **Jest**: <https://github.com/jestjs/jest>
+- **Supertest**: <https://github.com/ladjs/supertest>
+- **Vitest**: <https://github.com/vitest-dev/vitest>
+- **Playwright**: <https://github.com/microsoft/playwright>
+- **React Testing Library**: <https://github.com/testing-library/react-testing-library>
 
 ### **AI Frameworks**
-- **LangChain**: https://github.com/langchain-ai/langchainjs
-- **LlamaIndex**: https://github.com/run-llama/LlamaIndexTS
-- **Rasa**: https://github.com/RasaHQ/rasa
-- **Botpress**: https://github.com/botpress/botpress
-- **Hugging Face Transformers**: https://github.com/huggingface/transformers.js
+
+- **LangChain**: <https://github.com/langchain-ai/langchainjs>
+- **LlamaIndex**: <https://github.com/run-llama/LlamaIndexTS>
+- **Rasa**: <https://github.com/RasaHQ/rasa>
+- **Botpress**: <https://github.com/botpress/botpress>
+- **Hugging Face Transformers**: <https://github.com/huggingface/transformers.js>
 
 ### **MCP Testing**
-- **MCP SDK**: https://github.com/modelcontextprotocol/typescript-sdk
-- **MCP Examples**: https://github.com/modelcontextprotocol/servers
+
+- **MCP SDK**: <https://github.com/modelcontextprotocol/typescript-sdk>
+- **MCP Examples**: <https://github.com/modelcontextprotocol/servers>
 
 ---
 
 ## 💡 QUICK WIN: Start Med Dette
 
 ### **Test 1: Basic API Health Check**
+
 ```typescript
 // tests/integration/health.test.ts
 import request from 'supertest';
@@ -557,6 +597,7 @@ describe('Health Check', () => {
 ```
 
 ### **Test 2: MCP Tool Validation**
+
 ```typescript
 // tests/integration/validate-booking.test.ts
 import request from 'supertest';
@@ -582,12 +623,14 @@ describe('Validate Booking Date', () => {
 ## 🎯 SUCCESS METRICS
 
 ### **Testing Coverage**
+
 - ✅ Target: 80% code coverage
 - ✅ All API endpoints tested
 - ✅ All React components tested
 - ✅ E2E flows tested
 
 ### **AI Quality**
+
 - ✅ Response time < 2s
 - ✅ Intent recognition > 90%
 - ✅ Context awareness
@@ -601,6 +644,6 @@ describe('Validate Booking Date', () => {
 
 ---
 
-*Generated by AI Assistant*  
-*Date: 21. Oktober 2025, 21:35 CET*
+_Generated by AI Assistant_  
+_Date: 21. Oktober 2025, 21:35 CET_
 

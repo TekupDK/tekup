@@ -125,7 +125,12 @@ services:
 
 networks:
   rendetalje-network:
+    name: rendetalje-network
     driver: bridge
+    internal: false
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
 volumes:
   postgres-data:

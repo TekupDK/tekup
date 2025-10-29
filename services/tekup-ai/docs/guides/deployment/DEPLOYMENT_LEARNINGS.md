@@ -9,11 +9,13 @@ Denne dok dokumenterer **kritiske learnings** fra frontend/backend separation fi
 ## 🧠 Key Learning #1: Monorepo Build Isolation
 
 ### Problem Context
+
 I et monorepo med både backend (Node.js/TypeScript) og frontend (React/Vite) kan builds kollidere hvis ikke korrekt separeret.
 
 ### What We Learned
 
 #### ❌ **Bad Pattern: Single Build Command**
+
 ```json
 {
   "scripts": {
@@ -23,12 +25,14 @@ I et monorepo med både backend (Node.js/TypeScript) og frontend (React/Vite) ka
 ```
 
 **Problems:**
+
 - Begge builds kører sammen
 - Output directories kan overlappe
 - Deployment ved ikke hvad det skal bruge
 - Fejl i én build påvirker den anden
 
 #### ✅ **Good Pattern: Separate Build Targets**
+
 ```json
 {
   "scripts": {
@@ -41,6 +45,7 @@ I et monorepo med både backend (Node.js/TypeScript) og frontend (React/Vite) ka
 ```
 
 **Benefits:**
+
 - 🎯 Clear separation
 - 🔧 Independent builds
 - 🚀 Deployments can call specific targets
@@ -49,6 +54,7 @@ I et monorepo med både backend (Node.js/TypeScript) og frontend (React/Vite) ka
 ### When To Use This Pattern
 
 **Always use separate build commands when:**
+
 - ✅ You have frontend + backend in same repo
 - ✅ Both use build steps (TypeScript, React, etc.)
 - ✅ Deploying to different services (API + Static site)
@@ -56,6 +62,7 @@ I et monorepo med både backend (Node.js/TypeScript) og frontend (React/Vite) ka
 - ✅ Want independent CI/CD pipelines
 
 **Exception (single build OK):**
+
 - ❌ True fullstack SSR (Next.js, SvelteKit) that deploys as single unit
 
 ---
@@ -63,23 +70,27 @@ I et monorepo med både backend (Node.js/TypeScript) og frontend (React/Vite) ka
 ## 🧠 Key Learning #2: Docker/Deployment Isolation
 
 ### Problem Context
+
 Deployment platforms (Render, Vercel, Netlify) copy your entire repo unless told otherwise. Backend deployments shouldn't include frontend files.
 
 ### What We Learned
 
 #### ❌ **Bad Pattern: No Isolation**
+
 ```dockerfile
 # No .dockerignore file
 # Result: Entire repo copied, including client/
 ```
 
 **Problems:**
+
 - 📦 Larger deployment size
 - ⏱️ Slower builds
 - 🐛 Potential build conflicts
 - 💾 Wasted disk space on server
 
 #### ✅ **Good Pattern: Explicit Exclusion**
+
 ```dockerignore
 # Backend deployment - exclude frontend
 client/
@@ -93,6 +104,7 @@ docs/             # Not needed in production
 ```
 
 **Benefits:**
+
 - ⚡ Faster deployments (smaller size)
 - 🎯 Clear separation (backend doesn't touch frontend)
 - 🛡️ No accidental conflicts
@@ -101,6 +113,7 @@ docs/             # Not needed in production
 ### When To Use `.dockerignore`
 
 **Always create `.dockerignore` when:**
+
 - ✅ Using monorepo structure
 - ✅ Deploying backend separately from frontend
 - ✅ Using Docker for deployment
@@ -123,6 +136,7 @@ node_modules/     # Regenerated during npm install
 ## 🧠 Key Learning #3: Service Type Matching
 
 ### Problem Context
+
 Deployment platforms offer different service types. Using the wrong type causes failures.
 
 ### What We Learned
@@ -138,6 +152,7 @@ startCommand: node dist/index.js
 ```
 
 **Use for:**
+
 - ✅ Express/Fastify APIs
 - ✅ Backend services
 - ✅ WebSocket servers
@@ -151,12 +166,14 @@ staticPublishPath: ./client/dist
 ```
 
 **Use for:**
+
 - ✅ React/Vue/Svelte SPAs
 - ✅ Static HTML/CSS/JS
 - ✅ Pre-built documentation sites
 - ✅ Vite/Webpack build output
 
 #### ❌ **Common Mistake: Type Mismatch**
+
 ```yaml
 # DON'T: Backend as static site
 type: static
@@ -168,6 +185,7 @@ startCommand: npm run preview     # ❌ Wrong approach!
 ```
 
 #### ✅ **Correct Pattern: Matching Types**
+
 ```yaml
 services:
   # Backend = web service
@@ -184,10 +202,12 @@ services:
 ### Decision Tree
 
 **Is it a Node.js server?**
+
 - Yes → Use `web` service
 - No → Continue
 
 **Does it serve static files only?**
+
 - Yes → Use `static` service
 - No → Check platform docs
 
@@ -196,11 +216,13 @@ services:
 ## 🧠 Key Learning #4: Build vs Runtime Separation
 
 ### Problem Context
+
 Build-time dependencies (TypeScript, Vite) shouldn't be in production. Runtime dependencies (Express, Prisma) should.
 
 ### What We Learned
 
 #### Package.json Structure
+
 ```json
 {
   "dependencies": {
@@ -217,6 +239,7 @@ Build-time dependencies (TypeScript, Vite) shouldn't be in production. Runtime d
 ```
 
 #### Build Commands
+
 ```yaml
 # ✅ Production: Skip devDependencies
 buildCommand: npm install --omit=dev && npm run build:backend
@@ -226,6 +249,7 @@ buildCommand: npm install && npm run build:backend
 ```
 
 **Why `--omit=dev` matters:**
+
 - 📦 Smaller `node_modules/` (50-70% reduction)
 - ⚡ Faster installs
 - 🛡️ No accidental dev tools in production
@@ -234,11 +258,13 @@ buildCommand: npm install && npm run build:backend
 ### When To Use `--omit=dev`
 
 **Always use in:**
+
 - ✅ Production deployments
 - ✅ Docker production images
 - ✅ CI/CD deployment steps
 
 **Don't use in:**
+
 - ❌ Local development
 - ❌ Test environments
 - ❌ CI/CD test steps
@@ -248,11 +274,13 @@ buildCommand: npm install && npm run build:backend
 ## 🧠 Key Learning #5: Verification Before Deployment
 
 ### Problem Context
+
 Builds that work locally can fail in production due to environment differences.
 
 ### What We Learned
 
 #### Local Production Simulation
+
 ```powershell
 # Clean everything
 Remove-Item -Recurse -Force dist, node_modules
@@ -270,12 +298,14 @@ node dist/index.js
 ```
 
 **This catches:**
+
 - ✅ Missing dependencies
 - ✅ Build script errors
 - ✅ Path issues
 - ✅ Environment variable problems
 
 #### Verification Script Pattern
+
 ```powershell
 # verify-production.ps1
 Write-Host "Testing production build..." -ForegroundColor Cyan
@@ -303,6 +333,7 @@ Write-Host "✅ Production build verified" -ForegroundColor Green
 ### Verification Checklist
 
 **Before every deployment:**
+
 - [ ] Clean build from scratch
 - [ ] Install with `--omit=dev`
 - [ ] Verify output files exist
@@ -363,6 +394,7 @@ npm run dev:client   # Frontend only
 ### Future-Proofing
 
 **When adding new services:**
+
 1. Decide: `web` or `static`?
 2. Create dedicated build command
 3. Add to `.dockerignore` if needed
@@ -370,6 +402,7 @@ npm run dev:client   # Frontend only
 5. Document in README
 
 **When changing build process:**
+
 1. Test locally with production commands
 2. Check `.dockerignore` still correct
 3. Verify output paths
@@ -392,6 +425,7 @@ npm run dev:client   # Frontend only
 Copy this checklist for every new deployment or service:
 
 ### Pre-Deployment
+
 - [ ] Separate build commands exist (`build:backend`, `build:client`)
 - [ ] `.dockerignore` excludes unnecessary files
 - [ ] Service type matches app type (`web` vs `static`)
@@ -400,6 +434,7 @@ Copy this checklist for every new deployment or service:
 - [ ] Health check endpoint implemented
 
 ### Verification
+
 - [ ] Clean build from scratch succeeds
 - [ ] `--omit=dev` install works
 - [ ] Output files in correct location
@@ -408,6 +443,7 @@ Copy this checklist for every new deployment or service:
 - [ ] Docs updated
 
 ### Post-Deployment
+
 - [ ] Health endpoint returns 200
 - [ ] API calls work
 - [ ] Frontend loads correctly

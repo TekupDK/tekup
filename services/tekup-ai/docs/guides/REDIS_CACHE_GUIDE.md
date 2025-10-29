@@ -15,12 +15,14 @@ REDIS_ENABLED=false
 ```
 
 ✅ **Fordele:**
+
 - Ingen afhængigheder at installere
 - Hurtigere opstart (ingen retry delays)
 - Ingen støjende logs
 - Perfekt til lokal udvikling
 
 ❌ **Ulemper:**
+
 - Cache deles ikke mellem processer
 - Cache tømmes ved restart
 
@@ -40,6 +42,7 @@ REDIS_URL=redis://localhost:6379
 ```
 
 ✅ **Fordele:**
+
 - Cache persisterer mellem restarts
 - Bedre for multi-process setups
 - Tættere på production
@@ -147,10 +150,12 @@ REDIS_URL=rediss://:password@host:6380
 ## 🔐 Security
 
 ### Development
+
 - Ingen auth nødvendig (localhost)
 - Bind kun til `127.0.0.1`
 
 ### Production
+
 - **ALTID brug password:** `rediss://:strong_password@host:port`
 - Brug TLS (`rediss://` med dobbelt-s)
 - Whitelist IP addresses

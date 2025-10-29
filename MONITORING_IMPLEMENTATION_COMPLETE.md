@@ -8,13 +8,15 @@
 
 ## 📋 NUVÆRENDE STATUS
 
-### ✅ HAR ALLEREDE:
+### ✅ HAR ALLEREDE
+
 1. **Sentry config filer** → `apps/rendetalje/services/deployment/monitoring/sentry-config.js`
 2. **Backend configuration** → Understøtter `SENTRY_DSN` i `configuration.ts`
 3. **Render.yaml** → Har `SENTRY_DSN` environment variable defineret
 4. **Monitoring.env** → Krypteret fil med Sentry credentials
 
-### ❌ MANGLER:
+### ❌ MANGLER
+
 1. **Sentry SDK ikke installeret** i backend/frontend
 2. **Sentry ikke initialiseret** i `main.ts`
 3. **Winston logger** ikke konfigureret
@@ -26,6 +28,7 @@
 ## 🚀 IMPLEMENTATION PLAN
 
 ### FASE 1: Sentry Setup (1-2 timer)
+
 - [ ] Install Sentry packages
 - [ ] Initialize Sentry i backend
 - [ ] Initialize Sentry i frontend
@@ -33,17 +36,20 @@
 - [ ] Deploy til Render
 
 ### FASE 2: Logging Infrastructure (2-3 timer)
+
 - [ ] Install Winston
 - [ ] Setup Supabase transport
 - [ ] Create logs table
 - [ ] Integrate med existing services
 
 ### FASE 3: Uptime Monitoring (30 min)
+
 - [ ] Create UptimeRobot account
 - [ ] Add monitors
 - [ ] Configure alerts
 
 ### FASE 4: Admin Dashboard (3-4 timer)
+
 - [ ] Build dashboard component
 - [ ] Integrate Sentry API
 - [ ] Display logs from Supabase
@@ -601,13 +607,15 @@ COMMENT ON TABLE application_logs IS 'Centralized application logs from all serv
 ### 🔟 UPTIME MONITORING SETUP
 
 **1. Create UptimeRobot Account**
-- Go to: https://uptimerobot.com
+
+- Go to: <https://uptimerobot.com>
 - Sign up (gratis)
-- Email: jonas@tekup.dk (eller din email)
+- Email: <jonas@tekup.dk> (eller din email)
 
 **2. Add Monitors**
 
 **Monitor 1: Backend Health**
+
 - Type: HTTP(s)
 - URL: `https://rendetalje-backend.onrender.com/health`
 - Name: `RendetaljeOS Backend`
@@ -615,12 +623,14 @@ COMMENT ON TABLE application_logs IS 'Centralized application logs from all serv
 - Alert: Email når down
 
 **Monitor 2: Frontend**
+
 - Type: HTTP(s)
 - URL: `https://rendetalje-frontend-owner.onrender.com`
 - Name: `RendetaljeOS Frontend (Owner)`
 - Interval: 5 minutes
 
 **Monitor 3: Calendar MCP**
+
 - Type: HTTP(s)
 - URL: `https://[SERVICE NOT DEPLOYED]/health`
 - Name: `RenOS Calendar MCP`
@@ -729,17 +739,20 @@ curl https://rendetalje-backend.onrender.com/health
 ## 📈 NEXT STEPS (After Deployment)
 
 ### Week 1: Monitor & Tune
+
 - [ ] Check Sentry daily for errors
 - [ ] Review UptimeRobot alerts
 - [ ] Tune error filters if too noisy
 
 ### Week 2: Build Dashboard
+
 - [ ] Create admin panel component
 - [ ] Show recent errors from Sentry API
 - [ ] Show logs from Supabase
 - [ ] Display uptime stats
 
 ### Week 3: Optimize
+
 - [ ] Add custom Sentry events for important actions
 - [ ] Setup Sentry releases for better tracking
 - [ ] Configure Sentry alerts (Slack/Email)
@@ -748,10 +761,10 @@ curl https://rendetalje-backend.onrender.com/health
 
 ## 🔗 USEFUL LINKS
 
-- **Sentry Dashboard**: https://sentry.io/organizations/YOUR_ORG/projects/
-- **UptimeRobot**: https://uptimerobot.com/dashboard
-- **Render Logs**: https://dashboard.render.com/
-- **Supabase Logs**: https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/logs
+- **Sentry Dashboard**: <https://sentry.io/organizations/YOUR_ORG/projects/>
+- **UptimeRobot**: <https://uptimerobot.com/dashboard>
+- **Render Logs**: <https://dashboard.render.com/>
+- **Supabase Logs**: <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/logs>
 
 ---
 

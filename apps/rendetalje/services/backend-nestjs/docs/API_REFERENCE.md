@@ -28,6 +28,7 @@ Authorization: Bearer <your_jwt_token>
 **Base Route**: `/api/v1/auth`
 
 ### Register User
+
 ```http
 POST /api/v1/auth/register
 Content-Type: application/json
@@ -43,6 +44,7 @@ Content-Type: application/json
 ```
 
 ### Login
+
 ```http
 POST /api/v1/auth/login
 Content-Type: application/json
@@ -60,12 +62,14 @@ Response:
 ```
 
 ### Get Profile
+
 ```http
 GET /api/v1/auth/profile
 Authorization: Bearer <token>
 ```
 
 ### Change Password
+
 ```http
 POST /api/v1/auth/change-password
 Authorization: Bearer <token>
@@ -85,6 +89,7 @@ Content-Type: application/json
 **Required Roles**: OWNER, ADMIN, EMPLOYEE
 
 ### List Customers
+
 ```http
 GET /api/v1/customers?page=1&limit=10&city=København&search=John
 Authorization: Bearer <token>
@@ -108,6 +113,7 @@ Response:
 ```
 
 ### Create Customer
+
 ```http
 POST /api/v1/customers
 Authorization: Bearer <token>
@@ -131,12 +137,14 @@ Content-Type: application/json
 ```
 
 ### Get Customer
+
 ```http
 GET /api/v1/customers/:id
 Authorization: Bearer <token>
 ```
 
 ### Update Customer
+
 ```http
 PATCH /api/v1/customers/:id
 Authorization: Bearer <token>
@@ -149,6 +157,7 @@ Content-Type: application/json
 ```
 
 ### Customer Analytics
+
 ```http
 GET /api/v1/customers/analytics
 Authorization: Bearer <token>
@@ -163,6 +172,7 @@ Roles: OWNER, ADMIN
 **Required Roles**: OWNER, ADMIN, EMPLOYEE
 
 ### List Jobs
+
 ```http
 GET /api/v1/jobs?status=scheduled&service_type=standard&page=1
 Authorization: Bearer <token>
@@ -177,6 +187,7 @@ Query Parameters:
 ```
 
 ### Create Job
+
 ```http
 POST /api/v1/jobs
 Authorization: Bearer <token>
@@ -197,6 +208,7 @@ Content-Type: application/json
 ```
 
 ### Update Job Status
+
 ```http
 PATCH /api/v1/jobs/:id/status
 Authorization: Bearer <token>
@@ -209,6 +221,7 @@ Content-Type: application/json
 ```
 
 ### Assign Team Members
+
 ```http
 POST /api/v1/jobs/:id/assign
 Authorization: Bearer <token>
@@ -228,12 +241,14 @@ Content-Type: application/json
 **Base Route**: `/api/v1/team`
 
 ### List Team Members
+
 ```http
 GET /api/v1/team/members?page=1&limit=10
 Authorization: Bearer <token>
 ```
 
 ### Create Team Member
+
 ```http
 POST /api/v1/team/members
 Authorization: Bearer <token>
@@ -251,6 +266,7 @@ Content-Type: application/json
 ```
 
 ### Team Performance Report
+
 ```http
 GET /api/v1/team/performance-report
 Authorization: Bearer <token>
@@ -264,6 +280,7 @@ Roles: OWNER, ADMIN
 **Base Route**: `/api/v1/time-entries`
 
 ### Create Time Entry
+
 ```http
 POST /api/v1/time-entries
 Authorization: Bearer <token>
@@ -279,12 +296,14 @@ Content-Type: application/json
 ```
 
 ### Daily Summary
+
 ```http
 GET /api/v1/time-entries/daily-summary?date=2025-10-26
 Authorization: Bearer <token>
 ```
 
 ### Time Corrections
+
 ```http
 POST /api/v1/time-corrections
 Authorization: Bearer <token>
@@ -304,6 +323,7 @@ Content-Type: application/json
 **Base Route**: `/api/v1/quality`
 
 ### Upload Photos
+
 ```http
 POST /api/v1/quality/photos/upload
 Authorization: Bearer <token>
@@ -315,6 +335,7 @@ type: before|after|during|issue
 ```
 
 ### Create Quality Assessment
+
 ```http
 POST /api/v1/quality/assessments
 Authorization: Bearer <token>
@@ -330,6 +351,7 @@ Content-Type: application/json
 ```
 
 ### Quality Metrics
+
 ```http
 GET /api/v1/quality/metrics
 Authorization: Bearer <token>
@@ -343,6 +365,7 @@ Roles: OWNER, ADMIN
 **Base Route**: `/api/v1/ai-friday`
 
 ### Send Message
+
 ```http
 POST /api/v1/ai-friday/chat
 Authorization: Bearer <token>
@@ -355,6 +378,7 @@ Content-Type: application/json
 ```
 
 ### Transcribe Audio
+
 ```http
 POST /api/v1/ai-friday/voice/transcribe
 Authorization: Bearer <token>
@@ -369,6 +393,7 @@ language: da
 ## Integration Endpoints
 
 ### Billy.dk (Accounting)
+
 ```http
 POST /api/v1/integrations/billy/invoices
 Authorization: Bearer <token>
@@ -383,6 +408,7 @@ Content-Type: application/json
 ```
 
 ### TekupVault (Knowledge Base)
+
 ```http
 POST /api/v1/integrations/vault/search
 Authorization: Bearer <token>
@@ -395,6 +421,7 @@ Content-Type: application/json
 ```
 
 ### Renos Calendar
+
 ```http
 POST /api/v1/integrations/calendar/availability/check
 Authorization: Bearer <token>
@@ -412,6 +439,7 @@ Content-Type: application/json
 ## Pagination & Filtering
 
 All list endpoints support:
+
 - `page`: Page number (default: 1)
 - `limit`: Items per page (default: 10, max: 100)
 - `search`: Full-text search across relevant fields
@@ -442,6 +470,7 @@ Response format:
 ```
 
 **Common Status Codes**:
+
 - `200` - Success
 - `201` - Created
 - `204` - No Content

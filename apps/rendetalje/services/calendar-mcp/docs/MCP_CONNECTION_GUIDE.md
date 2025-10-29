@@ -7,6 +7,7 @@ Denne guide viser hvordan du forbinder RenOS Calendar MCP serveren til dit syste
 ## 1. MCP Server Setup
 
 ### Start MCP Server
+
 ```bash
 # Development mode
 npm run dev
@@ -19,6 +20,7 @@ npm run start:http
 ```
 
 ### MCP Server Endpoints
+
 - **MCP Protocol**: `ws://localhost:3001` (WebSocket)
 - **HTTP API**: `http://localhost:3001` (REST)
 - **Health Check**: `http://localhost:3001/health`
@@ -27,6 +29,7 @@ npm run start:http
 ## 2. Cursor/Claude Desktop Integration
 
 ### Cursor MCP Configuration
+
 Opret `~/.cursor/mcp_servers.json`:
 
 ```json
@@ -62,6 +65,7 @@ Opret `~/.cursor/mcp_servers.json`:
 ```
 
 ### Claude Desktop Configuration
+
 Opret `~/.claude/mcp_servers.json`:
 
 ```json
@@ -99,6 +103,7 @@ Opret `~/.claude/mcp_servers.json`:
 ## 3. HTTP API Integration
 
 ### Direct HTTP Calls
+
 ```typescript
 // Validate booking date
 const response = await fetch('http://localhost:3001/validate-booking', {
@@ -119,6 +124,7 @@ console.log(result);
 ```
 
 ### Available Endpoints
+
 - `POST /validate-booking` - Validate booking date
 - `POST /check-conflicts` - Check booking conflicts
 - `POST /create-invoice` - Create Billy.dk invoice
@@ -130,6 +136,7 @@ console.log(result);
 ## 4. WebSocket MCP Protocol
 
 ### MCP Client Connection
+
 ```typescript
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
@@ -171,6 +178,7 @@ console.log('Result:', result);
 ## 5. Environment Setup
 
 ### Create .env File
+
 ```bash
 # Copy from deployment/.secrets/
 cp deployment/.secrets/google-private-key.txt .env.google-private-key
@@ -179,6 +187,7 @@ cp deployment/.secrets/supabase-service-key.txt .env.supabase-service-key
 ```
 
 ### Environment Variables
+
 ```bash
 # Database
 SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
@@ -214,6 +223,7 @@ ENABLE_FAIL_SAFE_MODE=true
 ## 6. Testing Connection
 
 ### Health Check
+
 ```bash
 curl http://localhost:3001/health
 ```
@@ -233,6 +243,7 @@ Expected response:
 ```
 
 ### Tools List
+
 ```bash
 curl http://localhost:3001/tools
 ```
@@ -273,6 +284,7 @@ Expected response:
 ## 7. Production Deployment
 
 ### Render.com Deployment
+
 ```bash
 # Deploy to Render
 ./scripts/deploy-render.ps1
@@ -282,11 +294,13 @@ Expected response:
 ```
 
 ### Production URLs
+
 - **Backend**: `https://renos-calendar-mcp.onrender.com`
 - **Dashboard**: `https://renos-calendar-dashboard.onrender.com`
 - **Health**: `https://renos-calendar-mcp.onrender.com/health`
 
 ### Production MCP Configuration
+
 ```json
 {
   "mcpServers": {
@@ -357,6 +371,7 @@ Expected response:
    ```
 
 ### Debug Mode
+
 ```bash
 # Enable debug logging
 DEBUG=renos-calendar-mcp:* npm run dev
@@ -368,6 +383,7 @@ LOG_LEVEL=debug npm run dev
 ## 9. Usage Examples
 
 ### In Cursor/Claude
+
 ```
 User: "Valider om mandag den 20. januar 2025 er korrekt for kunde 123"
 
@@ -382,6 +398,7 @@ Result: ✅ Valid - Monday 20th January 2025 is correct for customer 123
 ```
 
 ### Direct API Call
+
 ```typescript
 // Validate booking
 const validation = await fetch('http://localhost:3001/validate-booking', {

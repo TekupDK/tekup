@@ -1,4 +1,4 @@
-# Session Afslutning - Repository Omstrukturering
+﻿# Session Afslutning - Repository Omstrukturering
 
 **Dato:** 22. Oktober 2025  
 **Session Type:** Repository Organization & Cleanup  
@@ -95,7 +95,7 @@ Tekup-Billy/
 ### Arkitektur
 
 ```
-Tekup-Billy (JonasAbde/Tekup-Billy)
+Tekup-Billy (TekupDK/Tekup-Billy)
       │
       │ GitHub Sync (hver 6 timer)
       ▼
@@ -126,7 +126,7 @@ AI Agents / Udviklere
 
 1. **Tekup-Billy** (MCP server):
    - Lokalt: `C:\Users\empir\Tekup-Billy`
-   - GitHub: `JonasAbde/Tekup-Billy`
+   - GitHub: `TekupDK/Tekup-Billy`
    - Deployed: `https://tekup-billy.onrender.com`
 
 2. **TekupVault** (knowledge base):
@@ -167,7 +167,7 @@ AI Agents / Udviklere
 ## 💾 Backup & Sikkerhed
 
 ✅ **Git Commit:** Alle ændringer gemt i version control  
-✅ **GitHub:** Remote backup på JonasAbde/Tekup-Billy  
+✅ **GitHub:** Remote backup på TekupDK/Tekup-Billy  
 ✅ **Render:** Auto-deploy fra main branch  
 ✅ **Dokumentation:** Komplet session log i denne fil  
 
@@ -193,9 +193,9 @@ AI Agents / Udviklere
 ## 📞 Kontakt & Support
 
 **Udvikler:** Jonas  
-**Repository:** <https://github.com/JonasAbde/Tekup-Billy>  
+**Repository:** <https://github.com/TekupDK/Tekup-Billy>  
 **Dokumentation:** `docs/` (se MASTER_INDEX.md for overblik)  
-**Issues:** GitHub Issues på JonasAbde/Tekup-Billy  
+**Issues:** GitHub Issues på TekupDK/Tekup-Billy  
 
 ---
 

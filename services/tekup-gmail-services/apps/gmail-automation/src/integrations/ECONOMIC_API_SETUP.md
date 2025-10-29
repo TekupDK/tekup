@@ -1,8 +1,9 @@
 # e-conomic API Setup Guide
 
-## Status: ✅ API Integration Fungerer!
+## Status: ✅ API Integration Fungerer
 
 **Test Resultater:**
+
 - ✅ **Connection:** SUCCESS - Forbundet til e-conomic API
 - ✅ **Accounts:** SUCCESS - 20 konti fundet
 - ❌ **Voucher Creation:** FAILED - Demo license er read-only
@@ -11,19 +12,21 @@
 
 ### 1. Opret Udvikleraftale med e-conomic 🔧
 
-**Gå til:** https://www.e-conomic.com/developer
+**Gå til:** <https://www.e-conomic.com/developer>
 
 **Klik på:** "Opret udvikleraftale" eller "Developer Agreement"
 
 **Udfyld:**
+
 - **Virksomhed:** Foodtruck Fiesta ApS
 - **CVR:** 44371901
-- **Kontakt:** ftfiestaa@gmail.com
+- **Kontakt:** <ftfiestaa@gmail.com>
 - **Formål:** Automatisk bilag upload via API
 
 ### 2. Få API Tokens 📋
 
 Efter godkendelse får du:
+
 - `X-AppSecretToken`: Din app secret token
 - `X-AgreementGrantToken`: Din agreement grant token
 
@@ -50,12 +53,14 @@ python gmail_economic_api_forwarder.py
 ## Fordele ved API Integration vs Email Forwarding
 
 ### **Email Forwarding (Nuværende):**
+
 - ✅ Fungerer perfekt
 - ✅ Alle bilag er allerede sendt
 - ❌ Manuelt process
 - ❌ Ingen direkte integration
 
 ### **API Integration (Ny):**
+
 - ✅ Direkte integration med e-conomic
 - ✅ Automatisk voucher oprettelse
 - ✅ Bedre fejlhåndtering
@@ -70,6 +75,6 @@ python gmail_economic_api_forwarder.py
 
 ## Support
 
-- **e-conomic API Support:** api@e-conomic.com
-- **Dokumentation:** https://restdocs.e-conomic.com
-- **Developer Portal:** https://www.e-conomic.com/developer
+- **e-conomic API Support:** <api@e-conomic.com>
+- **Dokumentation:** <https://restdocs.e-conomic.com>
+- **Developer Portal:** <https://www.e-conomic.com/developer>

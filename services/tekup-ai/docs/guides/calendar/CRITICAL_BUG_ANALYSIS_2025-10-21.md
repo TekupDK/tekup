@@ -10,6 +10,7 @@
 ## 📊 BUG BESKRIVELSE
 
 ### **Symptom**
+
 ```bash
 # Request
 curl -X POST "http://localhost:3001/api/v1/tools/validate_booking_date" \
@@ -21,6 +22,7 @@ curl -X POST "http://localhost:3001/api/v1/tools/validate_booking_date" \
 ```
 
 ### **Forventet Resultat**
+
 ```json
 {
   "success": true,
@@ -38,6 +40,7 @@ curl -X POST "http://localhost:3001/api/v1/tools/validate_booking_date" \
 ## 🔍 ROOT CAUSE ANALYSE
 
 ### **Observation 1**: Authentication Middleware IKKE i Source Code
+
 ```typescript
 // renos-calendar-mcp/src/http-server.ts
 // AUTHENTICATION MIDDLEWARE ER FJERNET!
@@ -47,6 +50,7 @@ curl -X POST "http://localhost:3001/api/v1/tools/validate_booking_date" \
 ```
 
 ### **Observation 2**: Authentication Middleware IKKE i Compiled Code
+
 ```bash
 # Command
 docker exec renos-calendar-mcp-mcp-server-1 cat /app/dist/http-server.js | grep "Unauthorized"
@@ -56,6 +60,7 @@ docker exec renos-calendar-mcp-mcp-server-1 cat /app/dist/http-server.js | grep 
 ```
 
 ### **Observation 3**: Server Logger Viser INGEN Authentication
+
 ```log
 2025-10-21 19:26:03 [info]: RenOS Calendar Intelligence HTTP Server started
 2025-10-21 19:26:03 [info]: Available endpoints: {
@@ -65,7 +70,8 @@ docker exec renos-calendar-mcp-mcp-server-1 cat /app/dist/http-server.js | grep 
 }
 ```
 
-### **Observation 4**: Men API Returner STADIG "Unauthorized"!
+### **Observation 4**: Men API Returner STADIG "Unauthorized"
+
 ```bash
 # curl.exe
 curl.exe -X POST "http://localhost:3001/api/v1/tools/validate_booking_date"
@@ -81,6 +87,7 @@ Invoke-WebRequest -Uri "http://localhost:3001/api/v1/tools/validate_booking_date
 ## 🎯 MYSTERY: HVOR KOMMER FEJLEN FRA?
 
 ### **Hypotese 1**: Docker Layer Cache ❌ AFVIST
+
 ```bash
 # Test
 docker-compose down
@@ -93,6 +100,7 @@ Samme fejl
 ```
 
 ### **Hypotese 2**: TypeScript Compilation Cache ❌ AFVIST
+
 ```bash
 # Test
 rm -rf dist/
@@ -104,6 +112,7 @@ Samme fejl
 ```
 
 ### **Hypotese 3**: Nginx Proxy ❌ AFVIST
+
 ```bash
 # Test
 docker-compose ps
@@ -114,6 +123,7 @@ Kun mcp-server, chatbot, redis
 ```
 
 ### **Hypotese 4**: Rate Limiter Middleware ❌ AFVIST
+
 ```typescript
 // express-rate-limit konfiguration
 app.use('/api/', limiter);
@@ -122,6 +132,7 @@ app.use('/api/', limiter);
 ```
 
 ### **Hypotese 5**: Windows Network Proxy ⏳ UNDER TEST
+
 ```bash
 # Test med curl.exe (native Windows curl)
 curl.exe -X POST "http://localhost:3001/api/v1/tools/validate_booking_date"
@@ -132,6 +143,7 @@ Samme fejl - proxy hypotese AFVIST
 ```
 
 ### **Hypotese 6**: Container Network Problem ⏳ UNDER TEST
+
 ```bash
 # Test direkte fra container
 docker exec renos-calendar-mcp-mcp-server-1 curl localhost:3001/health
@@ -142,6 +154,7 @@ docker exec renos-calendar-mcp-mcp-server-1 curl localhost:3001/health
 ## 🔍 NEXT INVESTIGATION STEPS
 
 ### **Step 1**: Test Direkte Fra Container
+
 ```bash
 docker exec renos-calendar-mcp-mcp-server-1 \
   curl -X POST localhost:3001/api/v1/tools/validate_booking_date \
@@ -150,12 +163,14 @@ docker exec renos-calendar-mcp-mcp-server-1 \
 ```
 
 ### **Step 2**: Tjek Express Middleware Chain
+
 ```bash
 docker exec renos-calendar-mcp-mcp-server-1 \
   node -e "const app = require('./dist/http-server.js'); console.log(app._router.stack);"
 ```
 
 ### **Step 3**: Enable Debug Logging
+
 ```typescript
 // Add to http-server.ts
 app.use((req, res, next) => {
@@ -165,6 +180,7 @@ app.use((req, res, next) => {
 ```
 
 ### **Step 4**: Tjek Docker Network
+
 ```bash
 docker network inspect renos-calendar-network
 docker logs renos-calendar-mcp-mcp-server-1 --follow
@@ -175,12 +191,14 @@ docker logs renos-calendar-mcp-mcp-server-1 --follow
 ## 💡 MULIGE LØSNINGER
 
 ### **Løsning A**: Completely Bypass Authentication
+
 ```typescript
 // Remove ALL authentication logic
 // Test if API works without any middleware
 ```
 
 ### **Løsning B**: Use Different Port
+
 ```yaml
 # docker-compose.yml
 services:
@@ -190,6 +208,7 @@ services:
 ```
 
 ### **Løsning C**: Test Lokalt Uden Docker
+
 ```bash
 cd renos-calendar-mcp
 npm run build
@@ -199,6 +218,7 @@ curl localhost:3001/health
 ```
 
 ### **Løsning D**: Check for Hidden Middleware
+
 ```bash
 # Search ALL files for "Unauthorized"
 grep -r "Unauthorized" renos-calendar-mcp/src/
@@ -210,6 +230,7 @@ grep -r "Invalid.*API.*key" renos-calendar-mcp/src/
 ## 📊 IMPACT ANALYSIS
 
 ### **Business Impact**
+
 - ❌ **100% downtime** - Ingen AI funktioner virker
 - ❌ **0 bookinger valideret** - Ingen automatic validation
 - ❌ **0 konflikter detekteret** - Ingen conflict detection
@@ -217,12 +238,14 @@ grep -r "Invalid.*API.*key" renos-calendar-mcp/src/
 - ❌ **Komplet tab af produktivitet**
 
 ### **Technical Impact**
+
 - ❌ Backend API ubruger
 - ❌ Frontend kan ikke kommunikere
 - ❌ Docker containers inutility
 - ❌ Hele system arkitektur i krise
 
 ### **Time Impact**
+
 - ⏰ **2+ timer troubleshooting** uden løsning
 - ⏰ **50+ tests kørt** uden success
 - ⏰ **3 rebuilds** uden improvement
@@ -257,6 +280,6 @@ grep -r "Invalid.*API.*key" renos-calendar-mcp/src/
 
 ---
 
-*Generated by AI Assistant*  
-*Date: 21. Oktober 2025, 21:27 CET*
+_Generated by AI Assistant_  
+_Date: 21. Oktober 2025, 21:27 CET_
 

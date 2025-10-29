@@ -1,7 +1,7 @@
 # 🚀 TEKUP MCP SERVERS PROJECT
 
 > **Custom Model Context Protocol (MCP) servers til Tekup organisation**  
-> *Version 1.0.0 | Oprettet: 26. oktober 2025 | Status: Planning Phase*
+> _Version 1.0.0 | Oprettet: 26. oktober 2025 | Status: Planning Phase_
 
 ---
 
@@ -10,9 +10,11 @@
 Dette projekt dokumenterer Tekup's strategi for at udvikle custom MCP servers som giver AI-assistenter deep integration med Tekup's systemer, dokumentation og workflows.
 
 ### 🎯 Mission
+
 At bygge **7 innovative MCP servers** der giver Tekup konkurrencefordel gennem AI-augmented development workflows, og potentielt spare **4.3 million kr/år** i udviklerproduktivitet.
 
 ### 📊 Current Status
+
 - ✅ **Phase -1:** MCP System Analysis - KOMPLET (26. oktober 2025)
 - ✅ **Phase 0:** Innovation Planning - KOMPLET (26. oktober 2025)
 - 🔄 **Phase 1:** Repository Setup - IN PROGRESS
@@ -39,17 +41,20 @@ At bygge **7 innovative MCP servers** der giver Tekup konkurrencefordel gennem A
 ## 🔍 QUICK LINKS
 
 ### For Developers
+
 - 🏁 [Getting Started](#getting-started) - Start her
 - 🔧 [Implementation Guide](./TEKUP_MCP_IMPLEMENTATION_GUIDE.md) - Trin-for-trin setup
 - 🔒 [Security Issues](./TEKUP_MCP_SECURITY.md) - KRITISK: Læs først!
 - 📊 [Project Status](./TEKUP_MCP_PROJECT_STATUS.md) - Hvad er status lige nu?
 
 ### For Project Management
+
 - 💡 [Innovation Plan](./TEKUP_CUSTOM_MCP_INNOVATION_PLAN.md) - Business case & ROI
 - 🏗️ [Repository Strategy](./TEKUP_MCP_SERVERS_REPOSITORY_STRATEGI.md) - Arkitektur
 - 📈 [Roadmap](#roadmap) - 6-fase implementation plan
 
 ### For Architecture Review
+
 - 🔍 [MCP Analysis](./MCP_KOMPLET_ANALYSE_2025-10-26.md) - Komplet system audit
 - 🏛️ [Tech Stack](#tech-stack) - Teknologi valg
 - 🌐 [Integration](#integration) - Hvordan det passer sammen
@@ -59,12 +64,14 @@ At bygge **7 innovative MCP servers** der giver Tekup konkurrencefordel gennem A
 ## 🎯 KEY FINDINGS
 
 ### Nuværende MCP Setup
+
 - **28 unikke MCP servers** på tværs af 6 IDEs
 - **3 eksisterende custom servers:** tekup-billy, tekup-vault, calendar-mcp
 - **Top 1% globally** for MCP adoption
 - **Kritisk sikkerhedsproblem:** Hardcoded credentials i Cursor config
 
 ### Business Opportunity
+
 - **Estimeret værdi:** 4.3 million kr/år i time savings
 - **ROI:** 975% første år
 - **Time savings:** 90-100 timer/måned per udvikler
@@ -91,6 +98,7 @@ At bygge **7 innovative MCP servers** der giver Tekup konkurrencefordel gennem A
 ## 🏗️ ARCHITECTURE
 
 ### Repository Structure
+
 ```
 TekupDK/tekup-mcp-servers (Git Submodule)
 ├── packages/
@@ -107,6 +115,7 @@ TekupDK/tekup-mcp-servers (Git Submodule)
 ```
 
 ### Integration with Tekup Monorepo
+
 ```
 Tekup/
 ├── apps/
@@ -123,21 +132,27 @@ Tekup/
 ## 📅 ROADMAP
 
 ### Phase -1: System Analysis ✅ KOMPLET
-*Timeline: 1 dag (26. oktober 2025)*
+
+*Timeline: 1 dag (26. oktober 2025)_
+
 - [x] Scan alle MCP configs (16 filer analyseret)
 - [x] Catalogue alle servers (28 unikke servers fundet)
 - [x] Identificer problemer (sikkerhed, inconsistency)
 - [x] Generer komplet analyse rapport
 
 ### Phase 0: Innovation Planning ✅ KOMPLET
-*Timeline: 1 dag (26. oktober 2025)*
+
+*Timeline: 1 dag (26. oktober 2025)_
+
 - [x] Design 7 custom MCP servers
 - [x] Business case & ROI beregning
 - [x] Tech stack valg
 - [x] Repository strategi
 
 ### Phase 1: Repository Setup 🔄 IN PROGRESS
-*Timeline: 1 dag*
+
+*Timeline: 1 dag_
+
 - [ ] Create GitHub repository `TekupDK/tekup-mcp-servers`
 - [ ] Setup PNPM workspace
 - [ ] Create base MCP server template
@@ -145,7 +160,9 @@ Tekup/
 - [ ] Setup CI/CD workflows
 
 ### Phase 2: Knowledge MCP Development ⏳ PENDING
-*Timeline: 1-2 måneder (40-60 timer)*
+
+*Timeline: 1-2 måneder (40-60 timer)_
+
 - [ ] Setup project structure
 - [ ] Implement documentation scraping
 - [ ] Setup vector DB (Pinecone free tier)
@@ -154,7 +171,9 @@ Tekup/
 - [ ] Testing & refinement
 
 ### Phase 3-6: Remaining Servers ⏳ PENDING
-*Timeline: 4-5 måneder (240-340 timer)*
+
+*Timeline: 4-5 måneder (240-340 timer)_
+
 - [ ] Client Context MCP (Phase 2)
 - [ ] Finance MCP (Phase 2 - parallel)
 - [ ] Code Intelligence MCP (Phase 3)
@@ -169,6 +188,7 @@ Tekup/
 ### 🔴 IMMEDIATE ACTION REQUIRED
 
 **Problem:** Cursor IDE MCP config indeholder hardcoded credentials i plain text:
+
 - GitHub Personal Access Token: `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`
 - Supabase credentials
 - Billy API key: `43e7439bccb58a8a96dd57dd06dae10add009111`
@@ -176,6 +196,7 @@ Tekup/
 **Location:** `C:\Users\empir\.cursor\mcp.json`
 
 **Impact:**
+
 - Security breach if committed to git
 - Credentials exposed in backups
 - No rotation capability
@@ -187,12 +208,14 @@ Tekup/
 ## 🛠️ TECH STACK
 
 ### Core Technologies
+
 - **Language:** Node.js/TypeScript
 - **Package Manager:** PNPM (workspaces)
 - **Monorepo:** PNPM Workspaces + Turborepo (optional)
 - **MCP SDK:** `@modelcontextprotocol/sdk`
 
 ### Server-Specific
+
 | Server | Key Technologies |
 |--------|------------------|
 | Knowledge MCP | Pinecone/Qdrant, OpenAI Embeddings, RAG |
@@ -204,6 +227,7 @@ Tekup/
 | Learning MCP | Supabase, Skill tracking, Analytics |
 
 ### Infrastructure
+
 - **Hosting:** Render (HTTP/SSE servers)
 - **Databases:** Supabase (PostgreSQL), Pinecone (vector DB)
 - **CI/CD:** GitHub Actions
@@ -215,6 +239,7 @@ Tekup/
 ## 🚦 GETTING STARTED
 
 ### Prerequisites
+
 - Node.js >= 20.0.0
 - PNPM >= 8.0.0
 - Git
@@ -222,6 +247,7 @@ Tekup/
 - Kilo Code eller anden MCP-compatible IDE
 
 ### Quick Start
+
 1. **Læs sikkerhedsdokumentet FØRST:** [TEKUP_MCP_SECURITY.md](./TEKUP_MCP_SECURITY.md)
 2. **Fix kritiske sikkerhedsproblemer** (Cursor credentials)
 3. **Gennemgå implementation guide:** [TEKUP_MCP_IMPLEMENTATION_GUIDE.md](./TEKUP_MCP_IMPLEMENTATION_GUIDE.md)
@@ -229,6 +255,7 @@ Tekup/
 5. **Start med Phase 1** (Knowledge MCP)
 
 ### For Immediate Setup
+
 ```bash
 # 1. Create repository
 # (Via GitHub UI eller gh CLI)
@@ -251,6 +278,7 @@ git commit -m "Add MCP servers as submodule"
 ## 📊 PROJECT METRICS
 
 ### Development Estimates
+
 | Fase | Tidsforbrug | Værdi | ROI |
 |------|-------------|-------|-----|
 | Phase 1: Knowledge MCP | 40-60 timer | 1.2M kr/år | 2,000% |
@@ -259,6 +287,7 @@ git commit -m "Add MCP servers as submodule"
 | **Total** | **300-400 timer** | **4.3M kr/år** | **975%** |
 
 ### Time Savings per Developer
+
 - **Knowledge MCP:** 20-25 timer/måned
 - **Client MCP:** 10-15 timer/måned
 - **Code Intel MCP:** 30-35 timer/måned
@@ -273,9 +302,11 @@ git commit -m "Add MCP servers as submodule"
 ## 📝 CHANGELOG
 
 ### Version 1.0.0 (26. oktober 2025)
+
 **Initial Release**
 
 #### Added
+
 - Komplet MCP system analyse (28 servers catalogued)
 - Innovation plan for 7 custom MCP servers
 - Git submodule repository strategi
@@ -285,11 +316,13 @@ git commit -m "Add MCP servers as submodule"
 - Master README (dette dokument)
 
 #### Found
+
 - Kritisk sikkerhedsproblem i Cursor config
 - Memory file inconsistency på tværs af IDEs
 - 3 eksisterende custom servers (tekup-billy, tekup-vault, calendar-mcp)
 
 #### Identified
+
 - 4.3 million kr/år value opportunity
 - 975% ROI potential
 - 90-100 timer/måned time savings per udvikler
@@ -299,9 +332,11 @@ git commit -m "Add MCP servers as submodule"
 ## 👥 TEAM & CONTACTS
 
 ### Project Lead
+
 - **empir** - Initial analysis, strategy, og documentation
 
 ### Repository
+
 - **GitHub:** [TekupDK/tekup-mcp-servers](https://github.com/TekupDK/tekup-mcp-servers) (til oprettelse)
 - **Issues:** GitHub Issues (when created)
 - **Discussions:** GitHub Discussions (when created)
@@ -317,11 +352,13 @@ TBD - Likely MIT for potential open source future
 ## 🔗 EXTERNAL RESOURCES
 
 ### MCP Documentation
+
 - [Model Context Protocol Spec](https://spec.modelcontextprotocol.io/)
 - [MCP SDK Documentation](https://github.com/modelcontextprotocol/typescript-sdk)
 - [MCP Servers Gallery](https://github.com/modelcontextprotocol/servers)
 
 ### Tekup Resources
+
 - Tekup Monorepo: `C:\Users\empir\Tekup`
 - tekup-secrets submodule (reference pattern)
 - Existing MCP servers: tekup-billy, tekup-vault, calendar-mcp
@@ -331,6 +368,7 @@ TBD - Likely MIT for potential open source future
 ## 📞 SUPPORT
 
 For spørgsmål eller assistance:
+
 1. Check [Project Status](./TEKUP_MCP_PROJECT_STATUS.md) for current state
 2. Review [Implementation Guide](./TEKUP_MCP_IMPLEMENTATION_GUIDE.md)
 3. Check existing documentation

@@ -7,11 +7,13 @@
 ## 📋 Forudsætninger
 
 ### På Din Computer
+
 - [x] Docker Desktop installeret og kørende
 - [x] VS Code med Tekup-Portfolio.code-workspace åben
 - [x] Git repository klonet
 
 ### På Dine Phones
+
 - [x] **iPhone 16 Pro**: Expo Go app fra App Store
 - [x] **Samsung Galaxy Z Fold 7**: Expo Go app fra Google Play
 - [x] Begge phones på samme WiFi som din computer
@@ -68,14 +70,14 @@ docker-compose -f docker-compose.mobile.yml up -d
 
 ### Step 3: Forbind Dine Phones
 
-#### På iPhone 16 Pro:
+#### På iPhone 16 Pro
 
 1. **Åbn Expo Go app**
 2. **Scan QR kode** fra terminalen
    - Eller indtast URL manuelt: `exp://192.168.1.100:19000`
 3. **App loader** og starter 🎉
 
-#### På Samsung Galaxy Z Fold 7:
+#### På Samsung Galaxy Z Fold 7
 
 1. **Åbn Expo Go app**
 2. **Scan QR kode** fra terminalen
@@ -99,31 +101,37 @@ docker-compose -f docker-compose.mobile.yml up -d
 ## 📱 Brug App'en
 
 ### Login
+
 ```
 Email: test@rendetalje.dk
 Password: test123
 ```
-*(Eller opret bruger via backend API)*
+_(Eller opret bruger via backend API)_
 
-### Features Du Kan Teste:
+### Features Du Kan Teste
 
 ✅ **Login med Biometric**
+
 - På iPhone: Face ID
 - På Samsung: Fingerprint
 
 ✅ **GPS Tracking**
+
 - Tryk på GPS toggle
 - Se live location opdateringer
 
 ✅ **Job Liste**
+
 - Se dagens jobs
 - Tap på job card for detaljer
 
 ✅ **AI Friday**
+
 - Tap floating button
 - Chat med AI assistant
 
 ✅ **Offline Mode**
+
 - Sluk WiFi på phone
 - App virker stadig!
 - Data syncer når online igen
@@ -304,10 +312,12 @@ eas build --platform ios --profile production
 ### Hot Reload
 
 Shake phone eller:
+
 - **iOS**: `Cmd + D`
 - **Android**: `Cmd + M` (eller shake)
 
 Menu options:
+
 - **Reload**: Reload app
 - **Debug**: Open Chrome DevTools
 - **Inspector**: Inspect elements
@@ -316,6 +326,7 @@ Menu options:
 ### VS Code Setup
 
 Anbefalede extensions:
+
 - React Native Tools
 - Expo Tools
 - Prisma
@@ -324,6 +335,7 @@ Anbefalede extensions:
 ### Network Tips
 
 For bedste performance:
+
 - Brug 5GHz WiFi (ikke 2.4GHz)
 - Brug samme router til computer og phones
 - Deaktiver VPN
@@ -365,7 +377,7 @@ For bedste performance:
 
 ---
 
-## ✅ Checklist: Klar til at starte!
+## ✅ Checklist: Klar til at starte
 
 - [ ] Docker Desktop kører
 - [ ] Expo Go installeret på begge phones
@@ -379,7 +391,7 @@ For bedste performance:
 
 ---
 
-## 🚀 Du Er Klar!
+## 🚀 Du Er Klar
 
 ```bash
 # One command to rule them all:

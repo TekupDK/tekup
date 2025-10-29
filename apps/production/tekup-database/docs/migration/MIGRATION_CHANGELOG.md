@@ -7,9 +7,11 @@ All notable changes and progress for the Supabase database consolidation project
 ## [Unreleased] - In Progress
 
 ### 🎯 Goal
+
 Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use single Supabase project (Frankfurt - RenOS).
 
 ### Current Status
+
 - **Phase:** Automated preparation complete
 - **Progress:** 85% complete
 - **Next:** Manual execution (30-50 min)
@@ -21,6 +23,7 @@ Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use 
 ### Added
 
 #### Documentation
+
 - ✅ Created 17 comprehensive planning documents
 - ✅ `00_START_HERE.md` - Quick start guide
 - ✅ `README.md` - Project overview
@@ -41,6 +44,7 @@ Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use 
 - ✅ `FOLDER_STRUCTURE.md` - Organization guide
 
 #### Migration Scripts
+
 - ✅ `01_create_vault_tables.sql` (200 lines)
   - pgvector extension setup
   - 3 vault tables creation
@@ -66,6 +70,7 @@ Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use 
   - Rollback procedures
 
 #### Repository Updates
+
 - ✅ `tekup-database` v1.3.0
   - Updated README.md (Supabase + Docker hybrid)
   - Created SUPABASE_SETUP.md (complete guide)
@@ -74,11 +79,13 @@ Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use 
   - Git committed & pushed to GitHub
 
 #### Environment Updates
+
 - ✅ TekupVault `.env` updated to Frankfurt Supabase
 - ✅ Created `.env.paris.backup` (rollback safety)
 - ✅ Backup folders created
 
 #### Folder Organization
+
 - ✅ Created `c:\Users\empir\supabase-migration\` folder
 - ✅ Moved all 17 migration docs to organized location
 - ✅ Created `c:\Users\empir\reports-archive\` folder
@@ -86,11 +93,13 @@ Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use 
 - ✅ Cleaned home directory
 
 ### Changed
+
 - Updated TekupVault database connection from Paris to Frankfurt
 - Organized loose files into proper folder structure
 - Clarified project structure (Tekup-org vs Tekup-Cloud)
 
 ### Technical Details
+
 - **Source:** Paris Supabase (twaoebtlusudzxshjral)
 - **Target:** Frankfurt Supabase (oaevagdgrasfppbrxbey)
 - **Region:** eu-central-1 (Frankfurt, Germany)
@@ -99,6 +108,7 @@ Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use 
 - **Extension:** pgvector for embeddings
 
 ### Time Investment
+
 - Analysis & Planning: 1h
 - Script Creation: 1h
 - Documentation: 2h
@@ -108,6 +118,7 @@ Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use 
 - **Total Automated:** ~5 hours ✅
 
 ### Pending Work
+
 - ⏳ Create vault tables in Supabase UI (5 min)
 - ⏳ Run data migration script (10-30 min)
 - ⏳ Verify migration (2 min)
@@ -122,12 +133,14 @@ Consolidate 3 Tekup applications (TekupVault, Tekup-Billy, RendetaljeOS) to use 
 ## [2025-10-22] - Session 1: Planning & Analysis
 
 ### Added
+
 - Initial database provider analysis
 - Render.com production deployment mapping
 - 3-repo migration scope confirmed
 - Decision: Supabase production + Docker development
 
 ### Discovered
+
 - 2 separate Supabase projects (Paris & Frankfurt)
 - 4 Render.com production services
 - TekupVault on Paris (needs migration)
@@ -156,6 +169,7 @@ PENDING ⏳:
 ```
 
 ### Success Criteria
+
 - [ ] Vault tables created in Frankfurt Supabase
 - [ ] All data migrated successfully
 - [ ] TekupVault works locally with new DB
@@ -169,6 +183,7 @@ PENDING ⏳:
 ## Next Steps
 
 **When resuming:**
+
 1. Open `c:\Users\empir\backups\MANUAL_STEPS_GUIDE.md`
 2. Follow 7 manual steps (30-50 min)
 3. Verify all success criteria

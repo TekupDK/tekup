@@ -239,6 +239,7 @@ Features:        RenOS ⚠️        vs Freshsales ✅\n\n```text\n
 ## 🎯 RenOS's Unique Selling Points (USP)
 
 ### **1. AI-First Architecture** 🤖\n\n```\n\n✅ Native Gemini 2.0 Flash integration\n\n✅ Automatic email response generation
+
 ✅ Intelligent lead classification
 ✅ Context-aware task planning
 ✅ Danish language support
@@ -249,6 +250,7 @@ Konkurrenter: Kræver dyre add-ons eller har det ikke\n\n```text\n
 ---
 
 ### **2. Gmail Deep Integration** 📧\n\n```\n\n✅ Domain-wide delegation\n\n✅ Thread-aware responses
+
 ✅ Automatic lead detection from emails
 ✅ Email sentiment analysis
 ✅ Auto-categorization
@@ -259,6 +261,7 @@ Konkurrenter: Basic email sync, ingen AI processing\n\n```text\n
 ---
 
 ### **3. Rengørings-Specifik** 🧹\n\n```\n\n✅ Task types (flytning, almindelig, vinduespudsning, etc.)\n\n✅ Square meter pricing logic
+
 ✅ Room-based quoting
 ✅ Danish industry terminology
 ✅ Local market understanding
@@ -269,6 +272,7 @@ Konkurrenter: Generic tools, ikke branche-optimeret\n\n```text\n
 ---
 
 ### **4. Price-to-Value Ratio** 💰\n\n```\n\n✅ Gratis-tier mulig (selvhosted)\n\n✅ Low cost cloud hosting (~200-500 kr/mnd)
+
 ✅ No per-user licensing fees
 ✅ Open source potential
 ✅ No vendor lock-in
@@ -279,6 +283,7 @@ Konkurrenter: 5,000-200,000 kr/år med per-user fees\n\n```text\n
 ---
 
 ### **5. Modern Tech Stack** 🚀\n\n```\n\n✅ React + TypeScript (moderne frontend)\n\n✅ Node.js + Express (scalable backend)\n\n✅ PostgreSQL (robust database)\n\n✅ Docker containerized
+
 ✅ Cloud-native architecture
 ✅ API-first design
 
@@ -290,6 +295,7 @@ Konkurrenter: Legacy tech, monolithic architectures\n\n```text\n
 ## ⚠️ RenOS's Weaknesses vs Market
 
 ### **1. Feature Completeness** (70% vs 85-95%)\n\n```\n\n❌ No invoicing\n\n❌ No payment processing
+
 ❌ No advanced reporting
 ❌ No team collaboration features
 ❌ No customer portal
@@ -300,6 +306,7 @@ Konkurrenter: Legacy tech, monolithic architectures\n\n```text\n
 ---
 
 ### **2. Maturity** (MVP vs Established)\n\n```\n\n⚠️ Limited testing in production\n\n⚠️ Small user base
+
 ⚠️ No case studies
 ⚠️ Minimal documentation
 ⚠️ No enterprise support
@@ -309,6 +316,7 @@ Konkurrenter: Legacy tech, monolithic architectures\n\n```text\n
 ---
 
 ### **3. Integrations** (5 vs 100+)\n\n```\n\nCurrent:\n\n✅ Gmail
+
 ✅ Google Calendar
 ✅ Google Gemini
 
@@ -324,6 +332,7 @@ Missing:
 ---
 
 ### **4. Mobile Experience** (PWA vs Native)\n\n```\n\nRenOS:\n\n⚠️ PWA (Progressive Web App)
+
 ⚠️ No offline mode yet
 ⚠️ Limited push notifications
 ⚠️ No app store presence
@@ -338,6 +347,7 @@ Konkurrenter:
 ---
 
 ### **5. Support & Training** (None vs Extensive)\n\n```\n\nRenOS:\n\n❌ No dedicated support
+
 ❌ No training materials
 ❌ No onboarding flow
 ❌ Community-based only
@@ -400,6 +410,7 @@ Konkurrenter:
 ## 🎪 Market Entry Strategy
 
 ### **Phase 1: Prove Concept** (Nu - 3 måneder)\n\n```\n\n✅ Rendetalje.dk som pilot\n\n✅ Prove ROI (time saved, leads converted)
+
 ✅ Gather feedback
 ✅ Iterate quickly\n\n```text\n\n\n### **Phase 2: Early Adopters** (3-6 måneder)\n\n```\n\n- 5-10 beta kunder\n\n- Industry word-of-mouth\n\n- Case studies\n\n- Testimonials\n\n```text\n\n\n### **Phase 3: Product-Market Fit** (6-12 måneder)\n\n```\n\n- Feature completeness (billing, mobile)\n\n- Established support\n\n- Documentation\n\n- Pricing model\n\n```text\n\n\n### **Phase 4: Scale** (12-24 måneder)\n\n```\n\n- Marketing campaign\n\n- Sales team\n\n- Partnerships (Billy, MobilePay, etc.)\n\n- International (Norway, Sweden)\n\n```text\n
 ---

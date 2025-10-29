@@ -1,4 +1,5 @@
 # 📚 RenOS - Visuel Dokumentation Index
+
 \n\n
 \n\n*Komplet guide til RenOS's UI/UX og design system*
 
@@ -262,7 +263,8 @@ Select-String -Path "docs\VISUAL*.md" -Pattern "Ctrl"
 \n\nHvis du finder uoverensstemmelser mellem dokumentation og kode:
 \n\n1. Opret issue: `docs: [VISUAL] Inaccurate information about [X]`
 \n\n2. Inkluder:
-   - Dokument navn
+
+- Dokument navn
 \n\n   - Sektion
 \n\n   - Hvad der er forkert
 \n\n   - Hvad det burde være
@@ -272,10 +274,11 @@ Select-String -Path "docs\VISUAL*.md" -Pattern "Ctrl"
 \n\nHvis du har ideer til bedre dokumentation:
 \n\n1. Opret issue: `docs: [VISUAL] Suggestion - [Your idea]`
 \n\n2. Eller direkte:
-   - Fork repository
+- Fork repository
 \n\n   - Lav ændringer
 \n\n   - Submit pull request
 \n\n
+
 ---
 
 \n\n## 📚 Relaterede Dokumenter
@@ -375,28 +378,30 @@ ls client/src/components/ui/
    ```
 
 \n\n2. **Byg noget:**
-   - Start med en simpel page component
+
+- Start med en simpel page component
 \n\n   - Brug eksisterende UI komponenter
 \n\n   - Følg design tokens
 \n\n
 \n\n3. **Test visuelt:**
-   - Test på alle breakpoints
+- Test på alle breakpoints
 \n\n   - Toggle dark mode (system preference)
 \n\n   - Test keyboard navigation
 \n\n   - Check accessibility
 \n\n
 \n\n4. **Bidrag:**
-   - Fix bugs
+- Fix bugs
 \n\n   - Forbedre dokumentation
 \n\n   - Optimer performance
 \n\n   - Del din viden
 \n\n
+
 ---
 
 **Held og lykke med RenOS development!** 🎨✨
 \n\n
 ---
 
-*Dokumentation opdateret: 3. Oktober 2025*  
-*Version: 1.0*  
-*Maintainers: Development Team*
+_Dokumentation opdateret: 3. Oktober 2025_  
+_Version: 1.0_  
+_Maintainers: Development Team_

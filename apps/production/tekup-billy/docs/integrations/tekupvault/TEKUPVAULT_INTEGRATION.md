@@ -1,4 +1,4 @@
-# TekupVault Integration Status
+﻿# TekupVault Integration Status
 
 **Last Updated:** 18. Oktober 2025  
 **Tekup-Billy Version:** v1.4.0 (Redis, Compression, Keep-Alive)  
@@ -15,7 +15,7 @@ Tekup-Billy MCP Server.
 ### Automatic Sync
 
 - **Frequency:** Every 6 hours
-- **Repository:** JonasAbde/Tekup-Billy
+- **Repository:** TekupDK/Tekup-Billy
 - **Method:** GitHub API via Octokit
 
 ### What's Indexed
@@ -110,7 +110,7 @@ curl https://tekupvault-api.onrender.com/api/sync-status
 
 ## Links
 
-- **TekupVault Repository:** <https://github.com/JonasAbde/TekupVault> (Private)
+- **TekupVault Repository:** <https://github.com/TekupDK/TekupVault> (Private)
 - **API Endpoint:** <https://tekupvault-api.onrender.com>
 - **Documentation:** See TekupVault README.md
 
@@ -128,9 +128,9 @@ curl https://tekupvault-api.onrender.com/api/sync-status
 4. **Embeddings:** ✅ 1,063 documents indexed (56.4% embedded)
 
 **Synced Repositories:**
-- ✅ JonasAbde/Tekup-Billy: 188 files
-- ✅ JonasAbde/renos-backend: 607 files
-- ✅ JonasAbde/renos-frontend: 268 files
+- ✅ TekupDK/Tekup-Billy: 188 files
+- ✅ TekupDK/renos-backend: 607 files
+- ✅ TekupDK/renos-frontend: 268 files
 
 **Verified Working:**
 - ✅ API deployed on Render: <https://tekupvault-api.onrender.com>

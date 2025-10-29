@@ -101,29 +101,34 @@ All services share the same database (Supabase PostgreSQL) and authentication sy
 Quick commands available via `Ctrl+Shift+P` → "Run Task":
 
 **Docker Tasks**:
+
 - Docker: Start All Services
 - Docker: Start All Services (Build)
 - Docker: Stop All Services
 - Docker: Mobile Isolated Start
 
 **Backend Tasks**:
+
 - Backend: Install Dependencies
 - Backend: Start Dev Server
 - Backend: Run Tests
 
 **Frontend Tasks**:
+
 - Frontend: Install Dependencies
 - Frontend: Start Dev Server
 - Frontend: Build Production
 - Frontend: Run Playwright Tests
 
 **Mobile Tasks**:
+
 - Mobile: Install Dependencies
 - Mobile: Start Expo
 - Mobile: Start Expo (Clear Cache)
 - Mobile: Reset & Reinstall
 
 **Utility Tasks**:
+
 - TypeScript: Check All
 - Git: Pull All Repos
 - Setup: Install All Dependencies (parallel)
@@ -135,6 +140,7 @@ Quick commands available via `Ctrl+Shift+P` → "Run Task":
 See `PORT_ALLOCATION_MASTER.md` for complete port assignment strategy.
 
 **Key Ports**:
+
 - `3001`: Backend (NestJS)
 - `3002`: Frontend (Next.js)
 - `5432`: PostgreSQL

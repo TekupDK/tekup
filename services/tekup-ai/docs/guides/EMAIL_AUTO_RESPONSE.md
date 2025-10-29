@@ -1,335 +1,1 @@
-# Email Auto-Response System\n\n\n\nAutomatisk generering og afsendelse af personaliserede email-svar til nye leads ved hjælp af Gemini AI.
-\n\n## 📋 Indholdsfortegnelse\n\n\n\n- [Funktioner](#funktioner)\n\n- [Arkitektur](#arkitektur)\n\n- [Konfiguration](#konfiguration)\n\n- [Brug](#brug)\n\n- [CLI Kommandoer](#cli-kommandoer)\n\n- [API Reference](#api-reference)\n\n- [Integration](#integration)\n\n- [Testing](#testing)\n\n- [Best Practices](#best-practices)\n\n\n\n## ✨ Funktioner\n\n\n\n### AI-Genererede Svar\n\n\n\n- **Gemini AI Integration**: Bruger Google's Gemini 2.0 Flash model til at generere naturlige, professionelle danske email-svar\n\n- **Kontekstbaseret**: Tilpasser svar baseret på lead-type (fast rengøring, flytterengøring, tilbudsanmodning)\n\n- **Personalisering**: Inkluderer kunde-specifikke detaljer (navn, adresse, boligtype, m²)\n\n\n\n### Intelligent Workflow\n\n\n\n- **Automatisk Processing**: Processerer nye leads automatisk eller med manuel godkendelse\n\n- **Forsinkelse**: Valgfri forsinkelse før afsendelse (default: 30 sekunder)\n\n- **Daglig Grænse**: Beskytter mod spam med maksimum antal auto-svar per dag (default: 50)\n\n- **Status Tracking**: Sporer status for alle genererede svar (pending, sent, failed, approved, rejected)\n\n\n\n### Email Skabeloner\n\n\n\n- **Fast Rengøring**: Tilbud på ugentlig/14-dages rengøring med pris og estimat\n\n- **Flytterengøring**: Specialiseret tilbud baseret på boligens størrelse\n\n- **Tilbudsanmodning**: Generel prisindikation og invitation til gratis besigtigelse\n\n\n\n### 📅 Kalender Integration (Booking Slots)\n\n\n\n- **Automatisk Tidspunkt-Forslag**: Emails inkluderer automatisk 3 ledige tidspunkter fra Google Calendar\n\n- **Smart Varighed**: Template-specifik varighed (flytterengøring: 4 timer, fast rengøring: 2,5 timer)\n\n- **Dansk Formatering**: Professionel formatering med fuld dato (f.eks. "Mandag den 29. september kl. 14:00")\n\n- **Intelligent Søgning**: Finder 3 ikke-overlappende tidspunkter med 1-times buffer\n\n- **Graceful Degradation**: Email-generering fortsætter selvom kalender-opslag fejler\n\n\n\n## 🏗️ Arkitektur\n\n\n\n```\n\nsrc/
-├── services/
-│   ├── emailResponseGenerator.ts   # Gemini AI integration\n\n│   └── emailAutoResponseService.ts # Auto-response workflow\n\n├── tools/\n\n│   ├── emailAutoResponseTool.ts    # CLI interface\n\n│   └── testEmailResponse.ts        # Testing tool\n\n└── llm/\n\n    └── geminiProvider.ts            # Gemini API wrapper\n\n```\n\n\n\n### Komponenter\n\n\n\n**EmailResponseGenerator**
-\n\n- Genererer email-indhold med Gemini AI\n\n- Bygger prompts baseret på lead-data\n\n- Parser AI output til subject/body format\n\n- Håndterer forskellige response-typer\n\n
-**EmailAutoResponseService**
-\n\n- Orchestrerer auto-response workflow\n\n- Håndterer godkendelsesproces\n\n- Tracker daglige limits og status\n\n- Integrerer med Gmail API\n\n
-**GeminiProvider**
-\n\n- Abstraherer Gemini API kommunikation\n\n- Konverterer message format til Gemini's struktur\n\n- Implementerer LLMProvider interface\n\n\n\n## ⚙️ Konfiguration\n\n\n\n### Environment Variables\n\n\n\n```env\n\n# Required\n\nGEMINI_KEY=your-gemini-api-key-here\n\n\n\n# Google Workspace (for sending emails)\n\nGOOGLE_CLIENT_EMAIL=your-service-account@project.iam.gserviceaccount.com\n\nGOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
-GOOGLE_IMPERSONATED_USER=info@rendetalje.dk\n\n```
-\n\n### Service Configuration\n\n\n\n```typescript\n\nimport { getAutoResponseService } from "./services/emailAutoResponseService";
-
-const service = getAutoResponseService({
-    enabled: true,                // Enable/disable auto-response
-    requireApproval: false,       // Require manual approval before sending
-    responseDelay: 30,            // Seconds to wait before sending (0 = immediate)
-    maxResponsesPerDay: 50,       // Daily limit
-});\n\n```
-\n\n## 🚀 Brug\n\n\n\n### CLI Kommandoer\n\n\n\n#### Test Response Generation\n\n\n\nGenererer et test-svar for det seneste lead (kræver ikke afsendelse):
-\n\n```bash
-npm run email:test\n\n```
-\n\n#### Test med Mock Data\n\n\n\nTester hele systemet med mock lead-data:
-\n\n```bash
-npm run email:test-mock\n\n```
-\n\n#### List Pending Responses\n\n\n\nViser alle svar der afventer godkendelse:
-\n\n```bash
-npm run email:pending\n\n```
-\n\n#### Approve Response\n\n\n\nGodkender og sender et pending svar:
-\n\n```bash
-npm run email:approve <leadId>\n\n```
-\n\n#### Reject Response\n\n\n\nAfviser et pending svar:
-\n\n```bash
-npm run email:reject <leadId>\n\n```
-\n\n#### Statistics\n\n\n\nViser statistik for auto-response systemet:
-\n\n```bash
-npm run email:stats\n\n```
-
-**Output:**
-\n\n```
-📊 Email Auto-Response Statistics
-
-Status Breakdown:
-  ✅ Sent: 15
-  ⏳ Pending: 2
-  ❌ Failed: 1
-  👍 Approved: 12
-  👎 Rejected: 0
-  📊 Total: 18
-
-Configuration:
-  🔧 Enabled: Yes
-  🔒 Requires Approval: No
-  📈 Today's Count: 15/50\n\n```
-\n\n#### Enable/Disable System\n\n\n\n```bash\n\nnpm run email:enable   # Aktiverer auto-response\n\nnpm run email:disable  # Deaktiverer auto-response\n\n```\n\n\n\n#### Monitor Mode\n\n\n\nStarter kontinuerlig monitoring med auto-response:
-\n\n```bash
-npm run email:monitor\n\n```
-\n\n## 📅 Booking Slots Integration\n\n\n\nAuto-response systemet inkluderer nu automatisk ledige tidspunkter fra Google Calendar i alle tilbuds-emails.
-\n\n### Funktioner\n\n\n\n**Automatisk Tidspunkt-Forslag**
-\n\n- Finder 3 ledige tidspunkter i kalenderen inden for de næste 14 dage\n\n- Tilpasser varighed baseret på opgave-type (flytterengøring = 4 timer, fast rengøring = 2,5 timer)\n\n- Intelligent søgning med 1-times buffer mellem forslag for at undgå overlap\n\n
-**Professionel Dansk Formatering**
-\n\n```
-Vi har ledige tidspunkter:\n\n1. Mandag den 29. september kl. 14:00\n\n2. Tirsdag den 30. september kl. 10:00\n\n3. Onsdag den 1. oktober kl. 16:00\n\n```
-
-**Template-Specifik Varighed**
-\n\n- **Flytterengøring** (moving): 240 minutter (4 timer) - dybderengøring kræver mere tid\n\n- **Fast Rengøring** (regular): 150 minutter (2,5 timer) - standard rengøringstid\n\n- **Tilbudsanmodning** (quote-request): 120 minutter (2 timer) - default varighed\n\n
-**Graceful Degradation**
-\n\n- Hvis kalender-opslag fejler, genereres emailen stadig uden tidspunkter\n\n- Systemet logger fejl men blokerer ikke email-afsendelse\n\n\n\n### Configuration\n\n\n\nBooking slots er aktiveret by default for alle quick response templates. Du kan deaktivere det:
-\n\n```typescript
-const response = await generator.generateQuickResponse(
-    lead, 
-    "regular",
-    false // Disable booking slots
-);\n\n```
-
-Eller tilpasse varigheden manuelt:
-\n\n```typescript
-const response = await generator.generateResponse({
-    lead,
-    responseType: "tilbud",
-    includeBookingSlots: true,
-    bookingDuration: 180, // 3 hours custom duration
-});\n\n```
-\n\n### Example Email Output\n\n\n\n**Med Booking Slots:**
-\n\n```
-Hej Test Kunde,
-
-Tak for din henvendelse til Rendetalje.dk angående fast rengøring 
-af din lejlighed på Testvej 123. Vi er glade for at kunne hjælpe! 😊
-
-Ud fra de oplysninger du har givet, forstår jeg, at du ønsker fast 
-rengøring af din lejlighed på 85 m² med 3 værelser.
-
-For en lejlighed af den størrelse, vil en typisk rengøring tage 
-omkring 2-3 timer. Vores timepris for fast rengøring ligger mellem 
-250-300 kr. pr. time.
-
-Jeg har kigget i kalenderen og har følgende ledige tidspunkter:
-
-• Mandag den 29. september kl. 14:00
-• Tirsdag den 30. september kl. 10:00
-• Onsdag den 1. oktober kl. 16:00
-
-Er et af disse tidspunkter passende, eller har du andre dage/tidspunkter 
-i tankerne? Lad mig endelig vide, hvad der passer dig bedst.
-
-Vi ser frem til at høre fra dig!
-
-Med venlig hilsen,
-Rendetalje.dk\n\n```
-\n\n### Technical Details\n\n\n\n**Slot Search Algorithm:**
-\n\n1. Start søgning fra nuværende tid\n\n2. Find første ledige slot med specificeret varighed\n\n3. Tilføj slot til liste\n\n4. Flyt søgning 1 time frem fra slot-slut for at undgå overlap\n\n5. Gentag indtil 3 slots er fundet eller 14-dages grænse nået
-
-**Integration med Calendar API:**
-\n\n- Bruger `findNextAvailableSlot` fra calendarService\n\n- Søger i primary calendar (<info@rendetalje.dk>)\n\n- Respekterer eksisterende bookinger og busy-perioder\n\n- Søger indenfor arbejdstider (09:00-17:00)\n\n\n\n### Programmatic Usage\n\n\n\n#### Manual Response Generation\n\n\n\n```typescript\n\nimport { EmailResponseGenerator } from "./services/emailResponseGenerator";
-import type { ParsedLead } from "./services/leadParser";
-
-const generator = new EmailResponseGenerator();
-
-const lead: ParsedLead = {
-    emailId: "abc123",
-    threadId: "thread123",
-    name: "Andreas Slot Tanderup",
-    email: "andreas@example.com",
-    phone: "+45 22 33 44 55",
-    taskType: "Fast rengøringshjælp",
-    propertyType: "Villa/Parcelhus",
-    squareMeters: "120",
-    address: "Testvej 123, 8260 Viby J",
-    source: "Rengøring.nu",
-    receivedAt: new Date(),
-    rawSnippet: "...",
-};
-
-// Generate response
-const response = await generator.generateResponse({
-    lead,
-    responseType: "tilbud",
-});
-
-console.log(response.subject);
-console.log(response.body);\n\n```
-\n\n#### Automatic Processing with Service\n\n\n\n```typescript\n\nimport { getAutoResponseService } from "./services/emailAutoResponseService";
-
-const service = getAutoResponseService({
-    enabled: true,
-    requireApproval: false,
-    responseDelay: 30,
-});
-
-// Process a lead
-const status = await service.processLead(lead);
-
-console.log(status.status); // 'sent', 'pending', 'failed'\n\n```
-\n\n#### Integration with Lead Monitoring\n\n\n\n```typescript\n\nimport { onNewLead } from "./services/leadMonitor";
-import { getAutoResponseService } from "./services/emailAutoResponseService";
-
-const service = getAutoResponseService();
-
-// Auto-respond to new leads
-onNewLead(async (lead) => {
-    console.log(`New lead: ${lead.name}`);
-    const status = await service.processLead(lead);
-    console.log(`Response ${status.status}`);
-});\n\n```
-\n\n## 📡 API Reference\n\n\n\n### EmailResponseGenerator\n\n\n\n#### `generateResponse(context: EmailResponseContext): Promise<GeneratedEmailResponse>`\n\n\n\nGenererer et email-svar baseret på lead og response-type.
-
-**Parameters:**
-\n\n- `context.lead` - ParsedLead objekt med kunde-data\n\n- `context.responseType` - Type: "tilbud" | "bekræftelse" | "follow-up" | "info"\n\n- `context.additionalContext` - (Optional) Ekstra kontekst til AI\n\n- `context.includeBookingSlots` - (Optional) Inkluder ledige tidspunkter (default: undefined)\n\n- `context.bookingDuration` - (Optional) Varighed i minutter for booking slots (default: 120)\n\n
-**Returns:** GeneratedEmailResponse med subject, body, to, threadId\n\n
-**Example with Booking Slots:**
-\n\n```typescript
-const response = await generator.generateResponse({
-    lead,
-    responseType: "tilbud",
-    includeBookingSlots: true,
-    bookingDuration: 150, // 2.5 hours
-});
-
-// Generated email will include:
-// "Vi har ledige tidspunkter:
-//  1. Mandag den 29. september kl. 14:00
-//  2. Tirsdag den 30. september kl. 10:00
-//  3. Onsdag den 1. oktober kl. 16:00"\n\n```
-\n\n#### `generateQuickResponse(lead: ParsedLead, template: string, includeBookingSlots?: boolean): Promise<GeneratedEmailResponse>`\n\n\n\nGenererer hurtig response fra standard skabelon med automatisk booking slots.
-
-**Templates:**
-\n\n- `"moving"` - Flytterengøring (4 timer booking slots)\n\n- `"regular"` - Fast rengøring (2,5 timer booking slots)\n\n- `"quote-request"` - Tilbudsanmodning (2 timer booking slots)\n\n
-**Parameters:**
-\n\n- `lead` - ParsedLead objekt\n\n- `template` - Skabelon type\n\n- `includeBookingSlots` - (Optional) Inkluder ledige tidspunkter (default: true)\n\n
-**Booking Slot Configuration:**
-
-Template-specifikke varighed automatisk anvendes:
-\n\n- **Flytterengøring**: 240 minutter (4 timer) - kræver længere tid til dybderengøring\n\n- **Fast rengøring**: 150 minutter (2,5 timer) - standard rengøringstid\n\n- **Tilbudsanmodning**: 120 minutter (2 timer) - default varighed\n\n
-Genererer hurtig response fra standard skabelon.
-
-**Templates:**
-\n\n- `"moving"` - Flytterengøring\n\n- `"regular"` - Fast rengøring\n\n- `"quote-request"` - Tilbudsanmodning\n\n\n\n### EmailAutoResponseService\n\n\n\n#### `processLead(lead: ParsedLead): Promise<ResponseStatus>`\n\n\n\nProcesser et lead og send/gem auto-response.
-
-**Returns:** ResponseStatus objekt med status og timestamps\n\n\n\n#### `approvePendingResponse(leadId: string): Promise<boolean>`\n\n\n\nGodkender og sender et pending svar.
-\n\n#### `rejectPendingResponse(leadId: string): Promise<boolean>`\n\n\n\nAfviser et pending svar.
-\n\n#### `getPendingResponses(): Array<{leadId, response, status}>`\n\n\n\nHenter alle pending responses.
-\n\n#### `getStatistics()`\n\n\n\nReturnerer detaljeret statistik:
-\n\n```typescript
-{
-    totalResponses: number;
-    sent: number;
-    pending: number;
-    failed: number;
-    approved: number;
-    rejected: number;
-    todayCount: number;
-    dailyLimit: number;
-    enabled: boolean;
-    requireApproval: boolean;
-}\n\n```
-\n\n## 🔗 Integration\n\n\n\n### Express Endpoint\n\n\n\n```typescript\n\nimport express from "express";
-import { getAutoResponseService } from "./services/emailAutoResponseService";
-
-const app = express();
-
-app.post("/api/leads/auto-respond", async (req, res) => {
-    const lead = req.body.lead;
-    const service = getAutoResponseService();
-    
-    const status = await service.processLead(lead);
-    
-    res.json({
-        success: status.status !== "failed",
-        status: status.status,
-        leadId: status.leadId,
-        sentAt: status.sentAt,
-    });
-});
-
-app.get("/api/leads/pending", (req, res) => {
-    const service = getAutoResponseService();
-    const pending = service.getPendingResponses();
-    
-    res.json({ pending });
-});\n\n```
-\n\n### Background Worker\n\n\n\n```typescript\n\nimport { startLeadMonitoring, onNewLead } from "./services/leadMonitor";
-import { getAutoResponseService } from "./services/emailAutoResponseService";
-
-// Start monitoring every 20 minutes
-const task = startLeadMonitoring("*/20 * * * *");\n\n
-// Auto-respond to new leads
-const service = getAutoResponseService({
-    enabled: true,
-    requireApproval: false,
-    responseDelay: 30,
-});
-
-onNewLead(async (lead) => {
-    await service.processLead(lead);
-});\n\n```
-\n\n## 🧪 Testing\n\n\n\n### Unit Tests\n\n\n\nTest individual components:
-\n\n```typescript
-import { describe, it, expect } from "vitest";
-import { EmailResponseGenerator } from "./services/emailResponseGenerator";
-
-describe("EmailResponseGenerator", () => {
-    it("should generate response for regular cleaning", async () => {
-        const generator = new EmailResponseGenerator();
-        
-        const lead: ParsedLead = {
-            // ... mock lead data
-            taskType: "Fast rengøringshjælp",
-        };
-        
-        const response = await generator.generateQuickResponse(lead, "regular");
-        
-        expect(response.subject).toContain("rengøring");
-        expect(response.body).toContain("250-300 kr");
-        expect(response.to).toBe(lead.email);
-    });
-});\n\n```
-\n\n### Integration Tests\n\n\n\nTest full workflow:
-\n\n```bash\n\n# Test with mock data\n\nnpm run email:test-mock\n\n\n\n# Test with real lead (dry-run mode)\n\nnpm run email:test\n\n```\n\n\n\n### Manual Testing Workflow\n\n\n\n1. **Generate test response:**
-
-   ```bash
-   npm run email:test
-   ```
-\n\n2. **Check pending responses:**
-
-   ```bash
-   npm run email:pending
-   ```
-\n\n3. **Approve or reject:**
-
-   ```bash
-   npm run email:approve <leadId>
-   # or\n\n   npm run email:reject <leadId>\n\n   ```
-\n\n4. **Verify statistics:**
-
-   ```bash
-   npm run email:stats
-   ```
-\n\n## 📝 Best Practices\n\n\n\n### Response Quality\n\n\n\n1. **Personalisering**: Brug altid kunde-navn og specifikke detaljer\n\n2. **Pris-transparens**: Vær klar om priser og hvad der er inkluderet\n\n3. **Call-to-Action**: Inviter til kontakt eller gratis besigtigelse\n\n4. **Professionalisme**: Balance venlighed med professionalisme
-\n\n### Production Settings\n\n\n\n```typescript\n\nconst service = getAutoResponseService({
-    enabled: true,
-    requireApproval: true,  // Start with manual approval
-    responseDelay: 60,      // Give time to review
-    maxResponsesPerDay: 30, // Conservative limit
-});\n\n```
-\n\n### Monitoring\n\n\n\n- Tjek `npm run email:stats` dagligt\n\n- Review pending responses regelmæssigt\n\n- Monitor failed responses for issues\n\n- Adjust `maxResponsesPerDay` baseret på kapacitet\n\n\n\n### Error Handling\n\n\n\n```typescript\n\ntry {
-    const status = await service.processLead(lead);
-    
-    if (status.status === "failed") {
-        logger.error({ error: status.error }, "Auto-response failed");
-        // Fallback to manual processing
-    }
-} catch (err) {
-    logger.error({ err }, "Unexpected error in auto-response");
-    // Alert admin
-}\n\n```
-\n\n## 🔧 Troubleshooting\n\n\n\n### "GEMINI_KEY is required"\n\n\n\nSørg for at `.env` filen indeholder:
-\n\n```env
-GEMINI_KEY=your-api-key-here\n\n```
-\n\n### "Lead has no email address"\n\n\n\nLeadmail.no emails indeholder ikke altid kunde email. Dette er forventet - systemet vil skippe disse leads.\n\n\n\n### Response Quality Issues\n\n\n\n1. **Tjek prompt template** i `emailResponseGenerator.ts`\n\n2. **Adjust temperature** (højere = mere kreativ, lavere = mere præcis)\n\n3. **Review system prompt** for tone og retningslinjer\n\n\n\n### Daily Limit Reached\n\n\n\n```bash\n\n# Check current count\n\nnpm run email:stats\n\n\n\n# Increase limit if needed\n\nservice.updateConfig({ maxResponsesPerDay: 100 });\n\n```\n\n\n\n## 📚 Relaterede Dokumenter\n\n\n\n- [Lead Monitoring System](./LEAD_MONITORING.md)\n\n- [Gmail Integration](./DATA_FETCHING.md)\n\n- [AI Context Enrichment](./AI_CONTEXT.md)\n\n\n\n## 🎯 Eksempel Output\n\n\n\n```\n\n📧 To: andreas.tanderup@example.com
-Subject: Tilbud på fast rengøring - Rendetalje.dk\n\n
-Kære Andreas Slot Tanderup,
-
-Tak for din henvendelse via Rengøring.nu! Vi har noteret os, at du 
-bor i en villa/parcelhus på 120 m² i Viby J.
-
-For fast rengøringshjælp ligger vores priser på 250-300 kr. i timen. 
-For en bolig af din størrelse vil det typisk tage 2-3 timer pr. besøg.
-
-Vi tilbyder:\n\n- Ugentlig eller 14-dages rengøring\n\n- Fleksible tidspunkter\n\n- Erfarne medarbejdere\n\n- Egen udstyr og miljøvenlige produkter\n\n
-Ring til os på +45 22 65 02 26, eller svar på denne email.
-
-Med venlig hilsen,
-Team Rendetalje.dk
-www.rendetalje.dk\n\n```
-\n\n## 🚀 Fremtidige Forbedringer\n\n\n\n- [ ] A/B testing af email skabeloner\n\n- [ ] Sentiment analysis af kunde-svar\n\n- [ ] Integration med CRM system\n\n- [ ] SMS notifikationer for vigtige leads\n\n- [ ] Multi-language support (svensk/norsk)\n\n- [ ] Calendar booking links i emails\n\n- [ ] Follow-up sequence automation
+# Email Auto-Response System\n\n\n\nAutomatisk generering og afsendelse af personaliserede email-svar til nye leads ved hjælp af Gemini AI.\n\n## 📋 Indholdsfortegnelse\n\n\n\n- [Funktioner](#funktioner)\n\n- [Arkitektur](#arkitektur)\n\n- [Konfiguration](#konfiguration)\n\n- [Brug](#brug)\n\n- [CLI Kommandoer](#cli-kommandoer)\n\n- [API Reference](#api-reference)\n\n- [Integration](#integration)\n\n- [Testing](#testing)\n\n- [Best Practices](#best-practices)\n\n\n\n## ✨ Funktioner\n\n\n\n### AI-Genererede Svar\n\n\n\n- **Gemini AI Integration**: Bruger Google's Gemini 2.0 Flash model til at generere naturlige, professionelle danske email-svar\n\n- **Kontekstbaseret**: Tilpasser svar baseret på lead-type (fast rengøring, flytterengøring, tilbudsanmodning)\n\n- **Personalisering**: Inkluderer kunde-specifikke detaljer (navn, adresse, boligtype, m²)\n\n\n\n### Intelligent Workflow\n\n\n\n- **Automatisk Processing**: Processerer nye leads automatisk eller med manuel godkendelse\n\n- **Forsinkelse**: Valgfri forsinkelse før afsendelse (default: 30 sekunder)\n\n- **Daglig Grænse**: Beskytter mod spam med maksimum antal auto-svar per dag (default: 50)\n\n- **Status Tracking**: Sporer status for alle genererede svar (pending, sent, failed, approved, rejected)\n\n\n\n### Email Skabeloner\n\n\n\n- **Fast Rengøring**: Tilbud på ugentlig/14-dages rengøring med pris og estimat\n\n- **Flytterengøring**: Specialiseret tilbud baseret på boligens størrelse\n\n- **Tilbudsanmodning**: Generel prisindikation og invitation til gratis besigtigelse\n\n\n\n### 📅 Kalender Integration (Booking Slots)\n\n\n\n- **Automatisk Tidspunkt-Forslag**: Emails inkluderer automatisk 3 ledige tidspunkter fra Google Calendar\n\n- **Smart Varighed**: Template-specifik varighed (flytterengøring: 4 timer, fast rengøring: 2,5 timer)\n\n- **Dansk Formatering**: Professionel formatering med fuld dato (f.eks. "Mandag den 29. september kl. 14:00")\n\n- **Intelligent Søgning**: Finder 3 ikke-overlappende tidspunkter med 1-times buffer\n\n- **Graceful Degradation**: Email-generering fortsætter selvom kalender-opslag fejler\n\n\n\n## 🏗️ Arkitektur\n\n\n\n```\n\nsrc/├── services/│   ├── emailResponseGenerator.ts   # Gemini AI integration\n\n│   └── emailAutoResponseService.ts # Auto-response workflow\n\n├── tools/\n\n│   ├── emailAutoResponseTool.ts    # CLI interface\n\n│   └── testEmailResponse.ts        # Testing tool\n\n└── llm/\n\n    └── geminiProvider.ts            # Gemini API wrapper\n\n```\n\n\n\n### Komponenter\n\n\n\n**EmailResponseGenerator**\n\n- Genererer email-indhold med Gemini AI\n\n- Bygger prompts baseret på lead-data\n\n- Parser AI output til subject/body format\n\n- Håndterer forskellige response-typer\n\n**EmailAutoResponseService**\n\n- Orchestrerer auto-response workflow\n\n- Håndterer godkendelsesproces\n\n- Tracker daglige limits og status\n\n- Integrerer med Gmail API\n\n**GeminiProvider**\n\n- Abstraherer Gemini API kommunikation\n\n- Konverterer message format til Gemini's struktur\n\n- Implementerer LLMProvider interface\n\n\n\n## ⚙️ Konfiguration\n\n\n\n### Environment Variables\n\n\n\n```env\n\n# Required\n\nGEMINI_KEY=your-gemini-api-key-here\n\n\n\n# Google Workspace (for sending emails)\n\nGOOGLE_CLIENT_EMAIL=your-service-account@project.iam.gserviceaccount.com\n\nGOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"GOOGLE_IMPERSONATED_USER=info@rendetalje.dk\n\n```\n\n### Service Configuration\n\n\n\n```typescript\n\nimport { getAutoResponseService } from "./services/emailAutoResponseService";const service = getAutoResponseService({    enabled: true,                // Enable/disable auto-response    requireApproval: false,       // Require manual approval before sending    responseDelay: 30,            // Seconds to wait before sending (0 = immediate)    maxResponsesPerDay: 50,       // Daily limit});\n\n```\n\n## 🚀 Brug\n\n\n\n### CLI Kommandoer\n\n\n\n#### Test Response Generation\n\n\n\nGenererer et test-svar for det seneste lead (kræver ikke afsendelse):\n\n```bashnpm run email:test\n\n```\n\n#### Test med Mock Data\n\n\n\nTester hele systemet med mock lead-data:\n\n```bashnpm run email:test-mock\n\n```\n\n#### List Pending Responses\n\n\n\nViser alle svar der afventer godkendelse:\n\n```bashnpm run email:pending\n\n```\n\n#### Approve Response\n\n\n\nGodkender og sender et pending svar:\n\n```bashnpm run email:approve <leadId>\n\n```\n\n#### Reject Response\n\n\n\nAfviser et pending svar:\n\n```bashnpm run email:reject <leadId>\n\n```\n\n#### Statistics\n\n\n\nViser statistik for auto-response systemet:\n\n```bashnpm run email:stats\n\n```**Output:**\n\n```📊 Email Auto-Response StatisticsStatus Breakdown:  ✅ Sent: 15  ⏳ Pending: 2  ❌ Failed: 1  👍 Approved: 12  👎 Rejected: 0  📊 Total: 18Configuration:  🔧 Enabled: Yes  🔒 Requires Approval: No  📈 Today's Count: 15/50\n\n```\n\n#### Enable/Disable System\n\n\n\n```bash\n\nnpm run email:enable   # Aktiverer auto-response\n\nnpm run email:disable  # Deaktiverer auto-response\n\n```\n\n\n\n#### Monitor Mode\n\n\n\nStarter kontinuerlig monitoring med auto-response:\n\n```bashnpm run email:monitor\n\n```\n\n## 📅 Booking Slots Integration\n\n\n\nAuto-response systemet inkluderer nu automatisk ledige tidspunkter fra Google Calendar i alle tilbuds-emails.\n\n### Funktioner\n\n\n\n**Automatisk Tidspunkt-Forslag**\n\n- Finder 3 ledige tidspunkter i kalenderen inden for de næste 14 dage\n\n- Tilpasser varighed baseret på opgave-type (flytterengøring = 4 timer, fast rengøring = 2,5 timer)\n\n- Intelligent søgning med 1-times buffer mellem forslag for at undgå overlap\n\n**Professionel Dansk Formatering**\n\n```Vi har ledige tidspunkter:\n\n1. Mandag den 29. september kl. 14:00\n\n2. Tirsdag den 30. september kl. 10:00\n\n3. Onsdag den 1. oktober kl. 16:00\n\n```**Template-Specifik Varighed**\n\n- **Flytterengøring** (moving): 240 minutter (4 timer) - dybderengøring kræver mere tid\n\n- **Fast Rengøring** (regular): 150 minutter (2,5 timer) - standard rengøringstid\n\n- **Tilbudsanmodning** (quote-request): 120 minutter (2 timer) - default varighed\n\n**Graceful Degradation**\n\n- Hvis kalender-opslag fejler, genereres emailen stadig uden tidspunkter\n\n- Systemet logger fejl men blokerer ikke email-afsendelse\n\n\n\n### Configuration\n\n\n\nBooking slots er aktiveret by default for alle quick response templates. Du kan deaktivere det:\n\n```typescriptconst response = await generator.generateQuickResponse(    lead,    "regular",    false // Disable booking slots);\n\n```Eller tilpasse varigheden manuelt:\n\n```typescriptconst response = await generator.generateResponse({    lead,    responseType: "tilbud",    includeBookingSlots: true,    bookingDuration: 180, // 3 hours custom duration});\n\n```\n\n### Example Email Output\n\n\n\n**Med Booking Slots:**\n\n```Hej Test Kunde,Tak for din henvendelse til Rendetalje.dk angående fast rengøringaf din lejlighed på Testvej 123. Vi er glade for at kunne hjælpe! 😊Ud fra de oplysninger du har givet, forstår jeg, at du ønsker fastrengøring af din lejlighed på 85 m² med 3 værelser.For en lejlighed af den størrelse, vil en typisk rengøring tageomkring 2-3 timer. Vores timepris for fast rengøring ligger mellem250-300 kr. pr. time.Jeg har kigget i kalenderen og har følgende ledige tidspunkter:• Mandag den 29. september kl. 14:00• Tirsdag den 30. september kl. 10:00• Onsdag den 1. oktober kl. 16:00Er et af disse tidspunkter passende, eller har du andre dage/tidspunkteri tankerne? Lad mig endelig vide, hvad der passer dig bedst.Vi ser frem til at høre fra dig!Med venlig hilsen,Rendetalje.dk\n\n```\n\n### Technical Details\n\n\n\n**Slot Search Algorithm:**\n\n1. Start søgning fra nuværende tid\n\n2. Find første ledige slot med specificeret varighed\n\n3. Tilføj slot til liste\n\n4. Flyt søgning 1 time frem fra slot-slut for at undgå overlap\n\n5. Gentag indtil 3 slots er fundet eller 14-dages grænse nået**Integration med Calendar API:**\n\n- Bruger `findNextAvailableSlot` fra calendarService\n\n- Søger i primary calendar (<info@rendetalje.dk>)\n\n- Respekterer eksisterende bookinger og busy-perioder\n\n- Søger indenfor arbejdstider (09:00-17:00)\n\n\n\n### Programmatic Usage\n\n\n\n#### Manual Response Generation\n\n\n\n```typescript\n\nimport { EmailResponseGenerator } from "./services/emailResponseGenerator";import type { ParsedLead } from "./services/leadParser";const generator = new EmailResponseGenerator();const lead: ParsedLead = {    emailId: "abc123",    threadId: "thread123",    name: "Andreas Slot Tanderup",    email: "<andreas@example.com>",    phone: "+45 22 33 44 55",    taskType: "Fast rengøringshjælp",    propertyType: "Villa/Parcelhus",    squareMeters: "120",    address: "Testvej 123, 8260 Viby J",    source: "Rengøring.nu",    receivedAt: new Date(),    rawSnippet: "...",};// Generate responseconst response = await generator.generateResponse({    lead,    responseType: "tilbud",});console.log(response.subject);console.log(response.body);\n\n```\n\n#### Automatic Processing with Service\n\n\n\n```typescript\n\nimport { getAutoResponseService } from "./services/emailAutoResponseService";const service = getAutoResponseService({    enabled: true,    requireApproval: false,    responseDelay: 30,});// Process a leadconst status = await service.processLead(lead);console.log(status.status); // 'sent', 'pending', 'failed'\n\n```\n\n#### Integration with Lead Monitoring\n\n\n\n```typescript\n\nimport { onNewLead } from "./services/leadMonitor";import { getAutoResponseService } from "./services/emailAutoResponseService";const service = getAutoResponseService();// Auto-respond to new leadsonNewLead(async (lead) => {    console.log(`New lead: ${lead.name}`);    const status = await service.processLead(lead);    console.log(`Response ${status.status}`);});\n\n```\n\n## 📡 API Reference\n\n\n\n### EmailResponseGenerator\n\n\n\n#### `generateResponse(context: EmailResponseContext): Promise<GeneratedEmailResponse>`\n\n\n\nGenererer et email-svar baseret på lead og response-type.**Parameters:**\n\n- `context.lead` - ParsedLead objekt med kunde-data\n\n- `context.responseType` - Type: "tilbud" | "bekræftelse" | "follow-up" | "info"\n\n- `context.additionalContext` - (Optional) Ekstra kontekst til AI\n\n- `context.includeBookingSlots` - (Optional) Inkluder ledige tidspunkter (default: undefined)\n\n- `context.bookingDuration` - (Optional) Varighed i minutter for booking slots (default: 120)\n\n**Returns:** GeneratedEmailResponse med subject, body, to, threadId\n\n**Example with Booking Slots:**\n\n```typescriptconst response = await generator.generateResponse({    lead,    responseType: "tilbud",    includeBookingSlots: true,    bookingDuration: 150, // 2.5 hours});// Generated email will include:// "Vi har ledige tidspunkter://  1. Mandag den 29. september kl. 14:00//  2. Tirsdag den 30. september kl. 10:00//  3. Onsdag den 1. oktober kl. 16:00"\n\n```\n\n#### `generateQuickResponse(lead: ParsedLead, template: string, includeBookingSlots?: boolean): Promise<GeneratedEmailResponse>`\n\n\n\nGenererer hurtig response fra standard skabelon med automatisk booking slots.**Templates:**\n\n- `"moving"` - Flytterengøring (4 timer booking slots)\n\n- `"regular"` - Fast rengøring (2,5 timer booking slots)\n\n- `"quote-request"` - Tilbudsanmodning (2 timer booking slots)\n\n**Parameters:**\n\n- `lead` - ParsedLead objekt\n\n- `template` - Skabelon type\n\n- `includeBookingSlots` - (Optional) Inkluder ledige tidspunkter (default: true)\n\n**Booking Slot Configuration:**Template-specifikke varighed automatisk anvendes:\n\n- **Flytterengøring**: 240 minutter (4 timer) - kræver længere tid til dybderengøring\n\n- **Fast rengøring**: 150 minutter (2,5 timer) - standard rengøringstid\n\n- **Tilbudsanmodning**: 120 minutter (2 timer) - default varighed\n\nGenererer hurtig response fra standard skabelon.**Templates:**\n\n- `"moving"` - Flytterengøring\n\n- `"regular"` - Fast rengøring\n\n- `"quote-request"` - Tilbudsanmodning\n\n\n\n### EmailAutoResponseService\n\n\n\n#### `processLead(lead: ParsedLead): Promise<ResponseStatus>`\n\n\n\nProcesser et lead og send/gem auto-response.**Returns:** ResponseStatus objekt med status og timestamps\n\n\n\n#### `approvePendingResponse(leadId: string): Promise<boolean>`\n\n\n\nGodkender og sender et pending svar.\n\n#### `rejectPendingResponse(leadId: string): Promise<boolean>`\n\n\n\nAfviser et pending svar.\n\n#### `getPendingResponses(): Array<{leadId, response, status}>`\n\n\n\nHenter alle pending responses.\n\n#### `getStatistics()`\n\n\n\nReturnerer detaljeret statistik:\n\n```typescript{    totalResponses: number;    sent: number;    pending: number;    failed: number;    approved: number;    rejected: number;    todayCount: number;    dailyLimit: number;    enabled: boolean;    requireApproval: boolean;}\n\n```\n\n## 🔗 Integration\n\n\n\n### Express Endpoint\n\n\n\n```typescript\n\nimport express from "express";import { getAutoResponseService } from "./services/emailAutoResponseService";const app = express();app.post("/api/leads/auto-respond", async (req, res) => {    const lead = req.body.lead;    const service = getAutoResponseService();    const status = await service.processLead(lead);        res.json({        success: status.status !== "failed",        status: status.status,        leadId: status.leadId,        sentAt: status.sentAt,    });});app.get("/api/leads/pending", (req, res) => {    const service = getAutoResponseService();    const pending = service.getPendingResponses();    res.json({ pending });});\n\n```\n\n### Background Worker\n\n\n\n```typescript\n\nimport { startLeadMonitoring, onNewLead } from "./services/leadMonitor";import { getAutoResponseService } from "./services/emailAutoResponseService";// Start monitoring every 20 minutesconst task = startLeadMonitoring("_/20_ ** *");\n\n// Auto-respond to new leadsconst service = getAutoResponseService({    enabled: true,    requireApproval: false,    responseDelay: 30,});onNewLead(async (lead) => {    await service.processLead(lead);});\n\n```\n\n## 🧪 Testing\n\n\n\n### Unit Tests\n\n\n\nTest individual components:\n\n```typescriptimport { describe, it, expect } from "vitest";import { EmailResponseGenerator } from "./services/emailResponseGenerator";describe("EmailResponseGenerator", () => {    it("should generate response for regular cleaning", async () => {        const generator = new EmailResponseGenerator();        const lead: ParsedLead = {            // ... mock lead data            taskType: "Fast rengøringshjælp",        };                const response = await generator.generateQuickResponse(lead, "regular");                expect(response.subject).toContain("rengøring");        expect(response.body).toContain("250-300 kr");        expect(response.to).toBe(lead.email);    });});\n\n```\n\n### Integration Tests\n\n\n\nTest full workflow:\n\n```bash\n\n# Test with mock data\n\nnpm run email:test-mock\n\n\n\n# Test with real lead (dry-run mode)\n\nnpm run email:test\n\n```\n\n\n\n### Manual Testing Workflow\n\n\n\n1. **Generate test response:**   ```bash   npm run email:test   ```\n\n2. **Check pending responses:**   ```bash   npm run email:pending   ```\n\n3. **Approve or reject:**   ```bash   npm run email:approve <leadId>   # or\n\n   npm run email:reject <leadId>\n\n   ```\n\n4. **Verify statistics:**   ```bash   npm run email:stats   ```\n\n## 📝 Best Practices\n\n\n\n### Response Quality\n\n\n\n1. **Personalisering**: Brug altid kunde-navn og specifikke detaljer\n\n2. **Pris-transparens**: Vær klar om priser og hvad der er inkluderet\n\n3. **Call-to-Action**: Inviter til kontakt eller gratis besigtigelse\n\n4. **Professionalisme**: Balance venlighed med professionalisme\n\n### Production Settings\n\n\n\n```typescript\n\nconst service = getAutoResponseService({    enabled: true,    requireApproval: true,  // Start with manual approval    responseDelay: 60,      // Give time to review    maxResponsesPerDay: 30, // Conservative limit});\n\n```\n\n### Monitoring\n\n\n\n- Tjek `npm run email:stats` dagligt\n\n- Review pending responses regelmæssigt\n\n- Monitor failed responses for issues\n\n- Adjust `maxResponsesPerDay` baseret på kapacitet\n\n\n\n### Error Handling\n\n\n\n```typescript\n\ntry {    const status = await service.processLead(lead);    if (status.status === "failed") {        logger.error({ error: status.error }, "Auto-response failed");        // Fallback to manual processing    }} catch (err) {    logger.error({ err }, "Unexpected error in auto-response");    // Alert admin}\n\n```\n\n## 🔧 Troubleshooting\n\n\n\n### "GEMINI_KEY is required"\n\n\n\nSørg for at `.env` filen indeholder:\n\n```envGEMINI_KEY=your-api-key-here\n\n```\n\n### "Lead has no email address"\n\n\n\nLeadmail.no emails indeholder ikke altid kunde email. Dette er forventet - systemet vil skippe disse leads.\n\n\n\n### Response Quality Issues\n\n\n\n1. **Tjek prompt template** i `emailResponseGenerator.ts`\n\n2. **Adjust temperature** (højere = mere kreativ, lavere = mere præcis)\n\n3. **Review system prompt** for tone og retningslinjer\n\n\n\n### Daily Limit Reached\n\n\n\n```bash\n\n# Check current count\n\nnpm run email:stats\n\n\n\n# Increase limit if needed\n\nservice.updateConfig({ maxResponsesPerDay: 100 });\n\n```\n\n\n\n## 📚 Relaterede Dokumenter\n\n\n\n- [Lead Monitoring System](./LEAD_MONITORING.md)\n\n- [Gmail Integration](./DATA_FETCHING.md)\n\n- [AI Context Enrichment](./AI_CONTEXT.md)\n\n\n\n## 🎯 Eksempel Output\n\n\n\n```\n\n📧 To: <andreas.tanderup@example.com>Subject: Tilbud på fast rengøring - Rendetalje.dk\n\nKære Andreas Slot Tanderup,Tak for din henvendelse via Rengøring.nu! Vi har noteret os, at dubor i en villa/parcelhus på 120 m² i Viby J.For fast rengøringshjælp ligger vores priser på 250-300 kr. i timen.For en bolig af din størrelse vil det typisk tage 2-3 timer pr. besøg.Vi tilbyder:\n\n- Ugentlig eller 14-dages rengøring\n\n- Fleksible tidspunkter\n\n- Erfarne medarbejdere\n\n- Egen udstyr og miljøvenlige produkter\n\nRing til os på +45 22 65 02 26, eller svar på denne email.Med venlig hilsen,Team Rendetalje.dk<www.rendetalje.dk>\n\n```\n\n## 🚀 Fremtidige Forbedringer\n\n\n\n- [ ] A/B testing af email skabeloner\n\n- [ ] Sentiment analysis af kunde-svar\n\n- [ ] Integration med CRM system\n\n- [ ] SMS notifikationer for vigtige leads\n\n- [ ] Multi-language support (svensk/norsk)\n\n- [ ] Calendar booking links i emails\n\n- [ ] Follow-up sequence automation

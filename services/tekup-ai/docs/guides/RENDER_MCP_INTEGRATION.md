@@ -7,23 +7,27 @@ The Render Model Context Protocol (MCP) Server enables managing RenOS infrastruc
 ## 🔧 What Can You Do?
 
 ### Service Management
+
 - **Create services**: `"Deploy a new web service from this repository"`
 - **List services**: `"Show all my Render services"`
 - **View details**: `"What's the status of the tekup-renos service?"`
 - **Update config**: `"Add DATABASE_URL to my service environment variables"`
 
 ### Database Operations
+
 - **Create databases**: `"Create a new Postgres database named user-db with 5 GB storage"`
 - **Query data**: `"Using my Render database, show me the top 5 customers by lead count"`
 - **Analyze**: `"Query my read replica for daily signup counts for the last 30 days"`
 
 ### Monitoring & Troubleshooting
+
 - **Metrics**: `"What was the busiest traffic day for my service this month?"`
 - **Logs**: `"Pull the most recent error-level logs for my API service"`
 - **Deploy history**: `"Show the last 5 deploys and their status"`
 - **Debug**: `"Why isn't my site at rendetalje.onrender.com working?"`
 
 ### Deployment Analysis
+
 - **Performance**: `"What did my service's autoscaling behavior look like yesterday?"`
 - **Availability**: `"Show me any downtime incidents from the past week"`
 - **Resource usage**: `"What's my current CPU and memory usage?"`
@@ -145,6 +149,7 @@ For RenOS, this would be:
 ### Permissions
 
 The MCP server can:
+
 - ✅ Read service details and logs
 - ✅ Create new services and databases
 - ✅ Update environment variables
@@ -174,6 +179,7 @@ The MCP server can:
 ## 📊 Available Metrics
 
 ### Service Metrics
+
 - CPU usage (percentage)
 - Memory usage (MB/GB)
 - Instance count
@@ -182,6 +188,7 @@ The MCP server can:
 - Outbound bandwidth
 
 ### Database Metrics
+
 - Connection count
 - Storage usage
 - Query performance (via SQL queries)

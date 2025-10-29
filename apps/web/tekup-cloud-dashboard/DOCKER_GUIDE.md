@@ -54,10 +54,10 @@ docker rm tekup-dashboard
 
 ### Access Dashboard
 
-- **URL:** http://localhost:8080
+- **URL:** <http://localhost:8080>
 - **Login:** Use Supabase credentials (synced from tekup-secrets)
 - **Demo Mode:** Click "Continue in Demo Mode" if you want to test without login
-- **Health check:** http://localhost:8080 (nginx will return 200 OK)
+- **Health check:** <http://localhost:8080> (nginx will return 200 OK)
 
 ---
 

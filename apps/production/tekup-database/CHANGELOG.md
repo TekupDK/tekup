@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0] - 2025-10-22
 
 ### Added
+
 - **Repository Database Migration** 🔄
   - Migrated TekupVault to use `vault` schema
   - Migrated Tekup-Billy to use `billy` schema  
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All 4 repositories now use central tekup-database
 
 ### Changed
+
 - **Unified Database Access**
   - TekupVault: Supabase → tekup-database (vault schema)
   - Tekup-Billy: Supabase → tekup-database (billy schema)
@@ -26,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.1] - 2025-10-22
 
 ### Added
+
 - **Migration Documentation Consolidated** 📚
   - Created `docs/migration/` folder
   - Moved 11 migration documents from `supabase-migration` repo
@@ -39,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Archived workspace audits, portfolio snapshots, and git cleanup reports
   
 ### Changed
+
 - **Repository Cleanup**
   - Migration docs now part of main `tekup-database` repo
   - Historical reports consolidated into docs structure
@@ -48,12 +52,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - 2025-10-22
 
 ### Changed
+
 - **MAJOR: Switched to Supabase for Production** 🚀
   - Production database now uses Supabase (Frankfurt - RenOS projekt)
   - Development continues using Docker (localhost)
   - Hybrid setup: Best of both worlds
   
 ### Added
+
 - **Supabase Configuration**
   - New `SUPABASE_SETUP.md` guide
   - `.env.supabase.example` template
@@ -61,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Migration guide from Docker to Supabase
   
 ### Updated
+
 - **README.md**
   - Updated hosting from "Render.com" to "Supabase + Docker"
   - Version bump to 1.3.0
@@ -68,6 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated architecture documentation
   
 ### Migration
+
 - **Target:** RenOS By Tekup Supabase project (oaevagdgrasfppbrxbey)
 - **Region:** eu-central-1 (Frankfurt, Germany)
 - **Tier:** nano (FREE → Pro $25/mdr when scaled)
@@ -76,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2025-10-21
 
 ### Added
+
 - **CRM Schema & Client** (18 models) - Complete CRM system
   - Contacts, Companies, Deals, Pipeline management
   - Activities, Email tracking, Tasks
@@ -98,6 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2025-10-21
 
 ### Added
+
 - RenOS Client Library with complete API
 - API Reference Documentation
 - Troubleshooting Guide  
@@ -109,6 +119,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Core Infrastructure
+
 - PostgreSQL 16 with pgvector extension
 - Multi-schema architecture (6 schemas: vault, billy, renos, crm, flow, shared)
 - Prisma 6 ORM with TypeScript
@@ -118,12 +129,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Schemas
 
 **Vault Schema (TekupVault)**
+
 - `vault_documents` - Document storage with metadata
 - `vault_embeddings` - Vector embeddings (pgvector 1536-dim)
 - `vault_sync_status` - GitHub sync tracking
 - Semantic search function using cosine similarity
 
 **Billy Schema (Tekup-Billy)**
+
 - `billy_organizations` - Multi-tenant organization management
 - `billy_users` - User access control
 - `billy_cached_invoices` - Invoice caching with TTL
@@ -134,6 +147,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `billy_rate_limits` - Distributed rate limiting
 
 **RenOS Schema (Tekup Google AI)** - Ready for migration
+
 - 22 models defined (leads, customers, bookings, invoices, etc.)
 - Email system (threads, messages, responses)
 - Cleaning plans and time tracking
@@ -142,18 +156,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **CRM Schema** - Placeholder for Tekup-org CRM
 **Flow Schema** - Placeholder for Flow API
 **Shared Schema** - Cross-application resources
+
 - `shared_users` - Shared user accounts
 - `shared_audit_logs` - Cross-app audit logging
 
 #### Client Libraries
 
 **Vault Client** (`src/client/vault.ts`)
+
 - Document CRUD operations
 - Embedding management
 - Sync status tracking
 - Semantic search wrapper
 
 **Billy Client** (`src/client/billy.ts`)
+
 - Organization management
 - Cache operations with TTL
 - Audit logging
@@ -163,12 +180,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Utilities
 
 **Prisma Scripts**
+
 - `backup.ts` - Database backup utility
 - `restore.ts` - Database restore utility
 - `health-check.ts` - Database health monitoring
 - `seed.ts` - Test data seeding
 
 **Development Tools**
+
 - Docker Compose with PostgreSQL 16 + pgvector
 - pgAdmin web interface
 - Automated setup scripts
@@ -258,6 +277,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-**Repository:** https://github.com/TekupDK/tekup/tree/master/apps/production/tekup-database  
+**Repository:** <https://github.com/TekupDK/tekup/tree/master/apps/production/tekup-database>  
 **Maintained by:** Jonas Abde | Tekup Portfolio  
 **Last Updated:** 2025-10-20

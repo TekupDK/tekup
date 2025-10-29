@@ -28,7 +28,7 @@ cp .env.example .env
 # Rediger .env med dine credentials
 ```
 
-### Vigtige variabler:
+### Vigtige variabler
 
 ```env
 # Google Calendar (KRITISK for MVP)
@@ -60,7 +60,7 @@ OVERTIME_ALERT_THRESHOLD_MINUTES=60
 
 ## Trin 3: Database Setup
 
-### Opret Supabase tabeller:
+### Opret Supabase tabeller
 
 1. Log ind på [supabase.com](https://supabase.com)
 2. Vælg dit projekt
@@ -75,12 +75,14 @@ OVERTIME_ALERT_THRESHOLD_MINUTES=60
 
 ## Trin 4: Test Kørsel
 
-### MCP Mode (Stdio):
+### MCP Mode (Stdio)
+
 ```bash
 npm run dev
 ```
 
-### HTTP Server Mode:
+### HTTP Server Mode
+
 ```bash
 npm run dev:http
 ```
@@ -157,6 +159,7 @@ curl http://localhost:3001/health
 ```
 
 Verificer at alle integrations er "true":
+
 - ✅ `database: true`
 - ✅ `googleCalendar: true`
 - ✅ `billyMcp: true`
@@ -167,6 +170,7 @@ Verificer at alle integrations er "true":
 ✅ **MVP kører lokalt!**
 
 Nu kan du:
+
 1. Integrere med RendetaljeOS backend
 2. Test med rigtige kunde-data
 3. Deploy til Render.com
@@ -189,7 +193,8 @@ GOOGLE_REFRESH_TOKEN=...
 
 ### Problem: "Twilio voice alerts disabled"
 
-**Løsning**: 
+**Løsning**:
+
 1. Sæt `ENABLE_VOICE_ALERTS=true`
 2. Konfigurer Twilio credentials
 3. Genstart serveren
@@ -201,6 +206,7 @@ GOOGLE_REFRESH_TOKEN=...
 ## Support
 
 Hav problemer? Tjek:
+
 - `README.md` - Komplet oversigt
 - `docs/API_REFERENCE.md` - Alle tools dokumenteret
 - `docs/TROUBLESHOOTING.md` - Common issues
@@ -209,4 +215,3 @@ Hav problemer? Tjek:
 
 **MVP Status**: 🚀 Klar til test!  
 **Next**: Integration med RendetaljeOS + Mobile Dashboard
-

@@ -1,4 +1,4 @@
-# Claude.ai Web - Quick Setup Guide
+﻿# Claude.ai Web - Quick Setup Guide
 
 **Billy MCP Server for Claude.ai Web**  
 **Status:** ✅ Ready to Use  
@@ -177,7 +177,7 @@ Invoke-RestMethod -Uri "https://tekup-billy.onrender.com/health"
 
 - Server may be restarting (Render free tier sleeps after inactivity)
 - Try again in 30-60 seconds
-- Check GitHub repo status: <https://github.com/JonasAbde/Tekup-Billy>
+- Check GitHub repo status: <https://github.com/TekupDK/Tekup-Billy>
 
 ### Tool Execution Fails
 
@@ -234,11 +234,11 @@ Invoke-RestMethod -Uri "https://tekup-billy.onrender.com/health"
 - Live Server: <https://tekup-billy.onrender.com>
 - Health Check: <https://tekup-billy.onrender.com/health>
 - MCP Discovery: <https://tekup-billy.onrender.com/.well-known/mcp.json>
-- GitHub: <https://github.com/JonasAbde/Tekup-Billy>
+- GitHub: <https://github.com/TekupDK/Tekup-Billy>
 
 **Support:**
 
-- GitHub Issues: <https://github.com/JonasAbde/Tekup-Billy/issues>
+- GitHub Issues: <https://github.com/TekupDK/Tekup-Billy/issues>
 - Email: <support@tekup.dk>
 
 ---

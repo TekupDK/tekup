@@ -1,4 +1,5 @@
-# Tekup Workspace - Integration Map
+﻿# Tekup Workspace - Integration Map
+
 **Generated:** 22. Oktober 2025, kl. 05:00 CET  
 **Purpose:** Visual mapping of all inter-repository connections, APIs, databases, and dependencies
 
@@ -40,7 +41,8 @@
 ## PRODUCTION API ENDPOINTS
 
 ### 1. Tekup-Billy MCP
-**URL:** https://tekup-billy.onrender.com  
+
+**URL:** <https://tekup-billy.onrender.com>  
 **Protocol:** HTTP REST + Stdio MCP  
 **Port:** 3000 (production)
 
@@ -58,6 +60,7 @@ POST /api/v1/tools/get_revenue         # Get revenue data
 ```
 
 **Clients:**
+
 - Claude.ai Web (custom connector)
 - ChatGPT (custom connector)
 - Claude Desktop (stdio MCP)
@@ -65,14 +68,16 @@ POST /api/v1/tools/get_revenue         # Get revenue data
 - RenOS Backend (HTTP API - pending)
 
 **Upstream:**
-- Billy.dk API: https://api.billysbilling.com/v2
-- Supabase: https://twaoebtlusudzxshjral.supabase.co (optional caching)
+
+- Billy.dk API: <https://api.billysbilling.com/v2>
+- Supabase: <https://twaoebtlusudzxshjral.supabase.co> (optional caching)
 - Redis: (horizontal scaling)
 
 ---
 
 ### 2. TekupVault API
-**URL:** https://tekupvault.onrender.com  
+
+**URL:** <https://tekupvault.onrender.com>  
 **Protocol:** HTTP REST + MCP  
 **Port:** 3000 (production)
 
@@ -86,6 +91,7 @@ GET  /.well-known/mcp.json      # MCP discovery
 ```
 
 **MCP Tools:**
+
 - `search` - Semantic search
 - `fetch` - Fetch document by ID
 - `search_knowledge` - Advanced search
@@ -94,17 +100,20 @@ GET  /.well-known/mcp.json      # MCP discovery
 - `get_repository_info` - Repository details
 
 **Clients:**
+
 - Claude Desktop (MCP stdio)
 - ChatGPT (OpenAI-compatible search)
 - Cursor AI (MCP integration ready)
 - All Tekup projects (documentation search)
 
 **Upstream:**
-- GitHub API: https://api.github.com (14 repositories)
+
+- GitHub API: <https://api.github.com> (14 repositories)
 - OpenAI API: Embeddings (text-embedding-3-small)
-- Supabase: https://twaoebtlusudzxshjral.supabase.co (database + pgvector)
+- Supabase: <https://twaoebtlusudzxshjral.supabase.co> (database + pgvector)
 
 **Worker Service:**
+
 - Background sync every 6 hours
 - Automatic embeddings generation
 - No public URL (internal service)
@@ -112,11 +121,13 @@ GET  /.well-known/mcp.json      # MCP discovery
 ---
 
 ### 3. RenOS Backend
+
 **URL:** (Local development - not yet deployed)  
 **Protocol:** HTTP REST  
 **Port:** 3001 (local)
 
 **Purpose:**
+
 - Gmail integration & automation
 - Customer management
 - Booking system
@@ -134,21 +145,24 @@ GET  /api/leads                 # Lead management
 ```
 
 **Clients:**
+
 - RenOS Frontend (React app)
 - RenOS Calendar MCP (API calls - pending)
 
 **Upstream:**
-- Gmail API: https://gmail.googleapis.com
-- Google Calendar API: https://www.googleapis.com/calendar
-- Supabase: https://twaoebtlusudzxshjral.supabase.co
+
+- Gmail API: <https://gmail.googleapis.com>
+- Google Calendar API: <https://www.googleapis.com/calendar>
+- Supabase: <https://twaoebtlusudzxshjral.supabase.co>
 - OpenAI API
 - Google Gemini API
-- Tekup-Billy: https://tekup-billy.onrender.com (invoice automation)
+- Tekup-Billy: <https://tekup-billy.onrender.com> (invoice automation)
 
 ---
 
 ### 4. RenOS Calendar MCP (PENDING DEPLOYMENT)
-**URL:** http://localhost:3001 (local) → Render.com (pending)  
+
+**URL:** <http://localhost:3001> (local) → Render.com (pending)  
 **Protocol:** HTTP REST (MCP protocol)  
 **Port:** 3001 (configurable)
 
@@ -165,18 +179,21 @@ GET  /diagnostics/snapshot                 # System diagnostics
 ```
 
 **Clients (Planned):**
+
 - RenOS Backend (HTTP API)
 - Claude Desktop (stdio MCP)
 - RenOS Dashboard (React app, port 3006)
 - RenOS Chatbot (React app, port 3005)
 
 **Upstream:**
-- Google Calendar API (Service Account: renos-319@renos-465008.iam.gserviceaccount.com)
-- Supabase: https://twaoebtlusudzxshjral.supabase.co
-- Tekup-Billy: https://tekup-billy.onrender.com (disabled for v1)
+
+- Google Calendar API (Service Account: <renos-319@renos-465008.iam.gserviceaccount.com>)
+- Supabase: <https://twaoebtlusudzxshjral.supabase.co>
+- Tekup-Billy: <https://tekup-billy.onrender.com> (disabled for v1)
 - Twilio API (disabled for v1)
 
 **Docker Services:**
+
 - mcp-server: Port 3001
 - dashboard: Port 3006
 - chatbot: Port 3005
@@ -188,25 +205,28 @@ GET  /diagnostics/snapshot                 # System diagnostics
 ## SHARED SERVICES
 
 ### Supabase PostgreSQL
-**URL:** https://twaoebtlusudzxshjral.supabase.co  
+
+**URL:** <https://twaoebtlusudzxshjral.supabase.co>  
 **Type:** Hosted PostgreSQL + pgvector  
 **Region:** (Unknown - likely EU)
 
 **Used By:**
+
 1. **Tekup-Billy** (optional caching)
    - Tables: `billy_cache`, `billy_audit_logs`, `billy_usage_metrics`
-   
+
 2. **TekupVault** (core database)
    - Tables: `vault_documents`, `vault_embeddings`, `vault_sync_status`
    - Extensions: pgvector
-   
+
 3. **RendetaljeOS Backend**
    - Tables: Customer, Booking, Email, Lead, etc. (Prisma schema)
-   
+
 4. **RenOS Calendar MCP** (pending tables)
    - Tables needed: `customer_intelligence`, `overtime_logs`
 
 **Security:**
+
 - Service Role Key (full access)
 - Anon Key (row-level security)
 
@@ -215,35 +235,45 @@ GET  /diagnostics/snapshot                 # System diagnostics
 ### Google APIs
 
 #### Google Calendar API
+
 **Used By:**
+
 - RendetaljeOS Backend
 - RenOS Calendar MCP
 
 **Service Account:**
-- Email: renos-319@renos-465008.iam.gserviceaccount.com
-- Calendar ID: c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com
+
+- Email: <renos-319@renos-465008.iam.gserviceaccount.com>
+- Calendar ID: <c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com>
 
 #### Gmail API
+
 **Used By:**
+
 - RendetaljeOS Backend
 - tekup-gmail-automation
 
 **Authentication:**
+
 - Service Account JSON (decent-digit-461308-p8-984aefc14e32.json)
 
 #### Google Photos API
+
 **Used By:**
+
 - tekup-gmail-automation (receipt processing)
 
 ---
 
 ### Billy.dk API
-**URL:** https://api.billysbilling.com/v2  
+
+**URL:** <https://api.billysbilling.com/v2>  
 **Access:** Via Tekup-Billy proxy only
 
 **Direct Clients:** None (all go through Tekup-Billy MCP)
 
 **Indirect Clients (via Tekup-Billy):**
+
 - RenOS Calendar MCP (disabled for v1)
 - RendetaljeOS Backend (planned)
 - Claude.ai users
@@ -252,7 +282,9 @@ GET  /diagnostics/snapshot                 # System diagnostics
 ---
 
 ### OpenAI API
+
 **Used By:**
+
 1. **TekupVault** - Embeddings (text-embedding-3-small)
 2. **RendetaljeOS Backend** - Chat completions
 3. **RenOS Calendar MCP** - LangChain integration (pending)
@@ -260,25 +292,28 @@ GET  /diagnostics/snapshot                 # System diagnostics
 ---
 
 ### GitHub API
-**URL:** https://api.github.com  
+
+**URL:** <https://api.github.com>  
 **Used By:**
+
 - TekupVault (syncing 14 repositories)
 
 **Indexed Repositories:**
-1. JonasAbde/Tekup-Billy
-2. JonasAbde/renos-backend
-3. JonasAbde/renos-frontend
-4. JonasAbde/TekupVault
-5. JonasAbde/tekup-unified-docs
-6. JonasAbde/tekup-ai-assistant
-7. JonasAbde/tekup-cloud-dashboard
-8. JonasAbde/tekup-renos
-9. JonasAbde/tekup-renos-dashboard
-10. JonasAbde/Tekup-org
-11. JonasAbde/Cleaning-og-Service
-12. JonasAbde/tekup-nexus-dashboard
-13. JonasAbde/rendetalje-os
-14. JonasAbde/Jarvis-lite
+
+1. TekupDK/Tekup-Billy
+2. TekupDK/renos-backend
+3. TekupDK/renos-frontend
+4. TekupDK/TekupVault
+5. TekupDK/tekup-unified-docs
+6. TekupDK/tekup-ai-assistant
+7. TekupDK/tekup-cloud-dashboard
+8. TekupDK/tekup-renos
+9. TekupDK/tekup-renos-dashboard
+10. TekupDK/Tekup-org
+11. TekupDK/Cleaning-og-Service
+12. TekupDK/tekup-nexus-dashboard
+13. TekupDK/rendetalje-os
+14. TekupDK/Jarvis-lite
 
 ---
 
@@ -287,12 +322,14 @@ GET  /diagnostics/snapshot                 # System diagnostics
 ### Production MCP Servers
 
 #### 1. Tekup-Billy MCP
+
 **Transport:** Dual (HTTP + Stdio)  
 **Tools:** 32  
 **Status:** ✅ Production  
-**URL:** https://tekup-billy.onrender.com
+**URL:** <https://tekup-billy.onrender.com>
 
 **Tool Categories:**
+
 - Invoice Operations (8 tools)
 - Customer Operations (4 tools)
 - Product Operations (3 tools)
@@ -301,12 +338,14 @@ GET  /diagnostics/snapshot                 # System diagnostics
 - Test Operations (10 tools)
 
 #### 2. TekupVault MCP
+
 **Transport:** HTTP  
 **Tools:** 6  
 **Status:** ✅ Production  
-**URL:** https://tekupvault.onrender.com
+**URL:** <https://tekupvault.onrender.com>
 
 **Tools:**
+
 - search
 - fetch
 - search_knowledge
@@ -315,12 +354,14 @@ GET  /diagnostics/snapshot                 # System diagnostics
 - get_repository_info
 
 #### 3. RenOS Calendar MCP
+
 **Transport:** HTTP  
 **Tools:** 5  
 **Status:** 🟡 Pending Deployment  
-**URL:** http://localhost:3001 (local)
+**URL:** <http://localhost:3001> (local)
 
 **Tools:**
+
 - validate_booking_date
 - check_booking_conflicts
 - auto_create_invoice (disabled)
@@ -332,6 +373,7 @@ GET  /diagnostics/snapshot                 # System diagnostics
 ## DATA FLOW DIAGRAMS
 
 ### Search Query Flow (TekupVault)
+
 ```
 User Query
     │
@@ -352,6 +394,7 @@ TekupVault API (/api/search)
 ```
 
 ### Invoice Creation Flow (Tekup-Billy)
+
 ```
 AI Agent Request
     │
@@ -373,6 +416,7 @@ Tekup-Billy HTTP Server
 ```
 
 ### Booking Validation Flow (RenOS Calendar MCP)
+
 ```
 Booking Request
     │
@@ -398,6 +442,7 @@ RenOS Calendar MCP (/api/v1/tools/validate_booking_date)
 ## DEPENDENCY GRAPH
 
 ### Tekup-Billy
+
 ```
 Tekup-Billy
 ├── Billy.dk API (upstream)
@@ -412,6 +457,7 @@ Tekup-Billy
 ```
 
 ### TekupVault
+
 ```
 TekupVault
 ├── GitHub API (upstream - 14 repos)
@@ -425,6 +471,7 @@ TekupVault
 ```
 
 ### RenOS Calendar MCP
+
 ```
 RenOS Calendar MCP
 ├── Google Calendar API (upstream)
@@ -438,6 +485,7 @@ RenOS Calendar MCP
 ```
 
 ### RendetaljeOS Backend
+
 ```
 RendetaljeOS Backend
 ├── Gmail API (upstream)
@@ -456,6 +504,7 @@ RendetaljeOS Backend
 ## DEPLOYMENT ARCHITECTURE
 
 ### Render.com Services
+
 ```
 Render.com
 ├── tekup-billy (Web Service)
@@ -478,6 +527,7 @@ Render.com
 ```
 
 ### Supabase Services
+
 ```
 Supabase (twaoebtlusudzxshjral.supabase.co)
 ├── PostgreSQL 15
@@ -494,6 +544,7 @@ Supabase (twaoebtlusudzxshjral.supabase.co)
 ```
 
 ### Local Development
+
 ```
 Local (Windows 11)
 ├── RenOS Calendar MCP
@@ -515,20 +566,24 @@ Local (Windows 11)
 ## INTEGRATION ISSUES & GAPS
 
 ### Missing Integrations
+
 1. **RenOS Backend → Tekup-Billy**: Planned, not implemented
 2. **RenOS Backend → RenOS Calendar MCP**: Planned, not implemented
 3. **RenOS Calendar MCP → Tekup-Billy**: Disabled for v1 (needs re-enabling)
 
 ### Pending Deployments
+
 1. **RenOS Calendar MCP**: Dockerized, ready for Render deployment
 2. **RendetaljeOS Backend**: Local only, needs Render deployment
 3. **tekup-cloud-dashboard**: Local only, needs Vercel/Netlify deployment
 
 ### Missing Database Tables
+
 1. **RenOS Calendar MCP**: Needs `customer_intelligence`, `overtime_logs` in Supabase
 2. **Tekup-Billy**: Optional caching tables (not critical)
 
 ### Configuration Issues
+
 1. **Port Conflicts**: ✅ RESOLVED (all ports now configurable)
 2. **Environment Keys**: Scattered across multiple repos (needs centralization)
 3. **API Keys**: Some stored in TekupVault, others in local .env files
@@ -538,17 +593,20 @@ Local (Windows 11)
 ## SECURITY CONSIDERATIONS
 
 ### API Authentication
+
 - **Tekup-Billy**: X-API-Key header (MCP_API_KEY)
 - **TekupVault**: X-API-Key header (API_KEY)
 - **RenOS Calendar MCP**: No authentication yet (add before deployment)
 - **Supabase**: JWT tokens + Row-level security
 
 ### Secrets Management
+
 - **Current**: Environment variables in Render/local .env
 - **Issue**: No centralized secrets management
 - **Recommendation**: Use Render environment groups or Vault
 
 ### Rate Limiting
+
 - **Tekup-Billy**: ✅ Express rate limit (100 req/15min)
 - **TekupVault**: ✅ Express rate limit (search + webhooks)
 - **RenOS Calendar MCP**: ❌ No rate limiting (add before deployment)
@@ -558,11 +616,13 @@ Local (Windows 11)
 ## PERFORMANCE CONSIDERATIONS
 
 ### Bottlenecks
+
 1. **TekupVault Sync**: 6-hour sync interval (could be real-time with webhooks)
 2. **Tekup-Billy Redis**: Optional (performance boost when enabled)
 3. **RenOS Calendar MCP**: No caching layer (Redis recommended)
 
 ### Optimization Opportunities
+
 1. **TekupVault**: Add real-time sync with GitHub webhooks
 2. **Tekup-Billy**: Enable Redis for all deployments
 3. **RenOS Calendar MCP**: Add Redis caching layer
@@ -573,12 +633,14 @@ Local (Windows 11)
 ## MONITORING & OBSERVABILITY
 
 ### Current State
+
 - **Tekup-Billy**: Winston logging, no external monitoring
 - **TekupVault**: Winston logging, no external monitoring
 - **RenOS Calendar MCP**: Winston logging, diagnostics endpoint
 - **RendetaljeOS**: Pino logging, Sentry integration (configured)
 
 ### Recommendations
+
 1. **Add**: Sentry for error tracking (all services)
 2. **Add**: Grafana + Prometheus for metrics
 3. **Add**: Uptime monitoring (UptimeRobot, Pingdom)
@@ -591,18 +653,21 @@ Local (Windows 11)
 ### Integration Health: 7.5/10 (B+)
 
 **Strengths:**
+
 - ✅ 3 production MCP servers (Tekup-Billy, TekupVault, RenOS Calendar MCP pending)
 - ✅ Shared Supabase database (cost-effective)
 - ✅ Well-defined API endpoints
 - ✅ MCP ecosystem integration
 
 **Weaknesses:**
+
 - ⚠️ Missing inter-service integrations (RenOS Backend ↔ Billy/Calendar MCP)
 - ⚠️ No centralized secrets management
 - ⚠️ No monitoring/observability stack
 - ⚠️ Some services local only (pending deployment)
 
 **Immediate Actions:**
+
 1. Deploy RenOS Calendar MCP to Render
 2. Create missing Supabase tables
 3. Implement RenOS Backend → Billy/Calendar MCP integrations
@@ -612,4 +677,3 @@ Local (Windows 11)
 ---
 
 **Next:** Review Action Items (prioritized)
-

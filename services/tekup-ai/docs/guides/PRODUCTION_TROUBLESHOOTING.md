@@ -8,12 +8,14 @@
 ## 🔴 KRITISK: Google Auth Fejl
 
 ### Error Message
+
 ```
 unauthorized_client: Client is unauthorized to retrieve access tokens 
 using this method, or client not authorized for any of the scopes requested.
 ```
 
 ### Root Cause
+
 **Domain-wide delegation er ikke konfigureret korrekt** i Google Workspace Admin Console.
 
 Service account har IKKE adgang til at impersonate `info@rendetalje.dk`.
@@ -55,7 +57,8 @@ https://www.googleapis.com/auth/calendar,
 https://www.googleapis.com/auth/calendar.events
 ```
 
-**VIGTIGT:** 
+**VIGTIGT:**
+
 - Ingen mellemrum mellem scopes!
 - Skal være komma-separeret på én linje
 - Præcis som vist ovenfor
@@ -79,6 +82,7 @@ Eller check Render logs - fejlen skulle være væk.
 ## 🟡 MEDIUM: Redis Connection Error
 
 ### Error Message
+
 ```
 Redis client error: ECONNREFUSED
 Redis connection failed after 10 retries
@@ -86,9 +90,11 @@ Redis not available, using in-memory cache fallback
 ```
 
 ### Status
+
 ✅ **Ikke kritisk** - Systemet falder automatisk tilbage til in-memory cache.
 
 ### Impact
+
 - Cache data går tabt ved restart
 - Ingen persistence af cache mellem deploys
 - Funktionalitet påvirkes IKKE
@@ -128,6 +134,7 @@ In-memory cache er tilstrækkeligt for de fleste use cases.
 Efter du har fixet Google Auth:
 
 ### Backend Health Check
+
 ```bash
 # Check hvis service er live
 curl https://tekup-renos.onrender.com/health
@@ -140,6 +147,7 @@ curl https://tekup-renos.onrender.com/health
 ```
 
 ### Google Auth Verification
+
 ```bash
 # Lokalt (hvis du har env vars sat)
 npm run verify:google
@@ -151,6 +159,7 @@ npm run verify:google
 ```
 
 ### Dashboard Access
+
 ```bash
 # Backend dashboard endpoints
 curl https://tekup-renos.onrender.com/api/dashboard/environment/status
@@ -164,6 +173,7 @@ https://tekup-renos-frontend.onrender.com
 ## 📋 Complete Deployment Checklist
 
 ### Google Cloud Setup
+
 - [ ] Service account created
 - [ ] Service account keys downloaded (JSON)
 - [ ] Domain-wide delegation enabled
@@ -172,6 +182,7 @@ https://tekup-renos-frontend.onrender.com
 - [ ] Wait 5-10 minutes for propagation
 
 ### Render.com Environment Variables
+
 - [ ] `GOOGLE_PRIVATE_KEY` set (escaped newlines)
 - [ ] `GOOGLE_CLIENT_EMAIL` set
 - [ ] `GOOGLE_IMPERSONATED_USER=info@rendetalje.dk`
@@ -183,6 +194,7 @@ https://tekup-renos-frontend.onrender.com
 - [ ] `REDIS_URL` set (optional)
 
 ### Testing
+
 - [ ] Backend health check responds
 - [ ] Google auth logs show success
 - [ ] Dashboard loads
@@ -195,6 +207,7 @@ https://tekup-renos-frontend.onrender.com
 ### Issue: Still getting "unauthorized_client" after 10 minutes
 
 **Solutions:**
+
 1. Verify Client ID is correct (21-digit number)
 2. Verify scopes are EXACTLY as specified (no spaces!)
 3. Try removing and re-adding delegation
@@ -204,6 +217,7 @@ https://tekup-renos-frontend.onrender.com
 ### Issue: "Invalid grant" error
 
 **Solution:**
+
 - Service account key er muligvis expired eller invalid
 - Generate new key i Google Cloud Console
 - Update `GOOGLE_PRIVATE_KEY` i Render
@@ -212,6 +226,7 @@ https://tekup-renos-frontend.onrender.com
 ### Issue: "Insufficient permissions"
 
 **Solution:**
+
 - Scopes mangler eller er forkerte
 - Tilføj alle 5 scopes (gmail.readonly, gmail.send, gmail.modify, calendar, calendar.events)
 - Vent 10 min efter update
@@ -219,6 +234,7 @@ https://tekup-renos-frontend.onrender.com
 ### Issue: Redis keeps retrying
 
 **Solution:**
+
 - Normal behavior hvis Redis ikke er konfigureret
 - Ignorer advarsler - systemet virker fint
 - Eller tilføj Redis for at stoppe warnings
@@ -228,6 +244,7 @@ https://tekup-renos-frontend.onrender.com
 ## 📞 Debug Commands
 
 ### Check Render Logs
+
 ```bash
 # Via Render Dashboard
 https://dashboard.render.com/web/YOUR_SERVICE_ID/logs
@@ -237,6 +254,7 @@ render logs -s YOUR_SERVICE_ID
 ```
 
 ### Test Google Auth Locally
+
 ```bash
 # Set environment variables først
 export GOOGLE_PRIVATE_KEY="..."
@@ -248,6 +266,7 @@ npm run verify:google
 ```
 
 ### Test Gmail Access
+
 ```bash
 # Via CLI tool
 npm run gmail:test
@@ -271,11 +290,13 @@ npm run gmail:test
 ```
 
 **No errors like:**
+
 - ❌ `unauthorized_client`
 - ❌ `Invalid grant`
 - ❌ `Insufficient permissions`
 
 **Redis warnings OK (if not configured):**
+
 - ⚠️ `Redis client error: ECONNREFUSED` - Harmless
 - ✅ `Redis not available, using in-memory cache fallback` - Expected
 

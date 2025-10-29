@@ -132,6 +132,7 @@ DATABASE_URL="postgresql://user:pass@host:5432/db?connection_limit=10&pool_timeo
 ```
 
 **Recommended Pool Sizes:**
+
 - Small app: 5-10 connections
 - Medium app: 10-20 connections
 - Large app: 20-50 connections
@@ -417,6 +418,7 @@ pnpm bench
 ## 📋 Performance Checklist
 
 ### Query Optimization
+
 - [ ] Use `select` to limit fields
 - [ ] Add pagination for large datasets
 - [ ] Avoid N+1 queries (use `include`)
@@ -424,6 +426,7 @@ pnpm bench
 - [ ] Monitor slow queries (>100ms)
 
 ### Database
+
 - [ ] Connection pooling configured
 - [ ] Indexes on foreign keys
 - [ ] Indexes on frequently queried fields
@@ -431,12 +434,14 @@ pnpm bench
 - [ ] Monitor table sizes
 
 ### Caching
+
 - [ ] Cache frequently accessed data
 - [ ] Implement cache invalidation
 - [ ] Set appropriate TTLs
 - [ ] Monitor cache hit rates
 
 ### Application
+
 - [ ] Use batch operations
 - [ ] Implement transactions
 - [ ] Monitor memory usage

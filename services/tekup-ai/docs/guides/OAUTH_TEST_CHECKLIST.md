@@ -7,12 +7,14 @@
 ## ✅ Setup Completed
 
 ### Google Cloud Console
+
 - ✅ OAuth Client ID created: `58625498177-kna90kps6kbdcktim49c04hv2l21rn33.apps.googleusercontent.com`
 - ✅ Client Secret generated: `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`
 - ✅ Authorized redirect URI: `https://clerk.renos.dk/v1/oauth_callback`
 - ✅ Authorized JavaScript origins: `https://clerk.renos.dk`, `https://renos.dk`
 
 ### Clerk Dashboard
+
 - ✅ OAuth credentials entered (Client ID + Secret)
 - ✅ Settings configured:
   - Enable for sign-up and sign-in: ON
@@ -22,12 +24,14 @@
 - ✅ Scopes verified: `openid`, `userinfo.email`, `userinfo.profile`
 
 ### OAuth Consent Screen
+
 - ✅ App name: RenOS
 - ✅ User support email: <info@rendetalje.dk>
 - ✅ Developer contact: <info@rendetalje.dk>
 - ✅ Status: Published (External)
 
 ### Render Environment
+
 - ✅ Frontend: `VITE_CLERK_PUBLISHABLE_KEY=pk_live_Y2xlcmsucmVub3MuZGsk`
 - ✅ Backend: `CLERK_SECRET_KEY` (synced from dashboard)
 - ✅ Custom domain: <www.renos.dk> (SSL verified)
@@ -35,8 +39,10 @@
 ## 🧪 Test Procedures
 
 ### Test 1: Website Loading
+
 **Action:** Open <https://www.renos.dk> in browser  
 **Expected:**
+
 - ✅ Page loads (not blank)
 - ✅ RenOS branding visible
 - ✅ Login page with "Continue with Google" button
@@ -47,8 +53,10 @@
 ---
 
 ### Test 2: Google OAuth Initiation
+
 **Action:** Click "Continue with Google" button  
 **Expected:**
+
 - ✅ Redirects to Clerk authentication
 - ✅ Redirects to Google account selector
 - ✅ Shows list of Google accounts to choose from
@@ -59,8 +67,10 @@
 ---
 
 ### Test 3: Google Account Selection
+
 **Action:** Select your Google account (<info@rendetalje.dk> or personal)  
 **Expected:**
+
 - ✅ Shows OAuth consent screen (if first time)
 - ✅ Displays app name: "RenOS"
 - ✅ Shows requested permissions: email, profile, openid
@@ -72,8 +82,10 @@
 ---
 
 ### Test 4: OAuth Consent
+
 **Action:** Click "Allow" on consent screen  
 **Expected:**
+
 - ✅ Redirects to clerk.renos.dk/v1/oauth_callback
 - ✅ Processes authentication
 - ✅ Creates/updates user account in Clerk
@@ -84,8 +96,10 @@
 ---
 
 ### Test 5: Dashboard Access
+
 **Action:** Wait for redirect completion  
 **Expected:**
+
 - ✅ Lands on Dashboard page (/)
 - ✅ User profile visible (name/email/avatar)
 - ✅ Dashboard stats loading (may show 0 if no data)
@@ -97,8 +111,10 @@
 ---
 
 ### Test 6: API Integration
+
 **Action:** Click on "Customers" or other menu item  
 **Expected:**
+
 - ✅ API request sent to backend (tekup-renos.onrender.com)
 - ✅ Request includes Clerk JWT token in header
 - ✅ Backend validates token successfully
@@ -111,8 +127,10 @@
 ---
 
 ### Test 7: Session Persistence
+
 **Action:** Refresh page (F5 or Ctrl+R)  
 **Expected:**
+
 - ✅ Stays logged in (no redirect to login)
 - ✅ Dashboard remains accessible
 - ✅ User session persisted in cookie
@@ -122,8 +140,10 @@
 ---
 
 ### Test 8: Logout Flow
+
 **Action:** Click logout button (if available in UI)  
 **Expected:**
+
 - ✅ Clerk session cleared
 - ✅ Redirects to login page
 - ✅ "Continue with Google" button visible again
@@ -136,6 +156,7 @@
 ## 🚨 Common Issues & Fixes
 
 ### Issue: "Clerk publishable key is missing"
+
 **Symptom:** Error in browser console  
 **Fix:**
 ```bash
@@ -145,6 +166,7 @@
 ```
 
 ### Issue: "Redirect URI mismatch"
+
 **Symptom:** Google OAuth error page  
 **Fix:**
 ```bash
@@ -154,6 +176,7 @@
 ```
 
 ### Issue: "This app isn't verified" warning
+
 **Symptom:** Google shows security warning  
 **Status:** ⚠️ Expected for new apps (not an error)  
 **Workaround:**
@@ -170,6 +193,7 @@
 ```
 
 ### Issue: Failed to fetch / CORS error
+
 **Symptom:** API calls fail with CORS error  
 **Fix:**
 ```bash
@@ -179,6 +203,7 @@
 ```
 
 ### Issue: 401 Unauthorized on API calls
+
 **Symptom:** Backend rejects authenticated requests  
 **Fix:**
 ```bash
@@ -188,6 +213,7 @@
 ```
 
 ### Issue: Session lost on page refresh
+
 **Symptom:** Redirects to login after F5  
 **Fix:**
 ```bash
@@ -220,11 +246,13 @@ Authentication system is fully functional when ALL of these pass:
 **Google Account Used:** _________________________________________
 
 ### Overall Result
+
 - [ ] ✅ All tests passed - OAuth fully functional
 - [ ] ⚠️ Partial success - minor issues (list below)
 - [ ] ❌ Failed - critical issues preventing login (list below)
 
 ### Issues Found
+
 ```
 1. ___________________________________________
 2. ___________________________________________
@@ -232,6 +260,7 @@ Authentication system is fully functional when ALL of these pass:
 ```
 
 ### Additional Notes
+
 ```
 ___________________________________________
 ___________________________________________

@@ -21,6 +21,7 @@
 ## 1️⃣ Tekup-Billy MCP Server
 
 ### Tech Stack
+
 ```json
 {
   "name": "@tekup/billy-mcp",
@@ -37,6 +38,7 @@
 ```
 
 ### Key Dependencies
+
 - `@modelcontextprotocol/sdk` - MCP protocol
 - `express` - HTTP REST API
 - `axios` - HTTP client for Billy.dk API
@@ -46,6 +48,7 @@
 - `helmet`, `cors`, `express-rate-limit` - Security
 
 ### Project Structure
+
 ```
 Tekup-Billy/
 ├── src/
@@ -73,6 +76,7 @@ Tekup-Billy/
 ```
 
 ### Notable Patterns
+
 - **Lazy Initialization:** Billy client, cache, auditor initialized on-demand
 - **Tool Wrapping:** All tools wrapped with audit logging
 - **Dual Transport:** Stdio (local) + HTTP (cloud)
@@ -80,6 +84,7 @@ Tekup-Billy/
 - **Security:** AES-256-GCM encryption, rate limiting, helmet
 
 ### Tools Inventory (25 tools)
+
 - Invoices: list, create, get, send, update, approve, cancel, mark_paid
 - Customers: list, create, get, update
 - Products: list, create, update
@@ -94,6 +99,7 @@ Tekup-Billy/
 ## 2️⃣ TekupVault Knowledge Base
 
 ### Tech Stack
+
 ```json
 {
   "name": "tekupvault",
@@ -108,12 +114,14 @@ Tekup-Billy/
 ```
 
 ### Key Dependencies
+
 - `turbo` - Monorepo build system
 - `vitest` - Modern testing framework
 - `prettier` - Code formatting
 - `eslint` + `typescript-eslint` - Linting
 
 ### Monorepo Structure
+
 ```
 TekupVault/
 ├── apps/               # Applications
@@ -123,6 +131,7 @@ TekupVault/
 ```
 
 ### Notable Patterns
+
 - **Monorepo:** Turborepo for workspace management
 - **Package Manager:** pnpm for efficient dependency management
 - **Testing:** Vitest for modern, fast tests
@@ -134,6 +143,7 @@ TekupVault/
 ## 3️⃣ RenOS Backend API
 
 ### Tech Stack
+
 ```json
 {
   "name": "renos-backend",
@@ -151,6 +161,7 @@ TekupVault/
 ```
 
 ### Key Dependencies
+
 - `@prisma/client` + `prisma` - Database ORM
 - `express` - Web framework
 - `googleapis` - Google Workspace integration
@@ -165,6 +176,7 @@ TekupVault/
 - `swagger-jsdoc` + `swagger-ui-express` - API docs
 
 ### Project Structure (Inferred)
+
 ```
 renos-backend/
 ├── src/
@@ -181,7 +193,9 @@ renos-backend/
 ```
 
 ### Notable Scripts (60+ kommandoer!)
+
 **Categories:**
+
 - **Database:** migrate, generate, push, pull, studio, seed, reset, audit, fix
 - **Deployment:** indexes, supabase commands
 - **Testing:** test, test:watch, test:integration
@@ -193,6 +207,7 @@ renos-backend/
 - **Docker:** build, up, down, logs
 
 ### Notable Patterns
+
 - **Extensive Tooling:** 60+ npm scripts for operations
 - **AI Integration:** Both OpenAI and Gemini
 - **Google Workspace:** Calendar + Gmail integration
@@ -206,6 +221,7 @@ renos-backend/
 ## 4️⃣ RenOS Frontend
 
 ### Tech Stack
+
 ```json
 {
   "name": "spark-template",
@@ -224,7 +240,9 @@ renos-backend/
 ```
 
 ### Key Dependencies
+
 **UI Components (Radix UI - 20+ components):**
+
 - Dialog, Dropdown, Popover, Tooltip
 - Accordion, Tabs, Collapsible
 - Select, Checkbox, Radio, Switch
@@ -232,22 +250,26 @@ renos-backend/
 - Navigation, Menubar, Context Menu
 
 **State & Data:**
+
 - `@tanstack/react-query` - Server state management
 - `react-hook-form` + `@hookform/resolvers` - Form handling
 - `@supabase/supabase-js` - Supabase client
 - `axios` - HTTP client
 
 **Visualization:**
+
 - `recharts` - Charts og graphs
 - `d3` - Data visualization
 - `three` - 3D graphics (?)
 
 **Developer Experience:**
+
 - `zod` - Schema validation
 - `class-variance-authority` - Component variants
 - `tailwind-merge`, `clsx` - CSS utilities
 
 ### Project Structure (Inferred)
+
 ```
 renos-frontend/
 ├── src/
@@ -263,6 +285,7 @@ renos-frontend/
 ```
 
 ### Notable Patterns
+
 - **Modern React:** React 19.0 (cutting edge!)
 - **Radix UI:** Professional component library
 - **GitHub Spark:** GitHub's design system
@@ -275,6 +298,7 @@ renos-frontend/
 ## 5️⃣ tekup-ai-assistant
 
 ### Current State
+
 ```json
 {
   "name": "tekup-ai-assistant",
@@ -286,6 +310,7 @@ renos-frontend/
 ```
 
 ### Components
+
 - **Documentation:** 16 MD files, MkDocs site
 - **Scripts:** 7 Python/PowerShell scripts
 - **Tests:** MCP Web Scraper, TekupVault
@@ -296,6 +321,7 @@ renos-frontend/
 ## 🔍 Cross-Repository Patterns
 
 ### Shared Technologies
+
 - **TypeScript:** All code repos use TS
 - **Node.js:** 18+ across all projects
 - **Validation:** Zod used everywhere
@@ -305,6 +331,7 @@ renos-frontend/
 - **AI Integration:** OpenAI, Gemini (backend), MCP (Billy)
 
 ### Common Patterns
+
 1. **Monorepo Capable:** TekupVault uses Turbo, Frontend has workspaces
 2. **Express APIs:** Billy og Backend both use Express
 3. **TypeScript Strict:** All repos use TypeScript with strict mode
@@ -312,6 +339,7 @@ renos-frontend/
 5. **Comprehensive Scripts:** Heavy use of npm scripts for operations
 
 ### Integration Points
+
 - **Backend ↔ Billy:** Backend can call Billy MCP via HTTP
 - **Frontend ↔ Backend:** REST API communication
 - **AI Assistant ↔ Billy:** Will be via MCP client (to implement)
@@ -337,20 +365,25 @@ renos-frontend/
 ## 🎯 Key Insights for Integration
 
 ### TypeScript Ecosystem
+
 All 4 code repositories use TypeScript - unified language!
 
 ### Validation Standard
+
 Zod is THE validation library across all projects
 
 ### Testing Framework
+
 Vitest is emerging as standard (TekupVault, renos-backend)
 
 ### Logging Approach
+
 - **Pino** (renos-backend) - High performance
 - **Winston** (Tekup-Billy) - Feature rich
 - Need to choose for AI Assistant client
 
 ### Database Strategy
+
 - **Supabase** - Primary (backend, optional Billy)
 - **Prisma** - ORM of choice (backend)
 - **PostgreSQL** - Underlying database

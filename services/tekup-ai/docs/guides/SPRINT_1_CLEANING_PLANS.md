@@ -19,6 +19,7 @@ Sprint 1 implementerer et komplet **Cleaning Plan System** der gør det muligt a
 ## 🗄️ Database Schema
 
 ### CleaningPlan Model
+
 ```prisma
 model CleaningPlan {
   id                String              @id @default(cuid())
@@ -44,6 +45,7 @@ model CleaningPlan {
 ```
 
 ### CleaningTask Model
+
 ```prisma
 model CleaningTask {
   id              String        @id @default(cuid())
@@ -64,6 +66,7 @@ model CleaningTask {
 ```
 
 ### CleaningPlanBooking Model
+
 ```prisma
 model CleaningPlanBooking {
   id              String        @id @default(cuid())
@@ -105,6 +108,7 @@ model CleaningPlanBooking {
 ### Default Task Templates
 
 #### Fast Rengøring (6 tasks, 105 min)
+
 - Støvsugning af alle gulve (20 min)
 - Vask af gulve (25 min)
 - Aftørring af overflader (15 min)
@@ -113,6 +117,7 @@ model CleaningPlanBooking {
 - Tømning af skraldespande (5 min)
 
 #### Flytterengøring (7 tasks, 260 min)
+
 - Dyb rengøring af køkken (60 min)
 - Komplet badeværelsesrengøring (40 min)
 - Vinduespolering indvendigt (30 min)
@@ -122,6 +127,7 @@ model CleaningPlanBooking {
 - Rengøring af radiatorer (15 min, optional)
 
 #### Hovedrengøring (8 tasks, 265 min)
+
 - Komplet støvsugning inkl. møbler (35 min)
 - Dybderengøring af køkken (50 min)
 - Dybderengøring af badeværelse (45 min)
@@ -132,6 +138,7 @@ model CleaningPlanBooking {
 - Aftørring af lofter (15 min, optional)
 
 #### Engangsopgave (2 tasks, 90 min)
+
 - Generel rengøring (60 min)
 - Specifik opgave (30 min)
 
@@ -233,6 +240,7 @@ curl -X POST https://tekup-renos.onrender.com/api/cleaning-plans \
 ### `CleaningPlanBuilder.tsx`
 
 **Features:**
+
 - ✅ Interactive plan builder modal
 - ✅ Customer selector dropdown
 - ✅ Service type selector (loads templates automatically)
@@ -318,15 +326,18 @@ npm run plan:test
 ## 📈 Business Impact
 
 ### Tidsbesparelse
+
 - **30 minutter per booking** (manual task planning elimineret)
 - **2 timer per uge** for Jonas (10 bookings/uge)
 - **104 timer per år** sparet
 
 ### Cost Savings
+
 - Jonas' tid: **2 timer/uge × 52 uger = 104 timer/år**
 - Estimeret værdi: **104 timer × 350 DKK/time = 36,400 DKK/år**
 
 ### Kvalitetsforbedring
+
 - **Standardiserede processer** - Konsistent kvalitet
 - **Intet glemt** - Checklists sikrer alle tasks udføres
 - **Transparent pricing** - Kunder ved præcis hvad de betaler for
@@ -335,6 +346,7 @@ npm run plan:test
 ## 🔄 Integration med Eksisterende System
 
 ### Booking Integration
+
 ```typescript
 // Link booking to cleaning plan
 await linkBookingToPlan(
@@ -352,6 +364,7 @@ booking.planBooking = {
 ```
 
 ### Dashboard Integration
+
 - New "Rengøringsplaner" tab in dashboard
 - Show active plans per customer
 - Quick create from templates
@@ -361,6 +374,7 @@ booking.planBooking = {
 ## 📚 Documentation
 
 ### CLI Commands
+
 ```bash
 # Test cleaning plans system
 npm run plan:test
@@ -373,6 +387,7 @@ npm run db:push            # Push schema changes
 ### Code Examples
 
 #### Create Plan Programmatically
+
 ```typescript
 import { createCleaningPlan, DEFAULT_TASK_TEMPLATES } from "@/services/cleaningPlanService";
 
@@ -387,6 +402,7 @@ const plan = await createCleaningPlan({
 ```
 
 #### Get Customer Plans
+
 ```typescript
 import { getCustomerCleaningPlans } from "@/services/cleaningPlanService";
 
@@ -395,6 +411,7 @@ console.log(`Found ${plans.length} active plans`);
 ```
 
 #### Calculate Price
+
 ```typescript
 import { calculateCleaningPrice } from "@/services/cleaningPlanService";
 
@@ -417,6 +434,7 @@ const price = calculateCleaningPrice("Fast Rengøring", 80); // 280 DKK
 **Sprint 1 DONE - Moving to Sprint 2!**
 
 Sprint 2 Focus: **Time Tracking** (6 dage)
+
 - Start/stop timer for each booking
 - Break tracking
 - Actual vs estimated comparison
