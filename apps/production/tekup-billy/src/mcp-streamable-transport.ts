@@ -109,6 +109,7 @@ function getOrCreateSession(sessionId?: string): McpSession {
  * Based on Accept header and message type.
  */
 export async function handleMcpPost(req: Request, res: Response): Promise<void> {
+    const startTime = Date.now();
     try {
         // Get session ID from header
         const sessionId = req.headers['mcp-session-id'] as string | undefined;
@@ -124,7 +125,8 @@ export async function handleMcpPost(req: Request, res: Response): Promise<void> 
             acceptHeader,
             supportsSSE,
             supportsJSON,
-            bodySize: JSON.stringify(req.body).length
+            bodySize: JSON.stringify(req.body).length,
+            userAgent: req.headers['user-agent']
         });
 
         // Validate body
@@ -207,7 +209,15 @@ export async function handleMcpPost(req: Request, res: Response): Promise<void> 
 
             if (messages.length === 1) {
                 // Single message → single response
+                const messageStartTime = Date.now();
                 const response = await processJsonRpcMessage(session.server, messages[0]);
+                const messageDuration = Date.now() - messageStartTime;
+                
+                log.info('MCP message processed', {
+                    method: messages[0].method,
+                    duration: messageDuration,
+                    sessionId: session.id
+                });
 
                 // Notifications don't get responses (response will be null)
                 if (response === null) {
@@ -218,7 +228,16 @@ export async function handleMcpPost(req: Request, res: Response): Promise<void> 
             } else {
                 // Batch → batch response (filter out null responses from notifications)
                 const responses = await Promise.all(
-                    messages.map(msg => processJsonRpcMessage(session.server, msg))
+                    messages.map(async (msg) => {
+                        const msgStartTime = Date.now();
+                        const response = await processJsonRpcMessage(session.server, msg);
+                        const msgDuration = Date.now() - msgStartTime;
+                        log.debug('MCP batch message processed', {
+                            method: msg.method,
+                            duration: msgDuration
+                        });
+                        return response;
+                    })
                 );
                 const filteredResponses = responses.filter(r => r !== null);
 
@@ -246,11 +265,17 @@ export async function handleMcpPost(req: Request, res: Response): Promise<void> 
         }
 
     } catch (error) {
+        const totalDuration = Date.now() - startTime;
         log.error('MCP POST error', error instanceof Error ? error : new Error(String(error)), {
             method: req.method,
             path: req.path,
-            headers: req.headers,
-            body: req.body
+            duration: totalDuration,
+            headers: {
+                ...req.headers,
+                'x-api-key': req.headers['x-api-key'] ? '[REDACTED]' : undefined
+            },
+            body: req.body ? (typeof req.body === 'string' ? req.body.substring(0, 200) : JSON.stringify(req.body).substring(0, 200)) : undefined,
+            errorStack: error instanceof Error ? error.stack : undefined
         });
 
         if (!res.headersSent) {
@@ -263,6 +288,14 @@ export async function handleMcpPost(req: Request, res: Response): Promise<void> 
                         stack: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.stack : undefined) : undefined
                     }
                 }
+            });
+        }
+    } finally {
+        const totalDuration = Date.now() - startTime;
+        if (totalDuration > 1000) {
+            log.warn('MCP POST took longer than expected', {
+                duration: totalDuration,
+                path: req.path
             });
         }
     }
