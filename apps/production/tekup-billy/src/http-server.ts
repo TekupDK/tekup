@@ -1411,8 +1411,8 @@ const isMainModule =
   fileURLToPath(import.meta.url) === process.argv[1] ||
   !import.meta.url.includes("node_modules");
 
-// Always start in production
-if (isMainModule || process.env.NODE_ENV === "production") {
+// Always start in production or if run directly
+if (isMainModule || process.env.NODE_ENV === "production" || process.env.RAILWAY_ENVIRONMENT) {
   // Add unhandled error handlers before starting
   process.on("unhandledRejection", (reason, promise) => {
     console.error("Unhandled Rejection at:", promise, "reason:", reason);
