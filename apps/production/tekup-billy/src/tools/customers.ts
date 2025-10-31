@@ -75,7 +75,7 @@ export async function listCustomers(client: BillyClient, args: unknown) {
       parameters: params,
     });
 
-    const contacts = await client.getContacts("customer", params.search);
+    let contacts = await client.getContacts("customer", params.search);
 
     // Add null checks
     if (!contacts || !Array.isArray(contacts)) {
@@ -83,6 +83,42 @@ export async function listCustomers(client: BillyClient, args: unknown) {
       throw new Error(
         "Invalid response format from Billy API - expected array of contacts"
       );
+    }
+
+    // Client-side filtering fallback if Billy API doesn't filter correctly
+    // This ensures search works even if Billy API returns all contacts
+    if (params.search && params.search.trim()) {
+      const searchTerm = params.search.trim().toLowerCase();
+      const originalCount = contacts.length;
+      
+      contacts = contacts.filter((contact) => {
+        const name = (contact.name || "").toLowerCase();
+        const contactNo = (contact.contactNo || "").toLowerCase();
+        const phone = (contact.phone || "").toLowerCase();
+        const street = (contact.street || "").toLowerCase();
+        
+        return (
+          name.includes(searchTerm) ||
+          contactNo.includes(searchTerm) ||
+          phone.includes(searchTerm) ||
+          street.includes(searchTerm) ||
+          // Also check contactPersons
+          (contact.contactPersons || []).some(
+            (person) =>
+              (person.name || "").toLowerCase().includes(searchTerm) ||
+              (person.email || "").toLowerCase().includes(searchTerm)
+          )
+        );
+      });
+      
+      if (contacts.length === originalCount && originalCount > 10) {
+        // Billy API likely didn't filter - log for debugging
+        log.debug("Client-side filtering applied", {
+          searchTerm,
+          originalCount,
+          filteredCount: contacts.length,
+        });
+      }
     }
 
     // Apply pagination
