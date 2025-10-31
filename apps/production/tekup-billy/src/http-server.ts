@@ -1325,7 +1325,8 @@ async function startServer() {
   try {
     console.log("[STARTUP] Starting Tekup-Billy server...");
     console.log("[STARTUP] PORT:", process.env.PORT || 3000);
-    console.log("[STARTUP] NODE_ENV:", process.env.NODE_ENV);
+    console.log("[STARTUP] NODE_ENV:", process.env.NODE_ENV || "development");
+    console.log("[STARTUP] RAILWAY_ENVIRONMENT:", process.env.RAILWAY_ENVIRONMENT || "not set");
 
     // Validate environment
     console.log("[STARTUP] Validating environment...");
