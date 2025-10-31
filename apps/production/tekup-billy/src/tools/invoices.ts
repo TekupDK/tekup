@@ -20,6 +20,10 @@ const listInvoicesSchema = z.object({
       "Invoice state filter (Billy API only supports: draft, approved, voided)"
     ),
   contactId: z.string().optional().describe("Filter by customer contact ID"),
+  search: z
+    .string()
+    .optional()
+    .describe("Search term to filter by invoice number (client-side filtering)"),
   limit: z
     .number()
     .int()
@@ -86,7 +90,7 @@ export async function listInvoices(client: BillyClient, args: unknown) {
       parameters: params,
     });
 
-    const invoices = await client.getInvoices(params);
+    let invoices = await client.getInvoices(params);
 
     // Add null checks
     if (!invoices || !Array.isArray(invoices)) {
@@ -94,6 +98,27 @@ export async function listInvoices(client: BillyClient, args: unknown) {
       throw new Error(
         "Invalid response format from Billy API - expected array of invoices"
       );
+    }
+
+    // Client-side filtering for search parameter (invoice number search)
+    // Billy API doesn't support text search on invoices, so we filter client-side
+    if (params.search && params.search.trim()) {
+      const searchTerm = params.search.trim().toLowerCase();
+      const originalCount = invoices.length;
+      
+      invoices = invoices.filter((invoice) => {
+        const invoiceNo = (invoice.invoiceNo || "").toLowerCase();
+        
+        return invoiceNo.includes(searchTerm);
+      });
+      
+      if (invoices.length < originalCount) {
+        log.debug("Client-side filtering applied (invoices)", {
+          searchTerm,
+          originalCount,
+          filteredCount: invoices.length,
+        });
+      }
     }
 
     // Apply pagination

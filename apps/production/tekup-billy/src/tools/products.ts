@@ -62,7 +62,7 @@ export async function listProducts(client: BillyClient, args: unknown) {
       parameters: params,
     });
 
-    const products = await client.getProducts(params.search);
+    let products = await client.getProducts(params.search);
 
     // Add null checks
     if (!products || !Array.isArray(products)) {
@@ -70,6 +70,34 @@ export async function listProducts(client: BillyClient, args: unknown) {
       throw new Error(
         "Invalid response format from Billy API - expected array of products"
       );
+    }
+
+    // Client-side filtering fallback if Billy API doesn't filter correctly
+    // This ensures search works even if Billy API returns all products
+    if (params.search && params.search.trim()) {
+      const searchTerm = params.search.trim().toLowerCase();
+      const originalCount = products.length;
+      
+      products = products.filter((product) => {
+        const name = (product.name || "").toLowerCase();
+        const productNo = (product.productNo || "").toLowerCase();
+        const description = (product.description || "").toLowerCase();
+        
+        return (
+          name.includes(searchTerm) ||
+          productNo.includes(searchTerm) ||
+          description.includes(searchTerm)
+        );
+      });
+      
+      if (products.length === originalCount && originalCount > 10) {
+        // Billy API likely didn't filter - log for debugging
+        log.debug("Client-side filtering applied (products)", {
+          searchTerm,
+          originalCount,
+          filteredCount: products.length,
+        });
+      }
     }
 
     // Apply pagination
