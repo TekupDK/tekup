@@ -55,7 +55,7 @@ Disse er allerede sat i `railway.json` og behøver IKKE at tilføjes manuelt:
 Hvis Railway har bulk import, kopier dette:
 
 ```
-BILLY_API_KEY=43e7439bccb58a8a96dd57dd06dae10add009111
+BILLY_API_KEY=6ee7fab4b9f9b954f31d4ea93c57072611562d16
 BILLY_ORGANIZATION_ID=pmf9tU56RoyZdcX3k69z1g
 BILLY_API_BASE=https://api.billysbilling.com/v2
 MCP_API_KEY=sp0ZLWofqSDXPx5OjQa64FHVwRYzeuyr
