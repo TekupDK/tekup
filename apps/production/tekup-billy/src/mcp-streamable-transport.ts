@@ -957,20 +957,69 @@ async function processJsonRpcMessage(server: McpServer, message: any): Promise<a
 
                     try {
                         const toolResult = await executeToolCall(toolName, toolArgs);
-                        log.mcpTool(toolName, 'success', { resultSize: JSON.stringify(toolResult).length });
-                        return {
-                            jsonrpc: '2.0',
-                            id: message.id,
-                            result: {
+                        
+                        // Handle different return formats from tools
+                        let mcpResult: any;
+                        
+                        if (toolResult && typeof toolResult === 'object') {
+                            // If tool returns { content: [...], structuredContent: {...} } format
+                            if (Array.isArray(toolResult.content)) {
+                                // Tool already returned MCP-compatible format
+                                mcpResult = {
+                                    content: toolResult.content,
+                                    // Include structuredContent if present for metadata
+                                    ...(toolResult.structuredContent && { 
+                                        structuredContent: toolResult.structuredContent 
+                                    }),
+                                    // Include isError flag if present
+                                    ...(toolResult.isError && { isError: toolResult.isError })
+                                };
+                                log.mcpTool(toolName, 'success', { 
+                                    resultSize: JSON.stringify(mcpResult).length,
+                                    hasStructuredContent: !!toolResult.structuredContent
+                                });
+                            } else {
+                                // Tool returned plain object - wrap it in content array
+                                mcpResult = {
+                                    content: [
+                                        {
+                                            type: 'text',
+                                            text: JSON.stringify(toolResult, null, 2)
+                                        }
+                                    ]
+                                };
+                                log.mcpTool(toolName, 'success', { 
+                                    resultSize: JSON.stringify(mcpResult).length
+                                });
+                            }
+                        } else if (typeof toolResult === 'string') {
+                            // Tool returned plain string
+                            mcpResult = {
                                 content: [
                                     {
                                         type: 'text',
-                                        text: typeof toolResult === 'string'
-                                            ? toolResult
-                                            : JSON.stringify(toolResult, null, 2)
+                                        text: toolResult
                                     }
                                 ]
-                            }
+                            };
+                            log.mcpTool(toolName, 'success', { resultSize: toolResult.length });
+                        } else {
+                            // Fallback for any other type
+                            mcpResult = {
+                                content: [
+                                    {
+                                        type: 'text',
+                                        text: String(toolResult)
+                                    }
+                                ]
+                            };
+                            log.mcpTool(toolName, 'success', { resultSize: String(toolResult).length });
+                        }
+                        
+                        return {
+                            jsonrpc: '2.0',
+                            id: message.id,
+                            result: mcpResult
                         };
                     } catch (error) {
                         log.mcpTool(toolName, 'error', {
