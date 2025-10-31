@@ -1440,12 +1440,16 @@ const isMainModule =
   fileURLToPath(import.meta.url) === process.argv[1] ||
   !import.meta.url.includes("node_modules");
 
-// Always start in production or if run directly
-if (
-  isMainModule ||
-  process.env.NODE_ENV === "production" ||
-  process.env.RAILWAY_ENVIRONMENT
-) {
+// Always start if run directly OR in production OR in Railway
+// Railway doesn't always set NODE_ENV, so check multiple conditions
+const shouldStart = 
+  isMainModule || 
+  process.env.NODE_ENV === "production" || 
+  process.env.RAILWAY_ENVIRONMENT ||
+  process.env.RAILWAY_SERVICE_NAME ||
+  process.env.PORT; // Railway always sets PORT
+
+if (shouldStart) {
   // Add unhandled error handlers before starting
   process.on("unhandledRejection", (reason, promise) => {
     console.error("Unhandled Rejection at:", promise, "reason:", reason);
