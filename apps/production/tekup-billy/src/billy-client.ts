@@ -158,7 +158,7 @@ export class BillyClient {
     });
 
     // Initialize circuit breaker
-    this.circuitBreaker = new CircuitBreaker(this.executeHttpRequest.bind(this), {
+    this.circuitBreaker = new CircuitBreaker(this.executeHttpRequest.bind(this) as any, {
       timeout: 30000, // 30 seconds
       errorThresholdPercentage: 50, // Open circuit at 50% error rate
       resetTimeout: 60000, // Try to close circuit after 1 minute
@@ -278,7 +278,7 @@ export class BillyClient {
     log.billyApi(method, endpoint, {
       data: logData,
       rateLimiterStats: this.rateLimiter.getStats(),
-      circuitBreakerState: this.circuitBreaker.stats.state,
+      circuitBreakerState: (this.circuitBreaker.stats as any).state || 'unknown',
       pendingRequests: this.requestDeduplicator.getPendingCount()
     });
 
@@ -307,7 +307,7 @@ export class BillyClient {
       log.info('Billy API Response', {
         endpoint,
         method,
-        circuitBreakerState: this.circuitBreaker.stats.state,
+        circuitBreakerState: (this.circuitBreaker.stats as any).state || 'unknown',
         dataSize: JSON.stringify(result).length
       });
       
@@ -796,16 +796,16 @@ export class BillyClient {
   } {
     return {
       circuitBreaker: {
-        state: this.circuitBreaker.stats.state,
+        state: (this.circuitBreaker.stats as any).state || 'unknown',
         stats: {
-          requests: this.circuitBreaker.stats.requests,
-          successes: this.circuitBreaker.stats.successes,
-          failures: this.circuitBreaker.stats.failures,
-          rejects: this.circuitBreaker.stats.rejects,
-          timeouts: this.circuitBreaker.stats.timeouts,
-          fallbacks: this.circuitBreaker.stats.fallbacks,
-          latencyMean: this.circuitBreaker.stats.latencyMean,
-          percentiles: this.circuitBreaker.stats.percentiles
+          requests: (this.circuitBreaker.stats as any).requests || 0,
+          successes: (this.circuitBreaker.stats as any).successes || 0,
+          failures: (this.circuitBreaker.stats as any).failures || 0,
+          rejects: (this.circuitBreaker.stats as any).rejects || 0,
+          timeouts: (this.circuitBreaker.stats as any).timeouts || 0,
+          fallbacks: (this.circuitBreaker.stats as any).fallbacks || 0,
+          latencyMean: (this.circuitBreaker.stats as any).latencyMean || 0,
+          percentiles: (this.circuitBreaker.stats as any).percentiles || {}
         }
       },
       rateLimiter: this.rateLimiter.getStats(),
