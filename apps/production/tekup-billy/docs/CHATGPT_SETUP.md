@@ -33,7 +33,7 @@ Billy.dk regnskabsintegration - fakturaer, kunder, produkter og omsætning. 13 a
 **URL til MCP-server:**
 
 ```
-https://tekup-billy.onrender.com
+https://tekup-billy-production.up.railway.app
 ```
 
 **Godkendelse:**
@@ -131,8 +131,8 @@ eller
 **MCP Protocol:**
 
 ```
-POST https://tekup-billy.onrender.com/ (ChatGPT)
-POST https://tekup-billy.onrender.com/mcp (Claude)
+POST https://tekup-billy-production.up.railway.app/ (ChatGPT)
+POST https://tekup-billy-production.up.railway.app/mcp (Claude)
 ```
 
 **Protokol Versioner:**
@@ -275,9 +275,9 @@ ChatGPT ↔️ Billy MCP Server ↔️ Billy.dk API
 - [Project README](../README.md)
 
 **Live Server:**
-- URL: <https://tekup-billy.onrender.com>
-- Health: <https://tekup-billy.onrender.com/health>
-- Discovery: <https://tekup-billy.onrender.com/.well-known/mcp.json>
+- URL: <https://tekup-billy-production.up.railway.app>
+- Health: <https://tekup-billy-production.up.railway.app/health>
+- Discovery: <https://tekup-billy-production.up.railway.app/.well-known/mcp.json>
 
 **Support:**
 - GitHub Issues: <https://github.com/TekupDK/Tekup-Billy/issues>

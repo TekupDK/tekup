@@ -10,7 +10,7 @@
 
 - Active Claude.ai subscription (Pro, Max, Team, or Enterprise)
 - Billy.dk account with API access
-- Server URL: `https://tekup-billy.onrender.com`
+- Server URL: `https://tekup-billy-production.up.railway.app`
 
 ---
 
@@ -27,7 +27,7 @@
 5. Scroll to the bottom
 6. Click **"Add custom connector"**
 7. Enter the following:
-   - **Server URL:** `https://tekup-billy.onrender.com`
+   - **Server URL:** `https://tekup-billy-production.up.railway.app`
    - **Name:** Billy Accounting (auto-detected)
    - **Description:** Billy.dk accounting operations (auto-detected)
 8. Click **"Add"**
@@ -39,7 +39,7 @@
 1. Open [Claude.ai](https://claude.ai)
 2. Navigate to **Admin settings** > **Connectors**
 3. Click **"Add custom connector"** at the bottom
-4. Enter server URL: `https://tekup-billy.onrender.com`
+4. Enter server URL: `https://tekup-billy-production.up.railway.app`
 5. Click **"Add"**
 
 **Phase 2: User Setup (All team members)**
@@ -231,9 +231,9 @@ Invoke-RestMethod -Uri "https://tekup-billy.onrender.com/health"
 
 **Server Info:**
 
-- Live Server: <https://tekup-billy.onrender.com>
-- Health Check: <https://tekup-billy.onrender.com/health>
-- MCP Discovery: <https://tekup-billy.onrender.com/.well-known/mcp.json>
+- Live Server: <https://tekup-billy-production.up.railway.app>
+- Health Check: <https://tekup-billy-production.up.railway.app/health>
+- MCP Discovery: <https://tekup-billy-production.up.railway.app/.well-known/mcp.json>
 - GitHub: <https://github.com/TekupDK/Tekup-Billy>
 
 **Support:**
