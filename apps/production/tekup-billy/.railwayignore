@@ -1,0 +1,3 @@
+# Railway ignore file - force Dockerfile usage
+# This prevents Railway from auto-detecting as a workspace
+

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "./Dockerfile",
+    "dockerContext": "."
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "healthcheckPath": "/health",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 3
+  },
+  "variables": {
+    "CORS_ORIGIN": "*",
+    "ENABLE_SUPABASE_LOGGING": "true",
+    "NODE_ENV": "production",
+    "BILLY_DRY_RUN": "false",
+    "BILLY_TEST_MODE": "false",
+    "BILLY_API_BASE": "https://api.billysbilling.com/v2"
+  }
+}
+
+
