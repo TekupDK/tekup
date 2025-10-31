@@ -37,9 +37,9 @@ https://tekup-billy-production.up.railway.app
 ```
 
 **Godkendelse:**
-- Vælg **"OAuth"** (hvis påkrævet)
-- Eller vælg **"None"** / **"No authentication"** (hvis tilgængelig)
-- Server kræver IKKE authentication på MCP endpoint
+- ⚠️ **VIGTIGT:** Vælg **"None"** / **"Ingen"** / **"No authentication"**
+- ❌ **ALDRIG** vælg "OAuth" - server kræver IKKE authentication på MCP endpoint
+- MCP endpoint (`/mcp`) er public og kræver ingen API key
 
 **Port (hvis efterspurgt):**
 

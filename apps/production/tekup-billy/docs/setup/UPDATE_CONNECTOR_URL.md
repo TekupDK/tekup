@@ -82,7 +82,7 @@ Hvis edit ikke virker:
    - **Navn:** `Billy Regnskab` eller `Tekup-Billy`
    - **URL:** `https://tekup-billy-production.up.railway.app`
    - **Beskrivelse:** `Billy.dk regnskabsintegration - fakturaer, kunder, produkter`
-   - **Godkendelse:** `None` eller `No authentication`
+   - **Godkendelse:** ⚠️ **VÆLG "None" eller "Ingen"** - IKKE "OAuth"
 4. Klik **"Create"** eller **"Opret"**
 
 ### Step 3: Test Connector
