@@ -15,7 +15,8 @@ Tekup-Billy MCP Server.
 ### Automatic Sync
 
 - **Frequency:** Every 6 hours
-- **Repository:** TekupDK/Tekup-Billy
+- **Repository:** TekupDK/tekup (monorepo)
+- **Subdirectory:** `apps/production/tekup-billy`
 - **Method:** GitHub API via Octokit
 
 ### What's Indexed
