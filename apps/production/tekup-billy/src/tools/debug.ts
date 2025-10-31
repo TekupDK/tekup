@@ -6,6 +6,7 @@
 import { z } from 'zod';
 import { BillyClient } from '../billy-client.js';
 import { dataLogger } from '../utils/data-logger.js';
+import { log } from '../utils/logger.js';
 
 // Input schemas for validation
 const validateAuthSchema = z.object({
@@ -31,7 +32,7 @@ export async function validateAuth(client: BillyClient, args: unknown) {
       parameters: params,
     });
 
-    console.log('🔍 Starting Billy API authentication validation...');
+    log.info('Starting Billy API authentication validation');
     
     const authResult = await client.validateAuth();
 
@@ -100,7 +101,7 @@ export async function testConnection(client: BillyClient, args: unknown) {
       parameters: { endpoint },
     });
 
-    console.log(`🔍 Testing Billy API connection to: ${endpoint}`);
+    log.info('Testing Billy API connection', { endpoint });
 
     let result;
     switch (endpoint) {
