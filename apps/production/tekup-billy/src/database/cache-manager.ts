@@ -228,7 +228,7 @@ export class CacheManager {
                     const table = this.getSupabaseTable(type);
                     
                     if (table) {
-                        const supabaseResult = await getCachedData<T>(table, this.organizationId, id);
+                        const supabaseResult = await getCachedData<T>(table, id, this.organizationId);
                         if (supabaseResult !== null) {
                             // Populate higher-tier caches
                             this.localCache.set(key, supabaseResult, DEFAULT_CACHE_TTL.LOCAL_SECONDS);
