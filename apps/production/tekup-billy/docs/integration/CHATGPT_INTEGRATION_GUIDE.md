@@ -1,7 +1,8 @@
 ﻿# 🤖 ChatGPT Integration Guide - Tekup-Billy MCP
 
-**Dato:** 20. Oktober 2025  
+**Dato:** 31. Oktober 2025  
 **Status:** Production Ready ✅  
+**Token Optimering:** ✅ Implementeret (87-91% reduktion)  
 **ChatGPT Version:** ChatGPT Plus/Team/Enterprise required
 
 ---
@@ -11,6 +12,7 @@
 Denne guide viser hvordan du integrerer Tekup-Billy MCP Server med ChatGPT's Custom Actions feature, så du kan administrere Billy.dk direkte fra ChatGPT.
 
 **Hvad kan du gøre:**
+
 - 📊 Liste og søge i fakturaer, kunder, produkter
 - ✏️ Oprette nye kunder og produkter
 - 🔄 Opdatere eksisterende data
@@ -24,21 +26,24 @@ Denne guide viser hvordan du integrerer Tekup-Billy MCP Server med ChatGPT's Cus
 ### 1. ChatGPT Abonnement
 
 **Krav:** ChatGPT Plus, Team, eller Enterprise
+
 - ❌ **Free tier understøtter IKKE Custom Actions**
 - ✅ **Plus ($20/måned)** - Fuld adgang til Custom Actions
 - ✅ **Team/Enterprise** - Fuld adgang + team deling
 
 **Check dit abonnement:**
+
 1. Gå til [ChatGPT Settings](https://chat.openai.com/settings)
 2. Se "Plan" under dit navn
 3. Hvis "Free" - upgrade til Plus først
 
 ### 2. Tekup-Billy MCP Server
 
-- **Status:** ✅ Live på Render.com
-- **Base URL:** `https://tekup-billy.onrender.com`
+- **Status:** ✅ Live på Railway
+- **Base URL:** `https://tekup-billy-production.up.railway.app`
 - **API Key:** `bd674eb2e69973fa399888fa3d5a84f414dd7d89bd86ff6140bdcb363aeede4b`
-- **Health Check:** `https://tekup-billy.onrender.com/health`
+- **Health Check:** `https://tekup-billy-production.up.railway.app/health`
+- **Version:** 1.4.4
 
 ---
 
@@ -47,6 +52,7 @@ Denne guide viser hvordan du integrerer Tekup-Billy MCP Server med ChatGPT's Cus
 ### Metode 1: Custom GPT (Anbefalet)
 
 **Fordele:**
+
 - Persistente connections
 - Kan deles med andre (Team/Enterprise)
 - Dedikeret interface
@@ -123,7 +129,7 @@ WORKFLOW PATTERNS:
 **OpenAPI Schema URL:**
 
 ```
-https://tekup-billy.onrender.com/openapi.json
+https://tekup-billy-production.up.railway.app/openapi.json
 ```
 
 4. Klik **"Import"**
@@ -157,11 +163,13 @@ Header Value: bd674eb2e69973fa399888fa3d5a84f414dd7d89bd86ff6140bdcb363aeede4b
 ### Metode 2: Actions i Regular Chat (Alternativ)
 
 **Fordele:**
+
 - Hurtigere setup (5 min)
 - Ingen GPT creation nødvendig
 - God til quick tests
 
 **Ulemper:**
+
 - Ikke persistent (skal opsættes hver gang)
 - Kan ikke deles
 - Begrænset til én chat session
@@ -182,7 +190,7 @@ Header Value: bd674eb2e69973fa399888fa3d5a84f414dd7d89bd86ff6140bdcb363aeede4b
 **Option A: Via URL**
 
 ```
-https://tekup-billy.onrender.com/openapi.json
+https://tekup-billy-production.up.railway.app/openapi.json
 ```
 
 **Option B: Paste JSON** (hvis URL fejler)
@@ -197,7 +205,7 @@ https://tekup-billy.onrender.com/openapi.json
   },
   "servers": [
     {
-      "url": "https://tekup-billy.onrender.com"
+      "url": "https://tekup-billy-production.up.railway.app"
     }
   ],
   "paths": {
@@ -242,9 +250,7 @@ https://tekup-billy.onrender.com/openapi.json
       }
     }
   },
-  "security": [
-    { "ApiKeyAuth": [] }
-  ]
+  "security": [{ "ApiKeyAuth": [] }]
 }
 ```
 
@@ -378,7 +384,7 @@ Price: 1200 DKK per hour
 **Expected Response:**
 
 ```
-Would you like me to auto-calculate EUR pricing? 
+Would you like me to auto-calculate EUR pricing?
 1200 DKK = ~161 EUR (DKK/EUR rate: 7.45)
 
 Confirm to add both currencies?
@@ -529,10 +535,85 @@ Make 20 rapid requests:
 ```
 
 **Expected Behavior:**
+
 - First 15 requests: Normal speed
 - Requests 16-20: Rate limited (429 status)
 - Circuit breaker: Kicks in if >50% fail
 - No crashes or errors
+
+---
+
+## 💰 Token Optimering
+
+### Oversigt
+
+Billy API er optimeret for minimal token forbrug i ChatGPT:
+
+**Implementerede optimeringer:**
+
+- ✅ **Kompakt JSON** - Ingen pretty-print (30-40% reduktion)
+- ✅ **Smart Pagination** - Default limit 20 items (70-80% reduktion)
+- ✅ **Pagination Metadata** - `hasMore`, `total`, `offset` inkluderet
+
+### Token Reduktion Resultater
+
+**Eksempel: Liste med 61 kunder**
+
+| Metode                     | Tokens  | Reduktion |
+| -------------------------- | ------- | --------- |
+| Før (pretty-print, alle)   | ~15,000 | -         |
+| Efter (kompakt, paginated) | ~2,000  | **87%**   |
+
+**Eksempel: Liste med 150 fakturaer**
+
+| Metode                     | Tokens  | Reduktion |
+| -------------------------- | ------- | --------- |
+| Før (pretty-print, alle)   | ~37,500 | -         |
+| Efter (kompakt, paginated) | ~3,500  | **91%**   |
+
+### Pagination Format
+
+Alle list operations (`list_customers`, `list_invoices`, `list_products`) returnerer nu:
+
+```json
+{
+  "success": true,
+  "customers": [...],
+  "pagination": {
+    "total": 61,
+    "limit": 20,
+    "offset": 0,
+    "returned": 20,
+    "hasMore": true
+  }
+}
+```
+
+**Pagination parametre:**
+
+- `limit` (optional, default: 20) - Antal items per request
+- `offset` (optional, default: 0) - Start position
+
+**Eksempel request:**
+
+```json
+{
+  "tool": "list_customers",
+  "arguments": {
+    "limit": 20,
+    "offset": 0,
+    "search": "Acme"
+  }
+}
+```
+
+### Best Practices for Token Efficiency
+
+1. **Brug specifikke queries** - `search: "Acme"` i stedet for `list all`
+2. **Benyt pagination** - Start med limit=20, load flere hvis nødvendigt
+3. **Undgå unødvendige felter** - Kun de felter der bruges hentes
+
+**Se også:** `docs/TOKEN_OPTIMIZATION_OUTPUT.md` for detaljerede eksempler
 
 ---
 
@@ -543,7 +624,8 @@ Make 20 rapid requests:
 **Cause:** API key invalid eller endpoint down
 
 **Fix:**
-1. Check health: `https://tekup-billy.onrender.com/health`
+
+1. Check health: `https://tekup-billy-production.up.railway.app/health`
 2. Verify API key i ChatGPT settings
 3. Check Render deployment status
 
@@ -554,6 +636,7 @@ Make 20 rapid requests:
 **Cause:** Cache not active or Render cold start
 
 **Fix:**
+
 1. Check cache status: `/health/metrics`
 2. Look for `"supabase": { "enabled": true }`
 3. If cold start - wait 30s and retry
@@ -565,6 +648,7 @@ Make 20 rapid requests:
 **Cause:** Billy organization tom eller forkert organizationId
 
 **Fix:**
+
 1. Check organizationId in prompt
 2. Verify data exists i Billy.dk dashboard
 3. Try different tool (e.g., list_accounts always returns data)
@@ -576,6 +660,7 @@ Make 20 rapid requests:
 **Cause:** API key mangler eller forkert format
 
 **Fix:**
+
 1. Re-enter API key in ChatGPT
 2. Ensure **NO spaces** before/after key
 3. Verify header name: `X-API-Key` (case-sensitive)
@@ -644,6 +729,7 @@ Create Danish B2B customer using template
 ```
 
 **Benefit:**
+
 - Faster (1 API call instead of 2)
 - Fewer errors (pre-validated data)
 - Consistent formatting
@@ -663,6 +749,7 @@ Create a customer "New Corp" and send them an invoice for 10,000 DKK for consult
 ```
 
 **ChatGPT will:**
+
 1. Create customer "New Corp" (using template if detected as Danish)
 2. Get customer ID from response
 3. Create product "Consulting Services" (or use existing)
@@ -681,6 +768,7 @@ Compare my revenue from September vs October 2025
 ```
 
 **ChatGPT will:**
+
 1. Fetch invoices for September (entryDateGte/Lte)
 2. Calculate total approved invoices
 3. Fetch invoices for October
@@ -698,6 +786,7 @@ Show me customers who haven't been invoiced in the last 3 months
 ```
 
 **ChatGPT will:**
+
 1. List all customers
 2. List all invoices from last 3 months
 3. Cross-reference customer IDs
@@ -764,15 +853,19 @@ Show me customers who haven't been invoiced in the last 3 months
 ## 🆘 Support
 
 **Issues:**
+
 - GitHub: [TekupDK/Tekup-Billy/issues](https://github.com/TekupDK/Tekup-Billy/issues)
 
 **Health Check:**
-- `https://tekup-billy.onrender.com/health`
+
+- `https://tekup-billy-production.up.railway.app/health`
 
 **Logs:**
+
 - Render Dashboard: `https://dashboard.render.com`
 
 **API Key Reset:**
+
 - Contact Jonas Abde
 
 ---

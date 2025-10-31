@@ -65,7 +65,7 @@ import {
 // Server information
 const SERVER_INFO = {
   name: 'tekup-billy-server',
-  version: '1.3.0',
+  version: '1.4.4',
   description: 'MCP server for Billy.dk API integration - invoice, customer, product, revenue management, and data analytics',
 };
 

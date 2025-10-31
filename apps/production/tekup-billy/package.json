@@ -1,13 +1,13 @@
 {
   "name": "@tekup/billy-mcp",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Billy.dk API integration for AI agents via Model Context Protocol (MCP) with Redis scaling",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "start:http": "node --env-file=.env dist/http-server.js",
+    "start:http": "tsx src/http-server.ts",
     "dev": "tsx src/index.ts",
     "dev:http": "tsx src/http-server.ts",
     "inspect": "npx @modelcontextprotocol/inspector dist/index.js",

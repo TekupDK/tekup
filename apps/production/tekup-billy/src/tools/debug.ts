@@ -3,10 +3,10 @@
  * Provides debugging and validation functionality
  */
 
-import { z } from 'zod';
-import { BillyClient } from '../billy-client.js';
-import { dataLogger } from '../utils/data-logger.js';
-import { log } from '../utils/logger.js';
+import { z } from "zod";
+import { BillyClient } from "../billy-client.js";
+import { dataLogger } from "../utils/data-logger.js";
+import { log } from "../utils/logger.js";
 
 // Input schemas for validation
 const validateAuthSchema = z.object({
@@ -14,7 +14,10 @@ const validateAuthSchema = z.object({
 });
 
 const testConnectionSchema = z.object({
-  endpoint: z.string().optional().describe('Specific endpoint to test (default: organization)'),
+  endpoint: z
+    .string()
+    .optional()
+    .describe("Specific endpoint to test (default: organization)"),
 });
 
 /**
@@ -27,21 +30,21 @@ export async function validateAuth(client: BillyClient, args: unknown) {
 
     // Log the action
     await dataLogger.logAction({
-      action: 'validateAuth',
-      tool: 'debug',
+      action: "validateAuth",
+      tool: "debug",
       parameters: params,
     });
 
-    log.info('Starting Billy API authentication validation');
-    
+    log.info("Starting Billy API authentication validation");
+
     const authResult = await client.validateAuth();
 
     // Log successful completion
     await dataLogger.logAction({
-      action: 'validateAuth',
-      tool: 'debug',
+      action: "validateAuth",
+      tool: "debug",
       parameters: params,
-      result: authResult.valid ? 'success' : 'error',
+      result: authResult.valid ? "success" : "error",
       metadata: {
         executionTime: Date.now() - startTime,
         errorMessage: authResult.error,
@@ -50,37 +53,43 @@ export async function validateAuth(client: BillyClient, args: unknown) {
 
     const responseData = {
       success: authResult.valid,
-      message: authResult.valid ? 'Billy API authentication successful' : 'Billy API authentication failed',
+      message: authResult.valid
+        ? "Billy API authentication successful"
+        : "Billy API authentication failed",
       organization: authResult.organization,
       error: authResult.error,
       timestamp: new Date().toISOString(),
     };
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(responseData, null, 2),
-      }],
-      structuredContent: responseData
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify(responseData),
+        },
+      ],
+      structuredContent: responseData,
     };
   } catch (error) {
     // Log error
     await dataLogger.logAction({
-      action: 'validateAuth',
-      tool: 'debug',
+      action: "validateAuth",
+      tool: "debug",
       parameters: args,
-      result: 'error',
+      result: "error",
       metadata: {
         executionTime: Date.now() - startTime,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
       },
     });
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: `Error validating authentication: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      }],
+      content: [
+        {
+          type: "text" as const,
+          text: `Error validating authentication: ${error instanceof Error ? error.message : "Unknown error"}`,
+        },
+      ],
       isError: true,
     };
   }
@@ -92,29 +101,29 @@ export async function validateAuth(client: BillyClient, args: unknown) {
 export async function testConnection(client: BillyClient, args: unknown) {
   const startTime = Date.now();
   try {
-    const { endpoint = 'organization' } = testConnectionSchema.parse(args);
+    const { endpoint = "organization" } = testConnectionSchema.parse(args);
 
     // Log the action
     await dataLogger.logAction({
-      action: 'testConnection',
-      tool: 'debug',
+      action: "testConnection",
+      tool: "debug",
       parameters: { endpoint },
     });
 
-    log.info('Testing Billy API connection', { endpoint });
+    log.info("Testing Billy API connection", { endpoint });
 
     let result;
     switch (endpoint) {
-      case 'organization':
+      case "organization":
         result = await client.getOrganization();
         break;
-      case 'contacts':
-        result = await client.getContacts('customer');
+      case "contacts":
+        result = await client.getContacts("customer");
         break;
-      case 'products':
+      case "products":
         result = await client.getProducts();
         break;
-      case 'invoices':
+      case "invoices":
         result = await client.getInvoices();
         break;
       default:
@@ -123,10 +132,10 @@ export async function testConnection(client: BillyClient, args: unknown) {
 
     // Log successful completion
     await dataLogger.logAction({
-      action: 'testConnection',
-      tool: 'debug',
+      action: "testConnection",
+      tool: "debug",
       parameters: { endpoint },
-      result: 'success',
+      result: "success",
       metadata: {
         executionTime: Date.now() - startTime,
         dataSize: Array.isArray(result) ? result.length : 1,
@@ -142,30 +151,34 @@ export async function testConnection(client: BillyClient, args: unknown) {
     };
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(responseData, null, 2),
-      }],
-      structuredContent: responseData
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify(responseData),
+        },
+      ],
+      structuredContent: responseData,
     };
   } catch (error) {
     // Log error
     await dataLogger.logAction({
-      action: 'testConnection',
-      tool: 'debug',
+      action: "testConnection",
+      tool: "debug",
       parameters: args,
-      result: 'error',
+      result: "error",
       metadata: {
         executionTime: Date.now() - startTime,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
       },
     });
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: `Error testing connection: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      }],
+      content: [
+        {
+          type: "text" as const,
+          text: `Error testing connection: ${error instanceof Error ? error.message : "Unknown error"}`,
+        },
+      ],
       isError: true,
     };
   }

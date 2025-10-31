@@ -1,9 +1,8 @@
 # Tekup-Billy MCP Server - Dockerfile
-# Multi-stage build for optimized production image
-# Version 1.3.0 - Production Ready with 32 tools including analytics (force rebuild 2025-10-22)
+# Single-stage runtime image using tsx for TypeScript execution
+# Version 1.4.4 - Railway Production
 
-# Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -11,26 +10,11 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies (including dev dependencies for build)
-RUN npm ci
+# Install ALL dependencies (including dev for tsx runtime)
+RUN npm ci && npm cache clean --force
 
 # Copy source code
 COPY src/ ./src/
-
-# Build TypeScript
-RUN npm run build
-
-# Stage 2: Production
-FROM node:20-alpine
-
-WORKDIR /app
-
-# Install production dependencies only
-COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
-
-# Copy built files from builder
-COPY --from=builder /app/dist ./dist
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
@@ -45,9 +29,9 @@ USER nodejs
 # Expose port
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+# Health check (longer start-period for tsx compilation)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start HTTP server
-CMD ["node", "dist/http-server.js"]
+# Start HTTP server using tsx (npx ensures correct path resolution)
+CMD ["npx", "tsx", "src/http-server.ts"]

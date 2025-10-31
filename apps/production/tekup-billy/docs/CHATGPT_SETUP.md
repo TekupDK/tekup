@@ -2,7 +2,7 @@
 
 **Billy MCP Server for ChatGPT**  
 **Status:** ✅ Ready to Use  
-**Last Updated:** 11. Oktober 2025, 21:41  
+**Last Updated:** 11. Oktober 2025, 21:41
 
 ---
 
@@ -37,6 +37,7 @@ https://tekup-billy-production.up.railway.app
 ```
 
 **Godkendelse:**
+
 - ⚠️ **VIGTIGT:** Vælg **"None"** / **"Ingen"** / **"No authentication"**
 - ❌ **ALDRIG** vælg "OAuth" - server kræver IKKE authentication på MCP endpoint
 - MCP endpoint (`/mcp`) er public og kræver ingen API key
@@ -50,6 +51,7 @@ https://tekup-billy-production.up.railway.app
 ### Step 3: Klik "Opret" / "Create"
 
 ChatGPT vil nu:
+
 1. ✅ Teste forbindelsen til serveren
 2. ✅ Hente liste over tilgængelige tools (13 tools)
 3. ✅ Aktivere Billy connector
@@ -136,10 +138,12 @@ POST https://tekup-billy-production.up.railway.app/mcp (Claude)
 ```
 
 **Protokol Versioner:**
+
 - 2025-03-26 (MCP 1.0)
 - 2025-06-18 (MCP 1.1)
 
 **Transport:**
+
 - Streamable HTTP
 - JSON-RPC 2.0
 
@@ -160,6 +164,7 @@ POST https://tekup-billy-production.up.railway.app/mcp (Claude)
 ### "Fejl ved oprettelse af forbindelse"
 
 **Mulige årsager:**
+
 1. ⏳ **Timeout** - Server var i dvale (Render free tier)
    - **Løsning:** Vent 30 sekunder, prøv igen
    - Server vågner automatisk ved første request
@@ -173,12 +178,14 @@ POST https://tekup-billy-production.up.railway.app/mcp (Claude)
 ### "Request timeout"
 
 Server tager for lang tid at svare (cold start):
+
 - **Løsning:** Vent 30-60 sekunder efter første request
 - Efterfølgende requests er hurtige
 
 ### Tools Vises Ikke
 
 Hvis connector oprettes men tools ikke vises:
+
 1. ✅ Check at connector er "enabled" i settings
 2. ✅ Prøv at @mention connectoren: `@billy`
 3. ✅ Reload ChatGPT siden
@@ -270,16 +277,19 @@ ChatGPT ↔️ Billy MCP Server ↔️ Billy.dk API
 ## 📚 Additional Resources
 
 **Dokumentation:**
+
 - [Universal MCP Plugin Guide](./UNIVERSAL_MCP_PLUGIN_GUIDE.md)
 - [Billy API Reference](./BILLY_API_REFERENCE.md)
 - [Project README](../README.md)
 
 **Live Server:**
+
 - URL: <https://tekup-billy-production.up.railway.app>
 - Health: <https://tekup-billy-production.up.railway.app/health>
 - Discovery: <https://tekup-billy-production.up.railway.app/.well-known/mcp.json>
 
 **Support:**
+
 - GitHub Issues: <https://github.com/TekupDK/Tekup-Billy/issues>
 - Email: <support@tekup.dk>
 
@@ -298,11 +308,12 @@ Efter setup, verificer:
 ---
 
 **Status:** ✅ ChatGPT MCP Support AKTIV  
-**Server Version:** 1.0.0  
+**Server Version:** 1.4.4  
 **MCP Protocol:** 2025-03-26, 2025-06-18  
-**Deployment:** Live på Render.com  
+**Deployment:** Live på Railway (`tekup-billy-production.up.railway.app`)
 
 **Compatibility:**
+
 - ✅ ChatGPT (POST /)
 - ✅ Claude.ai Web (POST /mcp)
 - ✅ Claude Desktop (stdio)
@@ -317,14 +328,15 @@ Efter setup, verificer:
 
 ```typescript
 // Force JSON-only response (no SSE streaming)
-app.post('/', (req, res) => {
-    req.headers['accept'] = 'application/json';  // Override Accept header
-    req.setTimeout(15000);                        // 15s timeout guard
-    handleMcpPost(req, res);                      // Process MCP request
+app.post("/", (req, res) => {
+  req.headers["accept"] = "application/json"; // Override Accept header
+  req.setTimeout(15000); // 15s timeout guard
+  handleMcpPost(req, res); // Process MCP request
 });
 ```
 
 **Why JSON-only?**
+
 - ChatGPT expects immediate JSON response
 - SSE streaming would cause connection to hang
 - Timeout guard prevents indefinite waiting
@@ -353,4 +365,4 @@ Accept: application/json
 
 ---
 
-*Guide opdateret efter tilføjelse af ChatGPT compatibility fixes (commits e804bed, 86615ce)*
+_Guide opdateret efter tilføjelse af ChatGPT compatibility fixes (commits e804bed, 86615ce)_

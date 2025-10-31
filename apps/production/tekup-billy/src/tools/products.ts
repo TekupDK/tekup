@@ -3,24 +3,48 @@
  * Implements list and create product functionality
  */
 
-import { z } from 'zod';
-import { log } from '../utils/logger.js';
-import { BillyClient } from '../billy-client.js';
-import { dataLogger } from '../utils/data-logger.js';
-import { extractBillyErrorMessage } from '../utils/error-handler.js';
+import { z } from "zod";
+import { BillyClient } from "../billy-client.js";
+import { dataLogger } from "../utils/data-logger.js";
+import { extractBillyErrorMessage } from "../utils/error-handler.js";
+import { log } from "../utils/logger.js";
 
 // Input schemas for validation
 const listProductsSchema = z.object({
-  search: z.string().optional().describe('Search term to filter products by name'),
+  search: z
+    .string()
+    .optional()
+    .describe("Search term to filter products by name"),
+  limit: z
+    .number()
+    .int()
+    .positive()
+    .max(100)
+    .optional()
+    .describe("Maximum number of products to return (default: 20, max: 100)"),
+  offset: z
+    .number()
+    .int()
+    .nonnegative()
+    .optional()
+    .describe("Number of products to skip for pagination (default: 0)"),
 });
 
 const createProductSchema = z.object({
-  name: z.string().describe('Product name'),
-  description: z.string().optional().describe('Product description'),
-  prices: z.array(z.object({
-    unitPrice: z.number().describe('Unit price'),
-    currencyId: z.string().optional().describe('Currency ID (default: DKK)'),
-  })).min(1).describe('Product prices'),
+  name: z.string().describe("Product name"),
+  description: z.string().optional().describe("Product description"),
+  prices: z
+    .array(
+      z.object({
+        unitPrice: z.number().describe("Unit price"),
+        currencyId: z
+          .string()
+          .optional()
+          .describe("Currency ID (default: DKK)"),
+      })
+    )
+    .min(1)
+    .describe("Product prices"),
 });
 
 /**
@@ -33,8 +57,8 @@ export async function listProducts(client: BillyClient, args: unknown) {
 
     // Log the action
     await dataLogger.logAction({
-      action: 'listProducts',
-      tool: 'products',
+      action: "listProducts",
+      tool: "products",
       parameters: params,
     });
 
@@ -42,17 +66,25 @@ export async function listProducts(client: BillyClient, args: unknown) {
 
     // Add null checks
     if (!products || !Array.isArray(products)) {
-      log.error('Invalid products response from Billy API', null, { products });
-      throw new Error('Invalid response format from Billy API - expected array of products');
+      log.error("Invalid products response from Billy API", null, { products });
+      throw new Error(
+        "Invalid response format from Billy API - expected array of products"
+      );
     }
 
-    const productList = products.map(product => ({
+    // Apply pagination
+    const limit = params.limit ?? 20;
+    const offset = params.offset ?? 0;
+    const totalCount = products.length;
+    const paginatedProducts = products.slice(offset, offset + limit);
+
+    const productList = paginatedProducts.map((product) => ({
       id: product.id,
       productNo: product.productNo,
       name: product.name,
       description: product.description,
       account: product.account,
-      prices: (product.prices || []).map(price => ({
+      prices: (product.prices || []).map((price) => ({
         currencyId: price.currencyId,
         unitPrice: price.unitPrice,
       })),
@@ -60,41 +92,51 @@ export async function listProducts(client: BillyClient, args: unknown) {
 
     // Log successful completion
     await dataLogger.logAction({
-      action: 'listProducts',
-      tool: 'products',
+      action: "listProducts",
+      tool: "products",
       parameters: params,
-      result: 'success',
+      result: "success",
       metadata: {
         executionTime: Date.now() - startTime,
         dataSize: productList.length,
       },
     });
 
+    // Build response with pagination info
     const responseData = {
       success: true,
-      count: products.length,
+      count: totalCount,
       products: productList,
+      pagination: {
+        total: totalCount,
+        limit,
+        offset,
+        returned: productList.length,
+        hasMore: offset + limit < totalCount,
+      },
     };
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(responseData, null, 2),
-      }],
-      structuredContent: responseData
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify(responseData),
+        },
+      ],
+      structuredContent: responseData,
     };
   } catch (error: any) {
     const errorMessage = extractBillyErrorMessage(error);
-    log.error('listProducts error', error, {
+    log.error("listProducts error", error, {
       userMessage: errorMessage,
       billyErrorCode: error.billyDetails?.billyErrorCode,
     });
 
     await dataLogger.logAction({
-      action: 'listProducts',
-      tool: 'products',
+      action: "listProducts",
+      tool: "products",
       parameters: args,
-      result: 'error',
+      result: "error",
       metadata: {
         executionTime: Date.now() - startTime,
         errorMessage,
@@ -102,10 +144,12 @@ export async function listProducts(client: BillyClient, args: unknown) {
     });
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: `Error listing products: ${errorMessage}`,
-      }],
+      content: [
+        {
+          type: "text" as const,
+          text: `Error listing products: ${errorMessage}`,
+        },
+      ],
       isError: true,
     };
   }
@@ -121,8 +165,8 @@ export async function createProduct(client: BillyClient, args: unknown) {
 
     // Log the action
     await dataLogger.logAction({
-      action: 'createProduct',
-      tool: 'products',
+      action: "createProduct",
+      tool: "products",
       parameters: productData,
     });
 
@@ -130,10 +174,10 @@ export async function createProduct(client: BillyClient, args: unknown) {
 
     // Log successful completion
     await dataLogger.logAction({
-      action: 'createProduct',
-      tool: 'products',
+      action: "createProduct",
+      tool: "products",
       parameters: productData,
-      result: 'success',
+      result: "success",
       metadata: {
         executionTime: Date.now() - startTime,
       },
@@ -141,7 +185,7 @@ export async function createProduct(client: BillyClient, args: unknown) {
 
     const responseData = {
       success: true,
-      message: 'Product created successfully',
+      message: "Product created successfully",
       product: {
         id: product.id,
         productNo: product.productNo,
@@ -154,24 +198,26 @@ export async function createProduct(client: BillyClient, args: unknown) {
     };
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(responseData, null, 2),
-      }],
-      structuredContent: responseData
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify(responseData),
+        },
+      ],
+      structuredContent: responseData,
     };
   } catch (error: any) {
     const errorMessage = extractBillyErrorMessage(error);
-    log.error('createProduct error', error, {
+    log.error("createProduct error", error, {
       userMessage: errorMessage,
       billyErrorCode: error.billyDetails?.billyErrorCode,
     });
 
     await dataLogger.logAction({
-      action: 'createProduct',
-      tool: 'products',
+      action: "createProduct",
+      tool: "products",
       parameters: args,
-      result: 'error',
+      result: "error",
       metadata: {
         executionTime: Date.now() - startTime,
         errorMessage,
@@ -179,10 +225,12 @@ export async function createProduct(client: BillyClient, args: unknown) {
     });
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: `Error creating product: ${errorMessage}`,
-      }],
+      content: [
+        {
+          type: "text" as const,
+          text: `Error creating product: ${errorMessage}`,
+        },
+      ],
       isError: true,
     };
   }
@@ -191,13 +239,21 @@ export async function createProduct(client: BillyClient, args: unknown) {
 // Sprint 1: Update product tool
 
 const updateProductSchema = z.object({
-  productId: z.string().describe('Product ID to update'),
-  name: z.string().optional().describe('Product name'),
-  description: z.string().optional().describe('Product description'),
-  prices: z.array(z.object({
-    unitPrice: z.number().describe('Unit price'),
-    currencyId: z.string().optional().describe('Currency ID (default: DKK)'),
-  })).optional().describe('Product prices'),
+  productId: z.string().describe("Product ID to update"),
+  name: z.string().optional().describe("Product name"),
+  description: z.string().optional().describe("Product description"),
+  prices: z
+    .array(
+      z.object({
+        unitPrice: z.number().describe("Unit price"),
+        currencyId: z
+          .string()
+          .optional()
+          .describe("Currency ID (default: DKK)"),
+      })
+    )
+    .optional()
+    .describe("Product prices"),
 });
 
 /**
@@ -209,18 +265,18 @@ export async function updateProduct(client: BillyClient, args: unknown) {
     const { productId, ...updateData } = updateProductSchema.parse(args);
 
     await dataLogger.logAction({
-      action: 'updateProduct',
-      tool: 'products',
+      action: "updateProduct",
+      tool: "products",
       parameters: { productId, updateData },
     });
 
     const product = await client.updateProduct(productId, updateData);
 
     await dataLogger.logAction({
-      action: 'updateProduct',
-      tool: 'products',
+      action: "updateProduct",
+      tool: "products",
       parameters: { productId, updateData },
-      result: 'success',
+      result: "success",
       metadata: {
         executionTime: Date.now() - startTime,
       },
@@ -228,7 +284,7 @@ export async function updateProduct(client: BillyClient, args: unknown) {
 
     const responseData = {
       success: true,
-      message: 'Product updated successfully',
+      message: "Product updated successfully",
       product: {
         id: product.id,
         productNo: product.productNo,
@@ -240,24 +296,26 @@ export async function updateProduct(client: BillyClient, args: unknown) {
     };
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(responseData, null, 2),
-      }],
-      structuredContent: responseData
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify(responseData),
+        },
+      ],
+      structuredContent: responseData,
     };
   } catch (error: any) {
     const errorMessage = extractBillyErrorMessage(error);
-    log.error('updateProduct error', error, {
+    log.error("updateProduct error", error, {
       userMessage: errorMessage,
       billyErrorCode: error.billyDetails?.billyErrorCode,
     });
 
     await dataLogger.logAction({
-      action: 'updateProduct',
-      tool: 'products',
+      action: "updateProduct",
+      tool: "products",
       parameters: args,
-      result: 'error',
+      result: "error",
       metadata: {
         executionTime: Date.now() - startTime,
         errorMessage,
@@ -265,10 +323,12 @@ export async function updateProduct(client: BillyClient, args: unknown) {
     });
 
     return {
-      content: [{
-        type: 'text' as const,
-        text: `Error updating product: ${errorMessage}`,
-      }],
+      content: [
+        {
+          type: "text" as const,
+          text: `Error updating product: ${errorMessage}`,
+        },
+      ],
       isError: true,
     };
   }

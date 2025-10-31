@@ -6,15 +6,28 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-**Status:** ✅ **PRODUCTION READY** | **Version:** 1.4.3 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES
+**Status:** ✅ **PRODUCTION READY** | **Version:** 1.4.4 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
 
 **🆕 v2.0 SPECIFICATION READY:** Complete enhancement plan with 40+ tasks for advanced analytics, ML capabilities, and enterprise features → [View Specification](docs/TEKUP_BILLY_V2_SPECIFICATION.md)
 
 En Model Context Protocol (MCP) server til integration med Billy.dk API. Denne server giver adgang til faktura-, kunde-, produkt- og omsætningsstyring gennem Billy.dk's API med fuld Supabase-integration for caching, audit logging og usage metrics.
 
-**🆕 v1.4.3: Repository Organization - 87% cleaner root directory!**
+**🆕 v1.4.4: Token Optimization & TestSprite Integration - 31. Oktober 2025**
 
 **✨ Nye Features:**
+
+- 💰 **Token Optimization** - 87-91% reduktion i ChatGPT token forbrug
+  - Kompakt JSON (ingen pretty-print)
+  - Smart pagination (default limit 20)
+  - Pagination metadata i alle list operations
+- 🧪 **TestSprite Integration** - Komplet test suite setup
+  - PRD uploaded og test plan genereret
+  - 10 test cases for invoice og customer management
+  - Railway endpoint verification (7/7 passing)
+- 📊 **Enhanced Documentation** - Token optimering guides og TestSprite docs
+- 🚀 **Railway Deployment** - Verified og tested (`tekup-billy-production.up.railway.app`)
+
+**v1.4.3 Features:**
 
 - 📁 **Repository Restructure** - 40+ docs organized in 9 categories
 - 🔧 **Scripts Consolidation** - 10 PowerShell scripts in `scripts/`
@@ -40,7 +53,7 @@ En Model Context Protocol (MCP) server til integration med Billy.dk API. Denne s
 
 **Klar til brug i:**
 
-- ☁️ **Cloud:** Render.com, AWS, Azure, Google Cloud (HTTP REST API + MCP)
+- ☁️ **Cloud:** Railway ✅ (Production), Render.com, AWS, Azure, Google Cloud (HTTP REST API + MCP)
 - 🤖 **AI Agents:** Claude.ai Web ✅, Claude Desktop ✅, ChatGPT ✅, RenOS Backend
 - 💻 **Local:** Claude Desktop, VS Code Copilot (Stdio MCP)
 - 🔌 **Platforms:** Universal MCP plugin med support for alle LLM platforms
@@ -77,7 +90,8 @@ Tekup-Billy/
 │   └── run-tests.ps1        # PowerShell test runner
 ├── deployment/               # Deployment configuration
 │   ├── Dockerfile           # Docker configuration (Node 20)
-│   ├── render.yaml          # Render.com config
+│   ├── railway.json         # Railway config
+│   ├── render.yaml          # Render.com config (legacy)
 │   └── *.txt                # Environment variable guides
 ├── docs/                     # 📚 Documentation (organized)
 │   ├── planning/            # Planning docs, reports, status updates
@@ -127,7 +141,7 @@ Tekup-Billy/
 
 1. **Åbn Claude.ai** → Settings → Connectors
 2. **Klik "Add custom connector"**
-3. **Indtast URL:** `https://tekup-billy.onrender.com`
+3. **Indtast URL:** `https://tekup-billy-production.up.railway.app`
 4. **Klik "Add"**
 5. **I chatten:** Åbn "Search and tools" → Enable Billy tools
 6. **Test:** `@billy list your available tools`
@@ -141,7 +155,7 @@ Tekup-Billy/
 
 1. **Åbn ChatGPT** → Settings → Custom Connectors
 2. **Navn:** `Billy Regnskab`
-3. **URL:** `https://tekup-billy.onrender.com`
+3. **URL:** `https://tekup-billy-production.up.railway.app`
 4. **Klik "Opret"**
 5. **Test:** `@billy list your tools`
 
@@ -189,24 +203,25 @@ npm run build
 
 ### ☁️ Cloud Deployment (Anbefalet)
 
-**Deploy til Render.com som standalone HTTP service:**
+**Deploy til Railway som standalone HTTP service:**
 
 ```bash
 # Kort version:
 # 1. Push til GitHub
-# 2. Opret Web Service på Render.com
+# 2. Opret Web Service på Railway.app
 # 3. Select Docker environment
-# 4. Tilføj environment variables (se deployment/ENV_GROUP_*.txt)
+# 4. Tilføj environment variables (se railway.json eller deployment/)
 # 5. Deploy!
 ```
 
 📖 **Læs dokumentation:**
 
-- [`docs/DEPLOYMENT_COMPLETE.md`](./docs/DEPLOYMENT_COMPLETE.md) - Komplet deployment guide
+- [`docs/RAILWAY_DEPLOYMENT_SUCCESS.md`](./docs/RAILWAY_DEPLOYMENT_SUCCESS.md) - Railway deployment guide
 - [`docs/PRODUCTION_VALIDATION_COMPLETE.md`](./docs/PRODUCTION_VALIDATION_COMPLETE.md) - Validering og tests
-- [`deployment/`](./deployment/) - Environment Group konfigurationer
+- [`railway.json`](./railway.json) - Railway konfiguration
+- [`deployment/`](./deployment/) - Environment variable guides
 
-**Live server:** `https://tekup-billy.onrender.com`
+**Live server:** `https://tekup-billy-production.up.railway.app`
 
 ### 💻 Lokal Brug
 
@@ -551,7 +566,7 @@ curl https://tekupvault.onrender.com/api/sync-status
 
 ## 📊 Status
 
-**Production Status:** ✅ Live på <https://tekup-billy.onrender.com>
+**Production Status:** ✅ Live på Railway <https://tekup-billy-production.up.railway.app>
 
 **Test Results:**
 
