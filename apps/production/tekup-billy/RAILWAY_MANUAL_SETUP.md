@@ -22,6 +22,7 @@ Railway is auto-detecting this as a workspace and ignoring `railway.json`. You n
 ### Step 3: Verify Configuration
 
 After setting, the build should:
+
 - Use Dockerfile from `apps/production/tekup-billy/Dockerfile`
 - Build context: `apps/production/tekup-billy/`
 - Start command: Uses Dockerfile CMD (`npx tsx src/http-server.ts`)
@@ -39,4 +40,3 @@ railway service --set dockerContext=apps/production/tekup-billy
 ---
 
 **Note:** The `railway.json` file should work, but Railway's auto-detection is overriding it for workspace projects. Manual configuration is required.
-

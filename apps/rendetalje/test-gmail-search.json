@@ -1,0 +1,5 @@
+{"query": "from:leadmail.no OR from:leadpoint.dk OR from:adhelp.dk newer_than:2d", "maxResults": 10}
+
+
+
+

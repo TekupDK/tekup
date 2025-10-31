@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "list_invoices_with_filters_and_pagination",
+    "description": "Test the /api/v1/tools/list_invoices endpoint to verify it correctly lists invoices with various filters such as date range, state, and contactId, and supports pagination with limit and offset parameters."
+  },
+  {
+    "id": "TC002",
+    "title": "create_invoice_with_multiple_line_items_and_payment_terms",
+    "description": "Test the /api/v1/tools/create_invoice endpoint to ensure it creates a new invoice with required fields including contactId, entryDate, and multiple line items, and supports custom payment terms."
+  },
+  {
+    "id": "TC003",
+    "title": "get_invoice_details_by_id",
+    "description": "Test the /api/v1/tools/get_invoice endpoint to verify it returns detailed information for a specific invoice when provided with a valid invoiceId."
+  },
+  {
+    "id": "TC004",
+    "title": "send_approved_invoice_via_email",
+    "description": "Test the /api/v1/tools/send_invoice endpoint to ensure it sends an approved invoice to the customer via email and handles cases where the invoice is not approved."
+  },
+  {
+    "id": "TC005",
+    "title": "update_existing_invoice_fields",
+    "description": "Test the /api/v1/tools/update_invoice endpoint to verify it updates an existing invoice's details including line items, customer information, entry date, and payment terms."
+  },
+  {
+    "id": "TC006",
+    "title": "approve_draft_invoice_state_transition",
+    "description": "Test the /api/v1/tools/approve_invoice endpoint to ensure it changes the invoice state from draft to approved correctly."
+  },
+  {
+    "id": "TC007",
+    "title": "cancel_invoice_with_optional_reason",
+    "description": "Test the /api/v1/tools/cancel_invoice endpoint to verify it cancels an invoice and accepts an optional cancellation reason."
+  },
+  {
+    "id": "TC008",
+    "title": "mark_invoice_as_paid_with_payment_details",
+    "description": "Test the /api/v1/tools/mark_invoice_paid endpoint to ensure it marks an invoice as paid with the provided payment date and amount."
+  },
+  {
+    "id": "TC009",
+    "title": "list_customers_with_search_and_pagination",
+    "description": "Test the /api/v1/tools/list_customers endpoint to verify it lists customers filtered by search term and supports pagination with limit and offset."
+  },
+  {
+    "id": "TC010",
+    "title": "create_customer_with_contact_information",
+    "description": "Test the /api/v1/tools/create_customer endpoint to ensure it creates a new customer with required name and optional email, phone, and address details."
+  }
+]

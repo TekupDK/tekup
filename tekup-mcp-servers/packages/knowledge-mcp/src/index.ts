@@ -302,7 +302,6 @@ httpServer.on('request', async (req, res) => {
       transports.set(transport.sessionId, transport);
       transport.onclose = () => transports.delete(transport.sessionId);
       transport.onerror = (error) => console.error("Knowledge MCP transport error:", error);
-      await transport.start();
       server
         .connect(transport)
         .catch((error) => {

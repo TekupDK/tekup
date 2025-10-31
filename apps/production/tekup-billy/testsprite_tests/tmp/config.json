@@ -1,0 +1,16 @@
+{
+  "status": "commited",
+  "type": "backend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:443/https://tekup-billy-production.up.railway.app",
+  "backendAuthType": "public",
+  "executionArgs": {
+    "projectName": "tekup-billy",
+    "projectPath": "C:\\Users\\empir\\Tekup\\apps\\production\\tekup-billy",
+    "testIds": [],
+    "additionalInstruction": "Update test configuration to use Railway deployment URL: https://tekup-billy-production.up.railway.app instead of localhost:3000. All environment variables are set on Railway. Test all endpoints against the production deployment.",
+    "envs": {
+      "API_KEY": "sk-user-25uw14314Nq-CjpXeDCKrSURcU5QxMbSj3gGIIN9cGK50N_B3hLC6OKTIHtt5PzORvP9OFxWccZcEanIhY5Tqlbxb5TDnLZcRcb5gLwEuVOciCfnBjcQoNFCHAnE5C56PDg"
+    }
+  }
+}

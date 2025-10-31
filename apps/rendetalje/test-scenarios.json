@@ -1,0 +1,29 @@
+{
+  "scenarios": [
+    {
+      "name": "Hvad har vi fået af nye leads i dag?",
+      "prompt": "Hvad har vi fået af nye leads i dag?"
+    },
+    {
+      "name": "Check om vi har svaret på alle leads",
+      "prompt": "Check om vi har svaret på alle leads"
+    },
+    {
+      "name": "Hvad er vores opgaver i dag?",
+      "prompt": "Hvad er vores opgaver i dag?"
+    },
+    {
+      "name": "Book tid til nyt lead",
+      "prompt": "Book tid til nyt lead"
+    },
+    {
+      "name": "Vis leads fra Rengøring.nu",
+      "prompt": "Vis leads fra Rengøring.nu"
+    },
+    {
+      "name": "Hvad kan du se i gmail og kalender?",
+      "prompt": "Hvad kan du se i gmail og kalender?"
+    }
+  ]
+}
+

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendetalje AI Chat Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        #chat { border: 1px solid #ccc; padding: 20px; min-height: 400px; margin-bottom: 20px; overflow-y: auto; }
+        .message { margin: 10px 0; padding: 10px; border-radius: 8px; }
+        .user { background: #007bff; color: white; text-align: right; }
+        .assistant { background: #f0f0f0; }
+        .system { background: #fff3cd; font-size: 0.9em; text-align: center; }
+        #input { width: 80%; padding: 10px; font-size: 16px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        .action { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Rendetalje AI Chat Test</h1>
+    <p>Test den nye function-calling chat! Prøv:</p>
+    <ul>
+        <li>"Tjek mine emails fra i dag"</li>
+        <li>"Hvad har jeg i kalenderen i morgen?"</li>
+        <li>"Book møde tirsdag kl 10"</li>
+    </ul>
+    
+    <div id="chat"></div>
+    
+    <input type="text" id="input" placeholder="Skriv din besked..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('input');
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        async function sendMessage() {
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage('user', message);
+            input.value = '';
+
+            try {
+                const response = await fetch('http://127.0.0.1:3011/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, history: [] })
+                });
+
+                const data = await response.json();
+
+                // Show actions if any
+                if (data.actions && data.actions.length > 0) {
+                    const actionNames = data.actions.map(a => a.name).join(', ');
+                    addMessage('system', `🔧 Udførte: ${actionNames}`);
+                }
+
+                // Show reply
+                addMessage('assistant', data.reply || 'Ingen svar');
+            } catch (error) {
+                addMessage('system', `❌ Fejl: ${error.message}`);
+            }
+        }
+
+        function addMessage(role, content) {
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            div.textContent = content;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Welcome message
+        addMessage('system', 'Chat klar! Skriv en besked for at starte.');
+    </script>
+</body>
+</html>
+
+
+
+
+

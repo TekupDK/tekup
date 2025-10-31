@@ -1,0 +1,863 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "Node.js",
+    "Express.js",
+    "Model Context Protocol (MCP)",
+    "Billy.dk API",
+    "Supabase",
+    "Redis",
+    "Zod",
+    "Axios",
+    "Winston"
+  ],
+  "features": [
+    {
+      "name": "list_invoices",
+      "description": "List invoices with filtering and pagination. Supports filtering by date range, state (draft/approved/voided), customer, and pagination with limit/offset.",
+      "files": ["src/tools/invoices.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/list_invoices": {
+            "post": {
+              "summary": "List invoices",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "startDate": { "type": "string", "format": "date" },
+                        "endDate": { "type": "string", "format": "date" },
+                        "state": {
+                          "type": "string",
+                          "enum": ["draft", "approved", "voided"]
+                        },
+                        "contactId": { "type": "string" },
+                        "limit": {
+                          "type": "number",
+                          "default": 20,
+                          "maximum": 100
+                        },
+                        "offset": { "type": "number", "default": 0 }
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "List of invoices with pagination metadata"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "create_invoice",
+      "description": "Create a new invoice with line items and customer information. Supports custom payment terms and multiple line items.",
+      "files": ["src/tools/invoices.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/create_invoice": {
+            "post": {
+              "summary": "Create invoice",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["contactId", "entryDate", "lines"],
+                      "properties": {
+                        "contactId": { "type": "string" },
+                        "entryDate": { "type": "string", "format": "date" },
+                        "paymentTermsDays": { "type": "number", "default": 30 },
+                        "lines": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "description",
+                              "quantity",
+                              "unitPrice"
+                            ],
+                            "properties": {
+                              "description": { "type": "string" },
+                              "quantity": { "type": "number" },
+                              "unitPrice": { "type": "number" },
+                              "productId": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_invoice",
+      "description": "Get detailed information for a specific invoice by ID.",
+      "files": ["src/tools/invoices.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/get_invoice": {
+            "post": {
+              "summary": "Get invoice details",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["invoiceId"],
+                      "properties": {
+                        "invoiceId": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "send_invoice",
+      "description": "Send an invoice to customer via email. Invoice must be approved before sending.",
+      "files": ["src/tools/invoices.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/send_invoice": {
+            "post": {
+              "summary": "Send invoice via email",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["invoiceId"],
+                      "properties": {
+                        "invoiceId": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "update_invoice",
+      "description": "Update an existing invoice. Can modify line items, customer, dates, and payment terms.",
+      "files": ["src/tools/invoices.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/update_invoice": {
+            "post": {
+              "summary": "Update invoice",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["invoiceId"],
+                      "properties": {
+                        "invoiceId": { "type": "string" },
+                        "contactId": { "type": "string" },
+                        "entryDate": { "type": "string", "format": "date" },
+                        "paymentTermsDays": { "type": "number" },
+                        "lines": { "type": "array" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "approve_invoice",
+      "description": "Approve a draft invoice, changing its state from draft to approved.",
+      "files": ["src/tools/invoices.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/approve_invoice": {
+            "post": {
+              "summary": "Approve invoice",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["invoiceId"],
+                      "properties": {
+                        "invoiceId": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "cancel_invoice",
+      "description": "Cancel an invoice with optional cancellation reason.",
+      "files": ["src/tools/invoices.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/cancel_invoice": {
+            "post": {
+              "summary": "Cancel invoice",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["invoiceId"],
+                      "properties": {
+                        "invoiceId": { "type": "string" },
+                        "reason": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "mark_invoice_paid",
+      "description": "Mark an invoice as paid with payment date and amount.",
+      "files": ["src/tools/invoices.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/mark_invoice_paid": {
+            "post": {
+              "summary": "Mark invoice as paid",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["invoiceId"],
+                      "properties": {
+                        "invoiceId": { "type": "string" },
+                        "paymentDate": { "type": "string", "format": "date" },
+                        "amount": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "list_customers",
+      "description": "List customers with search and pagination. Supports filtering by search term and pagination with limit/offset.",
+      "files": ["src/tools/customers.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/list_customers": {
+            "post": {
+              "summary": "List customers",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "search": { "type": "string" },
+                        "limit": { "type": "number", "default": 20 },
+                        "offset": { "type": "number", "default": 0 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "create_customer",
+      "description": "Create a new customer with contact information including name, email, phone, and address.",
+      "files": ["src/tools/customers.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/create_customer": {
+            "post": {
+              "summary": "Create customer",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["name"],
+                      "properties": {
+                        "name": { "type": "string" },
+                        "email": { "type": "string" },
+                        "phone": { "type": "string" },
+                        "address": {
+                          "type": "object",
+                          "properties": {
+                            "street": { "type": "string" },
+                            "zipcode": { "type": "string" },
+                            "city": { "type": "string" },
+                            "country": { "type": "string", "default": "DK" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_customer",
+      "description": "Get detailed information for a specific customer by contact ID.",
+      "files": ["src/tools/customers.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/get_customer": {
+            "post": {
+              "summary": "Get customer details",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["contactId"],
+                      "properties": {
+                        "contactId": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "update_customer",
+      "description": "Update customer information including name, email, phone, and address.",
+      "files": ["src/tools/customers.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/update_customer": {
+            "post": {
+              "summary": "Update customer",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["contactId"],
+                      "properties": {
+                        "contactId": { "type": "string" },
+                        "name": { "type": "string" },
+                        "email": { "type": "string" },
+                        "phone": { "type": "string" },
+                        "address": { "type": "object" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "List products with search and pagination. Supports filtering by search term and pagination with limit/offset.",
+      "files": ["src/tools/products.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/list_products": {
+            "post": {
+              "summary": "List products",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "search": { "type": "string" },
+                        "limit": { "type": "number", "default": 20 },
+                        "offset": { "type": "number", "default": 0 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "create_product",
+      "description": "Create a new product with name, description, and pricing. Supports multiple currencies.",
+      "files": ["src/tools/products.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/create_product": {
+            "post": {
+              "summary": "Create product",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["name"],
+                      "properties": {
+                        "name": { "type": "string" },
+                        "description": { "type": "string" },
+                        "prices": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "currencyId": { "type": "string" },
+                              "unitPrice": { "type": "number" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "update_product",
+      "description": "Update product information including name, description, and prices.",
+      "files": ["src/tools/products.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/update_product": {
+            "post": {
+              "summary": "Update product",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["productId"],
+                      "properties": {
+                        "productId": { "type": "string" },
+                        "name": { "type": "string" },
+                        "description": { "type": "string" },
+                        "prices": { "type": "array" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_revenue",
+      "description": "Get revenue analytics for a date range with optional grouping by week, month, or year.",
+      "files": ["src/tools/revenue.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/get_revenue": {
+            "post": {
+              "summary": "Get revenue analytics",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "startDate": { "type": "string", "format": "date" },
+                        "endDate": { "type": "string", "format": "date" },
+                        "groupBy": {
+                          "type": "string",
+                          "enum": ["week", "month", "year"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "analyze_user_patterns",
+      "description": "Analyze user behavior patterns and generate insights and recommendations based on usage data.",
+      "files": ["src/tools/presets.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/analyze_user_patterns": {
+            "post": {
+              "summary": "Analyze user patterns"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "generate_personalized_presets",
+      "description": "Generate personalized workflow presets based on user behavior and preferences.",
+      "files": ["src/tools/presets.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/generate_personalized_presets": {
+            "post": {
+              "summary": "Generate personalized presets"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_recommended_presets",
+      "description": "Get recommended workflow presets based on user patterns or business type.",
+      "files": ["src/tools/presets.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/get_recommended_presets": {
+            "post": {
+              "summary": "Get recommended presets",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "businessType": {
+                          "type": "string",
+                          "enum": ["freelancer", "retail", "service", "general"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "execute_preset",
+      "description": "Execute a preset workflow with optional parameter overrides.",
+      "files": ["src/tools/presets.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/execute_preset": {
+            "post": {
+              "summary": "Execute preset",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["presetId"],
+                      "properties": {
+                        "presetId": { "type": "string" },
+                        "overrideParams": { "type": "object" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "list_presets",
+      "description": "List all available presets with optional filtering and usage statistics.",
+      "files": ["src/tools/presets.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/list_presets": {
+            "post": {
+              "summary": "List presets",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "businessType": {
+                          "type": "string",
+                          "enum": ["freelancer", "retail", "service", "general"]
+                        },
+                        "includeUsage": { "type": "boolean" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "create_custom_preset",
+      "description": "Create a custom workflow preset with specified actions.",
+      "files": ["src/tools/presets.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/create_custom_preset": {
+            "post": {
+              "summary": "Create custom preset",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "description",
+                        "businessType",
+                        "actions"
+                      ],
+                      "properties": {
+                        "name": { "type": "string" },
+                        "description": { "type": "string" },
+                        "businessType": {
+                          "type": "string",
+                          "enum": ["freelancer", "retail", "service", "general"]
+                        },
+                        "actions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "tool": { "type": "string" },
+                              "action": { "type": "string" },
+                              "parameters": { "type": "object" },
+                              "description": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "analyze_feedback",
+      "description": "Analyze user feedback and identify key themes with sentiment analysis and product implications.",
+      "files": ["src/tools/analytics.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/analyze_feedback": {
+            "post": {
+              "summary": "Analyze feedback",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "required": ["feedback"],
+                      "properties": {
+                        "feedback": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "text": { "type": "string" },
+                              "category": { "type": "string" },
+                              "rating": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 5
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "analyze_usage_data",
+      "description": "Analyze product usage data to identify behavioral trends and user needs.",
+      "files": ["src/tools/analytics.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/analyze_usage_data": {
+            "post": {
+              "summary": "Analyze usage data"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "validate_auth",
+      "description": "Validate Billy API authentication and connection status.",
+      "files": ["src/tools/debug.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/validate_auth": {
+            "post": {
+              "summary": "Validate authentication"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "test_connection",
+      "description": "Test connection to specific Billy API endpoint.",
+      "files": ["src/tools/debug.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/api/v1/tools/test_connection": {
+            "post": {
+              "summary": "Test connection",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "endpoint": {
+                          "type": "string",
+                          "enum": [
+                            "organization",
+                            "contacts",
+                            "products",
+                            "invoices"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "MCP Protocol Endpoint",
+      "description": "Model Context Protocol (MCP) endpoint for AI agent integration. Supports both POST / (ChatGPT) and POST /mcp (Claude) transport protocols.",
+      "files": ["src/mcp-streamable-transport.ts", "src/http-server.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/": {
+            "post": {
+              "summary": "MCP Protocol (ChatGPT compatibility)",
+              "description": "JSON-RPC 2.0 protocol for ChatGPT Custom Actions"
+            }
+          },
+          "/mcp": {
+            "post": {
+              "summary": "MCP Protocol (Claude compatibility)",
+              "description": "Streamable HTTP transport for Claude.ai Web"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Health Check",
+      "description": "Health check endpoint with comprehensive system monitoring including dependencies (Billy API, Supabase, Redis).",
+      "files": ["src/http-server.ts", "src/monitoring/health-monitor.ts"],
+      "api_doc": {
+        "openapi": "3.1.0",
+        "paths": {
+          "/health": {
+            "get": {
+              "summary": "Health check",
+              "responses": {
+                "200": {
+                  "description": "System health status"
+                },
+                "503": {
+                  "description": "System unhealthy"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

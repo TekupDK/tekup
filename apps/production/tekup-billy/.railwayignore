@@ -1,8 +1,2 @@
-# Railway ignore - Force Dockerfile usage
-# Prevent Railpack/Nixpacks auto-detection
-
-# Ignore workspace detection
-pnpm-workspace.yaml
-pnpm-lock.yaml
-
-# Force Railway to use Dockerfile via railway.json builder setting
+# Railway configuration
+# This service should work with both Dockerfile and Railpack

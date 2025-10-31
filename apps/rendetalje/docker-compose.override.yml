@@ -1,0 +1,27 @@
+# Development overrides
+version: '3.8'
+
+services:
+  google-mcp:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/google-mcp:/app
+      - /app/node_modules
+    command: npm run dev
+
+  inbox-orchestrator:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ../../services/tekup-ai/packages/inbox-orchestrator:/app
+      - /app/node_modules
+    command: npm run dev
+
+  tekup-cloud-dashboard:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ../../apps/web/tekup-cloud-dashboard:/app
+      - /app/node_modules
+    command: npm run dev

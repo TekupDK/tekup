@@ -29,7 +29,8 @@
 ## Configuration Summary
 
 ### Environment Variables (All Set ✅)
-- ✅ CORS_ORIGIN=*
+
+- ✅ CORS_ORIGIN=\*
 - ✅ ENABLE_SUPABASE_LOGGING=true
 - ✅ MCP_API_KEY (configured)
 - ✅ PORT=3000
@@ -45,6 +46,7 @@
 - ✅ ENCRYPTION_SALT (configured)
 
 ### Runtime Configuration
+
 - **Start Command**: `npx tsx src/http-server.ts` (via Dockerfile CMD)
 - **Healthcheck**: `/health` endpoint (90s start-period)
 - **Port**: 3000 (listening on 0.0.0.0)
@@ -61,12 +63,15 @@
 ## Next Steps
 
 ### 1. Get Public URL
+
 In Railway Dashboard:
+
 - Navigate to: Service → Settings → Networking
 - Click "Generate Domain" or add custom domain
 - Note the public URL (e.g., `tekup-billy-production.up.railway.app`)
 
 ### 2. Test Endpoints
+
 ```bash
 # Health check
 curl https://<your-railway-url>/health
@@ -80,11 +85,13 @@ curl -H "X-API-Key: <MCP_API_KEY>" \
 ```
 
 ### 3. Configure TekupVault Sync
+
 - Remove old repository: `JonasAbde/Tekup-Billy`
 - Add new monorepo: `TekupDK/tekup` with path `apps/production/tekup-billy/**`
 - Trigger reindexing
 
 ### 4. Verify Billy API Integration
+
 - Test invoice listing: `/api/v1/tools/list_invoices`
 - Test customer operations: `/api/v1/tools/list_customers`
 - Verify audit logging to Supabase
@@ -100,6 +107,7 @@ curl -H "X-API-Key: <MCP_API_KEY>" \
 ## Migration Complete ✅
 
 All phases of the Railway migration plan have been completed:
+
 - ✅ Phase 1: Repository Cleanup
 - ✅ Phase 2: TekupVault Database Migration
 - ✅ Phase 3: Railway Production Deployment
@@ -109,9 +117,3 @@ All phases of the Railway migration plan have been completed:
   - Token optimization implemented (87-91% reduction)
   - TestSprite integration complete
   - Version: 1.4.4
-
-
-
-
-
-
