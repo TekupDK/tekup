@@ -87,36 +87,53 @@ export async function listCustomers(client: BillyClient, args: unknown) {
 
     // Client-side filtering fallback if Billy API doesn't filter correctly
     // This ensures search works even if Billy API returns all contacts
+    // NOTE: Billy API may not return contactPersons in list response, so we search in available fields
     if (params.search && params.search.trim()) {
       const searchTerm = params.search.trim().toLowerCase();
       const originalCount = contacts.length;
-      
+
       contacts = contacts.filter((contact) => {
         const name = (contact.name || "").toLowerCase();
         const contactNo = (contact.contactNo || "").toLowerCase();
         const phone = (contact.phone || "").toLowerCase();
         const street = (contact.street || "").toLowerCase();
-        
-        return (
+        const city = (contact.city || "").toLowerCase();
+        const zipcode = (contact.zipcode || "").toLowerCase();
+
+        // Check if search matches any field
+        const matchesMainFields =
           name.includes(searchTerm) ||
           contactNo.includes(searchTerm) ||
           phone.includes(searchTerm) ||
           street.includes(searchTerm) ||
-          // Also check contactPersons
+          city.includes(searchTerm) ||
+          zipcode.includes(searchTerm);
+
+        // Check contactPersons (may be empty in list response, but check if present)
+        const matchesContactPerson =
           (contact.contactPersons || []).some(
             (person) =>
               (person.name || "").toLowerCase().includes(searchTerm) ||
-              (person.email || "").toLowerCase().includes(searchTerm)
-          )
-        );
+              (person.email || "").toLowerCase().includes(searchTerm) ||
+              (person.phone || "").toLowerCase().includes(searchTerm)
+          );
+
+        return matchesMainFields || matchesContactPerson;
       });
-      
-      if (contacts.length === originalCount && originalCount > 10) {
-        // Billy API likely didn't filter - log for debugging
+
+      // Log if filtering reduced results significantly
+      if (contacts.length < originalCount) {
         log.debug("Client-side filtering applied", {
           searchTerm,
           originalCount,
           filteredCount: contacts.length,
+          reduction: `${Math.round(((originalCount - contacts.length) / originalCount) * 100)}%`,
+        });
+      } else if (originalCount > 10 && contacts.length === originalCount) {
+        // Billy API likely didn't filter - this is expected behavior
+        log.debug("No filtering occurred - Billy API returned all contacts", {
+          searchTerm,
+          totalContacts: originalCount,
         });
       }
     }
