@@ -9,7 +9,8 @@
     "numReplicas": 1,
     "healthcheckPath": "/health",
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 3
+    "restartPolicyMaxRetries": 3,
+    "startCommand": "npx tsx src/http-server.ts"
   },
   "variables": {
     "CORS_ORIGIN": "*",
