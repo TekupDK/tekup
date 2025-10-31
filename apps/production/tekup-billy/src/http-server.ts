@@ -1433,25 +1433,16 @@ process.on("SIGTERM", () => {
   process.exit(0);
 });
 
-// Start server if run directly (ES Module compatible check)
-// Always start in Railway/production environment
+// Start server - ALWAYS start if this file is executed
+// In Docker container (Railway), this file is executed via: npx tsx src/http-server.ts
+// So we always start - no conditions needed
 const isMainModule =
   import.meta.url === `file://${process.argv[1]}` ||
   fileURLToPath(import.meta.url) === process.argv[1] ||
   !import.meta.url.includes("node_modules");
 
-// Always start if run directly OR if any production/Railway indicator is present
-// Railway may not set NODE_ENV, so check multiple conditions
-// If file is executed directly (via tsx), always start
-const shouldStart = 
-  isMainModule || // File run directly
-  process.env.NODE_ENV === "production" || 
-  process.env.RAILWAY_ENVIRONMENT ||
-  process.env.RAILWAY_SERVICE_NAME ||
-  !!process.env.PORT; // Railway always sets PORT
-
-// In Docker/Railway, always start regardless (tsx execution means it's meant to run)
-if (shouldStart || !process.env.NODE_ENV || process.env.NODE_ENV === "") {
+// Always start - if this file runs, it's meant to start the server
+if (true) {
   // Add unhandled error handlers before starting
   process.on("unhandledRejection", (reason, promise) => {
     console.error("Unhandled Rejection at:", promise, "reason:", reason);
