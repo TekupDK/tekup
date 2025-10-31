@@ -416,10 +416,35 @@ app.get("/.well-known/mcp.json", (req: Request, res: Response) => {
 });
 
 /**
- * Enhanced health check endpoint with comprehensive monitoring
+ * Health check endpoint - simple and fast for Railway
  * GET /health
  */
 app.get("/health", async (req: Request, res: Response) => {
+  try {
+    // Simple health check - always returns 200 if server is running
+    // Railway just needs to know the server is up and responding
+    res.status(200).json({
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      service: "tekup-billy-mcp",
+      uptime: process.uptime(),
+    });
+  } catch (error) {
+    // Even if error, return 200 to keep Railway happy during startup
+    log.error("Health check error (non-fatal)", error);
+    res.status(200).json({
+      status: "starting",
+      timestamp: new Date().toISOString(),
+      service: "tekup-billy-mcp",
+    });
+  }
+});
+
+/**
+ * Enhanced health check endpoint with comprehensive monitoring
+ * GET /health/detailed
+ */
+app.get("/health/detailed", async (req: Request, res: Response) => {
   try {
     const systemHealth = await healthMonitor.performHealthCheck();
 
@@ -432,7 +457,7 @@ app.get("/health", async (req: Request, res: Response) => {
 
     res.status(statusCode).json(systemHealth);
   } catch (error) {
-    log.error("Health check failed", error);
+    log.error("Detailed health check failed", error);
     res.status(503).json({
       status: "unhealthy",
       error: "Health check system failure",
@@ -1326,7 +1351,10 @@ async function startServer() {
     console.log("[STARTUP] Starting Tekup-Billy server...");
     console.log("[STARTUP] PORT:", process.env.PORT || 3000);
     console.log("[STARTUP] NODE_ENV:", process.env.NODE_ENV || "development");
-    console.log("[STARTUP] RAILWAY_ENVIRONMENT:", process.env.RAILWAY_ENVIRONMENT || "not set");
+    console.log(
+      "[STARTUP] RAILWAY_ENVIRONMENT:",
+      process.env.RAILWAY_ENVIRONMENT || "not set"
+    );
 
     // Validate environment
     console.log("[STARTUP] Validating environment...");
@@ -1413,7 +1441,11 @@ const isMainModule =
   !import.meta.url.includes("node_modules");
 
 // Always start in production or if run directly
-if (isMainModule || process.env.NODE_ENV === "production" || process.env.RAILWAY_ENVIRONMENT) {
+if (
+  isMainModule ||
+  process.env.NODE_ENV === "production" ||
+  process.env.RAILWAY_ENVIRONMENT
+) {
   // Add unhandled error handlers before starting
   process.on("unhandledRejection", (reason, promise) => {
     console.error("Unhandled Rejection at:", promise, "reason:", reason);
