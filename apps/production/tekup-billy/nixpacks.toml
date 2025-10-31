@@ -1,0 +1,12 @@
+# Nixpacks configuration to force Dockerfile usage
+# This prevents Railway from auto-detecting and using Railpack/Nixpacks
+
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.build]
+cmds = ["echo 'Using Dockerfile - this phase should not run'"]
+
+[phases.start]
+cmd = "echo 'Using Dockerfile CMD - this phase should not run'"
+
