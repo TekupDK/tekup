@@ -547,8 +547,9 @@ async function processJsonRpcMessage(server: McpServer, message: any): Promise<a
                                 prompts: {}
                             },
                             serverInfo: {
-                                name: 'tekup-billy-server',
-                                version: '1.2.0'
+                                name: 'Tekup Billy MCP Server',
+                                version: '1.4.3',
+                                description: 'Model Context Protocol server for Billy.dk accounting API - invoice, customer, product, and revenue management'
                             }
                         }
                     };
