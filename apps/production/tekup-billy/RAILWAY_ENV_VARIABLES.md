@@ -10,7 +10,7 @@
 
 ```
 Key:   BILLY_API_KEY
-Value: 43e7439bccb58a8a96dd57dd06dae10add009111
+Value: 6ee7fab4b9f9b954f31d4ea93c57072611562d16
 ```
 
 ### 2. BILLY_ORGANIZATION_ID
