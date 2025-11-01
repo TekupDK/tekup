@@ -12,6 +12,7 @@
     "dev": "tsx src/index.ts",
     "dev:http": "tsx src/http-server.ts",
     "test": "tsx tests/test-integration.ts",
+    "test:scenarios": "tsx tests/test-rendetalje-scenarios.ts",
     "test:watch": "tsx --watch tests/test-integration.ts",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
