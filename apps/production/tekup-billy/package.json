@@ -1,7 +1,7 @@
 {
   "name": "@tekup/billy-mcp",
-  "version": "1.4.4",
-  "description": "Billy.dk API integration for AI agents via Model Context Protocol (MCP) with Redis scaling",
+  "version": "2.0.0",
+  "description": "Billy-mcp By Tekup - Billy.dk API integration for AI agents via Model Context Protocol (MCP) with Redis scaling",
   "type": "module",
   "main": "src/http-server.ts",
   "scripts": {
