@@ -1,15 +1,16 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
-import configuration from './config/configuration';
-import { DatabaseModule } from './database/database.module';
-import { AuthModule } from './auth/auth.module';
-import { AiModule } from './ai/ai.module';
-import { McpModule } from './mcp/mcp.module';
-import { ConversationsModule } from './conversations/conversations.module';
-import { MemoriesModule } from './memories/memories.module';
-import { UsersModule } from './users/users.module';
-import { WebsocketModule } from './websocket/websocket.module';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { ThrottlerModule } from "@nestjs/throttler";
+import { AiModule } from "./ai/ai.module";
+import { AuthModule } from "./auth/auth.module";
+import configuration from "./config/configuration";
+import { ConversationsModule } from "./conversations/conversations.module";
+import { DatabaseModule } from "./database/database.module";
+import { McpModule } from "./mcp/mcp.module";
+import { MemoriesModule } from "./memories/memories.module";
+import { TrpcModule } from "./trpc/trpc.module";
+import { UsersModule } from "./users/users.module";
+import { WebsocketModule } from "./websocket/websocket.module";
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { WebsocketModule } from './websocket/websocket.module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: [".env.local", ".env"],
     }),
 
     // Rate Limiting
@@ -38,6 +39,7 @@ import { WebsocketModule } from './websocket/websocket.module';
     McpModule,
     ConversationsModule,
     MemoriesModule,
+    TrpcModule,
 
     // Real-time Communication
     WebsocketModule,

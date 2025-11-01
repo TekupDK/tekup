@@ -1,64 +1,66 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import helmet from 'helmet';
-import compression from 'compression';
-import { AppModule } from './app.module';
-import * as Sentry from '@sentry/node';
-import { ProfilingIntegration } from '@sentry/profiling-node';
+import { ValidationPipe, VersioningType } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import * as Sentry from "@sentry/node";
+import { ProfilingIntegration } from "@sentry/profiling-node";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import compression from "compression";
+import helmet from "helmet";
+import { AppModule } from "./app.module";
+import { TrpcService } from "./trpc/trpc.service";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+    logger: ["error", "warn", "log", "debug", "verbose"],
     cors: true,
   });
 
   const configService = app.get(ConfigService);
 
   // Sentry Error Tracking
-  const sentryDsn = configService.get<string>('app.sentry.dsn');
+  const sentryDsn = configService.get<string>("app.sentry.dsn");
   if (sentryDsn) {
     Sentry.init({
       dsn: sentryDsn,
-      environment: configService.get<string>('app.sentry.environment'),
+      environment: configService.get<string>("app.sentry.environment"),
       tracesSampleRate: configService.get<number>(
-        'app.sentry.tracesSampleRate',
+        "app.sentry.tracesSampleRate"
       ),
       integrations: [new ProfilingIntegration()],
     });
-    console.log('Sentry initialized');
+    console.log("Sentry initialized");
   }
 
   // Global API Prefix
-  const apiPrefix = configService.get<string>('app.apiPrefix') || 'api/v1';
+  const apiPrefix = configService.get<string>("app.apiPrefix") || "api/v1";
   app.setGlobalPrefix(apiPrefix);
 
   // API Versioning
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: '1',
+    defaultVersion: "1",
   });
 
   // Security - Helmet
-  if (configService.get<boolean>('app.features.helmet')) {
+  if (configService.get<boolean>("app.features.helmet")) {
     app.use(helmet());
   }
 
   // Compression
-  if (configService.get<boolean>('app.features.compression')) {
+  if (configService.get<boolean>("app.features.compression")) {
     app.use(compression());
   }
 
   // CORS Configuration
-  const corsOrigins = configService.get<string[]>('app.cors.origin') || [
-    'http://localhost:3000',
+  const corsOrigins = configService.get<string[]>("app.cors.origin") || [
+    "http://localhost:3000",
   ];
   app.enableCors({
     origin: corsOrigins,
-    credentials: configService.get<boolean>('app.cors.credentials'),
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: configService.get<boolean>("app.cors.credentials"),
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   });
 
   // Global Validation Pipe
@@ -70,31 +72,51 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
-    }),
+    })
   );
 
+  // tRPC Setup - Mount tRPC endpoint before Swagger
+  const trpcService = app.get(TrpcService);
+
+  app.use("/trpc", async (req: any, res: any, next: any) => {
+    try {
+      // Create context with Prisma and user from JWT (handled by Passport)
+      const context = await trpcService.createContext(req);
+
+      // Handle tRPC request using fetch adapter
+      const handler = fetchRequestHandler({
+        endpoint: "/trpc",
+        req: req as any,
+        router: trpcService.appRouter,
+        createContext: () => Promise.resolve(context),
+      });
+
+      return handler;
+    } catch (error) {
+      next(error);
+    }
+  });
+
   // Swagger API Documentation
-  if (configService.get<boolean>('app.features.swagger')) {
+  if (configService.get<boolean>("app.features.swagger")) {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('TekupAI API')
-      .setDescription(
-        'TekupAI Backend API - AI Assistant with MCP Integration',
-      )
-      .setVersion(configService.get<string>('app.apiVersion') || '1.0.0')
+      .setTitle("TekupAI API")
+      .setDescription("TekupAI Backend API - AI Assistant with MCP Integration")
+      .setVersion(configService.get<string>("app.apiVersion") || "1.0.0")
       .addBearerAuth()
-      .addTag('auth', 'Authentication endpoints')
-      .addTag('ai', 'AI chat and streaming endpoints')
-      .addTag('conversations', 'Conversation management')
-      .addTag('memories', 'Memory system')
-      .addTag('users', 'User management')
-      .addTag('mcp', 'MCP server management')
+      .addTag("auth", "Authentication endpoints")
+      .addTag("ai", "AI chat and streaming endpoints")
+      .addTag("conversations", "Conversation management")
+      .addTag("memories", "Memory system")
+      .addTag("users", "User management")
+      .addTag("mcp", "MCP server management")
       .build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup(`${apiPrefix}/docs`, app, document, {
       swaggerOptions: {
         persistAuthorization: true,
-        docExpansion: 'none',
+        docExpansion: "none",
         filter: true,
         showRequestDuration: true,
       },
@@ -102,31 +124,29 @@ async function bootstrap() {
   }
 
   // Start Server
-  const port = configService.get<number>('app.port') || 3001;
+  const port = configService.get<number>("app.port") || 3001;
   await app.listen(port);
 
-  const appUrl = configService.get<string>('app.appUrl');
+  const appUrl = configService.get<string>("app.appUrl");
   console.log(`
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
 ║   TekupAI Backend - NestJS API Server                    ║
 ║                                                           ║
-║   Server:     ${appUrl?.padEnd(37) || 'http://localhost:3001'.padEnd(37)}    ║
+║   Server:     ${appUrl?.padEnd(37) || "http://localhost:3001".padEnd(37)}    ║
 ║   API:        ${`${appUrl}/${apiPrefix}`.padEnd(37)}    ║
 ║   Docs:       ${`${appUrl}/${apiPrefix}/docs`.padEnd(37)}    ║
-║   Environment: ${configService.get<string>('app.nodeEnv')?.padEnd(36) || 'development'.padEnd(36)}    ║
+║   Environment: ${configService.get<string>("app.nodeEnv")?.padEnd(36) || "development".padEnd(36)}    ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
   `);
 
-  if (configService.get<boolean>('app.features.swagger')) {
-    console.log(
-      `📚 Swagger API Documentation: ${appUrl}/${apiPrefix}/docs\n`,
-    );
+  if (configService.get<boolean>("app.features.swagger")) {
+    console.log(`📚 Swagger API Documentation: ${appUrl}/${apiPrefix}/docs\n`);
   }
 }
 
 bootstrap().catch((error) => {
-  console.error('Failed to start application:', error);
+  console.error("Failed to start application:", error);
   process.exit(1);
 });
