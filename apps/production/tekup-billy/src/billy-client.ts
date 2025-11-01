@@ -681,28 +681,39 @@ export class BillyClient {
       tax: number;
     }
     const response = await this.makeRequest<{
-      invoices: BillyInvoice[];
-      invoiceLines: InvoiceLineResponse[];
+      invoice?: BillyInvoice;
+      invoices?: BillyInvoice[];
+      invoiceLines?: InvoiceLineResponse[];
     }>("POST", endpoint, payload);
 
-    if (!response || !response.invoices || response.invoices.length === 0) {
+    // Billy API can return either {invoice: {...}} or {invoices: [...]}
+    // Handle both response formats
+    let invoice: BillyInvoice | undefined;
+    let invoiceLines: InvoiceLineResponse[] = [];
+
+    if (response.invoice) {
+      // Singular response format: {invoice: {...}}
+      invoice = response.invoice;
+      invoiceLines = response.invoiceLines || [];
+    } else if (response.invoices && response.invoices.length > 0) {
+      // Plural response format: {invoices: [...], invoiceLines: [...]}
+      invoice = response.invoices[0];
+      invoiceLines = response.invoiceLines || [];
+    }
+
+    if (!invoice) {
       log.error("Invalid create invoice response structure", null, {
         response,
       });
       throw new Error(
-        "Invalid response format from Billy API - expected invoices array"
+        "Invalid response format from Billy API - expected invoice or invoices"
       );
-    }
-
-    const invoice = response.invoices[0];
-    if (!invoice) {
-      throw new Error("No invoice returned from Billy API");
     }
 
     // Billy returns invoiceLines separately - merge them into invoice object
     const invoiceWithLines: BillyInvoice = {
       ...invoice,
-      lines: response.invoiceLines || [],
+      lines: invoiceLines,
     };
 
     return invoiceWithLines;
@@ -969,12 +980,29 @@ export class BillyClient {
       },
     };
 
-    const response = await this.makeRequest<{ product: BillyProduct }>(
+    const response = await this.makeRequest<{ 
+      product?: BillyProduct;
+      products?: BillyProduct[];
+    }>(
       "POST",
       endpoint,
       payload
     );
-    return response.product;
+    
+    // Billy API can return either {product: {...}} or {products: [...]}
+    // Handle both response formats
+    const product = response.product || (response.products && response.products[0]);
+    
+    if (!product) {
+      log.error("Invalid create product response structure", null, {
+        response,
+      });
+      throw new Error(
+        "Invalid response format from Billy API - expected product or products"
+      );
+    }
+    
+    return product;
   }
 
   // Revenue methods
@@ -1356,12 +1384,29 @@ export class BillyClient {
     // Send minimal payload
     const payload = { contact: contactUpdate };
 
-    const response = await this.makeRequest<{ contact: BillyContact }>(
+    const response = await this.makeRequest<{ 
+      contact?: BillyContact;
+      contacts?: BillyContact[];
+    }>(
       "PUT",
       endpoint,
       payload
     );
-    return response.contact;
+    
+    // Billy API can return either {contact: {...}} or {contacts: [...]}
+    // Handle both response formats
+    const contact = response.contact || (response.contacts && response.contacts[0]);
+    
+    if (!contact) {
+      log.error("Invalid update contact response structure", null, {
+        response,
+      });
+      throw new Error(
+        "Invalid response format from Billy API - expected contact or contacts"
+      );
+    }
+    
+    return contact;
   }
 
   /**
