@@ -1348,7 +1348,7 @@ function setupMcpTools(server: McpServer): void {
 // Server startup
 async function startServer() {
   try {
-    console.log("[STARTUP] Starting Tekup-Billy server...");
+    console.log("[STARTUP] Starting Billy-mcp By Tekup v2.0.0...");
     console.log("[STARTUP] PORT:", process.env.PORT || 3000);
     console.log("[STARTUP] NODE_ENV:", process.env.NODE_ENV || "development");
     console.log(
@@ -1356,9 +1356,22 @@ async function startServer() {
       process.env.RAILWAY_ENVIRONMENT || "not set"
     );
 
-    // Validate environment
+    // Log all critical env vars for debugging
+    console.log("[STARTUP] Environment check:");
+    console.log("[STARTUP] BILLY_API_KEY:", process.env.BILLY_API_KEY ? "SET" : "MISSING");
+    console.log("[STARTUP] BILLY_ORGANIZATION_ID:", process.env.BILLY_ORGANIZATION_ID ? "SET" : "MISSING");
+    console.log("[STARTUP] MCP_API_KEY:", process.env.MCP_API_KEY ? "SET" : "MISSING");
+
+    // Validate environment with better error handling
     console.log("[STARTUP] Validating environment...");
-    const config = getBillyConfig();
+    let config;
+    try {
+      config = getBillyConfig();
+    } catch (configError) {
+      console.error("[STARTUP] Environment validation FAILED:", configError);
+      console.error("[STARTUP] Config error details:", configError instanceof Error ? configError.message : String(configError));
+      throw new Error(`Environment validation failed: ${configError instanceof Error ? configError.message : String(configError)}`);
+    }
     console.log("[STARTUP] Environment validated:", {
       organizationId: config.organizationId,
       apiBase: config.apiBase,
@@ -1442,25 +1455,30 @@ const isMainModule =
   !import.meta.url.includes("node_modules");
 
 // Always start - if this file runs, it's meant to start the server
-if (true) {
-  // Add unhandled error handlers before starting
-  process.on("unhandledRejection", (reason, promise) => {
-    console.error("Unhandled Rejection at:", promise, "reason:", reason);
-    log.error("Unhandled Rejection", { reason, promise });
-  });
+// Enhanced startup with better error handling for Railway debugging
+console.log("[BOOTSTRAP] Billy-mcp By Tekup v2.0.0 bootstrap starting...");
 
-  process.on("uncaughtException", (error) => {
-    console.error("Uncaught Exception:", error);
-    log.error("Uncaught Exception", error);
-    process.exit(1);
-  });
+// Add unhandled error handlers before starting
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("[FATAL] Unhandled Rejection at:", promise, "reason:", reason);
+  process.exit(1);
+});
 
-  startServer().catch((error) => {
-    console.error("Failed to start server:", error);
-    log.error("Failed to start server", error);
-    process.exit(1);
-  });
-}
+process.on("uncaughtException", (error) => {
+  console.error("[FATAL] Uncaught Exception:", error);
+  process.exit(1);
+});
+
+// Always start in Docker/Railway environment
+console.log("[BOOTSTRAP] Calling startServer()...");
+startServer().catch((error) => {
+  console.error("[FATAL] Failed to start server:", error);
+  if (error instanceof Error) {
+    console.error("[FATAL] Error message:", error.message);
+    console.error("[FATAL] Error stack:", error.stack);
+  }
+  process.exit(1);
+});
 
 export { app, startServer };
 
