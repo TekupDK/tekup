@@ -1,15 +1,15 @@
 /**
  * tRPC Instance
- *
+ * 
  * Creates the base tRPC instance with context and error handling.
  * Matches Tekup AI patterns for authentication and error handling.
  */
 
-import { initTRPC, TRPCError } from "@trpc/server";
-import { Context } from "./trpc.context";
+import { initTRPC, TRPCError } from '@trpc/server';
+import { Context } from './trpc.context';
 
 // Re-export TRPCError for use in routers
-export { TRPCError } from "@trpc/server";
+export { TRPCError } from '@trpc/server';
 
 const t = initTRPC.context<Context>().create({
   errorFormatter({ shape, error }) {
@@ -29,15 +29,15 @@ const t = initTRPC.context<Context>().create({
  */
 function getHTTPStatusCodeFromError(error: TRPCError): number {
   switch (error.code) {
-    case "UNAUTHORIZED":
+    case 'UNAUTHORIZED':
       return 401;
-    case "FORBIDDEN":
+    case 'FORBIDDEN':
       return 403;
-    case "NOT_FOUND":
+    case 'NOT_FOUND':
       return 404;
-    case "BAD_REQUEST":
+    case 'BAD_REQUEST':
       return 400;
-    case "INTERNAL_SERVER_ERROR":
+    case 'INTERNAL_SERVER_ERROR':
       return 500;
     default:
       return 500;
@@ -56,8 +56,8 @@ export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.userId) {
     throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: "Authentication required",
+      code: 'UNAUTHORIZED',
+      message: 'Authentication required',
     });
   }
 

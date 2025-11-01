@@ -56,11 +56,9 @@ src/trpc/
 ## Email Router Procedures
 
 ### `email.list`
-
 Liste emails fra Gmail via MCP server.
 
 **Input:**
-
 ```typescript
 {
   maxResults?: number;  // 1-500, default: 50
@@ -70,7 +68,6 @@ Liste emails fra Gmail via MCP server.
 ```
 
 **Output:**
-
 ```typescript
 {
   emails: Email[];
@@ -79,11 +76,9 @@ Liste emails fra Gmail via MCP server.
 ```
 
 ### `email.get`
-
 Hent enkelt email by message ID.
 
 **Input:**
-
 ```typescript
 {
   messageId: string;
@@ -91,11 +86,9 @@ Hent enkelt email by message ID.
 ```
 
 ### `email.search`
-
 Søg emails med Gmail search syntax.
 
 **Input:**
-
 ```typescript
 {
   query: string;        // Gmail search query
@@ -104,11 +97,9 @@ Søg emails med Gmail search syntax.
 ```
 
 ### `email.send`
-
 Send email via Gmail MCP server.
 
 **Input:**
-
 ```typescript
 {
   to: string;           // Email address
@@ -120,7 +111,6 @@ Send email via Gmail MCP server.
 ```
 
 **Output:**
-
 ```typescript
 {
   messageId: string;
@@ -130,11 +120,9 @@ Send email via Gmail MCP server.
 ```
 
 ### `email.getLabels`
-
 Hent alle Gmail labels.
 
 **Output:**
-
 ```typescript
 {
   labels: Label[];
@@ -144,11 +132,9 @@ Hent alle Gmail labels.
 ## AI Router Procedures
 
 ### `ai.chat`
-
 Send besked til AI og få respons (non-streaming).
 
 **Input:**
-
 ```typescript
 {
   conversationId?: string;
@@ -161,7 +147,6 @@ Send besked til AI og få respons (non-streaming).
 ```
 
 **Output:**
-
 ```typescript
 {
   conversationId: string;
@@ -177,11 +162,9 @@ Send besked til AI og få respons (non-streaming).
 ```
 
 ### `ai.getModels`
-
 Hent tilgængelige AI modeller.
 
 **Output:**
-
 ```typescript
 {
   models: Array<{
@@ -217,7 +200,6 @@ Hver tRPC request har adgang til:
 ## Error Handling
 
 tRPC bruger standard error codes:
-
 - `UNAUTHORIZED` (401): Authentication required
 - `FORBIDDEN` (403): Access denied
 - `NOT_FOUND` (404): Resource not found
@@ -231,10 +213,10 @@ Errors formateres med HTTP status codes for kompatibilitet med mobile clients.
 tRPC er integreret i `main.ts` som Express middleware:
 
 ```typescript
-app.use("/trpc", async (req, res, next) => {
+app.use('/trpc', async (req, res, next) => {
   const context = await trpcService.createContext(req);
   const handler = fetchRequestHandler({
-    endpoint: "/trpc",
+    endpoint: '/trpc',
     req,
     router: trpcService.appRouter,
     createContext: () => Promise.resolve(context),
@@ -246,7 +228,6 @@ app.use("/trpc", async (req, res, next) => {
 ## Gmail MCP Server Configuration
 
 Email router forventer at Gmail MCP server er konfigureret i:
-
 - `aiMcpServerRegistry` table (server registry)
 - `aiUserSettings.enabledMcpServers` (user's enabled servers)
 

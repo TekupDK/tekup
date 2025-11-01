@@ -1,0 +1,156 @@
+# Cursor Performance Optimization - Ignore patterns for Cursor AI indexing
+# This file prevents Cursor from indexing unnecessary files, improving performance
+
+# ============================================
+# Build outputs and compiled code
+# ============================================
+**/node_modules/
+**/dist/
+**/build/
+**/.next/
+**/out/
+**/.turbo/
+**/.nuxt/
+**/.output/
+**/coverage/
+**/.nyc_output/
+**/.cache/
+**/.parcel-cache/
+**/.vite/
+
+# ============================================
+# Lock files (large, rarely need AI indexing)
+# ============================================
+**/package-lock.json
+**/pnpm-lock.yaml
+**/yarn.lock
+**/pnpm-lock.json
+
+# ============================================
+# Archive and legacy folders (not actively used)
+# ============================================
+**/archive/
+**/legacy-*/
+**/old-*/
+**/_archived/
+**/backup/
+**/backups/
+
+# ============================================
+# Log files and temporary files
+# ============================================
+**/*.log
+**/logs/
+**/tmp/
+**/temp/
+**/*.tmp
+**/*.cache
+**/.DS_Store
+**/Thumbs.db
+
+# ============================================
+# Database files (binary, no AI indexing needed)
+# ============================================
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/*.db-shm
+**/*.db-wal
+
+# ============================================
+# Large binary files
+# ============================================
+**/*.exe
+**/*.dll
+**/*.so
+**/*.dylib
+**/*.bin
+**/*.iso
+**/*.zip
+**/*.tar
+**/*.tar.gz
+**/*.rar
+**/*.7z
+
+# ============================================
+# Media files (rarely need AI indexing)
+# ============================================
+**/*.mp4
+**/*.avi
+**/*.mov
+**/*.mp3
+**/*.wav
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.webp
+**/*.svg
+**/*.ico
+
+# ============================================
+# IDE and editor files
+# ============================================
+**/.vscode/
+**/.idea/
+**/.vs/
+**/*.swp
+**/*.swo
+**/*~ 
+**/.fleet/
+
+# ============================================
+# Environment and secrets
+# ============================================
+**/.env
+**/.env.*
+**/.env.local
+**/.env.production
+**/secrets/
+**/credentials/
+**/*credentials*.json
+**/*secret*.json
+
+# ============================================
+# Generated files and caches
+# ============================================
+**/.tsbuildinfo
+**/.next/cache/
+**/.turbo/
+**/node_modules/.cache/
+**/.eslintcache
+**/.stylelintcache
+**/.prettier-cache/
+
+# ============================================
+# Test outputs
+# ============================================
+**/test-results/
+**/playwright-report/
+**/.playwright/
+**/cypress/videos/
+**/cypress/screenshots/
+
+# ============================================
+# Documentation build outputs
+# ============================================
+**/docs/_build/
+**/docs/.vuepress/dist/
+**/docs/.docusaurus/
+
+# ============================================
+# Prisma generated files
+# ============================================
+**/prisma/migrations/**/migration.sql
+
+# ============================================
+# Large data files and dumps
+# ============================================
+**/*.sql
+**/*.dump
+**/*.backup
+**/data/*.csv
+**/data/*.json
+**/dump/
+**/dumps/
+

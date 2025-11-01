@@ -1,13 +1,13 @@
 /**
  * AI Router (tRPC)
- *
+ * 
  * AI chat procedures that wrap the existing AiService.
  * This allows the mobile app to use the same AI functionality as the web app.
  */
 
-import { z } from "zod";
-import { SendMessageDto } from "../../ai/ai.service";
-import { protectedProcedure, router } from "../trpc.instance";
+import { z } from 'zod';
+import { router, protectedProcedure } from '../trpc.instance';
+import { AiService, SendMessageDto } from '../../ai/ai.service';
 
 const sendMessageInput = z.object({
   conversationId: z.string().optional(),
@@ -30,11 +30,11 @@ export const aiRouter = router({
       const aiService = ctx.aiService;
 
       if (!aiService) {
-        throw new Error("AI service not available");
+        throw new Error('AI service not available');
       }
 
       if (!ctx.userId) {
-        throw new Error("User ID not found in context");
+        throw new Error('User ID not found in context');
       }
 
       const dto: SendMessageDto = {
@@ -64,12 +64,12 @@ export const aiRouter = router({
     return {
       models: [
         {
-          id: "claude-3-5-sonnet-20241022",
-          name: "Claude 3.5 Sonnet",
-          provider: "anthropic",
+          id: 'claude-3-5-sonnet-20241022',
+          name: 'Claude 3.5 Sonnet',
+          provider: 'anthropic',
         },
       ],
-      default: "claude-3-5-sonnet-20241022",
+      default: 'claude-3-5-sonnet-20241022',
     };
   }),
 });

@@ -1,15 +1,15 @@
 /**
  * tRPC Module
- *
+ * 
  * NestJS module for tRPC integration.
  * Exports the router and context creation function.
  */
 
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
-import { AiModule } from "../ai/ai.module";
-import { DatabaseModule } from "../database/database.module";
-import { McpModule } from "../mcp/mcp.module";
-import { TrpcService } from "./trpc.service";
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { TrpcService } from './trpc.service';
+import { DatabaseModule } from '../database/database.module';
+import { McpModule } from '../mcp/mcp.module';
+import { AiModule } from '../ai/ai.module';
 
 @Module({
   imports: [DatabaseModule, McpModule, AiModule],

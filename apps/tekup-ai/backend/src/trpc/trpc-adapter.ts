@@ -1,15 +1,15 @@
 /**
  * tRPC Express Adapter
- *
+ * 
  * Creates Express middleware for tRPC.
  * Integrates with NestJS and Passport JWT authentication.
  */
 
-import { ExecutionContext } from "@nestjs/common";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { NextFunction, Request, Response } from "express";
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { TrpcService } from "./trpc.service";
+import { Request, Response, NextFunction } from 'express';
+import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
+import { TrpcService } from './trpc.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ExecutionContext } from '@nestjs/common';
 
 /**
  * Create tRPC Express middleware
@@ -18,18 +18,16 @@ import { TrpcService } from "./trpc.service";
 export function createTrpcMiddleware(trpcService: TrpcService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     // Only handle requests to /trpc path
-    if (!req.path.startsWith("/trpc")) {
+    if (!req.path.startsWith('/trpc')) {
       return next();
     }
 
     // Authenticate request using JWT (same as other endpoints)
-    const jwtGuard = new JwtAuthGuard(
-      new (class {
-        getAllAndOverride() {
-          return false; // Not public
-        }
-      })()
-    );
+    const jwtGuard = new JwtAuthGuard(new (class {
+      getAllAndOverride() {
+        return false; // Not public
+      }
+    })());
 
     const context: ExecutionContext = {
       switchToHttp: () => ({
@@ -37,23 +35,23 @@ export function createTrpcMiddleware(trpcService: TrpcService) {
         getResponse: () => res,
       }),
       getClass: () => class {},
-      getHandler: () => ({}) as any,
+      getHandler: () => ({} as any),
       getArgs: () => [req, res, next],
       getArgByIndex: (index: number) => {
         if (index === 0) return req;
         if (index === 1) return res;
         return next;
       },
-      switchToRpc: () => ({}) as any,
-      switchToWs: () => ({}) as any,
-      getType: () => "http" as any,
+      switchToRpc: () => ({} as any),
+      switchToWs: () => ({} as any),
+      getType: () => 'http' as any,
     };
 
     // Check authentication
     try {
       await jwtGuard.canActivate(context);
     } catch (error) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
     // Create context for tRPC
@@ -61,7 +59,7 @@ export function createTrpcMiddleware(trpcService: TrpcService) {
 
     // Handle tRPC request
     const handler = fetchRequestHandler({
-      endpoint: "/trpc",
+      endpoint: '/trpc',
       req: req as any,
       router: trpcService.appRouter,
       createContext: () => Promise.resolve(trpcContext),

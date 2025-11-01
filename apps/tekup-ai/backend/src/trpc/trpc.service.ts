@@ -1,16 +1,16 @@
 /**
  * tRPC Service
- *
+ * 
  * Service that provides tRPC router and context creation.
  * Used by the NestJS adapter to integrate tRPC with Express.
  */
 
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
-import { AiService } from "../ai/ai.service";
-import { PrismaService } from "../database/prisma.service";
-import { McpService } from "../mcp/mcp.service";
-import { appRouter, AppRouter } from "./router";
-import { Context, createContext } from "./trpc.context";
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { appRouter, AppRouter } from './router';
+import { createContext, Context } from './trpc.context';
+import { PrismaService } from '../database/prisma.service';
+import { McpService } from '../mcp/mcp.service';
+import { AiService } from '../ai/ai.service';
 
 @Injectable()
 export class TrpcService {
@@ -19,7 +19,7 @@ export class TrpcService {
     @Inject(forwardRef(() => McpService))
     private mcpService: McpService,
     @Inject(forwardRef(() => AiService))
-    private aiService: AiService
+    private aiService: AiService,
   ) {}
 
   /**

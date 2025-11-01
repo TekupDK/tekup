@@ -3,7 +3,8 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "apps/production/tekup-billy/Dockerfile",
-    "dockerContext": "apps/production/tekup-billy"
+    "dockerContext": "apps/production/tekup-billy",
+    "watchPaths": ["apps/production/tekup-billy/**"]
   },
   "deploy": {
     "numReplicas": 1,

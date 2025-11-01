@@ -1,12 +1,12 @@
 /**
  * Email Router (tRPC)
- *
+ * 
  * Email-related procedures that use MCP service to interact with Gmail.
  * This follows the Tekup AI pattern of using McpService for external integrations.
  */
 
-import { z } from "zod";
-import { protectedProcedure, router } from "../trpc.instance";
+import { z } from 'zod';
+import { router, protectedProcedure } from '../trpc.instance';
 
 // Input validation schemas
 const listEmailsInput = z.object({
@@ -41,25 +41,25 @@ export const emailRouter = router({
     .query(async ({ ctx, input }) => {
       // Get McpService from context (injected by TrpcService)
       const mcpService = ctx.mcpService;
-
+      
       if (!mcpService) {
-        throw new Error("MCP service not available");
+        throw new Error('MCP service not available');
       }
-
+      
       // Get Gmail MCP server ID for this user
       const gmailServerId = await getGmailServerId(ctx.userId!, ctx.prisma);
-
+      
       if (!gmailServerId) {
-        throw new Error("Gmail MCP server not configured");
+        throw new Error('Gmail MCP server not configured');
       }
 
       // Call MCP tool: list_emails
       const result = await mcpService.callTool({
         serverId: gmailServerId,
-        toolName: "list_emails",
+        toolName: 'list_emails',
         arguments: {
           maxResults: input.maxResults,
-          labelIds: input.labelIds || ["INBOX"],
+          labelIds: input.labelIds || ['INBOX'],
           q: input.q,
         },
       });
@@ -73,29 +73,31 @@ export const emailRouter = router({
   /**
    * Get single email by message ID
    */
-  get: protectedProcedure.input(getEmailInput).query(async ({ ctx, input }) => {
-    const mcpService = ctx.mcpService;
+  get: protectedProcedure
+    .input(getEmailInput)
+    .query(async ({ ctx, input }) => {
+      const mcpService = ctx.mcpService;
+      
+      if (!mcpService) {
+        throw new Error('MCP service not available');
+      }
+      
+      const gmailServerId = await getGmailServerId(ctx.userId!, ctx.prisma);
 
-    if (!mcpService) {
-      throw new Error("MCP service not available");
-    }
+      if (!gmailServerId) {
+        throw new Error('Gmail MCP server not configured');
+      }
 
-    const gmailServerId = await getGmailServerId(ctx.userId!, ctx.prisma);
+      const result = await mcpService.callTool({
+        serverId: gmailServerId,
+        toolName: 'get_email',
+        arguments: {
+          messageId: input.messageId,
+        },
+      });
 
-    if (!gmailServerId) {
-      throw new Error("Gmail MCP server not configured");
-    }
-
-    const result = await mcpService.callTool({
-      serverId: gmailServerId,
-      toolName: "get_email",
-      arguments: {
-        messageId: input.messageId,
-      },
-    });
-
-    return result;
-  }),
+      return result;
+    }),
 
   /**
    * Search emails using Gmail search
@@ -104,20 +106,20 @@ export const emailRouter = router({
     .input(searchEmailsInput)
     .query(async ({ ctx, input }) => {
       const mcpService = ctx.mcpService;
-
+      
       if (!mcpService) {
-        throw new Error("MCP service not available");
+        throw new Error('MCP service not available');
       }
-
+      
       const gmailServerId = await getGmailServerId(ctx.userId!, ctx.prisma);
 
       if (!gmailServerId) {
-        throw new Error("Gmail MCP server not configured");
+        throw new Error('Gmail MCP server not configured');
       }
 
       const result = await mcpService.callTool({
         serverId: gmailServerId,
-        toolName: "search_emails",
+        toolName: 'search_emails',
         arguments: {
           query: input.query,
           maxResults: input.maxResults,
@@ -137,20 +139,20 @@ export const emailRouter = router({
     .input(sendEmailInput)
     .mutation(async ({ ctx, input }) => {
       const mcpService = ctx.mcpService;
-
+      
       if (!mcpService) {
-        throw new Error("MCP service not available");
+        throw new Error('MCP service not available');
       }
-
+      
       const gmailServerId = await getGmailServerId(ctx.userId!, ctx.prisma);
 
       if (!gmailServerId) {
-        throw new Error("Gmail MCP server not configured");
+        throw new Error('Gmail MCP server not configured');
       }
 
       const result = await mcpService.callTool({
         serverId: gmailServerId,
-        toolName: "send_email",
+        toolName: 'send_email',
         arguments: {
           to: input.to,
           subject: input.subject,
@@ -171,21 +173,21 @@ export const emailRouter = router({
    * Get Gmail labels
    */
   getLabels: protectedProcedure.query(async ({ ctx }) => {
-    const mcpService = (ctx.req as any).app?.get?.("McpService") || null;
-
+    const mcpService = (ctx.req as any).app?.get?.('McpService') || null;
+    
     if (!mcpService) {
-      throw new Error("MCP service not available");
+      throw new Error('MCP service not available');
     }
-
+    
     const gmailServerId = await getGmailServerId(ctx.userId!, ctx.prisma);
 
     if (!gmailServerId) {
-      throw new Error("Gmail MCP server not configured");
+      throw new Error('Gmail MCP server not configured');
     }
 
     const result = await mcpService.callTool({
       serverId: gmailServerId,
-      toolName: "list_labels",
+      toolName: 'list_labels',
       arguments: {},
     });
 
@@ -197,13 +199,13 @@ export const emailRouter = router({
 
 /**
  * Helper: Get Gmail MCP server ID for user
- *
+ * 
  * Retrieves the Gmail MCP server ID from user's enabled MCP servers.
  * Uses the McpService pattern from Tekup AI.
  */
 async function getGmailServerId(
   userId: string,
-  prisma: any
+  prisma: any,
 ): Promise<string | null> {
   try {
     // Get user's enabled MCP servers
@@ -230,13 +232,13 @@ async function getGmailServerId(
     // Look for Gmail server by name or type
     const gmailServer = servers.find(
       (server) =>
-        server.name?.toLowerCase().includes("gmail") ||
-        server.displayName?.toLowerCase().includes("gmail")
+        server.name?.toLowerCase().includes('gmail') ||
+        server.displayName?.toLowerCase().includes('gmail'),
     );
 
     return gmailServer?.id || null;
   } catch (error) {
-    console.error("Error getting Gmail server ID:", error);
+    console.error('Error getting Gmail server ID:', error);
     return null;
   }
 }

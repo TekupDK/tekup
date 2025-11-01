@@ -8,6 +8,7 @@ Branch: master
 Commit: bad84b9 + debugging enhancements
 
 Changes:
+<<<<<<< HEAD
   - v2.0.0 rebranding complete
   - Enhanced startup debugging
   - Fixed healthcheck timeout
@@ -18,3 +19,15 @@ Expected Result:
   - Detailed logs show startup progression
   - /health endpoint responds
   - v2.0.0 goes live with all fixes
+=======
+- v2.0.0 rebranding complete
+- Enhanced startup debugging
+- Fixed healthcheck timeout
+- Added environment variables configuration
+
+Expected Result: 
+- Container starts successfully
+- Detailed logs show startup progression  
+- /health endpoint responds
+- v2.0.0 goes live with all fixes
+>>>>>>> feature/trpc-integration-fridayos
