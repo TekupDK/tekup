@@ -1,0 +1,5 @@
+# Force Dockerfile usage instead of Railpack auto-detection
+# This file tells Railway to ignore Railpack and use our Dockerfile
+
+USE_DOCKERFILE=true
+DISABLE_RAILPACK=true

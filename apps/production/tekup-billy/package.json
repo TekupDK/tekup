@@ -6,7 +6,7 @@
   "main": "src/http-server.ts",
   "scripts": {
     "build": "tsc",
-    "start": "npx tsx src/http-server.ts",
+    "start": "node -r tsx/esm src/http-server.ts",
     "start:http": "tsx src/http-server.ts",
     "dev": "tsx src/index.ts",
     "dev:http": "tsx src/http-server.ts",
