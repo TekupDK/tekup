@@ -3,11 +3,11 @@
  * Tests the full chat flow with mocked dependencies
  */
 
-import type { Request, Response } from 'express';
 // Note: We'll need to extract InboxOrchestrator class or mock the entire module
 // For now, these are placeholder tests
 
 // Mock dependencies
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockGmail = {
   searchThreads: jest.fn(),
   getThread: jest.fn(),
@@ -15,11 +15,13 @@ const mockGmail = {
   applyLabels: jest.fn(),
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockCalendar = {
   createEvent: jest.fn(),
   checkConflicts: jest.fn(),
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockBilly = {
   listInvoices: jest.fn(),
   createInvoice: jest.fn(),
@@ -98,7 +100,7 @@ describe.skip('Chat Endpoint Integration', () => {
       });
 
       // Should warn about existing communication
-      expect(result.warnings.some(w => w.includes('MEMORY_7'))).toBe(true);
+      expect(result.warnings.some((w: string) => w.includes('MEMORY_7'))).toBe(true);
     });
   });
 

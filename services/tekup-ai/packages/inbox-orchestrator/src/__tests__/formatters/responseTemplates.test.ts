@@ -47,9 +47,9 @@ describe('Response Templates', () => {
         status: 'Needs Reply',
       } as Lead));
       const result = formatLeadSummary(leads);
-      // Should only show 10 leads
-      const lines = result.split('\n').filter(line => line.includes('Lead'));
-      expect(lines.length).toBeLessThanOrEqual(10);
+      // Should only show 10 leads (excluding header line)
+      const lines = result.split('\n').filter(line => line.match(/^\d+\./));
+      expect(lines.length).toBe(10);
     });
   });
 

@@ -102,7 +102,14 @@ export function detectIntent(message: string): IntentResult {
   let confidence = 0.5;
   const matchedKeywords: string[] = [];
 
-  if (hasLeadIntent && hasQuoteIntent) {
+  // Check conflict first as it's higher priority than quotes
+  if (hasConflictIntent) {
+    primaryIntent = "conflict_resolution";
+    confidence = 0.85;
+    matchedKeywords.push(
+      ...conflictKeywords.filter((kw) => lower.includes(kw))
+    );
+  } else if (hasLeadIntent && hasQuoteIntent) {
     primaryIntent = "quote_generation";
     confidence = 0.9;
     matchedKeywords.push(...leadKeywords.filter((kw) => lower.includes(kw)));
@@ -115,12 +122,6 @@ export function detectIntent(message: string): IntentResult {
     primaryIntent = "quote_generation";
     confidence = 0.8;
     matchedKeywords.push(...quoteKeywords.filter((kw) => lower.includes(kw)));
-  } else if (hasConflictIntent) {
-    primaryIntent = "conflict_resolution";
-    confidence = 0.85;
-    matchedKeywords.push(
-      ...conflictKeywords.filter((kw) => lower.includes(kw))
-    );
   } else if (hasFollowUpIntent) {
     primaryIntent = "follow_up";
     confidence = 0.75;

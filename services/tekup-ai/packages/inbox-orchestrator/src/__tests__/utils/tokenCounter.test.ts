@@ -51,8 +51,8 @@ describe('Token Counter Utilities', () => {
       const outputTokens = 500;
       const cost = estimateCost(inputTokens, outputTokens);
       
-      // 1000 * 0.00005 + 500 * 0.00015 = 0.05 + 0.075 = 0.125 DKK
-      expect(cost).toBeCloseTo(0.125, 6);
+      // (1000/1000) * 0.00005 + (500/1000) * 0.00015 = 0.00005 + 0.000075 = 0.000125 DKK
+      expect(cost).toBeCloseTo(0.000125, 6);
     });
 
     it('should return 0 for zero tokens', () => {

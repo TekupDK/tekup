@@ -314,7 +314,7 @@ const orchestrator = new InboxOrchestrator(
       const client = new GoogleGenerativeAI(geminiApiKey);
       // Update orchestrator's geminiClient
       (orchestrator as any).geminiClient = client;
-      console.log("Friday AI: Gemini AI client initialized successfully");
+      console.warn("Friday AI: Gemini AI client initialized successfully");
     }
   } catch (e) {
     console.warn(
@@ -401,7 +401,7 @@ app.post("/chat", async (req: Request, res: Response) => {
   // Note: relevantMemories will be used for selective memory injection in Phase 3 optimization
   const relevantMemories = getRelevantMemoriesForIntent(intentResult.intent);
   if (process.env.DEBUG) {
-    console.log(
+    console.warn(
       `[Friday AI] Intent: ${intentResult.intent}, Memories: ${relevantMemories.join(", ")}`
     );
   }
@@ -753,5 +753,5 @@ app.post("/chat", async (req: Request, res: Response) => {
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3011;
 app.listen(PORT, () =>
-  console.log(`Friday AI (Inbox Orchestrator) listening on :${PORT}`)
+  console.warn(`Friday AI (Inbox Orchestrator) listening on :${PORT}`)
 );
