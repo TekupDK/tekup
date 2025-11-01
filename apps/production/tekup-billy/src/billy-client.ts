@@ -281,7 +281,7 @@ export class BillyClient {
   /**
    * Parse Billy API response that can be either singular or plural format
    * Billy API inconsistently returns either {item: {...}} or {items: [...]}
-   * 
+   *
    * @param response - The API response object
    * @param singularKey - The key for singular format (e.g., 'invoice', 'contact', 'product')
    * @param pluralKey - The key for plural format (e.g., 'invoices', 'contacts', 'products')
@@ -295,15 +295,22 @@ export class BillyClient {
     context: string
   ): T | undefined {
     // Try singular format first: {item: {...}}
-    if (response[singularKey] != null && typeof response[singularKey] === 'object') {
+    if (
+      response[singularKey] != null &&
+      typeof response[singularKey] === "object"
+    ) {
       return response[singularKey] as T;
     }
-    
+
     // Try plural format: {items: [...]}
-    if (response[pluralKey] != null && Array.isArray(response[pluralKey]) && response[pluralKey].length > 0) {
+    if (
+      response[pluralKey] != null &&
+      Array.isArray(response[pluralKey]) &&
+      response[pluralKey].length > 0
+    ) {
       return response[pluralKey][0] as T;
     }
-    
+
     // No valid response found
     log.error(`Invalid ${context} response structure`, null, { response });
     return undefined;
@@ -720,9 +727,9 @@ export class BillyClient {
     // Billy API can return either {invoice: {...}} or {invoices: [...]}
     const invoice = this.parseResponse<BillyInvoice>(
       response,
-      'invoice',
-      'invoices',
-      'create invoice'
+      "invoice",
+      "invoices",
+      "create invoice"
     );
 
     if (!invoice) {
@@ -1001,29 +1008,25 @@ export class BillyClient {
       },
     };
 
-    const response = await this.makeRequest<{ 
+    const response = await this.makeRequest<{
       product?: BillyProduct;
       products?: BillyProduct[];
-    }>(
-      "POST",
-      endpoint,
-      payload
-    );
-    
+    }>("POST", endpoint, payload);
+
     // Billy API can return either {product: {...}} or {products: [...]}
     const product = this.parseResponse<BillyProduct>(
       response,
-      'product',
-      'products',
-      'create product'
+      "product",
+      "products",
+      "create product"
     );
-    
+
     if (!product) {
       throw new Error(
         "Invalid response format from Billy API - expected product or products"
       );
     }
-    
+
     return product;
   }
 
@@ -1406,29 +1409,25 @@ export class BillyClient {
     // Send minimal payload
     const payload = { contact: contactUpdate };
 
-    const response = await this.makeRequest<{ 
+    const response = await this.makeRequest<{
       contact?: BillyContact;
       contacts?: BillyContact[];
-    }>(
-      "PUT",
-      endpoint,
-      payload
-    );
-    
+    }>("PUT", endpoint, payload);
+
     // Billy API can return either {contact: {...}} or {contacts: [...]}
     const contact = this.parseResponse<BillyContact>(
       response,
-      'contact',
-      'contacts',
-      'update contact'
+      "contact",
+      "contacts",
+      "update contact"
     );
-    
+
     if (!contact) {
       throw new Error(
         "Invalid response format from Billy API - expected contact or contacts"
       );
     }
-    
+
     return contact;
   }
 
@@ -1463,12 +1462,26 @@ export class BillyClient {
       },
     };
 
-    const response = await this.makeRequest<{ product: BillyProduct }>(
-      "PUT",
-      endpoint,
-      payload
+    // Billy API can return either {product: {...}} or {products: [...]}
+    const response = await this.makeRequest<{
+      product?: BillyProduct;
+      products?: BillyProduct[];
+    }>("PUT", endpoint, payload);
+
+    const product = this.parseResponse<BillyProduct>(
+      response,
+      "product",
+      "products",
+      "update product"
     );
-    return response.product;
+
+    if (!product) {
+      throw new Error(
+        "Invalid response format from Billy API - expected product or products"
+      );
+    }
+
+    return product;
   }
 }
 // Force redeploy 2025-10-13 11:34:16

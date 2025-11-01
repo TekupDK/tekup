@@ -1358,9 +1358,18 @@ async function startServer() {
 
     // Log all critical env vars for debugging
     console.log("[STARTUP] Environment check:");
-    console.log("[STARTUP] BILLY_API_KEY:", process.env.BILLY_API_KEY ? "SET" : "MISSING");
-    console.log("[STARTUP] BILLY_ORGANIZATION_ID:", process.env.BILLY_ORGANIZATION_ID ? "SET" : "MISSING");
-    console.log("[STARTUP] MCP_API_KEY:", process.env.MCP_API_KEY ? "SET" : "MISSING");
+    console.log(
+      "[STARTUP] BILLY_API_KEY:",
+      process.env.BILLY_API_KEY ? "SET" : "MISSING"
+    );
+    console.log(
+      "[STARTUP] BILLY_ORGANIZATION_ID:",
+      process.env.BILLY_ORGANIZATION_ID ? "SET" : "MISSING"
+    );
+    console.log(
+      "[STARTUP] MCP_API_KEY:",
+      process.env.MCP_API_KEY ? "SET" : "MISSING"
+    );
 
     // Validate environment with better error handling
     console.log("[STARTUP] Validating environment...");
@@ -1369,8 +1378,13 @@ async function startServer() {
       config = getBillyConfig();
     } catch (configError) {
       console.error("[STARTUP] Environment validation FAILED:", configError);
-      console.error("[STARTUP] Config error details:", configError instanceof Error ? configError.message : String(configError));
-      throw new Error(`Environment validation failed: ${configError instanceof Error ? configError.message : String(configError)}`);
+      console.error(
+        "[STARTUP] Config error details:",
+        configError instanceof Error ? configError.message : String(configError)
+      );
+      throw new Error(
+        `Environment validation failed: ${configError instanceof Error ? configError.message : String(configError)}`
+      );
     }
     console.log("[STARTUP] Environment validated:", {
       organizationId: config.organizationId,

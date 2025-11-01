@@ -227,7 +227,7 @@ export class CacheManager {
                     const id = keyParts[3];
                     const table = this.getSupabaseTable(type);
                     
-                    if (table) {
+                    if (table && id && typeof id === 'string') {
                         const supabaseResult = await getCachedData<T>(table, id, this.organizationId);
                         if (supabaseResult !== null) {
                             // Populate higher-tier caches
@@ -268,7 +268,7 @@ export class CacheManager {
             try {
                 const table = this.getSupabaseTable(type);
                 if (table) {
-                    await setCachedData(table, this.organizationId, id, data, this.cacheTTL);
+                    await setCachedData(table, id, data, this.cacheTTL, this.organizationId);
                 }
             } catch (error) {
                 log.warn('Supabase cache set failed', { key, error });
@@ -353,7 +353,12 @@ export class CacheManager {
 
                 const duration = Date.now() - startTime;
                 if (this.supabaseEnabled) {
-                    await recordUsageMetric(this.organizationId, toolName, true, duration, true);
+                    await recordUsageMetric({
+                        organizationId: this.organizationId,
+                        toolName,
+                        executionTime: duration,
+                        success: true
+                    });
                 }
 
                 log.debug('Cache hit for invoice', { invoiceId, tier: cacheTier, duration });
@@ -371,7 +376,12 @@ export class CacheManager {
 
             const duration = Date.now() - startTime;
             if (this.supabaseEnabled) {
-                await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+                await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: true
+                });
             }
 
             log.debug('Cache miss for invoice', { invoiceId, duration });
@@ -379,7 +389,12 @@ export class CacheManager {
         } catch (error) {
             const duration = Date.now() - startTime;
             if (this.supabaseEnabled) {
-                await recordUsageMetric(this.organizationId, toolName, false, duration, cacheHit);
+                await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: false
+                });
             }
             throw error;
         }
@@ -404,22 +419,32 @@ export class CacheManager {
             const cachePromises = invoices.map((invoice: BillyInvoice) =>
                 setCachedData(
                     CACHE_TABLES.invoices,
-                    this.organizationId,
                     invoice.id,
                     invoice,
-                    this.cacheTTL
+                    this.cacheTTL,
+                    this.organizationId
                 )
             );
 
             await Promise.all(cachePromises);
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return invoices;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -443,14 +468,24 @@ export class CacheManager {
 
             const duration = Date.now() - startTime;
             if (this.supabaseEnabled) {
-                await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+                await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: true
+                });
             }
 
             return invoice;
         } catch (error) {
             const duration = Date.now() - startTime;
             if (this.supabaseEnabled) {
-                await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+                await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: false
+                });
             }
             throw error;
         }
@@ -477,7 +512,12 @@ export class CacheManager {
             if (!invoice) {
                 const duration = Date.now() - startTime;
                 if (this.supabaseEnabled) {
-                    await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+                    await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: false
+                });
                 }
                 throw new Error(`Invoice ${invoiceId} not found`);
             }
@@ -487,14 +527,24 @@ export class CacheManager {
 
             const duration = Date.now() - startTime;
             if (this.supabaseEnabled) {
-                await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+                await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: true
+                });
             }
 
             return invoice;
         } catch (error) {
             const duration = Date.now() - startTime;
             if (this.supabaseEnabled) {
-                await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+                await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: false
+                });
             }
             throw error;
         }
@@ -513,15 +563,25 @@ export class CacheManager {
 
         try {
             // Billy API doesn't have delete endpoint - invalidate cache only
-            if (this.supabaseEnabled) await invalidateCache(CACHE_TABLES.invoices, this.organizationId, invoiceId);
+            if (this.supabaseEnabled) await invalidateCache(CACHE_TABLES.invoices, invoiceId, this.organizationId);
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return true;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -541,14 +601,19 @@ export class CacheManager {
             // Try cache first
             const cached = await getCachedData<BillyContact>(
                 CACHE_TABLES.customers,
-                this.organizationId,
-                customerId
+                customerId,
+                this.organizationId
             );
 
             if (cached) {
                 cacheHit = true;
                 const duration = Date.now() - startTime;
-                if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, true);
+                if (this.supabaseEnabled) await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: true
+                });
                 return cached;
             }
 
@@ -560,20 +625,30 @@ export class CacheManager {
                 // Store in cache
                 if (this.supabaseEnabled) await setCachedData(
                     CACHE_TABLES.customers,
-                    this.organizationId,
                     customerId,
                     customer,
-                    this.cacheTTL
+                    this.cacheTTL,
+                    this.organizationId
                 );
             }
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return customer;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, cacheHit);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -595,22 +670,32 @@ export class CacheManager {
             const cachePromises = customers.map((customer: BillyContact) =>
                 setCachedData(
                     CACHE_TABLES.customers,
-                    this.organizationId,
                     customer.id,
                     customer,
-                    this.cacheTTL
+                    this.cacheTTL,
+                    this.organizationId
                 )
             );
 
             await Promise.all(cachePromises);
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return customers;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -631,19 +716,29 @@ export class CacheManager {
             // Cache the newly created customer
             if (this.supabaseEnabled) await setCachedData(
                 CACHE_TABLES.customers,
-                this.organizationId,
                 customer.id,
                 customer,
-                this.cacheTTL
+                this.cacheTTL,
+                this.organizationId
             );
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return customer;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -670,19 +765,29 @@ export class CacheManager {
             // Cache the fetched customer
             if (this.supabaseEnabled) await setCachedData(
                 CACHE_TABLES.customers,
-                this.organizationId,
                 customer.id,
                 customer,
-                this.cacheTTL
+                this.cacheTTL,
+                this.organizationId
             );
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return customer;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -702,14 +807,19 @@ export class CacheManager {
             // Try cache first
             const cached = await getCachedData<BillyProduct>(
                 CACHE_TABLES.products,
-                this.organizationId,
-                productId
+                productId,
+                this.organizationId
             );
 
             if (cached) {
                 cacheHit = true;
                 const duration = Date.now() - startTime;
-                if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, true);
+                if (this.supabaseEnabled) await recordUsageMetric({
+                    organizationId: this.organizationId,
+                    toolName,
+                    executionTime: duration,
+                    success: true
+                });
                 return cached;
             }
 
@@ -723,20 +833,30 @@ export class CacheManager {
                 // Store in cache
                 if (this.supabaseEnabled) await setCachedData(
                     CACHE_TABLES.products,
-                    this.organizationId,
                     productId,
                     product,
-                    this.cacheTTL
+                    this.cacheTTL,
+                    this.organizationId
                 );
             }
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return product;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, cacheHit);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -758,22 +878,32 @@ export class CacheManager {
             const cachePromises = products.map((product: BillyProduct) =>
                 setCachedData(
                     CACHE_TABLES.products,
-                    this.organizationId,
                     product.id,
                     product,
-                    this.cacheTTL
+                    this.cacheTTL,
+                    this.organizationId
                 )
             );
 
             await Promise.all(cachePromises);
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return products;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -794,19 +924,29 @@ export class CacheManager {
             // Cache the newly created product
             if (this.supabaseEnabled) await setCachedData(
                 CACHE_TABLES.products,
-                this.organizationId,
                 product.id,
                 product,
-                this.cacheTTL
+                this.cacheTTL,
+                this.organizationId
             );
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return product;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
@@ -835,20 +975,30 @@ export class CacheManager {
                 // Cache the fetched product
                 if (this.supabaseEnabled) await setCachedData(
                     CACHE_TABLES.products,
-                    this.organizationId,
                     product.id,
                     product,
-                    this.cacheTTL
+                    this.cacheTTL,
+                    this.organizationId
                 );
             }
 
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, true, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: true
+            });
 
             return product;
         } catch (error) {
             const duration = Date.now() - startTime;
-            if (this.supabaseEnabled) await recordUsageMetric(this.organizationId, toolName, false, duration, false);
+            if (this.supabaseEnabled) await recordUsageMetric({
+                organizationId: this.organizationId,
+                toolName,
+                executionTime: duration,
+                success: false
+            });
             throw error;
         }
     }
