@@ -67,8 +67,8 @@ export async function listEmails(args: {
     
     return {
       messages,
-      nextPageToken: data.nextPageToken,
-      resultSizeEstimate: data.resultSizeEstimate,
+      nextPageToken: data.nextPageToken || undefined,
+      resultSizeEstimate: data.resultSizeEstimate || undefined,
     };
   } catch (error) {
     logError('Failed to list emails', error);
@@ -151,8 +151,8 @@ export async function searchEmails(
     
     return {
       messages,
-      nextPageToken: data.nextPageToken,
-      resultSizeEstimate: data.resultSizeEstimate,
+      nextPageToken: data.nextPageToken || undefined,
+      resultSizeEstimate: data.resultSizeEstimate || undefined,
     };
   } catch (error) {
     logError('Failed to search emails', error);
@@ -310,15 +310,15 @@ function mapGmailMessageToMessage(msg: gmail_v1.Schema$Message): GmailMessage {
   // Extract headers
   const headers = msg.payload?.headers || [];
   const getHeader = (name: string) =>
-    headers.find(h => h.name?.toLowerCase() === name.toLowerCase())?.value;
+    headers.find(h => h.name?.toLowerCase() === name.toLowerCase())?.value || undefined;
   
   return {
     id: msg.id!,
     threadId: msg.threadId!,
-    labelIds: msg.labelIds,
-    snippet: msg.snippet,
+    labelIds: msg.labelIds || undefined,
+    snippet: msg.snippet || undefined,
     payload: msg.payload as any,
-    internalDate: msg.internalDate,
+    internalDate: msg.internalDate || undefined,
     from: getHeader('from'),
     to: getHeader('to'),
     subject: getHeader('subject'),

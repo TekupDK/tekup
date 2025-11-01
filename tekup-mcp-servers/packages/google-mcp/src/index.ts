@@ -29,7 +29,7 @@ const SERVER_INFO = {
 function setupServer(server: Server): void {
   // Calendar tools
   server.setRequestHandler(
-    { method: 'tools/list' },
+    'tools/list' as any,
     async () => ({
       tools: [
         // Calendar tools
@@ -325,7 +325,7 @@ function setupServer(server: Server): void {
 
   // Handle tool calls
   server.setRequestHandler(
-    { method: 'tools/call' },
+    'tools/call' as any,
     async (request: any) => {
       const { name, arguments: args } = request.params;
       

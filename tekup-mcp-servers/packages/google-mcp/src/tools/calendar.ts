@@ -282,8 +282,8 @@ function mapGoogleEventToCalendarEvent(
   return {
     id: event.id!,
     summary: event.summary || 'Untitled Event',
-    description: event.description,
-    location: event.location,
+    description: event.description || undefined,
+    location: event.location || undefined,
     start: {
       dateTime: event.start?.dateTime || event.start?.date!,
       timeZone: event.start?.timeZone || 'Europe/Copenhagen',
@@ -294,16 +294,16 @@ function mapGoogleEventToCalendarEvent(
     },
     attendees: event.attendees?.map(a => ({
       email: a.email!,
-      displayName: a.displayName,
-      responseStatus: a.responseStatus,
+      displayName: a.displayName || undefined,
+      responseStatus: a.responseStatus || undefined,
     })),
-    htmlLink: event.htmlLink,
-    created: event.created,
-    updated: event.updated,
-    status: event.status,
+    htmlLink: event.htmlLink || undefined,
+    created: event.created || undefined,
+    updated: event.updated || undefined,
+    status: event.status || undefined,
     organizer: event.organizer ? {
       email: event.organizer.email!,
-      displayName: event.organizer.displayName,
+      displayName: event.organizer.displayName || undefined,
     } : undefined,
   };
 }

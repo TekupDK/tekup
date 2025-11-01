@@ -30,7 +30,7 @@ export function getGoogleAuthClient(scopes?: string[]): JWT | null {
   const subject = config.google.impersonatedUser;
   
   // Create cache key based on scopes and subject
-  const cacheKey = `${scopesToUse.sort().join(',')}:${subject}`;
+  const cacheKey = `${[...scopesToUse].sort().join(',')}:${subject}`;
   
   // Return cached client if exists
   if (authClientCache.has(cacheKey)) {
@@ -46,7 +46,7 @@ export function getGoogleAuthClient(scopes?: string[]): JWT | null {
     const authClient = new JWT({
       email: config.google.clientEmail,
       key: privateKey,
-      scopes: scopesToUse,
+      scopes: [...scopesToUse],
       subject, // Impersonate this user
     });
     

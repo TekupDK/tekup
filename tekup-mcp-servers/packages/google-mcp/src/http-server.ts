@@ -178,29 +178,29 @@ app.post(`/api/${API_VERSION}/tools/call`, authenticateApiKey, async (req: Reque
     if (tool === 'list_calendar_events') {
       result = await calendarTools.listCalendarEvents(args || {});
     } else if (tool === 'get_calendar_event') {
-      result = await calendarTools.getCalendarEvent(args);
+      result = await calendarTools.getCalendarEvent(args as any);
     } else if (tool === 'create_calendar_event') {
-      result = await calendarTools.createCalendarEvent(args);
+      result = await calendarTools.createCalendarEvent(args as any);
     } else if (tool === 'update_calendar_event') {
-      result = await calendarTools.updateCalendarEvent(args);
+      result = await calendarTools.updateCalendarEvent(args as any);
     } else if (tool === 'delete_calendar_event') {
-      result = await calendarTools.deleteCalendarEvent(args);
+      result = await calendarTools.deleteCalendarEvent(args as any);
     } else if (tool === 'check_calendar_conflicts') {
-      result = await calendarTools.checkCalendarConflicts(args);
+      result = await calendarTools.checkCalendarConflicts(args as any);
     }
     // Gmail tools
     else if (tool === 'list_emails') {
       result = await gmailTools.listEmails(args || {});
     } else if (tool === 'get_email') {
-      result = await gmailTools.getEmailById(args);
+      result = await gmailTools.getEmailById(args as any);
     } else if (tool === 'search_emails') {
-      result = await gmailTools.searchEmails(args);
+      result = await gmailTools.searchEmails(args as any);
     } else if (tool === 'send_email') {
-      result = await gmailTools.sendEmail(args);
+      result = await gmailTools.sendEmail(args as any);
     } else if (tool === 'get_email_labels') {
       result = await gmailTools.getEmailLabels();
     } else if (tool === 'mark_email_as_read') {
-      result = await gmailTools.markEmailAsRead(args);
+      result = await gmailTools.markEmailAsRead(args as any);
     } else {
       return res.status(404).json({
         success: false,
