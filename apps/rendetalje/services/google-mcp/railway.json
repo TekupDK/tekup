@@ -1,0 +1,16 @@
+{
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "npm run dev",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 100
+  }
+}
+
+
+
+
+
+

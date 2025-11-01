@@ -1,0 +1,27 @@
+[
+  {
+    "id": "TC001",
+    "title": "health check api should return service status",
+    "description": "Verify that the /health GET endpoint returns a 200 status with a JSON object containing { ok: true } indicating the service is healthy."
+  },
+  {
+    "id": "TC002",
+    "title": "lead parser test api should parse mock email thread correctly",
+    "description": "Test the /test/parser GET endpoint to ensure it returns a 200 status with a success flag and correctly structured parsed lead data including name, type, source, contact info, bolig details, address, and status."
+  },
+  {
+    "id": "TC003",
+    "title": "generate reply api should produce safe reply with memory enforcement",
+    "description": "Validate the /generate-reply POST endpoint with a valid threadId to ensure it returns a 200 status with a generated reply recommendation, any memory rule warnings, and a shouldSend boolean indicating if the reply is safe to send."
+  },
+  {
+    "id": "TC004",
+    "title": "approve and send api should send reply and manage labels",
+    "description": "Test the /approve-and-send POST endpoint with valid threadId, body, and optional labels to add or remove, verifying that the email is sent successfully and the response contains an ok flag and data object."
+  },
+  {
+    "id": "TC005",
+    "title": "chat api should process natural language queries with intent detection",
+    "description": "Verify the /chat POST endpoint processes a natural language message, detects the correct intent, performs relevant actions, and returns a formatted reply with metrics including tokens used and latency."
+  }
+]

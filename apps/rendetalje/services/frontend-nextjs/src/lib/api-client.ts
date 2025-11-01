@@ -249,6 +249,58 @@ class ApiClient {
       method: "DELETE",
     });
   }
+
+  // AI Friday endpoints
+  async sendFridayMessage(data: {
+    message: string;
+    sessionId?: string;
+    context: {
+      userRole: string;
+      organizationId: string;
+      currentPage?: string;
+      selectedJobId?: string;
+      selectedCustomerId?: string;
+      recentActions?: string[];
+    };
+  }) {
+    return this.request<{
+      sessionId: string;
+      response: {
+        message: string;
+        actions?: Array<{
+          type: 'navigate' | 'create' | 'update' | 'search' | 'call_function';
+          payload: any;
+        }>;
+        suggestions?: string[];
+        data?: any;
+      };
+    }>("/api/v1/ai-friday/chat", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getFridaySessions(limit?: number) {
+    const query = limit ? `?limit=${limit}` : "";
+    return this.request<any[]>(`/api/v1/ai-friday/sessions${query}`, {
+      method: "GET",
+    });
+  }
+
+  async getFridaySession(sessionId: string) {
+    return this.request<{
+      session: any;
+      messages: any[];
+    }>(`/api/v1/ai-friday/sessions/${sessionId}`, {
+      method: "GET",
+    });
+  }
+
+  async deleteFridaySession(sessionId: string) {
+    return this.request<void>(`/api/v1/ai-friday/sessions/${sessionId}`, {
+      method: "DELETE",
+    });
+  }
 }
 
 // Types (should match backend)
