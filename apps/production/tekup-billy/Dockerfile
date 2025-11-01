@@ -29,8 +29,8 @@ USER nodejs
 # Expose port
 EXPOSE 3000
 
-# Health check (longer start-period for tsx compilation)
-HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+# Health check (extended timeout for Railway)
+HEALTHCHECK --interval=30s --timeout=15s --start-period=120s --retries=5 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Start HTTP server using tsx (npx ensures correct path resolution)
