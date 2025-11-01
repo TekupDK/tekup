@@ -30,7 +30,7 @@ async function runTests() {
       log.info('Test 2: Testing Calendar client initialization');
       try {
         const { getCalendarClient } = await import('../src/utils/google-auth.js');
-        const calendar = getCalendarClient();
+        getCalendarClient();
         log.info('Calendar client initialized successfully');
       } catch (error) {
         log.error('Calendar client initialization failed', {
@@ -42,7 +42,7 @@ async function runTests() {
       log.info('Test 3: Testing Gmail client initialization');
       try {
         const { getGmailClient } = await import('../src/utils/google-auth.js');
-        const gmail = getGmailClient();
+        getGmailClient();
         log.info('Gmail client initialized successfully');
       } catch (error) {
         log.error('Gmail client initialization failed', {

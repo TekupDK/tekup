@@ -11,7 +11,6 @@ import {
   CalendarEvent,
   ConflictCheckResult,
   CreateEventParams,
-  GoogleApiError,
 } from '../types.js';
 
 /**

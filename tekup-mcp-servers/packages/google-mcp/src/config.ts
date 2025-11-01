@@ -25,7 +25,7 @@ const envSchema = z.object({
   GOOGLE_CALENDAR_ID: z.string().default('primary'),
   
   // Server settings
-  PORT: z.string().transform(val => parseInt(val || '3001')).default('3001'),
+  PORT: z.coerce.number().int().min(1).max(65535).default(3001),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   
   // Security
