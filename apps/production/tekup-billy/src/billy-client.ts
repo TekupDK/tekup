@@ -588,20 +588,68 @@ export class BillyClient {
   // Customer methods
   async getContacts(type: 'customer' | 'supplier' = 'customer', search?: string): Promise<BillyContact[]> {
     // NOTE: Cannot use organizationId query param with OAuth tokens
-    const queryParams = new URLSearchParams();
-    // Billy API uses 'company' or 'person', not 'customer'/'supplier'
-    queryParams.append('type', type === 'customer' ? 'company' : 'company');
-    if (search) queryParams.append('name', search);
+    // Implement pagination to fetch ALL contacts, not just first page
+    // Billy API v2 uses page and pageSize (max 1000 per page)
+    const allContacts: BillyContact[] = [];
+    let page = 1;
+    const pageSize = 1000; // Billy API max pageSize
+    let hasMore = true;
 
-    const endpoint = `/contacts?${queryParams.toString()}`;
-    const response = await this.makeRequest<{ contacts: BillyContact[] }>('GET', endpoint);
-    
-    if (!response || !response.contacts) {
-      log.error('Invalid contacts response structure', null, { response });
-      return [];
+    while (hasMore) {
+      const queryParams = new URLSearchParams();
+      // Billy API uses 'company' or 'person', not 'customer'/'supplier'
+      queryParams.append('type', type === 'customer' ? 'company' : 'company');
+      if (search) queryParams.append('name', search);
+      queryParams.append('pageSize', pageSize.toString());
+      queryParams.append('page', page.toString());
+
+      const endpoint = `/contacts?${queryParams.toString()}`;
+      const response = await this.makeRequest<{ contacts: BillyContact[]; meta?: { paging?: { pageCount?: number; total?: number } } }>('GET', endpoint);
+      
+      if (!response || !response.contacts) {
+        log.error('Invalid contacts response structure', null, { response });
+        break;
+      }
+
+      const contacts = response.contacts;
+      allContacts.push(...contacts);
+
+      // Check if we've reached the last page
+      const paging = response.meta?.paging;
+      if (paging) {
+        const pageCount = paging.pageCount || 1;
+        if (page >= pageCount) {
+          hasMore = false;
+        } else {
+          page++;
+        }
+      } else {
+        // Fallback: if we got fewer contacts than pageSize, we're done
+        if (contacts.length < pageSize) {
+          hasMore = false;
+        } else {
+          page++;
+        }
+      }
+
+      // Safety limit to prevent infinite loops (max 100 pages = 100,000 contacts)
+      if (page > 100) {
+        log.warn('Reached pagination safety limit', {
+          totalFetched: allContacts.length,
+          page,
+        });
+        break;
+      }
     }
-    
-    return response.contacts;
+
+    log.debug('Fetched all contacts with pagination', {
+      type,
+      search: search || 'none',
+      totalContacts: allContacts.length,
+      pagesFetched: page - 1 || 1,
+    });
+
+    return allContacts;
   }
 
   async getContact(contactId: string): Promise<BillyContact> {

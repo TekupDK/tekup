@@ -18,6 +18,7 @@
 ## 📁 File Structure
 
 ### Large Executable Files:
+
 1. **`apps/desktop-electron/release/Rendetalje AI-win32-x64/Rendetalje AI.exe`**
    - Size: **168.55 MB**
    - Type: Packaged Electron application
@@ -35,6 +36,7 @@
 Based on documentation and codebase analysis:
 
 ### Primary Functions:
+
 1. **AI Chat Interface**
    - Desktop-native chat UI
    - Integration with Rendetalje AI assistant
@@ -60,12 +62,13 @@ Based on documentation and codebase analysis:
 ## 🔍 Why Files Are Large
 
 ### Electron Architecture:
+
 Electron apps bundle:
+
 - **Chromium browser engine** (~120-150 MB)
   - Full web browser runtime
   - JavaScript V8 engine
   - HTML/CSS rendering engine
-  
 - **Node.js runtime** (~30-50 MB)
   - Node.js JavaScript runtime
   - npm packages
@@ -83,6 +86,7 @@ Electron apps bundle:
 ## 📦 Why We Have Desktop-Electron
 
 ### Multi-Platform Strategy:
+
 Rendetalje AI is deployed across multiple platforms:
 
 1. **Web Dashboard** (`apps/rendetalje/`)
@@ -102,6 +106,7 @@ Rendetalje AI is deployed across multiple platforms:
    - All platforms connect to same backend
 
 ### Benefits of Desktop App:
+
 - ✅ Native Windows experience
 - ✅ Better performance than browser
 - ✅ System integration (notifications, shortcuts)
@@ -114,9 +119,11 @@ Rendetalje AI is deployed across multiple platforms:
 ## ⚠️ Problem: Build Artifacts in Git
 
 ### Issue:
+
 **Release/build artifacts should NOT be in git repository**
 
 ### Why It's Wrong:
+
 1. **Build artifacts are generated**, not source code
 2. **Large files** bloat repository
 3. **Should be distributed separately:**
@@ -126,25 +133,28 @@ Rendetalje AI is deployed across multiple platforms:
    - NOT in git history
 
 ### What Should Be in Git:
+
 ✅ Source code (`src/`, `package.json`, etc.)  
 ✅ Configuration files  
-✅ Documentation  
+✅ Documentation
 
 ❌ Compiled executables (`.exe`, `.dmg`, etc.)  
 ❌ `node_modules/`  
 ❌ `release/` folders  
-❌ `dist/` folders  
+❌ `dist/` folders
 
 ---
 
 ## 🛠️ Current Situation
 
 ### Files in Git History:
+
 - Large `.exe` files were committed in past (commit `950ab07` or earlier)
 - Even if removed from working directory, they're in git history
 - Git push fails because history contains files >100MB
 
 ### Git Status:
+
 - Files may not exist in current working directory
 - But they exist in past commits
 - Git won't push new commits if history contains large files
@@ -156,6 +166,7 @@ Rendetalje AI is deployed across multiple platforms:
 ### Solution 1: Remove from Git History (Immediate Fix)
 
 **Using git-filter-repo:**
+
 ```bash
 cd C:\Users\empir\Tekup
 pip install git-filter-repo  # If not installed
@@ -168,6 +179,7 @@ git push origin master --force
 ```
 
 **Using BFG Repo Cleaner:**
+
 ```bash
 # Download BFG: https://rtyley.github.io/bfg-repo-cleaner/
 java -jar bfg.jar --delete-files "Rendetalje AI.exe" .
@@ -181,6 +193,7 @@ git push origin master --force
 ### Solution 2: Use Git LFS (If Files Needed)
 
 **If you need to keep executable files in repo:**
+
 ```bash
 git lfs install
 git lfs track "apps/desktop-electron/release/**/*.exe"
@@ -194,6 +207,7 @@ git commit -m "Track large files with Git LFS"
 ### Solution 3: Update .gitignore (Prevent Future)
 
 Add to `.gitignore`:
+
 ```gitignore
 # Electron build artifacts
 apps/desktop-electron/release/
@@ -210,6 +224,7 @@ apps/desktop-electron/dist/
 ### Solution 4: Separate Repository
 
 Move desktop-electron to its own repository:
+
 - Independent versioning
 - Smaller main repo
 - Separate CI/CD pipeline
@@ -219,23 +234,27 @@ Move desktop-electron to its own repository:
 ## 📊 Summary
 
 ### What the Files Are:
+
 - **Rendetalje AI Desktop Application** executables
 - Windows 64-bit packaged Electron apps
 - 168.55 MB each (normal for Electron)
 - Build artifacts from `electron-builder`
 
 ### Why We Have Them:
+
 - Multi-platform deployment strategy
 - Native desktop experience for Windows users
 - Part of Rendetalje AI ecosystem
 
 ### Why They're Problematic:
+
 - ✅ Should NOT be in git repository
 - ✅ Should be distributed via GitHub Releases
 - ✅ Currently blocking all git pushes
 - ✅ Need to be removed from git history
 
 ### Recommended Action:
+
 1. **Remove from git history** (unblock push immediately)
 2. **Update .gitignore** (prevent future commits)
 3. **Distribute via GitHub Releases** (proper distribution)
@@ -243,4 +262,3 @@ Move desktop-electron to its own repository:
 ---
 
 **Status:** Analysis complete - ready for action to unblock git push
-
