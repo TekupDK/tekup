@@ -48,10 +48,10 @@ export class AiFridayService {
     private readonly teamService: TeamService,
   ) {
     this.baseUrl = this.configService.get<string>('integrations.aiFriday.url');
-    this.apiKey = this.configService.get<string>('integrations.aiFriday.apiKey');
+    this.apiKey = this.configService.get<string>('integrations.aiFriday.apiKey') || '';
 
-    if (!this.baseUrl || !this.apiKey) {
-      this.logger.warn('AI Friday integration not configured properly');
+    if (!this.baseUrl) {
+      this.logger.warn('AI Friday integration not configured: AI_FRIDAY_URL missing');
     }
   }
 
@@ -66,35 +66,20 @@ export class AiFridayService {
         userRole: context.userRole 
       });
 
-      // Build context-aware prompt
-      const contextualPrompt = await this.buildContextualPrompt(message, context);
-      
-      // Prepare conversation with system context
-      const conversation = [
-        {
-          role: 'system',
-          content: contextualPrompt,
-        },
-        ...conversationHistory,
-        {
-          role: 'user',
-          content: message,
-        },
-      ];
+      // Build context-aware prompt and include in message if needed
+      // Note: inbox-orchestrator expects simple { message: "..." } format
+      // Context can be included in message text if needed
+      const contextualInfo = await this.buildContextualInfo(context);
+      const enrichedMessage = contextualInfo ? `${contextualInfo}\n\n${message}` : message;
 
       const response = await firstValueFrom(
         this.httpService.post(
           `${this.baseUrl}/chat`,
           {
-            messages: conversation,
-            context: context,
-            stream: false,
-            temperature: 0.7,
-            max_tokens: 1000,
+            message: enrichedMessage,
           },
           {
             headers: {
-              'Authorization': `Bearer ${this.apiKey}`,
               'Content-Type': 'application/json',
             },
           }
@@ -108,7 +93,19 @@ export class AiFridayService {
         ),
       );
 
-      const fridayResponse: FridayResponse = response.data;
+      // Inbox orchestrator returns: { reply, actions, metrics }
+      // Map to FridayResponse format: { message, actions, suggestions, data }
+      const orchestratorResponse = response.data;
+      const fridayResponse: FridayResponse = {
+        message: orchestratorResponse.reply || orchestratorResponse.message || '',
+        actions: orchestratorResponse.actions?.map((action: any) => ({
+          type: action.name === 'search_leads' ? 'search' : 
+                action.name === 'create_job' ? 'create' : 
+                action.name === 'navigate' ? 'navigate' : 'call_function',
+          payload: action.args || {},
+        })) || [],
+        data: orchestratorResponse.metrics || {},
+      };
 
       // Process any function calls or actions
       if (fridayResponse.actions) {
@@ -139,46 +136,68 @@ export class AiFridayService {
     conversationHistory: FridayMessage[] = [],
   ): Promise<AsyncIterable<string>> {
     try {
-      const contextualPrompt = await this.buildContextualPrompt(message, context);
-      
-      const conversation = [
-        {
-          role: 'system',
-          content: contextualPrompt,
-        },
-        ...conversationHistory,
-        {
-          role: 'user',
-          content: message,
-        },
-      ];
+      // Inbox orchestrator doesn't support streaming yet, so we'll return full response as stream
+      const contextualInfo = await this.buildContextualInfo(context);
+      const enrichedMessage = contextualInfo ? `${contextualInfo}\n\n${message}` : message;
 
       const response = await firstValueFrom(
         this.httpService.post(
-          `${this.baseUrl}/chat/stream`,
+          `${this.baseUrl}/chat`,
           {
-            messages: conversation,
-            context: context,
-            stream: true,
-            temperature: 0.7,
-            max_tokens: 1000,
+            message: enrichedMessage,
           },
           {
             headers: {
-              'Authorization': `Bearer ${this.apiKey}`,
               'Content-Type': 'application/json',
             },
-            responseType: 'stream',
           }
+        ).pipe(
+          timeout(60000),
+          retry(2),
         ),
       );
 
-      return this.parseStreamResponse(response.data);
+      // Return response as async iterable (simulate streaming)
+      const reply = response.data.reply || response.data.message || '';
+      return this.stringToAsyncIterable(reply);
 
     } catch (error) {
       this.logger.error('Failed to stream from AI Friday', error);
       throw new BadRequestException('Failed to stream response from AI Friday');
     }
+  }
+
+  private async *stringToAsyncIterable(text: string): AsyncIterable<string> {
+    // Simulate streaming by chunking the response
+    const chunks = text.split(' ');
+    for (let i = 0; i < chunks.length; i++) {
+      yield chunks[i] + (i < chunks.length - 1 ? ' ' : '');
+      // Small delay to simulate real streaming
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+  }
+
+  private async buildContextualInfo(context: FridayContext): Promise<string> {
+    // Build context info to include in message (instead of system prompt)
+    let info = `Bruger rolle: ${context.userRole}\nOrganisation: ${context.organizationId}`;
+    
+    if (context.currentPage) {
+      info += `\nNuværende side: ${context.currentPage}`;
+    }
+    
+    if (context.selectedJobId) {
+      info += `\nValgt job ID: ${context.selectedJobId}`;
+    }
+    
+    if (context.selectedCustomerId) {
+      info += `\nValgt kunde ID: ${context.selectedCustomerId}`;
+    }
+    
+    if (context.recentActions && context.recentActions.length > 0) {
+      info += `\nSeneste handlinger: ${context.recentActions.join(', ')}`;
+    }
+    
+    return info;
   }
 
   private async buildContextualPrompt(message: string, context: FridayContext): Promise<string> {
@@ -407,14 +426,15 @@ Svar altid på dansk og vær hjælpsom og professionel.`;
   // Health check
   async healthCheck(): Promise<boolean> {
     try {
-      await firstValueFrom(
+      const response = await firstValueFrom(
         this.httpService.get(`${this.baseUrl}/health`, {
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
           },
-        }),
+        }).pipe(timeout(5000)),
       );
-      return true;
+      // Inbox orchestrator returns { ok: true }
+      return response.data?.ok === true || response.status === 200;
     } catch (error) {
       this.logger.error('AI Friday health check failed', error);
       return false;

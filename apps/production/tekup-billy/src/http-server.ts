@@ -152,7 +152,7 @@ let organizationId: string | null = null;
 
 // Session storage (in-memory fallback if Redis unavailable)
 const sseTransports: Record<string, SSEServerTransport> = {};
-const sessionStore = new RedisSessionStore("tekup-billy:sse:", 3600);
+const sessionStore = new RedisSessionStore("billy-mcp-by-tekup:sse:", 3600);
 
 // HTTP Keep-Alive agents for connection pooling
 const httpAgent = new HttpAgent({
@@ -329,8 +329,8 @@ const toolRegistry: Record<
  */
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
-    service: "Tekup-Billy MCP Server",
-    version: "1.4.4",
+    service: "Billy-mcp By Tekup",
+    version: "2.0.0",
     status: "OK",
     endpoints: {
       health: "/health",
@@ -379,9 +379,9 @@ app.post("/", (req: Request, res: Response) => {
 app.get("/.well-known/mcp.json", (req: Request, res: Response) => {
   res.json({
     version: "2025-03-26",
-    name: "Tekup Billy MCP Server",
+    name: "Billy-mcp By Tekup",
     description:
-      "Model Context Protocol server for Billy.dk accounting API - invoice, customer, product, and revenue management",
+      "Billy-mcp By Tekup - Model Context Protocol server for Billy.dk accounting API - invoice, customer, product, and revenue management",
     vendor: {
       name: "Tekup - Rendetalje ApS",
       url: "https://tekup.dk",
@@ -426,7 +426,7 @@ app.get("/health", async (req: Request, res: Response) => {
     res.status(200).json({
       status: "healthy",
       timestamp: new Date().toISOString(),
-      service: "tekup-billy-mcp",
+      service: "billy-mcp-by-tekup",
       uptime: process.uptime(),
     });
   } catch (error) {
@@ -435,7 +435,7 @@ app.get("/health", async (req: Request, res: Response) => {
     res.status(200).json({
       status: "starting",
       timestamp: new Date().toISOString(),
-      service: "tekup-billy-mcp",
+      service: "billy-mcp-by-tekup",
     });
   }
 });
@@ -483,7 +483,7 @@ app.get("/version", (req: Request, res: Response) => {
     "unknown";
 
   res.status(200).json({
-    version: process.env.npm_package_version || "1.4.4",
+    version: process.env.npm_package_version || "2.0.0",
     gitCommit: gitSHA,
     gitShort: gitSHA.substring(0, 7),
     toolsRegistered: toolCount,

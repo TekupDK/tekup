@@ -1,6 +1,6 @@
-# Tekup-Billy MCP Server - Dockerfile
+# Billy-mcp By Tekup - Dockerfile
 # Single-stage runtime image using tsx for TypeScript execution
-# Version 1.4.4 - Railway Production
+# Version 2.0.0 - Railway Production
 
 FROM node:20-alpine
 

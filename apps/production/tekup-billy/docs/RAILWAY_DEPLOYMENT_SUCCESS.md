@@ -1,4 +1,4 @@
-# Tekup-Billy Railway Deployment - SUCCESS ✅
+# Billy-mcp By Tekup Railway Deployment - SUCCESS ✅
 
 ## Deployment Status: ACTIVE
 

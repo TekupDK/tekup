@@ -1,7 +1,8 @@
-﻿# 🤖 ChatGPT Integration Guide - Tekup-Billy MCP
+﻿# 🤖 ChatGPT Integration Guide - Billy-mcp By Tekup
 
-**Dato:** 31. Oktober 2025  
+**Dato:** 1. November 2025  
 **Status:** Production Ready ✅  
+**Version:** 2.0.0  
 **Token Optimering:** ✅ Implementeret (87-91% reduktion)  
 **ChatGPT Version:** ChatGPT Plus/Team/Enterprise required
 
@@ -9,7 +10,7 @@
 
 ## 📋 Overview
 
-Denne guide viser hvordan du integrerer Tekup-Billy MCP Server med ChatGPT's Custom Actions feature, så du kan administrere Billy.dk direkte fra ChatGPT.
+Denne guide viser hvordan du integrerer Billy-mcp By Tekup med ChatGPT's Custom Actions feature, så du kan administrere Billy.dk direkte fra ChatGPT.
 
 **Hvad kan du gøre:**
 
@@ -37,13 +38,13 @@ Denne guide viser hvordan du integrerer Tekup-Billy MCP Server med ChatGPT's Cus
 2. Se "Plan" under dit navn
 3. Hvis "Free" - upgrade til Plus først
 
-### 2. Tekup-Billy MCP Server
+### 2. Billy-mcp By Tekup
 
 - **Status:** ✅ Live på Railway
 - **Base URL:** `https://tekup-billy-production.up.railway.app`
 - **API Key:** `bd674eb2e69973fa399888fa3d5a84f414dd7d89bd86ff6140bdcb363aeede4b`
 - **Health Check:** `https://tekup-billy-production.up.railway.app/health`
-- **Version:** 1.4.4
+- **Version:** 2.0.0
 
 ---
 

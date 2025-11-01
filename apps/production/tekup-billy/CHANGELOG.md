@@ -1,4 +1,58 @@
-# Changelog - Security & DevOps Upgrade
+# Changelog - Billy-mcp By Tekup
+
+## [2.0.0] - 2025-11-01
+
+### 🏷️ Complete Rebranding
+
+#### "Billy-mcp By Tekup" Branding
+
+- **Server Name:** Changed from `tekup-billy-server` to `billy-mcp-by-tekup`
+- **User-Agent:** Updated to `Billy-mcp-By-Tekup/2.0`
+- **All Documentation:** Updated to reflect new branding
+- **Package Description:** Updated with new branding
+
+**Files Modified:**
+
+- `src/index.ts` - Server info rebranded
+- `src/http-server.ts` - All references updated
+- `src/billy-client.ts` - User-Agent updated
+- `package.json` - Version and description updated
+- `README.md` - Complete rebrand
+- `docs/integration/CHATGPT_INTEGRATION_GUIDE.md` - Updated branding
+
+### 🚀 Billy API v2 Optimization
+
+#### Enhanced Pagination
+
+- **getContacts()** - Full pagination implemented (all pages fetched)
+- **getProducts()** - Full pagination implemented (all pages fetched)
+- **getInvoices()** - Full pagination implemented (all pages fetched)
+- Safety limit: 100 pages (100,000 items max per endpoint)
+- Consistent pagination pattern across all list methods
+
+#### Improved Type Safety
+
+- Replaced `any` types with specific interfaces (`BillyInvoice`, `InvoiceLine`, etc.)
+- Better type checking in invoice line handling
+- Enhanced error type definitions
+
+#### Better Error Handling
+
+- Consistent error logging across all methods
+- Enhanced error context (endpoint, method, status)
+- Better error messages with Billy API error codes
+
+**Files Modified:**
+
+- `src/billy-client.ts` - Pagination + type safety improvements
+
+### 📊 Code Quality & Consistency
+
+#### Consistent Patterns
+
+- All list operations follow same pagination pattern
+- Consistent error handling across tools
+- Unified response formats
 
 ## [1.4.4] - 2025-10-31
 
@@ -23,6 +77,7 @@
   - **Total Reduction:** 87-91% for large datasets
 
 **Files Modified:**
+
 - `src/tools/invoices.ts` - Compact JSON + pagination
 - `src/tools/customers.ts` - Compact JSON + pagination
 - `src/tools/products.ts` - Compact JSON + pagination
@@ -31,6 +86,7 @@
 - `src/tools/debug.ts` - Compact JSON
 
 **Documentation Added:**
+
 - `docs/TOKEN_OPTIMIZATION_OUTPUT.md` - Detailed examples and metrics
 - `docs/integration/CHATGPT_INTEGRATION_GUIDE.md` - Updated with token optimization section
 
@@ -56,6 +112,7 @@
   - Verified Billy API connection successful
 
 **Documentation Added:**
+
 - `testsprite_tests/README.md` - Main documentation index
 - `testsprite_tests/COMPLETE_SUMMARY.md` - Complete overview
 - `testsprite_tests/QUICK_START_RE_RUN.md` - Quick guide
@@ -68,6 +125,7 @@
 - `docs/testing/TESTSPRITE_CONFIG_CHECKLIST.md` - Checklist
 
 **Scripts Added:**
+
 - `scripts/debug-test-errors.ts` - Environment debugging tool
 - `scripts/test-railway-endpoints.ts` - Railway endpoint testing tool
 
@@ -159,7 +217,6 @@
 #### New Ops Tools
 
 - **Added:** `list_audit_logs` tool
-
   - Query billy_audit_logs table by date range
   - Returns execution count, timing stats, success rates
   - Enables self-service audit trail access for AI agents
@@ -267,7 +324,6 @@ See `RELEASE_NOTES_v1.4.1.md` for full details.
 #### CI/CD & Automation
 
 - **GitHub Actions CI/CD Pipeline** (`.github/workflows/ci.yml`)
-
   - Multi-version Node.js testing (18.x, 20.x)
   - TypeScript build validation
   - Integration, production & operations tests
@@ -276,7 +332,6 @@ See `RELEASE_NOTES_v1.4.1.md` for full details.
   - Build artifact upload
 
 - **Dependabot Configuration** (`.github/dependabot.yml`)
-
   - Weekly npm dependency scanning
   - GitHub Actions version updates
   - Docker base image updates
@@ -292,7 +347,6 @@ See `RELEASE_NOTES_v1.4.1.md` for full details.
 #### Monitoring & Observability
 
 - **Sentry Error Tracking Integration** (`src/utils/sentry.ts`)
-
   - Real-time error monitoring
   - Performance profiling with 10% sampling
   - Automatic PII filtering (API keys, tokens)
@@ -301,7 +355,6 @@ See `RELEASE_NOTES_v1.4.1.md` for full details.
   - Graceful degradation if not configured
 
 - **Sentry Configuration** (`src/config.ts`)
-
   - Environment variable schema for Sentry
   - `getSentryConfig()` function
   - Support for development/staging/production environments
@@ -315,7 +368,6 @@ See `RELEASE_NOTES_v1.4.1.md` for full details.
 #### Documentation
 
 - **GitHub Repository Setup Guide** (`docs/GITHUB_REPOSITORY_SETUP.md`)
-
   - Branch protection rules (detailed)
   - Required status checks configuration
   - Dependabot settings
@@ -324,7 +376,6 @@ See `RELEASE_NOTES_v1.4.1.md` for full details.
   - Environment configuration
 
 - **Security & DevOps Audit Report** (`SECURITY_DEVOPS_AUDIT_IMPLEMENTATION.md`)
-
   - Complete audit findings and actions
   - Implementation details for all recommendations
   - Monitoring stack overview
@@ -332,7 +383,6 @@ See `RELEASE_NOTES_v1.4.1.md` for full details.
   - Next steps and compliance notes
 
 - **Quick Deployment Guide** (`QUICK_DEPLOYMENT_GUIDE.md`)
-
   - 5-minute quick start
   - Security feature activation
   - Sentry setup steps
@@ -362,7 +412,6 @@ See `RELEASE_NOTES_v1.4.1.md` for full details.
 #### Configuration
 
 - Updated `.env.example` with Sentry configuration variables:
-
   - `SENTRY_DSN`
   - `SENTRY_ENVIRONMENT`
   - `SENTRY_TRACES_SAMPLE_RATE`
@@ -457,7 +506,6 @@ Added comprehensive monitoring across multiple layers:
    ```
 
 4. **Activate GitHub features** (after first workflow run):
-
    - Branch protection rules
    - Dependabot alerts
    - Secret scanning

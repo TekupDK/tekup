@@ -1,4 +1,4 @@
-﻿# Tekup-Billy MCP Server
+﻿# Billy-mcp By Tekup
 
 [![CI/CD Pipeline](https://github.com/TekupDK/Tekup-Billy/actions/workflows/ci.yml/badge.svg)](https://github.com/TekupDK/Tekup-Billy/actions/workflows/ci.yml)
 [![CodeQL Security](https://github.com/TekupDK/Tekup-Billy/actions/workflows/codeql.yml/badge.svg)](https://github.com/TekupDK/Tekup-Billy/actions/workflows/codeql.yml)
@@ -6,11 +6,17 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-**Status:** ✅ **PRODUCTION READY** | **Version:** 1.4.4 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
+**Status:** ✅ **PRODUCTION READY** | **Version:** 2.0.0 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
 
-**🆕 v2.0 SPECIFICATION READY:** Complete enhancement plan with 40+ tasks for advanced analytics, ML capabilities, and enterprise features → [View Specification](docs/TEKUP_BILLY_V2_SPECIFICATION.md)
+Billy-mcp By Tekup - Model Context Protocol (MCP) server til integration med Billy.dk API. Denne server giver adgang til faktura-, kunde-, produkt- og omsætningsstyring gennem Billy.dk's API med fuld Supabase-integration for caching, audit logging og usage metrics.
 
-En Model Context Protocol (MCP) server til integration med Billy.dk API. Denne server giver adgang til faktura-, kunde-, produkt- og omsætningsstyring gennem Billy.dk's API med fuld Supabase-integration for caching, audit logging og usage metrics.
+**🆕 v2.0.0: Billy-mcp By Tekup - Complete Rebrand & API v2 Optimization - 1. November 2025**
+
+**✨ Nye Features:**
+
+- 🏷️ **Rebranding** - "Billy-mcp By Tekup" branding gennem hele projektet
+- 🚀 **Billy API v2 Optimization** - Forbedret pagination, error handling og type safety
+- 📊 **Enhanced API Calls** - Konsistente patterns og bedre performance
 
 **🆕 v1.4.4: Token Optimization & TestSprite Integration - 31. Oktober 2025**
 
