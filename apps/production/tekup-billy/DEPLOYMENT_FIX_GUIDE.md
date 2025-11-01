@@ -144,4 +144,4 @@ curl -X POST https://tekup-billy-production.up.railway.app/api/v1/tools/list_cus
 **🔗 KLIK PÅ DETTE LINK:**
 **https://github.com/TekupDK/tekup/security/secret-scanning/unblock-secret/34sqUHTahNtkZ5N7dNPPI8LWajI**
 
-**Derefter kan vi immediately teste v2.0.0 deplo
+**Derefter kan vi immediately teste v2.0.0 deployment! 🎯**

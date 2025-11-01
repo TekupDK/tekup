@@ -111,4 +111,4 @@ curl -X POST https://tekup-billy-production.up.railway.app/api/v1/tools/list_cus
 
 **After allowlist:** Railway auto-deploys v2.0.0 and all fixes go live
 
-**Action required:** Click the GitHub URL
+**Action required:** Click the GitHub URL above! 🚀
