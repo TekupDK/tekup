@@ -51,7 +51,7 @@ export function logMetrics(metrics: RequestMetrics): void {
     process.env.NODE_ENV !== "production" &&
     process.env.NODE_ENV !== "test"
   ) {
-    console.log("[METRICS]", {
+    console.warn("[METRICS]", {
       intent: metrics.intent,
       tokens: `${metrics.promptTokens}+${metrics.completionTokens}=${metrics.totalTokens}`,
       latency: `${metrics.latency}ms`,
