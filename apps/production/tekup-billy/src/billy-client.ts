@@ -289,18 +289,18 @@ export class BillyClient {
    * @returns The parsed item or undefined
    */
   private parseResponse<T>(
-    response: any,
+    response: Record<string, any>,
     singularKey: string,
     pluralKey: string,
     context: string
   ): T | undefined {
     // Try singular format first: {item: {...}}
-    if (response[singularKey]) {
+    if (response[singularKey] != null && typeof response[singularKey] === 'object') {
       return response[singularKey] as T;
     }
     
     // Try plural format: {items: [...]}
-    if (response[pluralKey] && Array.isArray(response[pluralKey]) && response[pluralKey].length > 0) {
+    if (response[pluralKey] != null && Array.isArray(response[pluralKey]) && response[pluralKey].length > 0) {
       return response[pluralKey][0] as T;
     }
     
