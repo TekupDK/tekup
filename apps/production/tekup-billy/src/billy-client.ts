@@ -278,6 +278,37 @@ export class BillyClient {
     }
   }
 
+  /**
+   * Parse Billy API response that can be either singular or plural format
+   * Billy API inconsistently returns either {item: {...}} or {items: [...]}
+   * 
+   * @param response - The API response object
+   * @param singularKey - The key for singular format (e.g., 'invoice', 'contact', 'product')
+   * @param pluralKey - The key for plural format (e.g., 'invoices', 'contacts', 'products')
+   * @param context - Context string for error messages (e.g., 'create invoice')
+   * @returns The parsed item or undefined
+   */
+  private parseResponse<T>(
+    response: any,
+    singularKey: string,
+    pluralKey: string,
+    context: string
+  ): T | undefined {
+    // Try singular format first: {item: {...}}
+    if (response[singularKey]) {
+      return response[singularKey] as T;
+    }
+    
+    // Try plural format: {items: [...]}
+    if (response[pluralKey] && Array.isArray(response[pluralKey]) && response[pluralKey].length > 0) {
+      return response[pluralKey][0] as T;
+    }
+    
+    // No valid response found
+    log.error(`Invalid ${context} response structure`, null, { response });
+    return undefined;
+  }
+
   private async makeRequest<T>(
     method: "GET" | "POST" | "PUT" | "DELETE",
     endpoint: string,
@@ -687,24 +718,14 @@ export class BillyClient {
     }>("POST", endpoint, payload);
 
     // Billy API can return either {invoice: {...}} or {invoices: [...]}
-    // Handle both response formats
-    let invoice: BillyInvoice | undefined;
-    let invoiceLines: InvoiceLineResponse[] = [];
-
-    if (response.invoice) {
-      // Singular response format: {invoice: {...}}
-      invoice = response.invoice;
-      invoiceLines = response.invoiceLines || [];
-    } else if (response.invoices && response.invoices.length > 0) {
-      // Plural response format: {invoices: [...], invoiceLines: [...]}
-      invoice = response.invoices[0];
-      invoiceLines = response.invoiceLines || [];
-    }
+    const invoice = this.parseResponse<BillyInvoice>(
+      response,
+      'invoice',
+      'invoices',
+      'create invoice'
+    );
 
     if (!invoice) {
-      log.error("Invalid create invoice response structure", null, {
-        response,
-      });
       throw new Error(
         "Invalid response format from Billy API - expected invoice or invoices"
       );
@@ -713,7 +734,7 @@ export class BillyClient {
     // Billy returns invoiceLines separately - merge them into invoice object
     const invoiceWithLines: BillyInvoice = {
       ...invoice,
-      lines: invoiceLines,
+      lines: response.invoiceLines || [],
     };
 
     return invoiceWithLines;
@@ -990,13 +1011,14 @@ export class BillyClient {
     );
     
     // Billy API can return either {product: {...}} or {products: [...]}
-    // Handle both response formats
-    const product = response.product || (response.products && response.products[0]);
+    const product = this.parseResponse<BillyProduct>(
+      response,
+      'product',
+      'products',
+      'create product'
+    );
     
     if (!product) {
-      log.error("Invalid create product response structure", null, {
-        response,
-      });
       throw new Error(
         "Invalid response format from Billy API - expected product or products"
       );
@@ -1394,13 +1416,14 @@ export class BillyClient {
     );
     
     // Billy API can return either {contact: {...}} or {contacts: [...]}
-    // Handle both response formats
-    const contact = response.contact || (response.contacts && response.contacts[0]);
+    const contact = this.parseResponse<BillyContact>(
+      response,
+      'contact',
+      'contacts',
+      'update contact'
+    );
     
     if (!contact) {
-      log.error("Invalid update contact response structure", null, {
-        response,
-      });
       throw new Error(
         "Invalid response format from Billy API - expected contact or contacts"
       );
