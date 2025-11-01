@@ -1,0 +1,18 @@
+RAILWAY FORCE DEPLOYMENT TRIGGER
+================================
+
+Timestamp: 2025-11-01 17:26:00
+Branch: master  
+Version: Billy-mcp By Tekup v2.0.0
+Issue: Auto-deployment not working from GitHub
+
+This file change will trigger Railway webhook to deploy latest master branch.
+
+Expected deployment will include:
+- v2.0.0 rebranding (Billy-mcp By Tekup)
+- Enhanced pagination (Jørgen Pagh fix)  
+- Improved healthcheck timeout (15s)
+- Enhanced startup debugging logs
+- All environment variables configured
+
+DELETE THIS FILE AFTER SUCCESSFUL DEPLOYMENT
