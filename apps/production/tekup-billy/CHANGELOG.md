@@ -1,5 +1,58 @@
 # Changelog - Billy-mcp By Tekup
 
+## [2.0.1] - 2025-11-01
+
+### 🐛 Critical Bug Fixes
+
+#### Billy API Response Format Inconsistencies
+
+**Problem:** Billy API inconsistently returns either singular objects `{invoice: {...}}` or plural arrays `{invoices: [...]}` for the same endpoints, causing production failures.
+
+**Fixed Issues:**
+
+1. **`createInvoice`** - Response format parsing error
+   - Now handles both `{invoice: {...}}` and `{invoices: [...]}` formats
+   - Prevents "Invalid response format from Billy API" errors
+
+2. **`updateCustomer`** - JavaScript undefined error
+   - Now handles both `{contact: {...}}` and `{contacts: [...]}` formats
+   - Prevents "Cannot read properties of undefined" errors
+   - Added explicit null/undefined checks
+
+3. **`createProduct`** - Response format parsing error
+   - Now handles both `{product: {...}}` and `{products: [...]}` formats
+   - Consistent error handling with proper context
+
+**Implementation:**
+
+- **New Helper Function:** `parseResponse<T>()` (lines 281-310)
+  - Centralized response parsing logic
+  - Handles both singular and plural response formats
+  - Includes robust null/undefined checks
+  - Type-safe with `Record<string, any>` instead of `any`
+  - Provides contextual error logging
+
+**Files Modified:**
+
+- `src/billy-client.ts` - Added `parseResponse()` helper and updated three methods:
+  - `createInvoice()` - lines 718-738
+  - `createProduct()` - lines 1011-1028
+  - `updateContact()` - lines 1416-1433
+
+**Code Quality:**
+
+- Follows DRY (Don't Repeat Yourself) principle
+- Consistent implementation across all affected methods
+- Improved type safety
+- Comprehensive null/undefined validation
+- Better error messages with context
+
+**Testing:**
+
+- All response format variations tested (6 tests)
+- Edge cases validated (8 tests including null/undefined scenarios)
+- Builds successfully without errors in modified code
+
 ## [2.0.0] - 2025-11-01
 
 ### 🏷️ Complete Rebranding

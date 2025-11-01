@@ -6,9 +6,20 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-**Status:** ✅ **PRODUCTION READY** | **Version:** 2.0.0 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
+**Status:** ✅ **PRODUCTION READY** | **Version:** 2.0.1 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
 
 Billy-mcp By Tekup - Model Context Protocol (MCP) server til integration med Billy.dk API. Denne server giver adgang til faktura-, kunde-, produkt- og omsætningsstyring gennem Billy.dk's API med fuld Supabase-integration for caching, audit logging og usage metrics.
+
+**🆕 v2.0.1: Critical Bug Fixes - Billy API Response Format Inconsistencies - 1. November 2025**
+
+**🐛 Bug Fixes:**
+
+- 🔧 **Billy API Response Parser** - Håndterer nu både singular og plural response formater
+- ✅ **createInvoice** - Accepterer både `{invoice: {...}}` og `{invoices: [...]}`
+- ✅ **updateCustomer** - Accepterer både `{contact: {...}}` og `{contacts: [...]}`
+- ✅ **createProduct** - Accepterer både `{product: {...}}` og `{products: [...]}`
+- 🛡️ **Null Safety** - Robuste null/undefined checks for at forhindre runtime fejl
+- 📊 **Type Safety** - Forbedret type definitions med `Record<string, any>`
 
 **🆕 v2.0.0: Billy-mcp By Tekup - Complete Rebrand & API v2 Optimization - 1. November 2025**
 
