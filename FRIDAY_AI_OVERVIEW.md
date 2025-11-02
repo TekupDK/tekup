@@ -408,7 +408,7 @@ Property 'date' does not exist on type 'GmailThread'
 - [ ] Image optimization (lazy loading)
 - [ ] Server-side rendering for initial load
 
-### **7. Security Audit** 🟡 **ANBEFALЕТ**
+### **7. Security Audit** 🟡 **ANBEFALET**
 
 **Mangler:**
 
