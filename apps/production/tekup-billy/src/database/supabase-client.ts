@@ -15,7 +15,8 @@ export function isSupabaseEnabled(): boolean {
 }
 
 // Supabase admin client stub (returns null if not enabled)
-export const supabaseAdmin = isSupabaseEnabled() ? null : null;
+// Type as any to allow compilation - this is a stub implementation
+export const supabaseAdmin: any = null;
 
 // Test Supabase connection
 export async function testConnection(): Promise<boolean> {

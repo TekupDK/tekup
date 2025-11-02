@@ -133,13 +133,11 @@ export class RedisClusterManager {
           connectTimeout: 10000,
           lazyConnect: true,
           maxRetriesPerRequest: 3,
-          retryDelayOnFailover: 100,
-          enableOfflineQueue: false,
           ...config?.options?.redisOptions
         },
-        clusterRetryDelayOnFailover: 100,
-        clusterRetryDelayOnClusterDown: 300,
-        clusterMaxRedirections: 16,
+        retryDelayOnFailover: 100,
+        retryDelayOnClusterDown: 300,
+        maxRedirections: 16,
         scaleReads: 'slave',
         ...config?.options
       },
@@ -192,6 +190,9 @@ export class RedisClusterManager {
       } else {
         // Single node mode (Render.com Redis addon)
         const nodeConfig = this.config.nodes[0];
+        if (!nodeConfig) {
+          throw new Error('No Redis node configuration found');
+        }
         const redisOptions: RedisOptions = {
           host: nodeConfig.host,
           port: nodeConfig.port,
