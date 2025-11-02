@@ -79,7 +79,7 @@ interface HealthCheckResponse {
 
 // Initialize Express app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || "3000", 10);
 const API_VERSION = "v1";
 
 type AuditAction = "read" | "create" | "update" | "delete";
@@ -788,7 +788,7 @@ app.post(
 
       const executionTime = Date.now() - startTime;
       log.mcpTool(toolName!, "success", { executionTime });
-      healthMonitor.recordRequest(true, executionTime, false);
+      healthMonitor.recordRequest(true, executionTime);
 
       // Return response
       const response: ToolCallResponse = {
@@ -804,7 +804,7 @@ app.post(
       log.mcpTool(toolName!, "error", { error: error.message, executionTime });
 
       // Record health metrics (error)
-      healthMonitor.recordRequest(false, executionTime, false);
+      healthMonitor.recordRequest(false, executionTime);
 
       const response: ToolCallResponse = {
         success: false,
@@ -887,7 +887,7 @@ app.post(
 
           const result = await executeTool(args);
           const toolExecutionTime = Date.now() - toolStartTime;
-          healthMonitor.recordRequest(true, toolExecutionTime, false);
+          healthMonitor.recordRequest(true, toolExecutionTime);
 
           results.push({
             tool,
@@ -897,7 +897,7 @@ app.post(
         } catch (error: any) {
           // Record health metrics for failed batch operation
           const toolExecutionTime = Date.now() - toolStartTime;
-          healthMonitor.recordRequest(false, toolExecutionTime, false);
+          healthMonitor.recordRequest(false, toolExecutionTime);
 
           results.push({
             tool,

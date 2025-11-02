@@ -351,7 +351,8 @@ export class CacheManager {
   /**
    * Get Supabase table name from cache type
    */
-  private getSupabaseTable(type: string): keyof typeof CACHE_TABLES | null {
+  private getSupabaseTable(type: string | undefined): keyof typeof CACHE_TABLES | null {
+    if (!type) return null;
     switch (type) {
       case "invoices":
         return "invoices";
