@@ -311,7 +311,7 @@ JWT_SECRET=...                       # Authentication
 
 #### **Actions needed:**
 
-- [ ] Kopier `env.template.txt` til `.env`
+- [ ] Kopier `.env.example` til `.env`
 - [ ] Udfyld API keys fra tekup-secrets
 - [ ] Test database connection
 - [ ] Verificer Google service account delegation
@@ -528,23 +528,21 @@ Property 'date' does not exist on type 'GmailThread'
 #### **1. Klon repository**
 
 ```bash
-cd /home/runner/work/tekup/tekup/services
-# tekup-ai-v2 folder eksisterer allerede men er tom
-# Du skal clone fra GitHub
-git clone https://github.com/TekupDK/tekup-friday.git tekup-ai-v2-new
+# Clone Friday AI repository
+git clone https://github.com/TekupDK/tekup-friday.git
+cd tekup-friday
 ```
 
 #### **2. Install dependencies**
 
 ```bash
-cd tekup-ai-v2-new
 pnpm install
 ```
 
 #### **3. Konfigurer environment**
 
 ```bash
-cp env.template.txt .env
+cp .env.example .env
 # Rediger .env med API keys fra tekup-secrets
 ```
 
@@ -576,7 +574,7 @@ pnpm dev
 
 #### **Adgang:**
 
-- **Live demo:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
+- **Live demo:** Kontakt Tekup for demo URL
 - **Lokal:** <http://localhost:3000> (når developers starter server)
 
 #### **Hovedfunktioner:**
@@ -660,14 +658,14 @@ pnpm dev
 
 ### **Live Demo**
 
-- **URL:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
-- **Status:** Live (Manus platform)
+- **URL:** Kontakt Tekup for adgang til live demo
+- **Status:** Production-ready (deployment in progress)
 
 ---
 
 ## 🎉 Konklusion
 
-Friday AI repræsenterer **Tekups omfattende arbejde** med at skabe en moderne, intelligent forretningsassistent specifikt tilpasset Rendetaijas behov.
+Friday AI repræsenterer **Tekups omfattende arbejde** med at skabe en moderne, intelligent forretningsassistent specifikt tilpasset Rendetaljes behov.
 
 **Hvad der er opnået:**
 
