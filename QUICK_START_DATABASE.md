@@ -207,7 +207,7 @@ DATABASE_URL=postgresql://postgres:PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:
 
 ### Supabase API Keys
 
-**Already in .env.example files!** You don't need to get these separately:
+**Included in updated .env.example files!** These keys are now pre-filled in the .env.example files as part of this database consolidation. You can simply copy from the examples:
 
 ```bash
 SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
