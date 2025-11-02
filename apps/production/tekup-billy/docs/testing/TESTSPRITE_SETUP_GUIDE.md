@@ -10,6 +10,7 @@
 ### Testing Configuration
 
 #### Testing Types
+
 - **Mode:** ✅ **Backend** (korrekt - tekup-billy er en backend MCP server)
 - **Scope:** ✅ **Codebase** (test hele codebase)
 
@@ -37,12 +38,14 @@
 - **Full URL:** `http://localhost:3000/`
 
 **⚠️ Sørg for at serveren kører:**
+
 ```bash
 cd Tekup/apps/production/tekup-billy
 npm run dev:http
 ```
 
 Eller hvis du vil teste MCP stdio server:
+
 ```bash
 npm run dev
 ```
@@ -91,16 +94,19 @@ Men det kræver at projektet har en PRD fil først - så bedste approach er at u
 TestSprite vil generere tests for:
 
 ### 1. Health Endpoints
+
 - `GET /health` - Health check
 - `GET /version` - Version info
 - `GET /health/metrics` - Metrics
 
 ### 2. MCP Endpoints (hvis authentication = None)
+
 - `POST /` - MCP protocol (ChatGPT)
 - `POST /mcp` - MCP SSE transport (Claude)
 - `GET /.well-known/mcp.json` - MCP discovery
 
 ### 3. REST API Endpoints (hvis authentication = Custom Header)
+
 - `POST /api/v1/tools/list_invoices`
 - `POST /api/v1/tools/create_invoice`
 - `POST /api/v1/tools/list_customers`
@@ -146,4 +152,3 @@ TestSprite vil generere tests for:
 ---
 
 **Status:** Guide klar til brug 🚀
-

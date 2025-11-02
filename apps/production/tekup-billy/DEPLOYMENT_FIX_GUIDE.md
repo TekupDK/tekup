@@ -42,7 +42,7 @@
 
 **Action Required:**
 
-1. **Open URL:** https://github.com/TekupDK/tekup/security/secret-scanning/unblock-secret/34sqUHTahNtkZ5N7dNPPI8LWajI
+1. **Open URL:** <https://github.com/TekupDK/tekup/security/secret-scanning/unblock-secret/34sqUHTahNtkZ5N7dNPPI8LWajI>
 2. **Click:** "Allow this secret"
 3. **Return here and run:** `git push origin fix/typescript-type-errors`
 4. **Result:** Railway will auto-deploy v2.0.0 within 5 minutes
@@ -142,6 +142,6 @@ curl -X POST https://tekup-billy-production.up.railway.app/api/v1/tools/list_cus
 ## 🚀 **NEXT ACTION**
 
 **🔗 KLIK PÅ DETTE LINK:**
-**https://github.com/TekupDK/tekup/security/secret-scanning/unblock-secret/34sqUHTahNtkZ5N7dNPPI8LWajI**
+**<https://github.com/TekupDK/tekup/security/secret-scanning/unblock-secret/34sqUHTahNtkZ5N7dNPPI8LWajI>**
 
 **Derefter kan vi immediately teste v2.0.0 deployment! 🎯**

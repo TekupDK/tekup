@@ -6,7 +6,7 @@
 
 ## 🧠 System Prompt
 
-### Identity & Role:
+### Identity & Role
 
 ```
 Du er Friday - en intelligent assistent der hjælper med lead management,
@@ -21,20 +21,20 @@ tilbud, booking og kundeservice.
 
 ## 📊 Token Optimization Results
 
-### Before Optimization:
+### Before Optimization
 
 - **Average tokens per request:** ~400 tokens
 - **Prompt size:** ~140 lines (full SYSTEM_PROMPT)
 - **Training examples:** 3 full examples per request
 
-### After Optimization:
+### After Optimization
 
 - **Average tokens per request:** ~225 tokens
 - **Prompt size:** ~80 lines (condensed)
 - **Training examples:** Max 1 relevant example
 - **Reduction:** 43.75% ✅
 
-### Optimization Methods:
+### Optimization Methods
 
 1. ✅ **Intent-Based Memory Selection**
    - Detects user intent først
@@ -50,7 +50,7 @@ tilbud, booking og kundeservice.
 
 ## 🧬 Memory System (24 Business Rules)
 
-### Critical Memories (Implemented: 7/24):
+### Critical Memories (Implemented: 7/24)
 
 #### MEMORY_1: Time Check Regel ⏰
 
@@ -119,7 +119,7 @@ SKAL INDEHOLDE:
 
 ## 🎯 Intent Detection System
 
-### How It Works:
+### How It Works
 
 1. **User sends message** → "Hvad har vi fået af nye leads i dag?"
 2. **Intent Detector analyzes** → Keywords: "lead", "fået", "i dag"
@@ -128,7 +128,7 @@ SKAL INDEHOLDE:
 5. **Prompt built** → Only relevant memories included
 6. **Token savings** → 35-45% reduction
 
-### Intent Categories:
+### Intent Categories
 
 | Intent                | Trigger Keywords                   | Relevant Memories  |
 | --------------------- | ---------------------------------- | ------------------ |
@@ -152,7 +152,7 @@ temperature: 0.7 (default)
 maxOutputTokens: 1000 (can be configured)
 ```
 
-### Fallback System:
+### Fallback System
 
 ```typescript
 if (geminiClient) {
@@ -221,19 +221,19 @@ lør 1. nov 09:00-19:00: Flytterengøring
 
 ## 📈 Performance Metrics
 
-### Token Usage:
+### Token Usage
 
 - **Prompt tokens:** ~30-50 (vs. 100-150 before)
 - **Completion tokens:** ~175-200 (vs. 250-300 before)
 - **Total:** ~225 average (vs. ~400 before)
 
-### Response Quality:
+### Response Quality
 
 - **Intent Detection:** 85%+ accuracy
 - **Memory Enforcement:** 100% (validated via TestSprite)
 - **Response Relevance:** High (Shortwave.ai-level)
 
-### Cost Efficiency:
+### Cost Efficiency
 
 - **Per Request:** 0.001-0.002 DKK
 - **Monthly Estimate (1000 requests):** 1-2 DKK
@@ -243,7 +243,7 @@ lør 1. nov 09:00-19:00: Flytterengøring
 
 ## 🔧 Context Passing
 
-### User Context Enrichment:
+### User Context Enrichment
 
 ```typescript
 const contextualInfo = `
@@ -263,7 +263,7 @@ const enrichedMessage = `${contextualInfo}\n\n${message}`;
 
 ## 🎯 Prompt Quality Checklist
 
-### Every Prompt Includes:
+### Every Prompt Includes
 
 - ✅ **Identity:** "Du er Friday..."
 - ✅ **Role Context:** User role + organization
@@ -272,7 +272,7 @@ const enrichedMessage = `${contextualInfo}\n\n${message}`;
 - ✅ **User Message:** With context prepended
 - ✅ **Output Format:** "Generer kompakt, data-fokuseret svar"
 
-### What's NOT Included (Token Savings):
+### What's NOT Included (Token Savings)
 
 - ❌ All 24 memories (only relevant ones)
 - ❌ Multiple training examples (max 1)
@@ -307,8 +307,8 @@ const enrichedMessage = `${contextualInfo}\n\n${message}`;
 **System:** OPERATIONAL on Railway  
 **URLs:**
 
-- Orchestrator: https://inbox-orchestrator-production.up.railway.app
-- Backend: https://rendetalje-ai-production.up.railway.app
+- Orchestrator: <https://inbox-orchestrator-production.up.railway.app>
+- Backend: <https://rendetalje-ai-production.up.railway.app>
 
 **Test:** `test-chat-interface.html` or direct API calls
 

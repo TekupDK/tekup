@@ -95,7 +95,7 @@
 ### Health & Status
 
 - **Health Check:** `https://tekup-billy-production.up.railway.app/health`
-- **Railway Dashboard:** https://railway.com/project/e2df644d-428f-498e-8b34-e73b3388060c
+- **Railway Dashboard:** <https://railway.com/project/e2df644d-428f-498e-8b34-e73b3388060c>
 
 ---
 

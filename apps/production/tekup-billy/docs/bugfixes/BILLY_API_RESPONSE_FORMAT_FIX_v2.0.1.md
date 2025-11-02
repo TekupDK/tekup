@@ -79,6 +79,7 @@ private parseResponse<T>(
 #### createInvoice (lines 718-738)
 
 **Before:**
+
 ```typescript
 const response = await this.makeRequest<{ invoices: BillyInvoice[] }>("POST", endpoint, payload);
 if (!response.invoices || response.invoices.length === 0) {
@@ -88,6 +89,7 @@ const invoice = response.invoices[0]; // ❌ Fails when API returns {invoice: {.
 ```
 
 **After:**
+
 ```typescript
 const response = await this.makeRequest<{
   invoice?: BillyInvoice;
@@ -106,12 +108,14 @@ const invoice = this.parseResponse<BillyInvoice>(
 #### updateContact (lines 1416-1433)
 
 **Before:**
+
 ```typescript
 const response = await this.makeRequest<{ contact: BillyContact }>("PUT", endpoint, payload);
 return response.contact; // ❌ Fails when response.contact is undefined
 ```
 
 **After:**
+
 ```typescript
 const response = await this.makeRequest<{ 
   contact?: BillyContact;
@@ -129,12 +133,14 @@ const contact = this.parseResponse<BillyContact>(
 #### createProduct (lines 1011-1028)
 
 **Before:**
+
 ```typescript
 const response = await this.makeRequest<{ product: BillyProduct }>("POST", endpoint, payload);
 return response.product; // ❌ Fails when response.product is undefined
 ```
 
 **After:**
+
 ```typescript
 const response = await this.makeRequest<{ 
   product?: BillyProduct;
@@ -152,6 +158,7 @@ const product = this.parseResponse<BillyProduct>(
 ## Code Quality Improvements
 
 ### Before
+
 - ❌ Duplicated parsing logic in 3 places
 - ❌ Inconsistent patterns (if-else vs ternary)
 - ❌ Missing null checks
@@ -159,6 +166,7 @@ const product = this.parseResponse<BillyProduct>(
 - ❌ Hard to maintain
 
 ### After
+
 - ✅ Single reusable helper function (DRY principle)
 - ✅ Consistent implementation everywhere
 - ✅ Robust null/undefined checks
@@ -168,6 +176,7 @@ const product = this.parseResponse<BillyProduct>(
 ## Testing
 
 ### Response Format Tests (6 tests - all passing)
+
 ✅ createInvoice handles singular response format  
 ✅ createInvoice handles plural response format  
 ✅ updateContact handles singular response format  
@@ -176,6 +185,7 @@ const product = this.parseResponse<BillyProduct>(
 ✅ createProduct handles plural response format
 
 ### Edge Case Tests (8 tests - all passing)
+
 ✅ Valid singular response  
 ✅ Valid plural response  
 ✅ Null singular key returns undefined  
@@ -188,6 +198,7 @@ const product = this.parseResponse<BillyProduct>(
 ## Files Modified
 
 ### Primary Changes
+
 - **`src/billy-client.ts`**
   - Added `parseResponse()` helper function (lines 281-310)
   - Updated `createInvoice()` (lines 718-738)
@@ -195,6 +206,7 @@ const product = this.parseResponse<BillyProduct>(
   - Updated `updateContact()` (lines 1416-1433)
 
 ### Documentation Updates
+
 - **`CHANGELOG.md`** - Added v2.0.1 entry with bug fixes
 - **`README.md`** - Updated version and added bug fix summary
 - **`package.json`** - Bumped version to 2.0.1
@@ -203,6 +215,7 @@ const product = this.parseResponse<BillyProduct>(
 ## Deployment Notes
 
 ### Pre-deployment Checklist
+
 - ✅ All TypeScript types updated
 - ✅ Code compiles without errors in modified sections
 - ✅ Unit tests pass (14/14)
@@ -210,6 +223,7 @@ const product = this.parseResponse<BillyProduct>(
 - ✅ Documentation updated
 
 ### Post-deployment Verification
+
 - Monitor Billy API responses for both format types
 - Verify invoice creation works consistently
 - Verify customer updates don't throw undefined errors
@@ -227,12 +241,14 @@ const product = this.parseResponse<BillyProduct>(
 ## Recommendations
 
 ### For Future Development
+
 1. Add integration tests with Billy API to catch format changes early
 2. Consider runtime schema validation (e.g., Zod) for API responses
 3. Document all known Billy API response format variations
 4. Monitor Billy API changelog for breaking changes
 
 ### For Billy API Communication
+
 If contact with Billy.dk is established:
 1. Request consistent response formats across all endpoints
 2. Request versioned API with breaking change notices

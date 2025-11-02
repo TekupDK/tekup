@@ -29,6 +29,7 @@
 **Fil:** `src/tools/customers.ts`
 
 **Ændring:**
+
 ```typescript
 // Client-side filtering fallback if Billy API doesn't filter correctly
 if (params.search && params.search.trim()) {
@@ -82,7 +83,8 @@ if (params.search && params.search.trim()) {
 
 ## Eksempel Brug
 
-### Før Fix:
+### Før Fix
+
 ```json
 {
   "tool": "list_customers",
@@ -91,9 +93,11 @@ if (params.search && params.search.trim()) {
   }
 }
 ```
+
 **Resultat:** Alle 61 kunder returnerede (ingen match)
 
-### Efter Fix:
+### Efter Fix
+
 ```json
 {
   "tool": "list_customers",
@@ -102,6 +106,7 @@ if (params.search && params.search.trim()) {
   }
 }
 ```
+
 **Resultat:** Kun kunder med "Pagh" i navn, contactNo, phone, eller adresse
 
 ---
@@ -109,30 +114,35 @@ if (params.search && params.search.trim()) {
 ## Test Cases
 
 ### Test 1: Eksakt navn match
+
 ```
 Input: search: "Jørgen Pagh"
 Expected: Returnerer kunder med "Jørgen Pagh" i navnet
 ```
 
 ### Test 2: Delvis navn match
+
 ```
 Input: search: "Pagh"
 Expected: Returnerer alle kunder med "Pagh" i navn eller andre felter
 ```
 
 ### Test 3: Case insensitive
+
 ```
 Input: search: "JØRGEN"
 Expected: Returnerer kunder med "Jørgen" (case-insensitive match)
 ```
 
 ### Test 4: Telefonnummer søgning
+
 ```
 Input: search: "22650226"
 Expected: Returnerer kunder med dette telefonnummer
 ```
 
 ### Test 5: Contact person søgning
+
 ```
 Input: search: "info@rendetalje.dk"
 Expected: Returnerer kunder med denne email i contactPersons
@@ -170,6 +180,7 @@ Expected: Returnerer kunder med denne email i contactPersons
 **Deployment:** Railway
 
 **Test Command:**
+
 ```bash
 curl -X POST https://tekup-billy-production.up.railway.app/api/v1/tools/list_customers \
   -H "X-API-Key: YOUR_KEY" \
@@ -180,4 +191,3 @@ curl -X POST https://tekup-billy-production.up.railway.app/api/v1/tools/list_cus
 ---
 
 **Status:** ✅ Fix klar til deployment
-

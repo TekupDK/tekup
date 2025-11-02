@@ -61,6 +61,7 @@
 ## 📊 Deployment Metrics
 
 ### Database
+
 - **Schema Version:** renos (v1.0.0)
 - **Tables Created:** ~40+ (customers, leads, bookings, team_members, time_entries, services, subcontractors, etc.)
 - **Data Migrated:** 2 customers (test data)
@@ -68,12 +69,14 @@
 - **RLS Policies:** Aktive på alle user-facing tabeller
 
 ### Backend
+
 - **Compilation:** 0 errors (strict TypeScript)
 - **Startup Time:** ~8 sekunder
 - **Module Loading:** ~150ms for alle NestJS modules
 - **Router Mapping:** ~100+ endpoints registreret
 
 ### API Coverage
+
 | Module | Endpoints | Status |
 |--------|-----------|--------|
 | Health | 3 | ✅ |
@@ -94,6 +97,7 @@
 ## 🛠️ Tools & Scripts Created
 
 ### Migration Scripts
+
 1. **`quick-deploy-supabase.js`** - Fast schema deployment with pre-migration safety checks
 2. **`safe-push-supabase.js`** - Non-destructive schema updates (filters DROP/ALTER TYPE)
 3. **`migrate-data-to-renos.js`** - Customer data migration (2/2 succesful)
@@ -103,6 +107,7 @@
 7. **`introspect-services.js`** - Service table introspection
 
 ### Testing & Validation
+
 8. **`smoke-test.js`** - Comprehensive endpoint testing suite:
    - Health checks (basic + database)
    - Customers CRUD
@@ -113,6 +118,7 @@
    - Security audit logs
 
 ### Deployment Guides
+
 9. **`DEPLOYMENT_GUIDE.md`** - Step-by-step deployment instructions
 10. **`DEPLOYMENT_SUCCESS.md`** - This document (completion summary)
 
@@ -121,6 +127,7 @@
 ## 🔒 Security Configuration
 
 ### Environment Variables
+
 ```bash
 # Database (Supabase Direct Connection)
 DATABASE_URL=postgresql://postgres:Habibie12345%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=renos&sslmode=require
@@ -139,6 +146,7 @@ SENTRY_DSN=https://...
 ```
 
 ### RLS Policies Active
+
 - ✅ `renos.customers` - Users can only see their own data
 - ✅ `renos.leads` - Assigned sales reps can view/edit
 - ✅ `renos.bookings` - Customers + assigned team members
@@ -150,6 +158,7 @@ SENTRY_DSN=https://...
 ## 🚀 Next Steps
 
 ### Immediate Actions
+
 - [x] Backend operationel på port 3000
 - [x] Health endpoints responderer
 - [x] Database connectivity verificeret
@@ -157,6 +166,7 @@ SENTRY_DSN=https://...
 - [ ] Migrer resterende test data (leads, bookings, team_members)
 
 ### Near-Term (This Sprint)
+
 - [ ] Frontend integration med nye endpoints
 - [ ] End-to-end testing af customer journey
 - [ ] Sentry error tracking validation (trigger test errors)
@@ -164,6 +174,7 @@ SENTRY_DSN=https://...
 - [ ] Deploy til staging environment
 
 ### Future Enhancements
+
 - [ ] Vault schema deployment (efter permissions løst)
 - [ ] Billy.dk integration via MCP server
 - [ ] CRM & Flow modules aktivering
@@ -175,16 +186,19 @@ SENTRY_DSN=https://...
 ## 📝 Known Issues & Mitigations
 
 ### 1. Vault Schema Permissions
+
 **Issue:** `permission denied for schema vault`  
 **Mitigation:** Excluded from safe-push pipeline; will deploy when DB permissions granted  
 **Impact:** None - vault is future feature, not blocking current operations
 
 ### 2. Supabase REST Schema Limitation
+
 **Issue:** REST API limited to `public` and `graphql_public` schemas  
 **Mitigation:** Use Prisma Client for `renos` schema access; REST only for public endpoints  
 **Impact:** Minimal - backend uses Prisma exclusively
 
 ### 3. Legacy Table Dependencies
+
 **Issue:** `expiring_documents_alert` view depends on preserved subcontractor tables  
 **Mitigation:** Added `@@ignore` to Prisma models to prevent drops  
 **Impact:** None - view remains functional
@@ -194,6 +208,7 @@ SENTRY_DSN=https://...
 ## ✅ Verification Checklist
 
 ### Database
+
 - [x] Schema deployed without errors
 - [x] RLS policies active
 - [x] Indexes created (B-tree + IVFFlat)
@@ -201,6 +216,7 @@ SENTRY_DSN=https://...
 - [x] Legacy tables preserved
 
 ### Backend
+
 - [x] TypeScript compilation clean (0 errors)
 - [x] All modules loaded successfully
 - [x] Prisma connection established
@@ -209,6 +225,7 @@ SENTRY_DSN=https://...
 - [x] WebSocket gateway active
 
 ### API
+
 - [x] Health endpoints responding
 - [x] 100+ routes mapped
 - [x] CORS configured
@@ -216,6 +233,7 @@ SENTRY_DSN=https://...
 - [x] Throttling enabled (DDoS protection)
 
 ### Security
+
 - [x] SSL/TLS enabled on database connection
 - [x] Environment variables secured
 - [x] RLS policies tested
@@ -227,18 +245,21 @@ SENTRY_DSN=https://...
 ## 🎓 Lessons Learned
 
 ### What Went Well
+
 1. **Non-destructive migration strategy** - Zero data loss, smooth rollout
 2. **Prisma multi-schema** - Clean separation of concerns (renos, billy, vault, etc.)
 3. **Safe-push pipeline** - SQL diff filtering prevented destructive changes
 4. **Legacy preservation** - `@@ignore` models kept dependent views intact
 
 ### Challenges Overcome
+
 1. **Pooler vs Direct Connection** - Switched to direct 5432 for DDL operations
 2. **Required Column Blockers** - Added defaults to avoid Prisma push failures
 3. **Type Mismatches** - Aligned Decimal(10,2) and @db.Uuid for consistency
 4. **View Dependencies** - Preserved legacy tables to keep `expiring_documents_alert` working
 
 ### Recommendations
+
 1. **Always use direct DB connection for migrations** (not pooler)
 2. **Run safe-push iteratively** - Review safe.sql before applying
 3. **Test RLS policies in isolation** - Use Supabase dashboard SQL editor
@@ -249,18 +270,21 @@ SENTRY_DSN=https://...
 ## 📞 Support & Resources
 
 ### Documentation
-- **Supabase Dashboard:** https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey
+
+- **Supabase Dashboard:** <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey>
 - **Prisma Schema:** `/apps/rendetalje/services/backend-nestjs/prisma/schema.prisma`
-- **API Docs (Swagger):** http://localhost:3000/docs (when running)
-- **Health Check:** http://localhost:3000/health
+- **API Docs (Swagger):** <http://localhost:3000/docs> (when running)
+- **Health Check:** <http://localhost:3000/health>
 
 ### Scripts
+
 - **Quick Deploy:** `node quick-deploy-supabase.js`
 - **Safe Push:** `node safe-push-supabase.js`
 - **Smoke Tests:** `node smoke-test.js`
 - **Data Migration:** `node migrate-all-data.js`
 
 ### Monitoring
+
 - **Sentry:** Configured for development (errors logged)
 - **Prisma Studio:** `npx prisma studio` (visual DB browser)
 - **Supabase Logs:** Real-time in dashboard
@@ -276,6 +300,7 @@ SENTRY_DSN=https://...
 **Status:** ✅ **PRODUCTION READY** (pending smoke test completion)
 
 ### Final Validation
+
 ```bash
 # Start backend
 npm run start:dev

@@ -12,7 +12,7 @@ This integration was created to:
 2. **Enable Gmail operations** - Read, search, and send emails
 3. **Support multiple chatbot integrations** - Connect various AI assistants to Google Workspace
 4. **Follow Tekup patterns** - Built using the same architecture as tekup-billy MCP server
-5. **Use existing credentials** - Leverages Google OAuth setup for info@rendetalje.dk
+5. **Use existing credentials** - Leverages Google OAuth setup for <info@rendetalje.dk>
 
 ## Architecture
 
@@ -245,6 +245,7 @@ Structured logs using Winston:
 ### Metrics
 
 Track:
+
 - Request count
 - Error rate
 - Response time
@@ -364,6 +365,7 @@ curl -X POST http://localhost:3001/api/v1/tools/call \
 ## Support
 
 For questions or issues:
+
 - Review documentation in `packages/google-mcp/docs/`
 - Check logs: `docker logs google-mcp`
 - Contact Tekup team
@@ -372,7 +374,7 @@ For questions or issues:
 
 - Tekup Development Team
 - Built following tekup-billy MCP server patterns
-- Uses existing Google Workspace setup for info@rendetalje.dk
+- Uses existing Google Workspace setup for <info@rendetalje.dk>
 
 ---
 

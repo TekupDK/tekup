@@ -1,6 +1,6 @@
 # 🚀 TestSprite Quick Start - Friday AI
 
-## ✅ Status: ALT ER KLAR!
+## ✅ Status: ALT ER KLAR
 
 Alle filer er oprettet og serveren kan testes nu.
 
@@ -107,7 +107,7 @@ C:\Users\empir\Tekup\services\tekup-ai\packages\inbox-orchestrator\
 
 ---
 
-## 🎉 Ready to Test!
+## 🎉 Ready to Test
 
 **Status:** ✅ **ALL SET - READY FOR TESTSprite**
 

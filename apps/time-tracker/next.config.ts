@@ -1,10 +1,13 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   // Configuration for RenOS Time & Revenue Tracker
   serverExternalPackages: ['googleapis'],
-  turbopack: {
-    root: process.cwd(),
+  experimental: {
+    turbo: {
+      root: path.resolve(__dirname),
+    },
   },
 };
 

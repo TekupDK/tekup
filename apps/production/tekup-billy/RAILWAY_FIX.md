@@ -27,4 +27,3 @@ OR
 1. Service Settings → Build
 2. Uncheck "Enable Railpack" if available
 3. Force Dockerfile usage
-

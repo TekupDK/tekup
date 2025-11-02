@@ -7,13 +7,13 @@
 
 ### ✅ Inbox Orchestrator (Friday AI)
 
-- **URL:** https://inbox-orchestrator-production.up.railway.app/health
+- **URL:** <https://inbox-orchestrator-production.up.railway.app/health>
 - **Status:** ✅ **HEALTHY** - Returns `{"ok":true}`
 - **Response Time:** < 1 second
 
 ### ✅ Backend NestJS
 
-- **URL:** https://rendetalje-ai-production.up.railway.app/health
+- **URL:** <https://rendetalje-ai-production.up.railway.app/health>
 - **Status:** ✅ **HEALTHY** - Returns `{"ok":true}`
 - **Response Time:** < 1 second
 
@@ -26,8 +26,8 @@
 
 | Service            | Status      | URL                                                  | Health Check |
 | ------------------ | ----------- | ---------------------------------------------------- | ------------ |
-| Inbox Orchestrator | ✅ Running  | https://inbox-orchestrator-production.up.railway.app | ✅ OK        |
-| Backend NestJS     | ✅ Running  | https://rendetalje-ai-production.up.railway.app      | ✅ OK        |
+| Inbox Orchestrator | ✅ Running  | <https://inbox-orchestrator-production.up.railway.app> | ✅ OK        |
+| Backend NestJS     | ✅ Running  | <https://rendetalje-ai-production.up.railway.app>      | ✅ OK        |
 | Frontend Next.js   | 🚧 Building | Pending                                              | ⏳ Pending   |
 
 ## 🔧 Environment Variables Status
@@ -87,7 +87,7 @@ railway variables
 
 ## 📝 View Logs Commands
 
-### View Recent Logs:
+### View Recent Logs
 
 ```powershell
 # Inbox Orchestrator
@@ -103,7 +103,7 @@ cd C:\Users\empir\Tekup\apps\rendetalje\services\frontend-nextjs
 railway logs --lines 50
 ```
 
-### Watch Logs Live:
+### Watch Logs Live
 
 ```powershell
 railway logs --tail
@@ -111,21 +111,21 @@ railway logs --tail
 
 ## 🧪 Test Endpoints
 
-### Test Orchestrator Health:
+### Test Orchestrator Health
 
 ```powershell
 curl https://inbox-orchestrator-production.up.railway.app/health
 # Expected: {"ok":true}
 ```
 
-### Test Backend Health:
+### Test Backend Health
 
 ```powershell
 curl https://rendetalje-ai-production.up.railway.app/health
 # Expected: {"ok":true}
 ```
 
-### Test Friday AI Chat (via Backend):
+### Test Friday AI Chat (via Backend)
 
 ```powershell
 curl -X POST https://rendetalje-ai-production.up.railway.app/api/v1/ai-friday/chat `
@@ -136,7 +136,7 @@ curl -X POST https://rendetalje-ai-production.up.railway.app/api/v1/ai-friday/ch
 
 ## 🔍 Troubleshooting
 
-### If Services Are Not Responding:
+### If Services Are Not Responding
 
 1. **Check Logs:**
 
@@ -161,7 +161,7 @@ curl -X POST https://rendetalje-ai-production.up.railway.app/api/v1/ai-friday/ch
    railway up --detach
    ```
 
-### Common Issues:
+### Common Issues
 
 1. **Build Failures:**
    - Check build logs in Railway dashboard

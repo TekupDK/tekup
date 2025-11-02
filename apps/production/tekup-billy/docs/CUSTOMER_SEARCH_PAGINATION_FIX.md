@@ -8,14 +8,14 @@
 
 ## 🔍 Problem Identified
 
-### Symptoms:
+### Symptoms
 
 - ChatGPT reported: "Erik Gideon findes ikke i Billy endnu"
 - Customer **DID exist** in Billy (could be retrieved by ID: `PGKzNtzARISFRfQy0KkoLQ`)
 - `list_customers` only returned 61 customers
 - Customer was missing from search results
 
-### Root Cause:
+### Root Cause
 
 **`getContacts()` method in `billy-client.ts` was missing pagination implementation.**
 
@@ -30,7 +30,7 @@ The method was only fetching the **first page** of results from Billy API:
 
 ## ✅ Solution Implemented
 
-### Changes to `src/billy-client.ts`:
+### Changes to `src/billy-client.ts`
 
 Added **full pagination loop** to `getContacts()` method:
 
@@ -87,13 +87,13 @@ async getContacts(type: 'customer' | 'supplier' = 'customer', search?: string): 
 
 ## 📊 Technical Details
 
-### Billy API v2 Pagination:
+### Billy API v2 Pagination
 
 - **Max pageSize:** 1000 contacts per page
 - **Pagination metadata:** `meta.paging.pageCount` indicates total pages
 - **Fallback:** If `meta.paging` is missing, check if `contacts.length < pageSize`
 
-### Implementation:
+### Implementation
 
 1. ✅ Loop through all pages using `page` parameter
 2. ✅ Use `pageSize=1000` (maximum allowed)
@@ -106,13 +106,13 @@ async getContacts(type: 'customer' | 'supplier' = 'customer', search?: string): 
 
 ## 🎯 Impact
 
-### Before Fix:
+### Before Fix
 
 - Only first ~100 contacts returned
 - Customers on page 2+ invisible to ChatGPT
 - Search failures: "Customer not found" (even when they existed)
 
-### After Fix:
+### After Fix
 
 - **ALL contacts** fetched from all pages
 - Up to 100,000 contacts supported (100 pages × 1000)
@@ -144,13 +144,13 @@ This fix resolves:
 
 ## 🔄 Future Considerations
 
-### Potential Optimizations:
+### Potential Optimizations
 
 1. **Caching:** Cache full contact list to reduce API calls
 2. **Incremental Updates:** Only fetch new pages since last update
 3. **Parallel Requests:** Fetch multiple pages concurrently (if Billy API supports)
 
-### Monitoring:
+### Monitoring
 
 - Monitor `pagesFetched` in logs
 - Alert if approaching 100-page safety limit

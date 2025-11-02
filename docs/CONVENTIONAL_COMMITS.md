@@ -15,7 +15,9 @@ TekupDK workspace enforces [Conventional Commits](https://www.conventionalcommit
 ## Rules
 
 ### Type (required)
+
 Must be one of:
+
 - `feat`: New feature for the user
 - `fix`: Bug fix
 - `docs`: Documentation only changes
@@ -29,7 +31,9 @@ Must be one of:
 - `revert`: Reverts a previous commit
 
 ### Scope (optional but recommended)
+
 A noun describing the section of codebase:
+
 - `vault`, `billy`, `database` — production services
 - `rendetalje`, `renos`, `cloud-dashboard`, `chat` — web apps
 - `ai`, `gmail`, `mcp` — backend services
@@ -37,17 +41,20 @@ A noun describing the section of codebase:
 - `shared`, `packages`, `scripts`, `chatmode` — shared/meta
 
 ### Subject (required)
+
 - Imperative mood: "add feature" not "added feature"
 - No capitalization of first letter
 - No period at the end
 - Min 10 characters, max 72 total (including type and scope)
 
 ### Body (optional)
+
 - Separate from subject with blank line
-- Explain *what* and *why*, not *how*
+- Explain _what_ and _why_, not _how_
 - Wrap at 72 characters
 
 ### Footer (optional)
+
 - Reference issues: `Closes #123`
 - Breaking changes: `BREAKING CHANGE: description`
 
@@ -104,6 +111,7 @@ fix(tekup-vault-search-service): fixed the search bug
 ## Validation
 
 Commits are validated:
+
 1. **Locally** (if husky is configured): on `git commit`
 2. **CI** (GitHub Actions): on push and PR
 
@@ -120,6 +128,7 @@ While not enforced by commitlint, follow this pattern for consistency:
 ```
 
 Examples:
+
 - `feat/vault-search-20251029`
 - `fix/billy-rate-limit-20251029`
 - `chore/deps-upgrade-20251029`
@@ -127,6 +136,7 @@ Examples:
 ## Migration Tips
 
 If you have existing commits that don't follow this format:
+
 1. New commits must follow the format going forward
 2. Use `git rebase -i` to rewrite history only on feature branches
 3. For quick fixes: `git commit --amend` to fix the most recent commit

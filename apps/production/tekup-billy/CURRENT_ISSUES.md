@@ -125,7 +125,7 @@ GH001: Large files detected
 
 ## ✅ Resolved Issues
 
-### Fixed in Commit `1410bac`:
+### Fixed in Commit `1410bac`
 
 - ✅ Pagination implementation
 - ✅ Customer creation with email/phone (single API call)

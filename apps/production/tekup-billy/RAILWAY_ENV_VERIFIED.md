@@ -10,24 +10,28 @@
 Alle følgende variables er sat i Railway Dashboard og verificeret:
 
 ### Core Billy Variables
+
 - ✅ `BILLY_API_KEY=6ee7fab4b9f9b954f31d4ea93c57072611562d16`
 - ✅ `BILLY_ORGANIZATION_ID=pmf9tU56RoyZdcX3k69z1g`
 - ✅ `BILLY_TEST_MODE=false`
 - ✅ `BILLY_DRY_RUN=false`
 
 ### Server Configuration
+
 - ✅ `NODE_ENV=production`
 - ✅ `PORT=3000` (Railway sætter automatisk)
 - ✅ `CORS_ORIGIN=*`
 - ✅ `MCP_API_KEY=sp0ZLWofqSDXPx5OjQa64FHVwRYzeuyr`
 
 ### Supabase Integration
+
 - ✅ `SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co`
 - ✅ `SUPABASE_ANON_KEY=eyJhbGci...`
 - ✅ `SUPABASE_SERVICE_KEY=eyJhbGci...`
 - ✅ `ENABLE_SUPABASE_LOGGING=true`
 
 ### Encryption
+
 - ✅ `ENCRYPTION_KEY=9c22d3c2cebd332a194ca9f30b99e57112d10a290d9188eda881fe09eaa01947`
 - ✅ `ENCRYPTION_SALT=9b2af923a0665b2f47c7a799b9484b28`
 
@@ -61,6 +65,7 @@ SUPABASE_URL=https://oaevagdgrasfppbrxbey.supabase.co
 - **Status:** ✅ OK - bruger default value
 
 Hvis du vil være eksplicit, kan du tilføje:
+
 ```
 BILLY_API_BASE=https://api.billysbilling.com/v2
 ```
@@ -89,4 +94,3 @@ Alle nødvendige variables er sat:
 ---
 
 **All environment variables are correctly set!** ✅
-

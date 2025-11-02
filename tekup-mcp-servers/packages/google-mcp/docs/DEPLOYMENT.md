@@ -116,6 +116,7 @@ LOG_LEVEL=info
 ```
 
 **Important:** Extract the values from your `google-credentials.json`:
+
 - `GOOGLE_CLIENT_EMAIL`: `client_email` field
 - `GOOGLE_PRIVATE_KEY`: `private_key` field (keep the `\n` characters)
 - `GOOGLE_PROJECT_ID`: `project_id` field
@@ -290,7 +291,7 @@ For chatbots that support HTTP integrations:
 2. Configure the chatbot to make HTTP requests to:
    - **Base URL**: `https://your-domain.com`
    - **Tool Call Endpoint**: `/api/v1/tools/call`
-   - **Headers**: 
+   - **Headers**:
      - `Content-Type: application/json`
      - `X-API-Key: your-production-api-key`
 
@@ -393,6 +394,7 @@ docker logs -f google-mcp
 ```
 
 Set `LOG_LEVEL` environment variable to control verbosity:
+
 - `error`: Only errors
 - `warn`: Warnings and errors
 - `info`: Normal operations (default)
@@ -403,6 +405,7 @@ Set `LOG_LEVEL` environment variable to control verbosity:
 ### Issue: "Google credentials not configured"
 
 **Solution**: Ensure you've set the required environment variables:
+
 - `GOOGLE_CLIENT_EMAIL`
 - `GOOGLE_PRIVATE_KEY`
 - Or `GOOGLE_CREDENTIALS` as a JSON string
@@ -410,9 +413,10 @@ Set `LOG_LEVEL` environment variable to control verbosity:
 ### Issue: "Failed to create Google auth client"
 
 **Causes**:
+
 1. Private key format is incorrect
    - **Solution**: Make sure newlines are preserved (`\n` in the string)
-   
+
 2. Domain-wide delegation not configured
    - **Solution**: Follow steps in [Google Cloud Setup](#google-cloud-setup)
 
@@ -426,6 +430,7 @@ Set `LOG_LEVEL` environment variable to control verbosity:
 ### Issue: Calendar/Gmail API returns 403 Forbidden
 
 **Causes**:
+
 1. APIs not enabled in Google Cloud
    - **Solution**: Enable Google Calendar API and Gmail API
 
@@ -438,6 +443,7 @@ Set `LOG_LEVEL` environment variable to control verbosity:
 ### Issue: "Rate limit exceeded"
 
 **Solution**: The server implements rate limiting (100 requests per 15 minutes). If you need higher limits:
+
 1. Adjust `RATE_LIMIT` in the code
 2. Use multiple API keys for different clients
 3. Implement request queuing in your client
@@ -466,6 +472,7 @@ After successful deployment:
 ## Support
 
 For issues or questions:
+
 - Check the [main README](../README.md)
 - Review [Troubleshooting](#troubleshooting)
 - Contact the Tekup team

@@ -6,12 +6,12 @@
 
 ## 🔴 Problem: Authentication Mismatch
 
-### Din nuværende konfiguration:
+### Din nuværende konfiguration
 
 - **Path:** `/api/v1/tools/*` (REST API endpoints)
 - **Authentication:** None
 
-### Problem:
+### Problem
 
 REST API endpoints (`/api/v1/tools/*`) kræver authentication via `X-API-Key` header. De kan ikke testes med "None" authentication.
 
@@ -71,7 +71,7 @@ REST API endpoints (`/api/v1/tools/*`) kræver authentication via `X-API-Key` he
 
 ## 📋 Anbefalet Konfiguration (Option 1)
 
-### Testing Configuration:
+### Testing Configuration
 
 ```
 Mode: Backend ✅
@@ -81,14 +81,14 @@ Port: 3000 ✅
 Path: / ✅ (eller /mcp)
 ```
 
-### Tjek at serveren kører:
+### Tjek at serveren kører
 
 ```bash
 cd C:\Users\empir\Tekup\apps\production\tekup-billy
 npm run dev:http
 ```
 
-### Test forbindelse:
+### Test forbindelse
 
 ```bash
 curl http://localhost:3000/health

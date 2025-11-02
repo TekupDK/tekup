@@ -1,12 +1,14 @@
 # Railway Frontend Build Fix
 
 ## Problem
+
 Frontend build fejler pga. manglende Supabase environment variables.
 
 ## Solution
+
 Sæt disse environment variables i Railway dashboard for `rendetalje-ai` service:
 
-1. Go to Railway Dashboard: https://railway.app/project/308687ac-3adf-4267-8d43-be5850a023e9
+1. Go to Railway Dashboard: <https://railway.app/project/308687ac-3adf-4267-8d43-be5850a023e9>
 2. Select `rendetalje-ai` service
 3. Go to "Variables" tab
 4. Add these variables:
@@ -45,4 +47,3 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
 ## Alternative: Set via CLI (if supported)
 
 Railway CLI may support setting variables, but dashboard is recommended.
-

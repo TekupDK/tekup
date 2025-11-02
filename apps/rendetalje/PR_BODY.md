@@ -4,26 +4,26 @@ This PR contains the complete Friday AI integration and deployment for Rendetalj
 
 ## ✅ What's Included
 
-### Core Implementation:
+### Core Implementation
 
 - **Friday AI** rename and optimization (43.75% token reduction)
 - **Intent detection system** for smart memory selection
 - **Response templates** (Shortwave.ai-style)
 - **Metrics logging** (tokens, latency, cost)
 
-### Services:
+### Services
 
 - ✅ **Inbox Orchestrator** - Complete AI orchestrator service
 - ✅ **Backend NestJS** - API integration and context building
 - ✅ **Frontend Next.js** - Chat widget and UI components
 
-### Testing:
+### Testing
 
 - ✅ **TestSprite:** 5/5 tests PASSED (100%)
 - ✅ **Jest:** 28/30 tests PASSED (93%)
 - ✅ **Integration:** Verified operational
 
-### Deployment:
+### Deployment
 
 - ✅ **Railway:** All services deployed and operational
 - ✅ **Environment variables:** Configured
@@ -35,7 +35,7 @@ This PR contains the complete Friday AI integration and deployment for Rendetalj
 - **22,139+ insertions**
 - Complete documentation (20+ markdown files)
 
-### Key Files:
+### Key Files
 
 - `services/tekup-ai/packages/inbox-orchestrator/` - Core AI service
 - `services/backend-nestjs/src/ai-friday/` - Backend integration
@@ -68,8 +68,8 @@ Complete documentation included:
 
 **Services Operational:**
 
-- Inbox Orchestrator: https://inbox-orchestrator-production.up.railway.app
-- Backend API: https://rendetalje-ai-production.up.railway.app
+- Inbox Orchestrator: <https://inbox-orchestrator-production.up.railway.app>
+- Backend API: <https://rendetalje-ai-production.up.railway.app>
 
 ## 📝 Notes
 

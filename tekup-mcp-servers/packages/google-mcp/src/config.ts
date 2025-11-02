@@ -65,7 +65,7 @@ export function getGoogleMcpConfig(): GoogleMcpConfig {
     if (env.GOOGLE_CREDENTIALS) {
       try {
         credentials = JSON.parse(env.GOOGLE_CREDENTIALS);
-      } catch (error) {
+      } catch {
         console.warn('Failed to parse GOOGLE_CREDENTIALS JSON');
       }
     }

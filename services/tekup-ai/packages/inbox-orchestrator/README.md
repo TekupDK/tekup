@@ -48,28 +48,33 @@ curl http://localhost:3011/health
 ## 📚 API Endpoints
 
 ### Health Check
+
 ```
 GET /health
 ```
 
 ### Lead Parser Test
+
 ```
 GET /test/parser
 ```
 
 ### Generate Reply
+
 ```
 POST /generate-reply
 Body: {"threadId": "string", "policy": {"searchBeforeSend": true}}
 ```
 
 ### Approve and Send
+
 ```
 POST /approve-and-send
 Body: {"threadId": "string", "body": "string", "labels": {...}}
 ```
 
 ### Chat (Main Interface)
+
 ```
 POST /chat
 Body: {"message": "Hvad har vi fået af nye leads i dag?"}
@@ -82,6 +87,7 @@ See `FRIDAY_AI_PRD.md` for complete API documentation.
 ## 🧪 Testing
 
 ### Jest Tests
+
 ```bash
 npm test                # Run all tests
 npm run test:coverage   # With coverage
@@ -89,6 +95,7 @@ npm run test:watch      # Watch mode
 ```
 
 ### TestSprite Integration
+
 ```bash
 # See TESTSprite_README.md for TestSprite setup
 # All 5 API endpoints tested and verified ✅
@@ -110,6 +117,7 @@ npm run test:watch      # Watch mode
 ## 🧠 Memory System
 
 7 out of 24 memories implemented:
+
 - ✅ MEMORY_1: Time Check
 - ✅ MEMORY_4: Lead Source Rules
 - ✅ MEMORY_5: Calendar Check
@@ -171,6 +179,7 @@ src/
 ## ✅ TestSprite Validation
 
 All endpoints tested and verified:
+
 - ✅ Health Check API
 - ✅ Lead Parser API
 - ✅ Generate Reply API

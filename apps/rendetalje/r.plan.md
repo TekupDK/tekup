@@ -305,7 +305,7 @@ expo build:ios      # IPA for iOS (requires Apple Developer)
 
 ## Key Files Reference
 
-### Already Implemented:
+### Already Implemented
 
 - `services/tekup-ai/packages/inbox-orchestrator/src/leadParser.ts`
 - `services/tekup-ai/packages/inbox-orchestrator/src/memoryRules.ts` ✅ NEW
@@ -313,16 +313,16 @@ expo build:ios      # IPA for iOS (requires Apple Developer)
 - `services/tekup-ai/packages/inbox-orchestrator/src/index.ts`
 - `services/tekup-ai/packages/inbox-orchestrator/package.json` (includes @google/generative-ai) ✅
 
-### For Railway:
+### For Railway
 
 - `services/tekup-ai/packages/inbox-orchestrator/railway.json` (create if needed)
 - `apps/rendetalje/services/google-mcp/railway.json` (create if needed)
 
-### For Desktop:
+### For Desktop
 
 - `apps/desktop-electron/` (check if exists, update config)
 
-### For Mobile:
+### For Mobile
 
 - `apps/mobile/` or `apps/mobile-electron/` (check if exists, update config)
 
@@ -354,7 +354,7 @@ expo build:ios      # IPA for iOS (requires Apple Developer)
 
 ## Current To-dos
 
-### Completed:
+### Completed
 
 - [x] Add inbox UI page and core components in tekup-cloud-dashboard
 - [x] Implement AI side panel with approve/send and quick commands
@@ -371,7 +371,7 @@ expo build:ios      # IPA for iOS (requires Apple Developer)
 - [x] Run TestSprite tests (2/5 passed, 3 issues fixed)
 - [x] Fix TestSprite issues (TC003, TC004, TC005)
 
-### Next Steps:
+### Next Steps
 
 - [ ] Build TypeScript (`npm run build` in inbox-orchestrator)
 - [ ] Rebuild Docker container (`docker-compose build --no-cache`)

@@ -14,7 +14,7 @@ This guide deploys all Rendetalje services to Railway for cloud testing and prod
 ## 🔧 Prerequisites
 
 1. **Railway Account**
-   - Sign up at https://railway.app
+   - Sign up at <https://railway.app>
    - Install Railway CLI: `npm i -g @railway/cli`
 
 2. **Railway Login**
@@ -63,6 +63,7 @@ railway up
 ```
 
 **Environment Variables:**
+
 - `NODE_ENV=production`
 - `PORT=3011` (Railway auto-assigns, but we set it)
 - `GOOGLE_MCP_URL` - URL to Google MCP service on Railway
@@ -97,6 +98,7 @@ railway up
 ```
 
 **Environment Variables:**
+
 - `AI_FRIDAY_URL` - URL from Step 2 (e.g., `https://inbox-orchestrator-production.up.railway.app`)
 - `ENABLE_AI_FRIDAY=true`
 - `FRONTEND_URL` - Will be set after frontend deployment
@@ -121,6 +123,7 @@ railway up
 ```
 
 **Environment Variables:**
+
 - `NEXT_PUBLIC_API_URL` - URL from Step 3 (e.g., `https://backend-production.up.railway.app`)
 - `PORT=3002` (optional, Railway auto-assigns)
 
@@ -178,6 +181,7 @@ Write-Host "Orchestrator: $ORCH_URL" -ForegroundColor Green
 ## 🌐 Railway URLs Structure
 
 After deployment, you'll get URLs like:
+
 - **Frontend:** `https://rendetalje-frontend-production.up.railway.app`
 - **Backend:** `https://rendetalje-backend-production.up.railway.app`
 - **Inbox Orchestrator:** `https://inbox-orchestrator-production.up.railway.app`
@@ -218,6 +222,7 @@ curl -X POST https://rendetalje-backend-production.up.railway.app/api/v1/ai-frid
 ## 🔐 Environment Variables Checklist
 
 ### Inbox Orchestrator
+
 - [ ] `NODE_ENV=production`
 - [ ] `PORT=3011`
 - [ ] `GOOGLE_MCP_URL` (Railway URL or localhost if same service)
@@ -225,6 +230,7 @@ curl -X POST https://rendetalje-backend-production.up.railway.app/api/v1/ai-frid
 - [ ] `DEBUG=false`
 
 ### Backend NestJS
+
 - [ ] `NODE_ENV=production`
 - [ ] `PORT=3001` (or Railway auto-assigned)
 - [ ] `AI_FRIDAY_URL` (Inbox Orchestrator Railway URL)
@@ -238,6 +244,7 @@ curl -X POST https://rendetalje-backend-production.up.railway.app/api/v1/ai-frid
 - [ ] All other existing backend variables
 
 ### Frontend Next.js
+
 - [ ] `NODE_ENV=production`
 - [ ] `NEXT_PUBLIC_API_URL` (Backend Railway URL)
 - [ ] `PORT=3002` (optional)
@@ -245,20 +252,24 @@ curl -X POST https://rendetalje-backend-production.up.railway.app/api/v1/ai-frid
 ## 🔍 Troubleshooting
 
 ### Service won't start
+
 1. Check Railway logs: `railway logs`
 2. Verify environment variables are set
 3. Check health check endpoint responds
 
 ### CORS errors
+
 - Update `FRONTEND_URL` in backend
 - Verify CORS settings in backend allow Railway domain
 
 ### API connection errors
+
 - Verify service URLs are correct
 - Check environment variables are set
 - Ensure services are deployed in correct order
 
 ### Build failures
+
 - Check Dockerfile is correct
 - Verify package.json scripts
 - Check Railway build logs
@@ -266,13 +277,16 @@ curl -X POST https://rendetalje-backend-production.up.railway.app/api/v1/ai-frid
 ## 📊 Monitoring
 
 ### Railway Dashboard
+
 - View service status
 - Check logs in real-time
 - Monitor resource usage
 - View deployment history
 
 ### Health Checks
+
 All services have health check endpoints:
+
 - Inbox Orchestrator: `/health`
 - Backend: `/health`
 - Frontend: `/` (root)
@@ -353,4 +367,3 @@ See `TESTING_GUIDE.md` for detailed test scenarios.
 
 **Last Updated:** 31. oktober 2025  
 **Status:** Ready for Railway Deployment
-

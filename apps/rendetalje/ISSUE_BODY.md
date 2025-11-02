@@ -4,7 +4,7 @@ Complete Friday AI integration and deployment for RendetaljeOS.
 
 ## ✅ Implementation Complete
 
-### Core Features:
+### Core Features
 
 - Friday AI rename and optimization (43.75% token reduction)
 - TestSprite validation (5/5 tests PASSED - 100%)
@@ -12,18 +12,18 @@ Complete Friday AI integration and deployment for RendetaljeOS.
 - Frontend components implemented (FridayChatWidget, useFridayChat hook)
 - Railway deployment complete (all services operational)
 
-### Services Deployed:
+### Services Deployed
 
-- **Inbox Orchestrator:** https://inbox-orchestrator-production.up.railway.app
-- **Backend NestJS:** https://rendetalje-ai-production.up.railway.app
+- **Inbox Orchestrator:** <https://inbox-orchestrator-production.up.railway.app>
+- **Backend NestJS:** <https://rendetalje-ai-production.up.railway.app>
 - **Frontend:** Environment variables configured
 
-### Documentation:
+### Documentation
 
 - FRIDAY_AI_PROMPT_ENGINEERING.md - Complete prompt engineering overview
 - 20+ additional documentation files
 
-### Test Results:
+### Test Results
 
 - TestSprite: 5/5 PASSED (100% success rate)
 - Jest: 28/30 PASSED (93% success rate)

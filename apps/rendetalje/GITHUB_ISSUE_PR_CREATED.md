@@ -8,10 +8,10 @@
 ## 📋 Issue Created
 
 **Issue #7:** Friday AI: Complete Integration and Deployment  
-**URL:** https://github.com/TekupDK/tekup/issues/7  
+**URL:** <https://github.com/TekupDK/tekup/issues/7>  
 **Status:** Open
 
-### Issue Description:
+### Issue Description
 
 Complete Friday AI integration and deployment for RendetaljeOS, including:
 
@@ -26,17 +26,17 @@ Complete Friday AI integration and deployment for RendetaljeOS, including:
 ## 🔀 Pull Request Created
 
 **PR #6:** feat: Friday AI Complete Integration and Deployment  
-**URL:** https://github.com/TekupDK/tekup/pull/6  
+**URL:** <https://github.com/TekupDK/tekup/pull/6>  
 **Status:** Open - Ready for Review
 
-### PR Details:
+### PR Details
 
 - **Branch:** `friday-ai-complete-v2` → `master`
 - **Files Changed:** 118+ files
 - **Insertions:** 22,139+
 - **Related Issue:** #7
 
-### PR Contents:
+### PR Contents
 
 - ✅ Complete Friday AI implementation
 - ✅ Inbox Orchestrator service
@@ -46,7 +46,7 @@ Complete Friday AI integration and deployment for RendetaljeOS, including:
 - ✅ Complete documentation (20+ files)
 - ✅ Test results (100% TestSprite pass rate)
 
-### Security:
+### Security
 
 - ✅ No secrets committed
 - ✅ No large files
@@ -67,10 +67,10 @@ Complete Friday AI integration and deployment for RendetaljeOS, including:
 
 ## 🔗 Links
 
-**Issue:** https://github.com/TekupDK/tekup/issues/7  
-**Pull Request:** https://github.com/TekupDK/tekup/pull/6  
-**PR Files:** https://github.com/TekupDK/tekup/pull/6/files  
-**Branch:** https://github.com/TekupDK/tekup/tree/friday-ai-complete-v2
+**Issue:** <https://github.com/TekupDK/tekup/issues/7>  
+**Pull Request:** <https://github.com/TekupDK/tekup/pull/6>  
+**PR Files:** <https://github.com/TekupDK/tekup/pull/6/files>  
+**Branch:** <https://github.com/TekupDK/tekup/tree/friday-ai-complete-v2>
 
 ---
 

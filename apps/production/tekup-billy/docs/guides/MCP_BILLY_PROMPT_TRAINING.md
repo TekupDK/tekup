@@ -3,13 +3,13 @@
 **Status:** ✅ Production Ready  
 **Version:** 1.4.3  
 **Last Updated:** 2025-10-31  
-**Railway Deployment:** https://tekup-billy-production.up.railway.app
+**Railway Deployment:** <https://tekup-billy-production.up.railway.app>
 
 ---
 
 ## CRITICAL BILLY MCP RULES FOR AI ASSISTANT
 
-### 1. PRODUCT STRUCTURE - ALWAYS USE:
+### 1. PRODUCT STRUCTURE - ALWAYS USE
 
 ```
 REN-001: Fast rengøring (recurring cleaning)
@@ -19,7 +19,7 @@ REN-004: Erhvervsrengøring (commercial cleaning)
 REN-005: Specialopgaver (special tasks)
 ```
 
-### 2. API FIELD MAPPING - KRITISK:
+### 2. API FIELD MAPPING - KRITISK
 
 #### CUSTOMER CREATION
 
@@ -139,7 +139,7 @@ cancelled (hvis fejl)
 ### 10. PROMPT INSTRUCTION FOR AI
 
 > "Når opgave udføres:
-> 
+>
 > 1. Verificer Billy kunde (`list_customers`)
 > 2. Opret hvis ny (`create_customer` med `contactPersons`)
 > 3. Opret faktura draft (**ALDRIG** auto-approve)
@@ -167,7 +167,7 @@ Fra vores faktiske fakturaer:
 
 ### 2. KRITISKE BILLY WORKFLOW FEJL VI HAR LÆRT AF
 
-#### ❌ FORKERT - Automatisk approve efter create:
+#### ❌ FORKERT - Automatisk approve efter create
 
 ```typescript
 // ALDRIG GØR DETTE
@@ -175,7 +175,7 @@ await create_invoice({...})
 await approve_invoice({invoiceId: 'INVOICE_123'}) // FEJL!
 ```
 
-#### ✅ KORREKT - Vent på bekræftelse:
+#### ✅ KORREKT - Vent på bekræftelse
 
 ```typescript
 // Step 1: Opret draft
@@ -440,15 +440,15 @@ await mark_invoice_paid({
 
 ## KRITISK PROMPT REGEL - ALDRIG GØR
 
-### ❌ ALDRIG:
+### ❌ ALDRIG
 
 - Auto-approve efter `create_invoice`
 - Glem `contactPersons` array for email
-- Brug `attendees` på calendar events 
+- Brug `attendees` på calendar events
 - Send faktura før opgave udført
 - Gæt på produktkode - **ALTID** REN-001-005
 
-### ✅ ALTID:
+### ✅ ALTID
 
 - Verificer kunde eksisterer først
 - Match timer med kalender event
@@ -494,6 +494,4 @@ VED KONFLIKTER:
 **Last Updated:** 2025-10-31  
 **Maintained by:** Tekup - Rendetalje ApS  
 **Version:** 1.4.3  
-**Railway:** https://tekup-billy-production.up.railway.app
-
-
+**Railway:** <https://tekup-billy-production.up.railway.app>

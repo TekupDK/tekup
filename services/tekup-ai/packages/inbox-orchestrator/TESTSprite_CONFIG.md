@@ -9,20 +9,25 @@ Brug disse indstillinger i TestSprite dashboard:
 ## Testing Configuration
 
 ### Mode
+
 **Backend** ✅
 
 ### Scope  
+
 **Codebase** ✅
 
 ### Authentication
+
 - **Type:** None - No authentication required ✅
 
 ### Local Development Port
+
 - **Port:** `3011`
 - **Path:** `/`
 - **Full URL:** `http://localhost:3011`
 
 ### Product Specification Doc
+
 **Upload denne fil:**
 ```
 C:\Users\empir\Tekup\services\tekup-ai\packages\inbox-orchestrator\FRIDAY_AI_PRD.md
@@ -40,16 +45,20 @@ C:\Users\empir\Tekup\apps\rendetalje\r.plan.md
 Før du starter TestSprite tests, verificer:
 
 ### 1. Server er kørende
+
 ```bash
 curl http://localhost:3011/health
 ```
 **Expected:** `{"ok":true}`
 
 ### 2. Port er tilgængelig
+
 Serveren skal køre på port 3011.
 
 ### 3. Test endpoints
+
 Alle disse endpoints skal være tilgængelige:
+
 - ✅ GET `/health`
 - ✅ GET `/test/parser`
 - ✅ POST `/generate-reply`
@@ -71,6 +80,7 @@ Alle disse endpoints skal være tilgængelige:
 ## Expected Test Results
 
 After TestSprite runs, you'll get:
+
 - ✅ Test execution report
 - ✅ API endpoint validation
 - ✅ Memory enforcement verification

@@ -136,7 +136,7 @@ Alle opgaver for TestSprite integration er fuldført:
 
 ## 🎯 Next Steps (For User)
 
-### Immediate Action Required:
+### Immediate Action Required
 
 1. **Update TestSprite UI Configuration:**
    - Change base URL: `localhost:3000` → `tekup-billy-production.up.railway.app`
@@ -192,7 +192,7 @@ Alle opgaver for TestSprite integration er fuldført:
 
 ## 🔧 Tools & Scripts
 
-### Debug Tools Available:
+### Debug Tools Available
 
 1. **`scripts/debug-test-errors.ts`**
    - Verifies environment variables

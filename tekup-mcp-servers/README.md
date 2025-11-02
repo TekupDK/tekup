@@ -237,6 +237,7 @@ MIT License
 ## Support
 
 For questions or issues:
+
 - Review package-specific documentation
 - Check the main documentation in `docs/`
 - Contact the Tekup team

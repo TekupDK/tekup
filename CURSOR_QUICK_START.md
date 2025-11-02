@@ -30,7 +30,7 @@ pnpm dev
 
 ### **3. Åbn Browser og Test**
 
-1. **Gå til:** http://localhost:3000
+1. **Gå til:** <http://localhost:3000>
 2. **Test chat:** Type "Hej Friday, hvad kan du hjælpe med?"
 3. **Test Customer Profile:**
    - Gå til Leads tab

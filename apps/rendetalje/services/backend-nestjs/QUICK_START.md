@@ -7,6 +7,7 @@
 ## ⚡ Quick Commands
 
 ### Start Backend
+
 ```bash
 cd C:\Users\empir\Tekup\apps\rendetalje\services\backend-nestjs
 npm run start:dev
@@ -16,12 +17,13 @@ npm run start:dev
 ---
 
 ### Run Smoke Tests
+
 ```bash
 # Efter backend er startet (vent 8 sekunder)
 cd C:\Users\empir\Tekup\apps\rendetalje\services\backend-nestjs
 node smoke-test.js
 ```
-**Expected output:** 
+**Expected output:**
 ```
 🧪 Running Rendetalje Backend Smoke Tests
 ✓ GET /health returns 200
@@ -35,11 +37,13 @@ node smoke-test.js
 ---
 
 ### Migrate All Data
+
 ```bash
 cd C:\Users\empir\Tekup\apps\rendetalje\services\backend-nestjs
 node migrate-all-data.js
 ```
 **Migrerer:**
+
 - Customers (already done: 2/2)
 - Leads
 - Bookings  
@@ -51,6 +55,7 @@ node migrate-all-data.js
 ---
 
 ### Verify Database
+
 ```bash
 # Prisma-based (works for renos schema)
 node verify-prisma-renos.js
@@ -62,6 +67,7 @@ node verify-supabase-db.js
 ---
 
 ### Deploy Schema Changes
+
 ```bash
 # Safe non-destructive push
 node safe-push-supabase.js
@@ -75,24 +81,28 @@ node safe-push-supabase.js
 ## 🌐 API Endpoints
 
 ### Health Checks
-- **Basic:** http://localhost:3000/health
-- **Detailed:** http://localhost:3000/api/v1/health
-- **Database:** http://localhost:3000/api/v1/health/db
+
+- **Basic:** <http://localhost:3000/health>
+- **Detailed:** <http://localhost:3000/api/v1/health>
+- **Database:** <http://localhost:3000/api/v1/health/db>
 
 ### Core Modules
-- **Customers:** http://localhost:3000/api/v1/customers
-- **Leads:** http://localhost:3000/api/v1/leads
-- **Team:** http://localhost:3000/api/v1/team/members
-- **Subcontractors:** http://localhost:3000/api/v1/subcontractors
+
+- **Customers:** <http://localhost:3000/api/v1/customers>
+- **Leads:** <http://localhost:3000/api/v1/leads>
+- **Team:** <http://localhost:3000/api/v1/team/members>
+- **Subcontractors:** <http://localhost:3000/api/v1/subcontractors>
 
 ### Documentation
-- **Swagger UI:** http://localhost:3000/docs
+
+- **Swagger UI:** <http://localhost:3000/docs>
 
 ---
 
 ## 🔧 Troubleshooting
 
 ### Backend Won't Start
+
 ```bash
 # Check Prisma schema
 npx prisma validate
@@ -105,6 +115,7 @@ netstat -ano | findstr :3000
 ```
 
 ### Database Connection Fails
+
 ```bash
 # Test connection
 npx prisma db execute --stdin < verify-query.sql
@@ -114,6 +125,7 @@ echo $env:DATABASE_URL  # PowerShell
 ```
 
 ### Smoke Tests Fail
+
 ```bash
 # Ensure backend is running
 curl http://localhost:3000/health
@@ -127,6 +139,7 @@ curl http://localhost:3000/health
 ## 📊 Status Check
 
 ### Quick Health Check
+
 ```powershell
 curl http://localhost:3000/api/v1/health | ConvertFrom-Json | Format-List
 ```
@@ -139,6 +152,7 @@ services    : @{database=configured; supabase=configured; sentry=configured}
 ```
 
 ### Customer Count
+
 ```powershell
 curl http://localhost:3000/api/v1/customers | ConvertFrom-Json | Measure-Object | Select-Object Count
 ```
@@ -150,22 +164,26 @@ curl http://localhost:3000/api/v1/customers | ConvertFrom-Json | Measure-Object 
 ## 🎯 Next Steps
 
 ### 1. Run Full Smoke Tests
+
 ```bash
 node smoke-test.js
 ```
 
 ### 2. Migrate Remaining Data
+
 ```bash
 node migrate-all-data.js
 ```
 
 ### 3. Test RLS Policies
+
 ```bash
 # Use Supabase Dashboard SQL Editor
 SELECT * FROM renos.customers;  # Should respect RLS
 ```
 
 ### 4. Validate Sentry
+
 ```bash
 # Access test endpoint
 curl http://localhost:3000/test-sentry
@@ -173,6 +191,7 @@ curl http://localhost:3000/test-sentry
 ```
 
 ### 5. Frontend Integration
+
 ```bash
 cd ../frontend-nextjs
 npm run dev
