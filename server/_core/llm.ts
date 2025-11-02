@@ -19,7 +19,12 @@ export type FileContent = {
   type: "file_url";
   file_url: {
     url: string;
-    mime_type?: "audio/mpeg" | "audio/wav" | "application/pdf" | "audio/mp4" | "video/mp4" ;
+    mime_type?:
+      | "audio/mpeg"
+      | "audio/wav"
+      | "application/pdf"
+      | "audio/mp4"
+      | "video/mp4";
   };
 };
 
@@ -209,15 +214,29 @@ const normalizeToolChoice = (
   return toolChoice;
 };
 
-const resolveApiUrl = () =>
-  ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://forge.manus.im/v1/chat/completions";
+const resolveApiUrl = () => {
+  // Try Gemini first if available, fallback to OpenAI
+  if (ENV.geminiApiKey && ENV.geminiApiKey.trim()) {
+    return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${ENV.geminiApiKey}`;
+  }
+  // Use OpenAI API directly
+  return "https://api.openai.com/v1/chat/completions";
+};
 
 const assertApiKey = () => {
-  if (!ENV.forgeApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
+  if (!ENV.geminiApiKey && !ENV.openAiApiKey) {
+    throw new Error("Neither GEMINI_API_KEY nor OPENAI_API_KEY is configured");
   }
+
+  if (ENV.geminiApiKey && ENV.geminiApiKey.trim()) {
+    console.log("[LLM] Using Gemini API");
+    return;
+  }
+
+  if (!ENV.openAiApiKey) {
+    throw new Error("OPENAI_API_KEY is not configured and Gemini is not available");
+  }
+  console.log("[LLM] Using OpenAI API");
 };
 
 const normalizeResponseFormat = ({
@@ -279,8 +298,18 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     response_format,
   } = params;
 
-  const payload: Record<string, unknown> = {
-    model: "gemini-2.5-flash",
+  // Check which API we're using
+  const useGeminiApi = ENV.geminiApiKey && ENV.geminiApiKey.trim();
+
+  const payload: Record<string, unknown> = useGeminiApi ? {
+    // Gemini format
+    contents: messages.map(normalizeMessage).map(msg => ({
+      parts: [{ text: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content) }],
+      role: msg.role === 'assistant' ? 'model' : 'user'
+    }))
+  } : {
+    // OpenAI format
+    model: "gpt-4o-mini",
     messages: messages.map(normalizeMessage),
   };
 
@@ -296,10 +325,10 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.tool_choice = normalizedToolChoice;
   }
 
-  payload.max_tokens = 32768
+  payload.max_tokens = 32768;
   payload.thinking = {
-    "budget_tokens": 128
-  }
+    budget_tokens: 128,
+  };
 
   const normalizedResponseFormat = normalizeResponseFormat({
     responseFormat,
@@ -312,12 +341,18 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.response_format = normalizedResponseFormat;
   }
 
+  const headers: Record<string, string> = {
+    "content-type": "application/json",
+  };
+
+  // Only add authorization header for OpenAI (Gemini uses key in URL)
+  if (!useGeminiApi) {
+    headers.authorization = `Bearer ${ENV.openAiApiKey}`;
+  }
+
   const response = await fetch(resolveApiUrl(), {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
-    },
+    headers,
     body: JSON.stringify(payload),
   });
 

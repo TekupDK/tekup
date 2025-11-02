@@ -1,6 +1,6 @@
-import { AXIOS_TIMEOUT_MS, COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { ForbiddenError } from "@shared/_core/errors";
-import axios, { type AxiosInstance } from "axios";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { type AxiosInstance } from "axios";
 import { parse as parseCookieHeader } from "cookie";
 import type { Request } from "express";
 import { SignJWT, jwtVerify } from "jose";
@@ -29,13 +29,9 @@ const GET_USER_INFO_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfo`;
 const GET_USER_INFO_WITH_JWT_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfoWithJwt`;
 
 class OAuthService {
-  constructor(private client: ReturnType<typeof axios.create>) {
-    console.log("[OAuth] Initialized with baseURL:", ENV.oAuthServerUrl);
-    if (!ENV.oAuthServerUrl) {
-      console.error(
-        "[OAuth] ERROR: OAUTH_SERVER_URL is not configured! Set OAUTH_SERVER_URL environment variable."
-      );
-    }
+  constructor(private client: AxiosInstance | null) {
+    // OAuth not used - Manus removed
+    // This class kept for potential future OAuth integration
   }
 
   private decodeState(state: string): string {
@@ -76,19 +72,20 @@ class OAuthService {
   }
 }
 
-const createOAuthHttpClient = (): AxiosInstance =>
-  axios.create({
-    baseURL: ENV.oAuthServerUrl,
-    timeout: AXIOS_TIMEOUT_MS,
-  });
+// OAuth client not needed anymore (Manus removed)
+// Keep for potential future OAuth integration
+const createOAuthHttpClient = (): AxiosInstance | null => {
+  // No OAuth server URL needed - return null
+  return null;
+};
 
 class SDKServer {
-  private readonly client: AxiosInstance;
-  private readonly oauthService: OAuthService;
+  private readonly client: AxiosInstance | null;
+  private readonly oauthService: OAuthService | null;
 
-  constructor(client: AxiosInstance = createOAuthHttpClient()) {
+  constructor(client: AxiosInstance | null = null) {
     this.client = client;
-    this.oauthService = new OAuthService(this.client);
+    this.oauthService = null; // OAuth not used anymore
   }
 
   private deriveLoginMethod(
@@ -257,7 +254,7 @@ class SDKServer {
   }
 
   async authenticateRequest(req: Request): Promise<User> {
-    // Regular authentication flow
+    // Simple authentication flow - verify session cookie
     const cookies = this.parseCookies(req.headers.cookie);
     const sessionCookie = cookies.get(COOKIE_NAME);
     const session = await this.verifySession(sessionCookie);
@@ -270,28 +267,23 @@ class SDKServer {
     const signedInAt = new Date();
     let user = await db.getUserByOpenId(sessionUserId);
 
-    // If user not in DB, sync from OAuth server automatically
+    // If user not in DB, create it from session (dev mode)
     if (!user) {
-      try {
-        const userInfo = await this.getUserInfoWithJwt(sessionCookie ?? "");
-        await db.upsertUser({
-          openId: userInfo.openId,
-          name: userInfo.name || null,
-          email: userInfo.email ?? null,
-          loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
-          lastSignedIn: signedInAt,
-        });
-        user = await db.getUserByOpenId(userInfo.openId);
-      } catch (error) {
-        console.error("[Auth] Failed to sync user from OAuth:", error);
-        throw ForbiddenError("Failed to sync user info");
-      }
+      await db.upsertUser({
+        openId: sessionUserId,
+        name: session.name || null,
+        email: null,
+        loginMethod: "dev",
+        lastSignedIn: signedInAt,
+      });
+      user = await db.getUserByOpenId(sessionUserId);
     }
 
     if (!user) {
       throw ForbiddenError("User not found");
     }
 
+    // Update last signed in
     await db.upsertUser({
       openId: user.openId,
       lastSignedIn: signedInAt,

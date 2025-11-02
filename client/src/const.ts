@@ -4,7 +4,8 @@ export const APP_TITLE = "Friday AI Chat";
 
 export const APP_LOGO = "/logo.png";
 
-// Simple login URL for development/testing
+// Login URL - Always use local dev-login (no OAuth redirect)
 export const getLoginUrl = () => {
+  // Development login endpoint (auto-login as OWNER)
   return "/api/auth/login";
 };

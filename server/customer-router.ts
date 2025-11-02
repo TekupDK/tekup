@@ -19,7 +19,7 @@ import { createConversation } from "./db";
 import { invokeLLM } from "./_core/llm";
 import { getUserLeads } from "./db";
 import { syncBillyInvoicesForCustomer } from "./billy-sync";
-import { searchGmailThreadsByEmail } from "./google-api";
+import { searchGmailThreads } from "./mcp";
 
 /**
  * Customer Profile Router

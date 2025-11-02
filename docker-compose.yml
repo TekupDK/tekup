@@ -1,60 +1,165 @@
-version: '3.8'
-
 services:
-  # Friday AI Chat Application
+  # Friday AI Chat Application (Main Fullstack)
   friday-ai:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: friday-ai-container
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - DATABASE_URL=mysql://friday_user:friday_password@db:3306/friday_ai
-      - JWT_SECRET=your-jwt-secret-change-this
+      - JWT_SECRET=change-this-in-production
+      - OWNER_OPEN_ID=owner-friday-ai-dev
+      # AI Keys (set via .env file or environment variables)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      # Billy Integration (set via .env file or environment variables)
+      - BILLY_API_KEY=${BILLY_API_KEY:-}
+      - BILLY_ORGANIZATION_ID=${BILLY_ORGANIZATION_ID:-}
+      # Google Integration (set via .env file or environment variables)
+      - GOOGLE_SERVICE_ACCOUNT_KEY=${GOOGLE_SERVICE_ACCOUNT_KEY:-}
+      - GOOGLE_IMPERSONATED_USER=info@rendetalje.dk
+      - GOOGLE_CALENDAR_ID=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com
+      # MCP Server URLs (CRITICAL for data source!)
+      - GOOGLE_MCP_URL=http://calendar-mcp:3001
+      - GMAIL_MCP_URL=http://gmail-mcp:3000
+      # Frontend variables (Vite needs these at build time)
+      - VITE_APP_ID=friday-ai
+      - VITE_APP_TITLE=Friday AI Chat
+      - VITE_APP_LOGO=/logo.svg
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
     restart: unless-stopped
     networks:
-      - friday-network
+      - tekup-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })",
+        ]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
 
-  # MySQL Database
+  # Inbox Orchestrator (API Service)
+  inbox-orchestrator:
+    build:
+      context: ../tekup-ai/packages/inbox-orchestrator
+      dockerfile: Dockerfile
+    container_name: inbox-orchestrator-container
+    ports:
+      - "3011:3011"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/friday_ai_metrics
+      - GOOGLE_MCP_URL=${GOOGLE_MCP_URL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - tekup-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3011/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })",
+        ]
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+
+  # MySQL Database (for Friday AI)
   db:
     image: mysql:8.0
+    container_name: friday-ai-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
       MYSQL_DATABASE: friday_ai
       MYSQL_USER: friday_user
-      MYSQL_PASSWORD: friday_password
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-friday_password}
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
-      - friday-network
+      - tekup-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD:-root_password}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # PostgreSQL Database (for Inbox Orchestrator Metrics)
+  postgres:
+    image: postgres:15-alpine
+    container_name: friday-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: friday_ai_metrics
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tekup-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Redis Cache (optional)
   redis:
     image: redis:7-alpine
+    container_name: friday-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     networks:
-      - friday-network
+      - tekup-network
 
-  # Database Admin (optional)
+  # Database Admin (optional - for MySQL)
   adminer:
     image: adminer
+    container_name: friday-adminer
     restart: unless-stopped
     ports:
       - "8080:8080"
     networks:
-      - friday-network
+      - tekup-network
+    depends_on:
+      - db
 
 volumes:
   mysql_data:
+  postgres_data:
 
 networks:
-  friday-network:
+  tekup-network:
     driver: bridge

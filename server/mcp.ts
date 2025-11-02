@@ -1,13 +1,13 @@
 /**
  * MCP (Model Context Protocol) Client
- * Handles Gmail and Google Calendar integrations via manus-mcp-cli
+ * Handles Gmail and Google Calendar integrations via MCP HTTP servers
  */
 
-import { exec } from "child_process";
-import { promisify } from "util";
-import fs from "fs";
+// Use native fetch (Node.js 18+)
 
-const execAsync = promisify(exec);
+// MCP Server URLs - fallback to localhost if not set
+const GOOGLE_MCP_URL = process.env.GOOGLE_MCP_URL || "http://localhost:8055";
+const GMAIL_MCP_URL = process.env.GMAIL_MCP_URL || "http://localhost:8056";
 
 interface MCPToolResult {
   content: Array<{
@@ -19,52 +19,72 @@ interface MCPToolResult {
 }
 
 /**
- * Call an MCP tool via manus-mcp-cli
+ * Call an MCP tool via HTTP API (MCP server)
  */
 async function callMCPTool(
-  server: string,
+  mcpUrl: string,
   toolName: string,
   args: Record<string, unknown>
 ): Promise<any> {
   try {
-    const argsJson = JSON.stringify(args);
-    const tmpFile = `/tmp/mcp-result-${Date.now()}.json`;
-    const command = `MANUS_MCP_RESULT_FILEPATH=${tmpFile} manus-mcp-cli tool call ${toolName} --server ${server} --input '${argsJson}'`;
-    
-    const { stdout, stderr } = await execAsync(command);
-    
-    if (stderr && !stderr.includes("Tool call completed")) {
-      console.error(`MCP stderr: ${stderr}`);
+    console.log(`[MCP] Calling ${toolName} at ${mcpUrl}`, args);
+
+    // Calendar MCP uses /api/v1/tools/:toolName endpoint
+    const endpoint = `${mcpUrl}/api/v1/tools/${toolName}`;
+    console.log(`[MCP] Calling endpoint: ${endpoint}`);
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(args),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[MCP] ${toolName} failed: ${response.status} ${errorText}`);
+      throw new Error(`MCP tool ${toolName} failed: ${response.status} ${errorText}`);
     }
-    
-    // Read result from file
-    const resultContent = fs.readFileSync(tmpFile, "utf-8");
-    const result = JSON.parse(resultContent);
-    
-    // Clean up temp file
-    fs.unlinkSync(tmpFile);
-    
+
+    const result = await response.json();
+    console.log(`[MCP] ${toolName} success:`, result);
+
     return result;
   } catch (error) {
-    console.error(`MCP tool call failed: ${error}`);
+    console.error(`[MCP] Tool call failed for ${toolName}:`, error);
     throw new Error(`Failed to call MCP tool ${toolName}: ${error}`);
   }
 }
 
 /**
- * Parse MCP result to extract text content
+ * Parse MCP result - handles both old MCP format and new HTTP API format
  */
-function extractTextContent(result: MCPToolResult): string {
-  if (result.isError) {
-    throw new Error("MCP tool returned an error");
+function parseMCPResult(result: any): any {
+  // If result is already the data we need, return it
+  if (Array.isArray(result) || (result && typeof result === 'object' && !result.content)) {
+    return result;
   }
-  
-  const textContent = result.content
-    .filter((c) => c.type === "text" && c.text)
-    .map((c) => c.text)
-    .join("\n");
-  
-  return textContent;
+
+  // Old MCP format with content array
+  if (result.content) {
+    if (result.isError) {
+      throw new Error("MCP tool returned an error");
+    }
+
+    const textContent = result.content
+      .filter((c: any) => c.type === "text" && c.text)
+      .map((c: any) => c.text)
+      .join("\n");
+
+    try {
+      return JSON.parse(textContent);
+    } catch {
+      return textContent;
+    }
+  }
+
+  return result;
 }
 
 // ============= Gmail Functions =============
@@ -97,27 +117,25 @@ export async function listGmailThreads(params: {
   query?: string;
 }): Promise<GmailThread[]> {
   try {
-    const result = await callMCPTool("gmail", "gmail_search_messages", {
+    const result = await callMCPTool(GMAIL_MCP_URL, "gmail_search_messages", {
       max_results: params.maxResults || 20,
       q: params.query || "",
     });
-    
+
     // Check if MCP returned an error or unfinished call
     if (result.message && result.message.includes("unfinished")) {
       console.warn("Gmail MCP requires OAuth authentication");
       return [];
     }
-    
-    const content = extractTextContent(result);
-    // Parse the JSON response from Gmail MCP
-    const threads = JSON.parse(content);
-    
+
+    const threads = parseMCPResult(result);
+
     // Validate that threads is an array
     if (!Array.isArray(threads)) {
       console.warn("Gmail MCP returned non-array result:", threads);
       return [];
     }
-    
+
     return threads;
   } catch (error) {
     console.error("Error listing Gmail threads:", error);
@@ -130,13 +148,12 @@ export async function listGmailThreads(params: {
  */
 export async function getGmailThread(threadId: string): Promise<GmailMessage[]> {
   try {
-    const result = await callMCPTool("gmail", "gmail_read_threads", {
+    const result = await callMCPTool(GMAIL_MCP_URL, "gmail_read_threads", {
       thread_ids: [threadId],
       include_full_messages: true,
     });
-    
-    const content = extractTextContent(result);
-    const messages = JSON.parse(content);
+
+    const messages = parseMCPResult(result);
     return messages;
   } catch (error) {
     console.error("Error getting Gmail thread:", error);
@@ -149,6 +166,20 @@ export async function getGmailThread(threadId: string): Promise<GmailMessage[]> 
  */
 export async function searchGmail(query: string, maxResults = 20): Promise<GmailThread[]> {
   return listGmailThreads({ query, maxResults });
+}
+
+/**
+ * Search Gmail threads (alias for searchGmail)
+ */
+export async function searchGmailThreads(query: string, maxResults = 20): Promise<GmailThread[]> {
+  return listGmailThreads({ query, maxResults });
+}
+
+/**
+ * Search Gmail threads by email address (alias for searchGmail)
+ */
+export async function searchGmailThreadsByEmail(email: string): Promise<GmailThread[]> {
+  return searchGmail(`from:${email} OR to:${email}`, 50);
 }
 
 /**
@@ -169,12 +200,11 @@ export async function createGmailDraft(params: {
       cc: params.cc ? [params.cc] : undefined,
       bcc: params.bcc ? [params.bcc] : undefined,
     }];
-    const result = await callMCPTool("gmail", "gmail_send_messages", {
+    const result = await callMCPTool(GMAIL_MCP_URL, "gmail_send_messages", {
       messages,
     });
-    
-    const content = extractTextContent(result);
-    const draft = JSON.parse(content);
+
+    const draft = parseMCPResult(result);
     return draft;
   } catch (error) {
     console.error("Error creating Gmail draft:", error);
@@ -189,15 +219,17 @@ export interface CalendarEvent {
   summary: string;
   description?: string;
   start: {
-    dateTime: string;
+    dateTime?: string;
+    date?: string;
     timeZone?: string;
-  };
+  } | string; // Support both formats
   end: {
-    dateTime: string;
+    dateTime?: string;
+    date?: string;
     timeZone?: string;
-  };
+  } | string; // Support both formats
   location?: string;
-  status: string;
+  status?: string;
 }
 
 /**
@@ -209,31 +241,43 @@ export async function listCalendarEvents(params: {
   maxResults?: number;
 }): Promise<CalendarEvent[]> {
   try {
-    const result = await callMCPTool("google-calendar", "google_calendar_search_events", {
-      calendar_id: "primary",
-      time_min: params.timeMin || new Date().toISOString(),
-      time_max: params.timeMax,
-      max_results: params.maxResults || 50,
-    });
-    
-    // Check if MCP returned an error or unfinished call
-    if (!result || (result.message && result.message.includes("unfinished"))) {
-      console.warn("Google Calendar MCP requires OAuth authentication");
-      return [];
+    // Try MCP first, fallback to direct Google API if MCP unavailable
+    try {
+      const result = await callMCPTool(GOOGLE_MCP_URL, "google_calendar_search_events", {
+        calendar_id: "primary",
+        time_min: params.timeMin || new Date().toISOString(),
+        time_max: params.timeMax,
+        max_results: params.maxResults || 50,
+      });
+
+      // Check if MCP returned an error or unfinished call
+      if (!result || (result.message && result.message.includes("unfinished"))) {
+        console.warn("[MCP] Calendar MCP returned unfinished/error, falling back to direct API");
+        throw new Error("MCP unavailable");
+      }
+
+      const events = parseMCPResult(result);
+
+      // Validate that events is an array
+      if (!Array.isArray(events)) {
+        console.warn("[MCP] Calendar MCP returned non-array result, falling back to direct API");
+        throw new Error("MCP invalid response");
+      }
+
+      return events;
+    } catch (mcpError: any) {
+      // Fallback to direct Google API if MCP fails
+      console.log("[Calendar] MCP unavailable, using direct Google API fallback");
+      if (mcpError.message?.includes("ENOTFOUND") || mcpError.message?.includes("ECONNREFUSED") || mcpError.message?.includes("fetch failed")) {
+        // MCP server not running, use direct API
+        const { listCalendarEvents: directListEvents } = await import("./google-api");
+        return await directListEvents(params);
+      }
+      throw mcpError;
     }
-    
-    const content = extractTextContent(result);
-    const events = JSON.parse(content);
-    
-    // Validate that events is an array
-    if (!Array.isArray(events)) {
-      console.warn("Google Calendar MCP returned non-array result:", events);
-      return [];
-    }
-    
-    return events;
   } catch (error) {
-    console.error("Error listing calendar events:", error);
+    console.error("[Calendar] Error listing calendar events:", error);
+    // Final fallback: return empty array so UI doesn't break
     return [];
   }
 }
@@ -257,18 +301,17 @@ export async function createCalendarEvent(params: {
       end_time: params.end,
       location: params.location,
     }];
-    const result = await callMCPTool("google-calendar", "google_calendar_create_events", {
+    const result = await callMCPTool(GOOGLE_MCP_URL, "google_calendar_create_events", {
       events,
     });
-    
+
     // Check if MCP returned an error or unfinished call
     if (!result || (result.message && result.message.includes("unfinished"))) {
       console.warn("Google Calendar MCP requires OAuth authentication");
       throw new Error("Google Calendar OAuth required. Please authenticate via MCP.");
     }
-    
-    const content = extractTextContent(result);
-    const event = JSON.parse(content);
+
+    const event = parseMCPResult(result);
     return event;
   } catch (error) {
     console.error("Error creating calendar event:", error);
@@ -288,7 +331,7 @@ export async function checkCalendarAvailability(params: {
       timeMin: params.start,
       timeMax: params.end,
     });
-    
+
     return {
       available: events.length === 0,
       conflictingEvents: events,
@@ -296,6 +339,79 @@ export async function checkCalendarAvailability(params: {
   } catch (error) {
     console.error("Error checking calendar availability:", error);
     return { available: false, conflictingEvents: [] };
+  }
+}
+
+/**
+ * Update a calendar event
+ */
+export async function updateCalendarEvent(params: {
+  eventId: string;
+  summary?: string;
+  description?: string;
+  start?: string;
+  end?: string;
+  location?: string;
+}): Promise<CalendarEvent> {
+  try {
+    // Try MCP first, fallback to direct Google API
+    try {
+      const result = await callMCPTool(GOOGLE_MCP_URL, "google_calendar_update_event", {
+        calendar_id: "primary",
+        event_id: params.eventId,
+        summary: params.summary,
+        description: params.description,
+        start_time: params.start,
+        end_time: params.end,
+        location: params.location,
+      });
+
+      if (!result || (result.message && result.message.includes("unfinished"))) {
+        throw new Error("MCP unavailable");
+      }
+
+      return parseMCPResult(result);
+    } catch (mcpError: any) {
+      // Fallback to direct Google API
+      console.log("[Calendar] MCP unavailable for update, using direct Google API fallback");
+      const { updateCalendarEvent: directUpdateEvent } = await import("./google-api");
+      return await directUpdateEvent(params);
+    }
+  } catch (error) {
+    console.error("[Calendar] Error updating calendar event:", error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a calendar event
+ */
+export async function deleteCalendarEvent(params: {
+  eventId: string;
+}): Promise<void> {
+  try {
+    // Try MCP first, fallback to direct Google API
+    try {
+      const result = await callMCPTool(GOOGLE_MCP_URL, "google_calendar_delete_event", {
+        calendar_id: "primary",
+        event_id: params.eventId,
+      });
+
+      if (!result || (result.message && result.message.includes("unfinished"))) {
+        throw new Error("MCP unavailable");
+      }
+
+      // MCP delete typically returns empty/success response
+      return;
+    } catch (mcpError: any) {
+      // Fallback to direct Google API
+      console.log("[Calendar] MCP unavailable for delete, using direct Google API fallback");
+      const { deleteCalendarEvent: directDeleteEvent } = await import("./google-api");
+      return await directDeleteEvent(params);
+    }
+  } catch (error) {
+    console.error("[Calendar] Error deleting calendar event:", error);
+    throw error;
   }
 }
 
@@ -309,32 +425,32 @@ export async function findFreeTimeSlots(params: {
 }): Promise<Array<{ start: string; end: string }>> {
   const workingHours = params.workingHours || { start: 9, end: 17 };
   const date = new Date(params.date);
-  
+
   // Get all events for the day
   const dayStart = new Date(date);
   dayStart.setHours(workingHours.start, 0, 0, 0);
-  
+
   const dayEnd = new Date(date);
   dayEnd.setHours(workingHours.end, 0, 0, 0);
-  
+
   const events = await listCalendarEvents({
     timeMin: dayStart.toISOString(),
     timeMax: dayEnd.toISOString(),
   });
-  
+
   // Find gaps between events
   const freeSlots: Array<{ start: string; end: string }> = [];
   let currentTime = dayStart;
-  
+
   // Sort events by start time
   const sortedEvents = events.sort(
     (a, b) => new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime()
   );
-  
+
   for (const event of sortedEvents) {
     const eventStart = new Date(event.start.dateTime);
     const eventEnd = new Date(event.end.dateTime);
-    
+
     // Check if there's a gap before this event
     const gapDuration = eventStart.getTime() - currentTime.getTime();
     if (gapDuration >= params.duration * 60 * 1000) {
@@ -343,10 +459,10 @@ export async function findFreeTimeSlots(params: {
         end: new Date(currentTime.getTime() + params.duration * 60 * 1000).toISOString(),
       });
     }
-    
+
     currentTime = eventEnd > currentTime ? eventEnd : currentTime;
   }
-  
+
   // Check if there's time left at the end of the day
   const remainingTime = dayEnd.getTime() - currentTime.getTime();
   if (remainingTime >= params.duration * 60 * 1000) {
@@ -355,6 +471,6 @@ export async function findFreeTimeSlots(params: {
       end: new Date(currentTime.getTime() + params.duration * 60 * 1000).toISOString(),
     });
   }
-  
+
   return freeSlots;
 }
