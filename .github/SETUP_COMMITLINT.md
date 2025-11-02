@@ -5,6 +5,7 @@ This workspace now enforces [Conventional Commits](https://www.conventionalcommi
 ## What Was Added
 
 ### Configuration Files
+
 - **`commitlint.config.cjs`** — Root commitlint configuration with TekupDK-specific scopes
 - **`.husky/`** — Git hooks directory managed by Husky
   - `commit-msg` — Validates commit messages on `git commit`
@@ -12,15 +13,18 @@ This workspace now enforces [Conventional Commits](https://www.conventionalcommi
   - `_/husky.sh` — Husky runtime script
 
 ### Documentation
+
 - **`docs/CONVENTIONAL_COMMITS.md`** — Complete guide to conventional commits with TekupDK examples
 - **`.husky/README.md`** — Git hooks documentation and troubleshooting
 
 ### GitHub Actions
+
 - **`.github/workflows/commitlint.yml`** — CI workflow to validate commits on push and PR
   - Validates all commits in PR against base branch
   - Posts helpful comment on failure with examples and fix instructions
 
 ### Templates & Guides
+
 - **`.github/PULL_REQUEST_TEMPLATE.md`** — Enhanced PR template with:
   - Commit format validation checkbox
   - Type/scope fields
@@ -28,6 +32,7 @@ This workspace now enforces [Conventional Commits](https://www.conventionalcommi
   - Testing evidence and deployment notes sections
 
 ### Package Updates
+
 - **`package.json`** — Added scripts and dev dependencies:
   - `commitlint` script for manual validation
   - `prepare` script to auto-install husky hooks
@@ -35,6 +40,7 @@ This workspace now enforces [Conventional Commits](https://www.conventionalcommi
   - `husky` for git hooks
 
 ### Workspace README
+
 - **`README.md`** — Updated with:
   - Quick start guide with pnpm installation
   - Git workflow section
@@ -50,6 +56,7 @@ pnpm install
 ```
 
 This will:
+
 1. Install commitlint and husky dependencies
 2. Set up git hooks in `.husky/`
 3. Configure git to use husky hooks
@@ -96,17 +103,20 @@ git commit --no-verify -m "emergency fix"
 ## CI Validation
 
 ### On Pull Requests
+
 - All commits in PR are validated against `commitlint.config.cjs`
 - Failures post a helpful comment with format guide and examples
 - PR cannot merge until commits are fixed
 
 ### On Push to master/develop
+
 - All new commits are validated
 - Failures are visible in Actions tab
 
 ## Commit Format
 
 ### Structure
+
 ```
 <type>(<scope>): <subject>
 
@@ -116,6 +126,7 @@ git commit --no-verify -m "emergency fix"
 ```
 
 ### Valid Types
+
 - `feat` — New feature
 - `fix` — Bug fix
 - `docs` — Documentation only
@@ -129,7 +140,9 @@ git commit --no-verify -m "emergency fix"
 - `revert` — Revert previous commit
 
 ### TekupDK Scopes
+
 Common scopes for this workspace:
+
 - `vault`, `billy`, `database` — Production services
 - `rendetalje`, `renos`, `cloud-dashboard`, `chat` — Web apps
 - `ai`, `gmail`, `mcp` — Backend services
@@ -203,6 +216,7 @@ git commit --amend
 ## Integration with TekupDK Chatmode
 
 The **TekupDK chatmode** (`.github/chatmodes/TekupDK.chatmode.md`) now includes:
+
 - Autonomous execution rules
 - Git workflow defaults (conventional commits, branch naming)
 - Non-interference guards to avoid affecting other chatmodes
@@ -240,6 +254,7 @@ When TekupDK chatmode creates commits, they will automatically follow the conven
 ## Support
 
 For issues or questions:
+
 1. Check `.husky/README.md` for troubleshooting
 2. Review `docs/CONVENTIONAL_COMMITS.md` for format examples
 3. Test locally: `echo "your message" | npx commitlint`

@@ -37,6 +37,7 @@ For hver lead, opret en opfølgningsaftale om 2 dage kl 10.
 ```
 
 **AI Actions:**
+
 1. Calls `search_emails` with query: "is:unread newer_than:1d"
 2. Analyzes email content to identify leads
 3. For each lead:
@@ -94,6 +95,7 @@ Vis mig tråden og fortæl om vi har booket et møde med dem.
 ```
 
 **AI Actions:**
+
 1. Calls `search_emails` with: "from:jan@examplefirma.dk newer_than:30d"
 2. Analyzes email thread for meeting references
 3. Calls `list_calendar_events` to check for scheduled meetings
@@ -132,6 +134,7 @@ For hver email:
 ```
 
 **AI Actions:**
+
 1. Searches emails with subject keywords
 2. Checks for existing replies in thread
 3. Checks calendar availability
@@ -190,6 +193,7 @@ For hver lead, vis email-indhold og foreslå næste handling.
 ```
 
 **AI Actions:**
+
 1. Searches for new emails (last 24 hours)
 2. Filters for lead-related keywords
 3. Categorizes by priority
@@ -226,6 +230,7 @@ Send en gentle reminder email og book et tentativt møde om en uge.
 ```
 
 **AI Actions:**
+
 1. Searches emails from last month
 2. Filters for leads without recent replies
 3. Sends reminder email
@@ -269,23 +274,27 @@ Send en gentle reminder email og book et tentativt møde om en uge.
 The AI can use these Gmail search operators:
 
 ### Basic Operators
+
 - `from:email@example.com` - Emails from specific sender
 - `to:email@example.com` - Emails to specific recipient
 - `subject:keyword` - Search in subject line
 - `keyword` - Search in entire email
 
 ### Time-based
+
 - `newer_than:7d` - Last 7 days
 - `older_than:2d` - Older than 2 days
 - `after:2025/11/01` - After specific date
 - `before:2025/11/30` - Before specific date
 
 ### Status
+
 - `is:unread` - Unread emails
 - `is:read` - Read emails
 - `is:starred` - Starred emails
 
 ### Combinations
+
 - `from:customer@example.com is:unread newer_than:3d`
 - `subject:(tilbud OR pris) is:unread`
 - `(lead OR kunde OR forespørgsel) newer_than:1d`
@@ -293,23 +302,29 @@ The AI can use these Gmail search operators:
 ## Best Practices for Prompt Engineering
 
 ### 1. Be Specific with Time Ranges
+
 ❌ Bad: "Tjek mine emails"
 ✅ Good: "Tjek mine ulæste emails fra de sidste 24 timer"
 
 ### 2. Specify Email Criteria
+
 ❌ Bad: "Find leads"
 ✅ Good: "Find emails med 'tilbud' eller 'pris' i emnet der er ulæste"
 
 ### 3. Include Action Steps
+
 ❌ Bad: "Hvad skal jeg gøre med denne lead?"
 ✅ Good: "For denne lead: 1) Send bekræftelse, 2) Book møde om 2 dage, 3) Tilføj til CRM"
 
 ### 4. Provide Context
+
 ❌ Bad: "Book møde"
 ✅ Good: "Book 30 min telefon-møde med [lead navn] om opfølgning på tilbud, find ledig tid mellem 10-12 i næste uge"
 
 ### 5. Use Danish Keywords
+
 The AI understands Danish naturally:
+
 - "tilbud", "pris", "køb", "interesseret"
 - "møde", "opfølgning", "kontakt"
 - "lead", "kunde", "forespørgsel"
@@ -317,24 +332,28 @@ The AI understands Danish naturally:
 ## Tool Interaction Patterns
 
 ### Pattern 1: Search → Analyze → Act
+
 ```
 User: "Find nye leads og send velkommen email"
 AI: search_emails → analyze content → send_email
 ```
 
 ### Pattern 2: Check → Create
+
 ```
 User: "Book møde hvis jeg har tid på tirsdag kl 14"
 AI: check_calendar_conflicts → create_calendar_event
 ```
 
 ### Pattern 3: Search → Filter → Batch Process
+
 ```
 User: "Send reminder til alle ulæste leads fra sidste uge"
 AI: search_emails → filter by criteria → send_email (multiple)
 ```
 
 ### Pattern 4: Thread Analysis
+
 ```
 User: "Hvad er status på tråden med Jan?"
 AI: search_emails → get_email (for each) → summarize thread
@@ -399,6 +418,7 @@ AI: search_emails → get_email (for each) → summarize thread
 **User**: "Hej, kan du hjælpe mig med at organisere mine leads?"
 
 **AI**: "Selvfølgelig! Hvad vil du gerne gøre? Jeg kan:
+
 - Søge i dine emails efter nye leads
 - Booke møder i din kalender
 - Sende opfølgnings-emails
@@ -406,8 +426,9 @@ AI: search_emails → get_email (for each) → summarize thread
 
 **User**: "Find alle ulæste emails fra i dag med 'tilbud' i emnet"
 
-**AI**: *Calls search_emails*
+**AI**: _Calls search_emails_
 "Jeg fandt 3 emails:
+
 1. Jan Hansen - 'Tilbud på renovering'
 2. Marie Jensen - 'Forespørgsel på tilbud'
 3. Peter Sørensen - 'Tilbud ønskes'
@@ -416,8 +437,9 @@ Skal jeg sende en standard bekræftelse til dem alle?"
 
 **User**: "Ja, og book et 30 min opkald med Jan i morgen kl 10"
 
-**AI**: *Calls send_email (3 times) and create_calendar_event*
+**AI**: _Calls send_email (3 times) and create_calendar_event_
 "Færdig! Jeg har:
+
 - Sendt bekræftelse til alle 3 leads
 - Booket 30 min opkald med Jan Hansen i morgen kl 10:00-10:30
 

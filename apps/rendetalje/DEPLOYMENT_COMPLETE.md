@@ -8,6 +8,7 @@
 ### 1. Railway Configuration Files ✅
 
 All services have `railway.json` configuration:
+
 - ✅ `services/backend-nestjs/railway.json`
 - ✅ `services/frontend-nextjs/railway.json`
 - ✅ `services/tekup-ai/packages/inbox-orchestrator/railway.json`
@@ -59,16 +60,19 @@ Before deploying, ensure:
 ## 🔑 Critical Environment Variables
 
 ### Inbox Orchestrator
+
 - `GEMINI_API_KEY` - Your Google Gemini API key
 - `GOOGLE_MCP_URL` - Google MCP service URL
 
 ### Backend
+
 - `AI_FRIDAY_URL` - Inbox Orchestrator Railway URL (set after orchestrator deploys)
 - `DATABASE_URL` - Your database connection string
 - `JWT_SECRET` - Generate strong secret
 - `ENCRYPTION_KEY` - Generate strong secret
 
 ### Frontend
+
 - `NEXT_PUBLIC_API_URL` - Backend Railway URL (set after backend deploys)
 
 ## 🔄 Deployment Order
@@ -134,6 +138,7 @@ After deployment, you'll have:
 See `RAILWAY_DEPLOYMENT.md` for comprehensive troubleshooting guide.
 
 Common issues:
+
 - **Service won't start:** Check logs with `railway logs`
 - **Environment variables:** Verify with `railway variables`
 - **Connection errors:** Check service URLs and CORS settings
@@ -150,4 +155,3 @@ Common issues:
 **Ready to Deploy?** Run `.\deploy-to-railway.ps1` or follow `RAILWAY_QUICK_START.md`!
 
 **Status:** ✅ All files ready, deployment can begin immediately
-

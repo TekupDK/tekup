@@ -4,19 +4,19 @@
 
 ## ✅ Hvad Virker
 
-### Backend & API (100% Operational):
+### Backend & API (100% Operational)
 
-- ✅ **Inbox Orchestrator:** https://inbox-orchestrator-production.up.railway.app
+- ✅ **Inbox Orchestrator:** <https://inbox-orchestrator-production.up.railway.app>
   - Health check: OK
   - Friday AI funktionalitet: Fuldt funktionsdygtig
   - TestSprite: 5/5 tests PASSED
 
-- ✅ **Backend NestJS:** https://rendetalje-ai-production.up.railway.app
+- ✅ **Backend NestJS:** <https://rendetalje-ai-production.up.railway.app>
   - Health check: OK
   - AI Friday integration: Konfigureret
   - API endpoints: Klar
 
-### Test Interface (Fungerer Perfekt):
+### Test Interface (Fungerer Perfekt)
 
 - ✅ **Simpel Chat Interface:** `C:\Users\empir\Tekup\apps\rendetalje\test-chat-interface.html`
   - Fungerer 100%

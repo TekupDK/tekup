@@ -2,10 +2,12 @@ Byg mig en moderne landing page for **TekUp.dk** med avancerede animationer.
 
 **Om TekUp:**
 TekUp er en dansk IT-virksomhed - "Din AI-partner i digital transformation"
+
 - AI-løsninger, Software Development, Integrationer, Cloud Infrastructure
 - Stats: 150K+ kode, 14+ projekter, 99.9% uptime, 2+ års erfaring
 
 **Design:**
+
 - Farver: Indigo (#6366f1) → Purple (#8b5cf6) → Pink gradients
 - Animationer: Smooth scroll, fade-in, parallax, hover effects, stagger animations
 - Styling: Modern, minimalistisk, card-based layouts, glassmorphism
@@ -29,6 +31,7 @@ TekUp er en dansk IT-virksomhed - "Din AI-partner i digital transformation"
 6. **Footer** - Links og social media
 
 **Animation Requirements:**
+
 - Scroll: Fade-in fra bottom, stagger grid items, parallax hero
 - Hover: Cards lift+shadow, buttons scale+glow
 - Micro: Button press, form focus glow, success animations

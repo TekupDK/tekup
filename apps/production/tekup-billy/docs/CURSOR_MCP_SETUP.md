@@ -52,9 +52,3 @@ The MCP config currently has a placeholder:
 - Authentication: `X-API-Key` header with `${MCP_API_KEY}`
 
 **Next Action**: Generate domain in Railway and update the URL in `mcp.json`
-
-
-
-
-
-

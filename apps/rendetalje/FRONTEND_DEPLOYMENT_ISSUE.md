@@ -4,20 +4,20 @@
 
 ## 🔍 Issue Details
 
-### What Happened:
+### What Happened
 
 - Backend NestJS deployet til: `https://rendetalje-ai-production.up.railway.app`
 - Frontend Next.js blev IKKE deployet separat
 - Begge blev deployet til samme service "rendetalje-ai"
 
-### Verifikation:
+### Verifikation
 
 ```
 curl https://rendetalje-ai-production.up.railway.app
 # Returns: "Cannot GET /" (this is NestJS backend, not Next.js frontend)
 ```
 
-### Root Cause:
+### Root Cause
 
 Railway CLI `railway link` linkede både backend og frontend til samme service i stedet for at oprette separate services.
 
@@ -27,7 +27,7 @@ Frontend skal deployes som separat service i Railway projektet.
 
 ### Option 1: Via Railway Dashboard (Anbefalet)
 
-1. Go to: https://railway.app/dashboard
+1. Go to: <https://railway.app/dashboard>
 2. Login
 3. Select project: **rendetalje-ai**
 4. Click **"New"** → **"Service"**

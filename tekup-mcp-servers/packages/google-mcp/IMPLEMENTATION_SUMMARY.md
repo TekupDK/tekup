@@ -107,12 +107,14 @@ tekup-mcp-servers/
 ## Key Features Implemented
 
 ### Authentication ✅
+
 - ✅ Service account with domain-wide delegation
 - ✅ JWT-based authentication
-- ✅ Impersonation of info@rendetalje.dk
+- ✅ Impersonation of <info@rendetalje.dk>
 - ✅ Auth client caching for performance
 
 ### Calendar Integration ✅
+
 - ✅ List events with filters (time range, search)
 - ✅ Get specific event details
 - ✅ Create events with attendees
@@ -122,6 +124,7 @@ tekup-mcp-servers/
 - ✅ Timezone support (default: Europe/Copenhagen)
 
 ### Gmail Integration ✅
+
 - ✅ List emails with filters (query, labels)
 - ✅ Get email details with headers
 - ✅ Search emails using Gmail syntax
@@ -131,6 +134,7 @@ tekup-mcp-servers/
 - ✅ Pagination support
 
 ### Server Capabilities ✅
+
 - ✅ STDIO transport for local MCP clients
 - ✅ HTTP REST API for remote access
 - ✅ SSE transport for real-time MCP
@@ -139,6 +143,7 @@ tekup-mcp-servers/
 - ✅ Tool execution endpoint
 
 ### Security ✅
+
 - ✅ API key authentication (HTTP mode)
 - ✅ Rate limiting (100 req/15min)
 - ✅ Helmet.js security headers
@@ -147,6 +152,7 @@ tekup-mcp-servers/
 - ✅ Environment variable configuration
 
 ### DevOps ✅
+
 - ✅ Docker containerization
 - ✅ Health checks
 - ✅ Structured logging
@@ -155,6 +161,7 @@ tekup-mcp-servers/
 - ✅ Package build system
 
 ### Documentation ✅
+
 - ✅ Comprehensive README
 - ✅ Deployment guide
 - ✅ Quick start guide (Danish)
@@ -236,6 +243,7 @@ const response = await axios.post('http://localhost:3001/api/v1/tools/call', {
 ## Integration with Other Systems
 
 Compatible with:
+
 - ✅ Claude Desktop (MCP client)
 - ✅ Cursor (MCP client)
 - ✅ Custom chatbots via HTTP API
@@ -245,6 +253,7 @@ Compatible with:
 ## Security Considerations
 
 ### Implemented
+
 - Service account authentication (not user passwords)
 - Domain-wide delegation (controlled access)
 - API key authentication for HTTP
@@ -255,6 +264,7 @@ Compatible with:
 - Structured audit logging
 
 ### Recommended
+
 - Rotate credentials quarterly
 - Use HTTPS in production
 - Monitor API usage in Google Cloud
@@ -294,13 +304,14 @@ Compatible with:
 
 - Calendar recurring events support is basic
 - Gmail batch operations not yet implemented
-- Single user impersonation (info@rendetalje.dk)
+- Single user impersonation (<info@rendetalje.dk>)
 - Rate limiting is per-server, not per-user
 - No Google Drive integration yet
 
 ## Future Enhancements
 
 Could be added in future versions:
+
 - Google Drive integration
 - Google Contacts integration
 - Advanced calendar features (recurring patterns, reminders)
@@ -316,7 +327,7 @@ Could be added in future versions:
 ✅ **Følger Friday/Billy mønster** - Same architecture as tekup-billy  
 ✅ **Google Calendar support** - Full calendar integration  
 ✅ **Gmail support** - Email operations implemented  
-✅ **info@rendetalje.dk** - Configured as impersonated user  
+✅ **<info@rendetalje.dk>** - Configured as impersonated user  
 ✅ **MCP server** - Both STDIO and HTTP transports  
 ✅ **Chatbot integration** - Can connect to other chatbots  
 ✅ **Ny branch** - Implemented on `copilot/add-google-mcp-integration`  

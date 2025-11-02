@@ -51,6 +51,7 @@ pnpm build
 #### Aktivér APIs
 
 I Google Cloud Console, aktivér:
+
 - Google Calendar API
 - Gmail API
 
@@ -75,12 +76,14 @@ API_KEY=din-sikre-api-nøgle
 
 ### 4. Start Serveren
 
-#### For lokal udvikling (STDIO mode):
+#### For lokal udvikling (STDIO mode)
+
 ```bash
 pnpm dev
 ```
 
-#### For HTTP tilgang:
+#### For HTTP tilgang
+
 ```bash
 pnpm start
 ```
@@ -261,6 +264,7 @@ docker-compose up -d google-mcp
 ### "Failed to create Google auth client"
 
 **Årsager**:
+
 1. Private key format er forkert - Tjek at `\n` er bevaret i nøglen
 2. Domain-wide delegation ikke konfigureret - Følg opsætningsguiden
 3. OAuth scopes ikke autoriseret - Tjek Google Workspace Admin Console
@@ -271,7 +275,8 @@ docker-compose up -d google-mcp
 
 ### API returnerer 403 Forbidden
 
-**Løsning**: 
+**Løsning**:
+
 1. Tjek at APIs er aktiveret i Google Cloud
 2. Verificér domain-wide delegation er konfigureret korrekt
 3. Kontrollér at impersoneret bruger email er korrekt
@@ -295,6 +300,7 @@ docker-compose up -d google-mcp
 ## Support
 
 For spørgsmål eller problemer:
+
 - Kontakt Tekup teamet
 - Se troubleshooting sektionen ovenfor
 - Tjek logs: `docker logs google-mcp` eller `pnpm dev`

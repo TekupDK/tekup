@@ -9,7 +9,7 @@
 
 ### Status: ✅ RUNNING
 
-- **URL:** http://localhost:3002
+- **URL:** <http://localhost:3002>
 - **Command:** `npm run dev` (started in background)
 - **Features:**
   - ✅ Friday AI chat widget integrated
@@ -17,9 +17,9 @@
   - ✅ API client updated
   - ✅ Layout integrated
 
-### Test Locally:
+### Test Locally
 
-1. Open browser: http://localhost:3002
+1. Open browser: <http://localhost:3002>
 2. You should see RenOS login page
 3. Friday AI chat button should appear (bottom right)
 4. Click chat button to test
@@ -28,20 +28,20 @@
 
 ## ⚠️ Railway Deployment Issue
 
-### Problem:
+### Problem
 
 Frontend was deployed to same service as backend instead of separate service.
 
-### Current State:
+### Current State
 
-- ✅ **Backend NestJS:** https://rendetalje-ai-production.up.railway.app (working)
+- ✅ **Backend NestJS:** <https://rendetalje-ai-production.up.railway.app> (working)
 - ❌ **Frontend Next.js:** Not deployed separately
 
-### Solution Required:
+### Solution Required
 
 **You need to manually deploy frontend via Railway Dashboard:**
 
-1. Go to: https://railway.app/dashboard
+1. Go to: <https://railway.app/dashboard>
 2. Login with your account
 3. Go to project: **rendetalje-ai**
 4. Click **"New"** → **"Service"**
@@ -76,7 +76,7 @@ Frontend was deployed to same service as backend instead of separate service.
 
 While waiting for Railway deployment, you can fully test Friday AI locally:
 
-### Setup:
+### Setup
 
 ```powershell
 # Terminal 1: Frontend (already started)
@@ -95,7 +95,7 @@ npm run dev
 # Running on: http://localhost:3011
 ```
 
-### Hybrid Setup (Local Frontend + Railway Backend):
+### Hybrid Setup (Local Frontend + Railway Backend)
 
 Frontend is already configured to use Railway backend:
 
@@ -109,7 +109,7 @@ Frontend is already configured to use Railway backend:
 
 ### 1. Login Page
 
-- Navigate to: http://localhost:3002
+- Navigate to: <http://localhost:3002>
 - Should see login form
 - Auth provider loaded
 
@@ -132,7 +132,7 @@ Frontend is already configured to use Railway backend:
 
 **Immediate:**
 
-1. ✅ Test frontend locally: http://localhost:3002
+1. ✅ Test frontend locally: <http://localhost:3002>
 2. ✅ Verify Friday AI chat widget works
 3. ✅ Test integration with Railway backend
 
@@ -152,7 +152,7 @@ Frontend is already configured to use Railway backend:
 - ✅ Frontend Next.js: Running LOCALLY on port 3002
 - ✅ Integration: Frontend (local) → Backend (Railway) → Orchestrator (Railway)
 
-You can test the complete Friday AI system right now at: **http://localhost:3002**
+You can test the complete Friday AI system right now at: **<http://localhost:3002>**
 
 ---
 

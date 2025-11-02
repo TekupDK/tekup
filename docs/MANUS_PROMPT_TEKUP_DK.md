@@ -48,7 +48,7 @@ TekUp er en dansk IT-virksomhed der hjælper virksomheder med digital transforma
 - Card-based layouts
 - Glassmorphism effects hvor relevant
 
-### 📋 Sektioner der skal være med:
+### 📋 Sektioner der skal være med
 
 #### 1. **Hero Section**
 
@@ -123,7 +123,7 @@ Hver project card skal have:
 #### 5. **Contact Section**
 
 - Kontakt formular (Navn, Email, Virksomhed, Besked)
-- Kontakt info (Email: info@tekup.dk)
+- Kontakt info (Email: <info@tekup.dk>)
 - Form skal være klar til Gmail API integration
 - Success animation når form sendes
 - Modern form styling med focus states
@@ -163,7 +163,7 @@ Hver project card skal have:
 - Sequential section reveals
 - Smooth page transitions
 
-### 🔗 Integration Details til at vise:
+### 🔗 Integration Details til at vise
 
 **Gmail:**
 
@@ -227,7 +227,7 @@ Alle CTAs skal have:
 - Ingen over-engineered tech jargon
 - Human-centric messaging
 
-### 🚀 Extra Features (Nice to have):
+### 🚀 Extra Features (Nice to have)
 
 - Dark mode toggle
 - Smooth scroll to sections
@@ -237,7 +237,7 @@ Alle CTAs skal have:
 
 ---
 
-## 🎬 Resultat Forventet:
+## 🎬 Resultat Forventet
 
 En moderne, professionel landing page med:
 ✅ Smooth scroll animations

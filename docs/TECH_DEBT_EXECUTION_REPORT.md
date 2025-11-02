@@ -86,7 +86,7 @@ logger.info("User authenticated", { userId: 123, email: "user@example.com" });
 - ✅ TypeScript support via `@typescript-eslint` parser
 - ✅ React/JSX support with React 19 detection
 - ✅ **no-console rule:** Blocks console.log, allows console.warn/error
-- ✅ Test file exemption (_.test.ts, _.spec.ts can use console.log)
+- ✅ Test file exemption (_.test.ts,_.spec.ts can use console.log)
 - ✅ Monorepo-aware ignores (node_modules, dist, .next, archive)
 
 **Key Rules:**

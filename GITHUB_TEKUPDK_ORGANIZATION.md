@@ -15,7 +15,7 @@
 - **Type:** Production Friday AI V2 (React 19 + tRPC)
 - **Status:** ✅ Live deployment + Production ready
 - **Features:** Unified inbox, Multi-AI, Intent-based actions
-- **Live Demo:** https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer
+- **Live Demo:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
 - **Tech Stack:** React 19, Express, tRPC 11, Drizzle ORM, MySQL
 - **Integration:** Gmail + Calendar + Billy.dk + 25 MEMORY rules
 
@@ -330,8 +330,8 @@ Local Development: tekup/services/tekup-ai-v2/
 
 ### **Key URLs**
 
-- **GitHub Org:** https://github.com/TekupDK
-- **Friday AI Live:** https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer
+- **GitHub Org:** <https://github.com/TekupDK>
+- **Friday AI Live:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
 - **Local Workspace:** `C:\Users\empir\Tekup\`
 
 ---

@@ -214,12 +214,14 @@ railway restart
 ## 📝 Environment Variables Checklist
 
 ### Inbox Orchestrator ✅
+
 - [ ] `NODE_ENV=production`
 - [ ] `PORT=3011`
 - [ ] `GEMINI_API_KEY`
 - [ ] `GOOGLE_MCP_URL`
 
 ### Backend ✅
+
 - [ ] `NODE_ENV=production`
 - [ ] `PORT=3001`
 - [ ] `AI_FRIDAY_URL` (from orchestrator)
@@ -231,6 +233,7 @@ railway restart
 - [ ] All other existing variables
 
 ### Frontend ✅
+
 - [ ] `NODE_ENV=production`
 - [ ] `NEXT_PUBLIC_API_URL` (from backend)
 
@@ -260,4 +263,3 @@ railway restart
 ---
 
 **Ready to deploy?** Run `.\deploy-to-railway.ps1` or follow the manual steps above!
-

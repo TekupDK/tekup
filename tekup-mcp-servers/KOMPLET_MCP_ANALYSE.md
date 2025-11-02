@@ -46,7 +46,7 @@ NFIGURATION LOCATIONS
 
 - **Status**: ✅ HEALTHY (uptime: 259s)
 - **Type**: HTTP SSE
-- **URL**: http://localhost:8051/mcp
+- **URL**: <http://localhost:8051/mcp>
 - **Tool**: `search_knowledge`
 - **Formål**: Søg i dokumentation (MD, MDX, TXT)
 - **Konfiguration**:
@@ -61,7 +61,7 @@ NFIGURATION LOCATIONS
 
 - **Status**: ✅ HEALTHY (uptime: 259s)
 - **Type**: HTTP SSE
-- **URL**: http://localhost:8052/mcp
+- **URL**: <http://localhost:8052/mcp>
 - **Tool**: `search_code`
 - **Formål**: Kode analyse og søgning
 - **Konfiguration**:
@@ -76,7 +76,7 @@ NFIGURATION LOCATIONS
 
 - **Status**: ✅ HEALTHY (uptime: 258s)
 - **Type**: HTTP SSE
-- **URL**: http://localhost:8053/mcp
+- **URL**: <http://localhost:8053/mcp>
 - **Tools**: Database queries
 - **Formål**: Supabase database operations
 - **Supabase**: `https://oaevagdgrasfppbrxbey.supabase.co`

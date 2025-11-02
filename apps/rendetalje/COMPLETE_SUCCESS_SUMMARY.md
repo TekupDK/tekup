@@ -43,9 +43,9 @@
 
 | Service                | URL                                                  | Status      |
 | ---------------------- | ---------------------------------------------------- | ----------- |
-| **Inbox Orchestrator** | https://inbox-orchestrator-production.up.railway.app | ✅ Running  |
-| **Backend API**        | https://rendetalje-ai-production.up.railway.app      | ✅ Running  |
-| **Frontend**           | https://rendetalje-ai-production.up.railway.app      | ✅ Deployed |
+| **Inbox Orchestrator** | <https://inbox-orchestrator-production.up.railway.app> | ✅ Running  |
+| **Backend API**        | <https://rendetalje-ai-production.up.railway.app>      | ✅ Running  |
+| **Frontend**           | <https://rendetalje-ai-production.up.railway.app>      | ✅ Deployed |
 
 **Health Checks:**
 
@@ -107,7 +107,7 @@
 
 ## 📁 Deliverables
 
-### Code Files Created:
+### Code Files Created
 
 **Inbox Orchestrator (14 files):**
 
@@ -135,7 +135,7 @@
 - railway.json for each service
 - Dockerfile for frontend
 
-### Documentation (20+ files):
+### Documentation (20+ files)
 
 - Complete testing guides
 - Railway deployment guides
@@ -147,7 +147,7 @@
 
 ## 🎯 How to Use
 
-### Via Production URLs:
+### Via Production URLs
 
 ```powershell
 # Test Orchestrator
@@ -161,9 +161,9 @@ curl https://rendetalje-ai-production.up.railway.app/api/v1/ai-friday/chat \
   -d '{"message":"Hej Friday","context":{"userRole":"admin","organizationId":"test"}}'
 ```
 
-### Via Frontend:
+### Via Frontend
 
-- Open: https://rendetalje-ai-production.up.railway.app
+- Open: <https://rendetalje-ai-production.up.railway.app>
 - Login (when auth configured)
 - Click chat button (bottom right)
 

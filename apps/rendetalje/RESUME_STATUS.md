@@ -5,16 +5,16 @@
 
 ## ✅ Verificeret Ved Resume
 
-### Services Status:
+### Services Status
 
 - ✅ **Inbox Orchestrator:** RUNNING - Health check OK
 - ✅ **Backend NestJS:** RUNNING - Health check OK
 - ⏳ **Frontend Next.js:** Checking status...
 
-### URLs:
+### URLs
 
-- **Inbox Orchestrator:** https://inbox-orchestrator-production.up.railway.app
-- **Backend API:** https://rendetalje-ai-production.up.railway.app
+- **Inbox Orchestrator:** <https://inbox-orchestrator-production.up.railway.app>
+- **Backend API:** <https://rendetalje-ai-production.up.railway.app>
 
 ## 🎯 Næste Steps (Autonomt)
 
@@ -26,13 +26,13 @@
 
 ## 📊 Testing Plan
 
-### Backend Integration Test:
+### Backend Integration Test
 
 ```powershell
 curl -X POST https://rendetalje-ai-production.up.railway.app/api/v1/ai-friday/chat
 ```
 
-### Workflow Tests:
+### Workflow Tests
 
 1. Lead processing
 2. Booking queries

@@ -3,10 +3,12 @@
 ## Quick Start
 
 ### 1. Prerequisites
+
 - Docker & Docker Compose installed
 - Google OAuth credentials configured in `.env` files
 
 ### 2. Environment Setup
+
 Ensure these `.env` files exist with proper credentials:
 
 **`services/google-mcp/.env`:**
@@ -24,6 +26,7 @@ TEKUP_BILLY_URL=http://tekup-billy:3012
 ```
 
 ### 3. Build & Run
+
 ```bash
 # Build all services
 docker-compose build
@@ -39,18 +42,21 @@ docker-compose down
 ```
 
 ### 4. Access Points
-- **Tekup Cloud Dashboard**: http://localhost:3000
-- **Rendetalje Inbox**: http://localhost:3000/rendetalje/inbox
-- **Google MCP API**: http://localhost:3010
-- **Inbox Orchestrator**: http://localhost:3011
+
+- **Tekup Cloud Dashboard**: <http://localhost:3000>
+- **Rendetalje Inbox**: <http://localhost:3000/rendetalje/inbox>
+- **Google MCP API**: <http://localhost:3010>
+- **Inbox Orchestrator**: <http://localhost:3011>
 
 ### 5. Development Mode
+
 ```bash
 # Use development overrides (hot reload)
 docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
 ```
 
 ### 6. Health Checks
+
 ```bash
 # Check service health
 docker-compose ps
@@ -62,6 +68,7 @@ docker-compose logs tekup-cloud-dashboard
 ```
 
 ### 7. Troubleshooting
+
 ```bash
 # Rebuild specific service
 docker-compose build google-mcp

@@ -26,6 +26,7 @@ apps/tekup-ai/
 ## Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript 5
 - **Styling**: Tailwind CSS 3
@@ -35,6 +36,7 @@ apps/tekup-ai/
 - **UI**: shadcn/ui (Radix UI)
 
 ### Backend
+
 - **Framework**: NestJS 10
 - **Language**: TypeScript 5
 - **ORM**: Prisma 6
@@ -47,6 +49,7 @@ apps/tekup-ai/
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - pnpm 8+
 - PostgreSQL (Supabase account)
@@ -159,35 +162,41 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for deployment guide.
 ## Features
 
 ### Phase 1: Foundation ✅
+
 - [x] Project structure
 - [x] Database schema
 - [x] Authentication
 - [x] Basic UI shell
 
 ### Phase 2: Core Chat (In Progress)
+
 - [ ] Chat interface
 - [ ] Streaming responses
 - [ ] Conversation management
 - [ ] Message history
 
 ### Phase 3: MCP Integration
+
 - [ ] HTTP MCP client
 - [ ] STDIO MCP client
 - [ ] Tool execution
 - [ ] Tool visualization
 
 ### Phase 4: Memory System
+
 - [ ] Memory CRUD
 - [ ] Memory injection
 - [ ] Auto-detection
 - [ ] Memory UI
 
 ### Phase 5: Integrations
+
 - [ ] Settings UI
 - [ ] MCP management
 - [ ] Saved prompts
 
 ### Phase 6: Production
+
 - [ ] Performance optimization
 - [ ] Monitoring
 - [ ] Testing

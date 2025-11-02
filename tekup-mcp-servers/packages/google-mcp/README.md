@@ -431,6 +431,7 @@ pnpm test
 ### "Google credentials not configured"
 
 Make sure you have set the required environment variables:
+
 - `GOOGLE_CLIENT_EMAIL`
 - `GOOGLE_PRIVATE_KEY`
 - Or `GOOGLE_CREDENTIALS` as a JSON string
@@ -442,6 +443,7 @@ If using HTTP mode, ensure you're sending the correct API key in the `X-API-Key`
 ### "Failed to create Google auth client"
 
 Check that:
+
 1. Your service account has domain-wide delegation enabled
 2. The OAuth scopes are configured in Google Workspace Admin Console
 3. The impersonated user email is valid

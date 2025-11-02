@@ -33,7 +33,7 @@ From the Railway screenshot you shared:
 ### **STEP 1: Allow Secret**
 
 **🔗 CLICK THIS LINK:**
-**https://github.com/TekupDK/tekup/security/secret-scanning/unblock-secret/34sqUHTahNtkZ5N7dNPPI8LWajI**
+**<https://github.com/TekupDK/tekup/security/secret-scanning/unblock-secret/34sqUHTahNtkZ5N7dNPPI8LWajI>**
 
 **Action:** Click "Allow this secret"
 

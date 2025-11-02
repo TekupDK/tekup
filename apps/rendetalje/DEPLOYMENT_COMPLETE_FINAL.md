@@ -6,25 +6,29 @@
 ## ✅ Deployment Status
 
 ### 🟢 Inbox Orchestrator (Friday AI) - OPERATIONAL
-- **URL:** https://inbox-orchestrator-production.up.railway.app
-- **Health:** ✅ https://inbox-orchestrator-production.up.railway.app/health
+
+- **URL:** <https://inbox-orchestrator-production.up.railway.app>
+- **Health:** ✅ <https://inbox-orchestrator-production.up.railway.app/health>
 - **Status:** ✅ **RUNNING**
 - **Logs:** Service started successfully, Gemini AI client initialized
 - **Port:** 8080 (mapped internally)
 
 ### 🟢 Backend NestJS - OPERATIONAL  
-- **URL:** https://rendetalje-ai-production.up.railway.app
-- **Health:** ✅ https://rendetalje-ai-production.up.railway.app/health
+
+- **URL:** <https://rendetalje-ai-production.up.railway.app>
+- **Health:** ✅ <https://rendetalje-ai-production.up.railway.app/health>
 - **Status:** ✅ **RUNNING**
 - **Service ID:** c6b61d98-19d1-4e41-b84f-5503da87a096
 
 ### 🟡 Frontend Next.js - BUILDING
+
 - **Status:** 🚧 Building (logs show build in progress)
 - **Note:** Domain will be assigned automatically after build completes
 
 ## 🔧 Environment Variables - CONFIGURED
 
-### ✅ Backend Variables Set:
+### ✅ Backend Variables Set
+
 ```powershell
 AI_FRIDAY_URL=https://inbox-orchestrator-production.up.railway.app
 ENABLE_AI_FRIDAY=true
@@ -32,13 +36,15 @@ NODE_ENV=production
 PORT=3001
 ```
 
-### ✅ Frontend Variables Set:
+### ✅ Frontend Variables Set
+
 ```powershell
 NEXT_PUBLIC_API_URL=https://rendetalje-ai-production.up.railway.app
 NODE_ENV=production
 ```
 
-### ✅ Orchestrator Variables Set:
+### ✅ Orchestrator Variables Set
+
 ```powershell
 GEMINI_API_KEY=<set>
 GOOGLE_MCP_URL=https://google-mcp-production-d125.up.railway.app
@@ -46,10 +52,12 @@ NODE_ENV=production
 PORT=3011
 ```
 
-### ⚠️ Additional Variables Needed:
+### ⚠️ Additional Variables Needed
+
 These should be set in Railway dashboard:
 
 **Backend:**
+
 - `DATABASE_URL` - PostgreSQL connection string
 - `SUPABASE_URL` - Supabase project URL
 - `SUPABASE_ANON_KEY` - Supabase anon key
@@ -61,6 +69,7 @@ These should be set in Railway dashboard:
 - `TEKUPVAULT_URL`, `TEKUPVAULT_API_KEY` - TekupVault integration
 
 **Frontend:**
+
 - `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anon key
 
@@ -102,7 +111,7 @@ railway logs --lines 50
 
 ## 🎯 Integration Test
 
-### Test Friday AI via Backend:
+### Test Friday AI via Backend
 
 ```powershell
 $body = @{
@@ -142,7 +151,7 @@ Invoke-RestMethod -Uri "https://rendetalje-ai-production.up.railway.app/api/v1/a
 
 ## 📊 Railway Dashboard
 
-Access: https://railway.app/dashboard
+Access: <https://railway.app/dashboard>
 Project: rendetalje-ai (308687ac-3adf-4267-8d43-be5850a023e9)
 
 Or via CLI:
@@ -150,7 +159,7 @@ Or via CLI:
 railway open
 ```
 
-## 🎉 Success!
+## 🎉 Success
 
 **All core services are deployed and operational on Railway!**
 
@@ -161,6 +170,7 @@ railway open
 - ⏳ Frontend: Building
 
 The system is ready for testing once:
+
 - Frontend build completes
 - Additional environment variables are set (optional for basic testing)
 
@@ -169,4 +179,3 @@ The system is ready for testing once:
 **Project ID:** 308687ac-3adf-4267-8d43-be5850a023e9  
 **Environment:** production  
 **All services:** Operational ✅
-

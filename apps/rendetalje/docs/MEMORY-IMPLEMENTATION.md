@@ -8,7 +8,9 @@
 ## ✅ **FULLY IMPLEMENTED** (7/24)
 
 ### **1. MEMORY_1: Time Check Regel** ⏰
+
 **Status:** ✅ **IMPLEMENTED**
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/memoryRules.ts` (linje 7-36)
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/index.ts` (linje 220-227, 46-49)
 - **Funktion:** `validateTimeCheck()`
@@ -18,7 +20,9 @@
 ---
 
 ### **2. MEMORY_4: Lead Source Rules** ✅
+
 **Status:** ✅ **IMPLEMENTED**
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/leadParser.ts` (linje 97-114)
 - **Funktion:** `applyLeadSourceRules()`
 - **Regel:**
@@ -29,7 +33,9 @@
 ---
 
 ### **3. MEMORY_5: Calendar Check Before Suggesting** ✅
+
 **Status:** ✅ **IMPLEMENTED**
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/index.ts` (linje 266-293, 360-422)
 - **Regel:** Checker kalender næste 7 dage før booking-forslag
 - **Output:** Viser optagne tidsperioder og ledige tider
@@ -37,7 +43,9 @@
 ---
 
 ### **4. MEMORY_7: Email Search First** 🔍
+
 **Status:** ✅ **IMPLEMENTED**
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/memoryRules.ts` (linje 39-66)
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/index.ts` (linje 62-71)
 - **Funktion:** `searchExistingCommunication()`
@@ -47,11 +55,13 @@
 ---
 
 ### **5. MEMORY_8: Overtid Kommunikation** ⚠️
+
 **Status:** ✅ **IMPLEMENTED**
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/memoryRules.ts` (linje 138-157)
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/index.ts` (linje 92-100)
 - **Funktion:** `enforceOvertimeRule()`
-- **Regel:** 
+- **Regel:**
   - Fixer +3-5t → +1t automatisk
   - Tjekker for eksplicit antal medarbejdere
 - **Output:** Warning hvis mangler medarbejder-angivelse
@@ -59,7 +69,9 @@
 ---
 
 ### **6. MEMORY_11: Optimeret Tilbudsformat** 📝
+
 **Status:** ✅ **IMPLEMENTED**
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/memoryRules.ts` (linje 68-136, 159-205)
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/index.ts` (linje 73-106)
 - **Funktioner:**
@@ -78,7 +90,9 @@
 ---
 
 ### **7. MEMORY_23: Price Calculation** ✅
+
 **Status:** ✅ **IMPLEMENTED**
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/leadParser.ts` (linje 116-147)
 - **Funktion:** `calculatePrice()`
 - **Regel:** 349 kr/t baseret på m²
@@ -132,14 +146,16 @@ services/tekup-ai/packages/inbox-orchestrator/src/
 
 ## 🎯 **NÆSTE SKRIDT** (17 memories mangler)
 
-### **KRITISKE** (prioriter først):
+### **KRITISKE** (prioriter først)
+
 - ❌ MEMORY_2: Lead-System (workflow + labels)
 - ❌ MEMORY_3: Kundeservice Tilgang
 - ❌ MEMORY_6: Kalender-Systematisering
 - ❌ MEMORY_9: Conflict Resolution
 - ❌ MEMORY_10: Lead Management & Opfølgning
 
-### **VIKTIGE**:
+### **VIKTIGE**
+
 - ❌ MEMORY_12-24: Resten
 
 ---
@@ -147,6 +163,7 @@ services/tekup-ai/packages/inbox-orchestrator/src/
 ## 🧪 **TESTING**
 
 ### **Test generate-reply med MEMORY_7:**
+
 ```bash
 curl -X POST http://localhost:3011/generate-reply \
   -H "Content-Type: application/json" \
@@ -154,6 +171,7 @@ curl -X POST http://localhost:3011/generate-reply \
 ```
 
 **Forventet:**
+
 - ✅ MEMORY_7: Warning hvis tidligere emails fundet
 - ✅ MEMORY_11: Quote template med alle felter
 - ✅ MEMORY_8: +1t regel (ikke +3-5t!)

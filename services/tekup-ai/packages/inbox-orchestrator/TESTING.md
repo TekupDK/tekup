@@ -44,18 +44,21 @@ src/
 ### 1. Unit Tests
 
 **Token Counter (`tokenCounter.test.ts`)**
+
 - Token estimation accuracy
 - Cost calculation
 - Prompt size validation
 - Danish text handling
 
 **Intent Detector (`intentDetector.test.ts`)**
+
 - Intent detection from user messages
 - Memory selection per intent
 - Keyword extraction
 - Confidence scoring
 
 **Response Templates (`responseTemplates.test.ts`)**
+
 - Lead summary formatting
 - Calendar task formatting
 - Booking confirmation format
@@ -63,6 +66,7 @@ src/
 - Next steps formatting
 
 **Metrics Logger (`metricsLogger.test.ts`)**
+
 - Metrics storage and retrieval
 - Summary calculations
 - Time window filtering
@@ -71,6 +75,7 @@ src/
 ### 2. Integration Tests
 
 **Chat Endpoint (`chat.test.ts`)**
+
 - Full chat flow
 - Memory enforcement
 - Response generation
@@ -92,6 +97,7 @@ npm test -- --testNamePattern="Intent Detector"
 ## Coverage
 
 Current coverage targets:
+
 - **Lines**: 80%+
 - **Functions**: 75%+
 - **Branches**: 70%+
@@ -106,18 +112,21 @@ npm run test:coverage
 ## Test Best Practices
 
 ### 1. Test Organization
+
 - Follow Arrange-Act-Assert pattern
 - Use descriptive test names
 - Keep tests independent
 - Mock external dependencies
 
 ### 2. Mocking
+
 - Mock Gmail API calls
 - Mock Calendar API calls
 - Mock Gemini AI responses
 - Mock Billy API calls
 
 ### 3. Test Data
+
 - Use realistic test data
 - Test edge cases
 - Test error scenarios
@@ -139,6 +148,7 @@ describe('Token Counter', () => {
 ## Continuous Integration
 
 Tests run automatically on:
+
 - Push to `main` or `develop` branches
 - Pull requests
 - Manual workflow triggers
@@ -148,14 +158,17 @@ Tests run automatically on:
 ### Common Issues
 
 **Tests timeout:**
+
 - Increase timeout in test: `jest.setTimeout(10000)`
 - Check for unclosed async operations
 
 **Module resolution errors:**
+
 - Ensure `jest.config.js` has correct `moduleNameMapper`
 - Check `tsconfig.json` paths
 
 **ES Module errors:**
+
 - Ensure `jest.config.js` has `useESM: true`
 - Check `package.json` has `"type": "module"`
 

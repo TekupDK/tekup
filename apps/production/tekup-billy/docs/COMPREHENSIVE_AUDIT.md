@@ -9,16 +9,19 @@
 ## 🔍 Identificerede Problemer
 
 ### 1. ✅ FIXED: list_customers - Search Filtering
+
 **Problem:** Billy API returnerer alle kunder selv når search parameter er angivet  
 **Fix:** Client-side filtering fallback implementeret  
 **Status:** ✅ Fixet i commit 3489e90
 
 ### 2. ❌ TODO: list_products - Search Filtering
+
 **Problem:** Samme problem som customers - ingen client-side filtering  
 **Location:** `src/tools/products.ts` linje 65  
 **Fix Needed:** Tilføj samme client-side filtering som customers
 
 ### 3. ❌ TODO: list_invoices - Mangler Search Parameter
+
 **Problem:** Ingen search parameter overhovedet - kun date/state/contactId filtering  
 **Location:** `src/tools/invoices.ts` linje 13-36  
 **Fix Needed:** Tilføj search parameter for invoiceNo, customer name, etc.
@@ -30,24 +33,28 @@
 ### Tools Audit
 
 #### ✅ customers.ts
+
 - [x] Search parameter: ✅ Implementeret
 - [x] Client-side filtering: ✅ Fixet
 - [x] Pagination: ✅ Korrekt
 - [x] Error handling: ✅ Korrekt
 
 #### ❌ products.ts
+
 - [x] Search parameter: ✅ Implementeret
 - [ ] Client-side filtering: ❌ MANGER
 - [x] Pagination: ✅ Korrekt
 - [x] Error handling: ✅ Korrekt
 
 #### ❌ invoices.ts
+
 - [ ] Search parameter: ❌ MANGER
 - [ ] Client-side filtering: ❌ Ikke relevant (ingen search)
 - [x] Pagination: ✅ Korrekt
 - [x] Error handling: ✅ Korrekt
 
 #### ✅ revenue.ts
+
 - [x] Search: N/A (date range query)
 - [x] Filtering: ✅ Via date range
 - [x] Error handling: ✅ Korrekt
@@ -88,6 +95,7 @@ if (params.search && params.search.trim()) {
 **Action:** Tilføj search parameter til schema og implementer client-side filtering
 
 **Schema Update:**
+
 ```typescript
 const listInvoicesSchema = z.object({
   // ... existing fields ...
@@ -129,6 +137,7 @@ const listInvoicesSchema = z.object({
 ## 🧪 Test Plan
 
 ### Test 1: list_products Search
+
 ```bash
 POST /api/v1/tools/list_products
 {
@@ -137,9 +146,11 @@ POST /api/v1/tools/list_products
   }
 }
 ```
+
 **Expected:** Kun produkter med "Test" i navn/productNo/description
 
 ### Test 2: list_invoices Search (efter fix)
+
 ```bash
 POST /api/v1/tools/list_invoices
 {
@@ -148,10 +159,13 @@ POST /api/v1/tools/list_invoices
   }
 }
 ```
+
 **Expected:** Kun fakturaer med "INV-" i invoiceNo
 
 ### Test 3: Pagination Consistency
+
 **Verify:** Alle list operations returnerer samme pagination format:
+
 ```json
 {
   "pagination": {
@@ -177,4 +191,3 @@ POST /api/v1/tools/list_invoices
 ---
 
 **Status:** ✅ Alle fixes implementeret og klar til testing
-

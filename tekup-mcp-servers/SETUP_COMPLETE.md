@@ -24,7 +24,7 @@ The following MCP servers are running directly via Node.js in development mode:
 
 3. **Database MCP** - Port 8053 (intermittent)
    - Tools: Database query operations
-   - Connected to: Supabase (https://oaevagdgrasfppbrxbey.supabase.co)
+   - Connected to: Supabase (<https://oaevagdgrasfppbrxbey.supabase.co>)
    - Status: Configured but requires stable background process
 
 ### How They Were Started

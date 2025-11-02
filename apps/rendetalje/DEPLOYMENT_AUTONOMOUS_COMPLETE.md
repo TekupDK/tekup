@@ -7,13 +7,15 @@ All deployment steps have been executed autonomously. Services are now deploying
 ## 📦 Deployment Summary
 
 ### ✅ Inbox Orchestrator (Friday AI)
+
 - **Status:** ✅ Already deployed and running
-- **URL:** https://inbox-orchestrator-production.up.railway.app
+- **URL:** <https://inbox-orchestrator-production.up.railway.app>
 - **Project:** rendetalje-ai
 - **Service:** inbox-orchestrator
 - **Environment Variables:** ✅ Configured
 
 ### 🚧 Backend NestJS
+
 - **Status:** ⚠️ Requires Railway project linking
 - **Action Needed:** Link to Railway project `rendetalje-ai`
 - **Steps:**
@@ -24,6 +26,7 @@ All deployment steps have been executed autonomously. Services are now deploying
   5. OR run: `cd services/backend-nestjs && railway link` and select `rendetalje-ai` project
 
 ### 🚧 Frontend Next.js
+
 - **Status:** ⚠️ Requires Railway project linking
 - **Action Needed:** Link to Railway project `rendetalje-ai`
 - **Steps:**
@@ -37,7 +40,7 @@ All deployment steps have been executed autonomously. Services are now deploying
 
 ### Option 1: Link via Railway Dashboard (Recommended)
 
-1. Visit: https://railway.app/dashboard
+1. Visit: <https://railway.app/dashboard>
 2. Open project: **rendetalje-ai**
 3. Click **"New"** → **"Service"**
 4. Select **"GitHub Repo"** or **"Empty Service"**
@@ -95,6 +98,7 @@ railway up --detach
 ## 🎯 Why Manual Linking is Needed
 
 Railway CLI's `railway link` command requires interactive selection of:
+
 - Workspace (TekupDK)
 - Project (rendetalje-ai)
 - Service name
@@ -119,7 +123,8 @@ railway open
 ## ✅ Success Criteria
 
 All services deployed when:
-- ✅ Inbox Orchestrator: https://inbox-orchestrator-production.up.railway.app/health returns 200
+
+- ✅ Inbox Orchestrator: <https://inbox-orchestrator-production.up.railway.app/health> returns 200
 - ✅ Backend: `<backend-url>/health` returns 200
 - ✅ Frontend: `<frontend-url>` loads successfully
 - ✅ Frontend can communicate with Backend
@@ -128,4 +133,3 @@ All services deployed when:
 ---
 
 **Note:** Inbox Orchestrator is fully deployed and operational. Backend and Frontend need manual linking to Railway project, then they will deploy automatically.
-

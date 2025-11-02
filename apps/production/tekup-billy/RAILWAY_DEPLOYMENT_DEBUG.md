@@ -93,6 +93,7 @@ CMD ["sh", "-c", "npx tsx src/http-server.ts"]
 Hvis tsx compilation tager tid, tilføj delay før healthcheck:
 
 I `railway.json`:
+
 ```json
 {
   "deploy": {
@@ -129,4 +130,3 @@ Efter deployment, tjek:
 ---
 
 **Næste skridt:** Tjek Deploy Logs i Railway Dashboard og find den første error message.
-

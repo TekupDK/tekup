@@ -23,10 +23,12 @@
 - **Test Name:** list_invoices_with_filters_and_pagination
 - **Test Code:** [TC001_list_invoices_with_filters_and_pagination.py](./TC001_list_invoices_with_filters_and_pagination.py)
 - **Test Error:**
+
   ```
   AssertionError: Expected 200 OK, got 500 for payload {'startDate': '2025-10-17', 'endDate': '2025-10-31'}
   ```
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/e85c2d21-c718-4d44-816c-d84908b81c72/249157e8-d86b-4da4-b7fa-fdcd4b5776af
+
+- **Test Visualization and Result:** <https://www.testsprite.com/dashboard/mcp/tests/e85c2d21-c718-4d44-816c-d84908b81c72/249157e8-d86b-4da4-b7fa-fdcd4b5776af>
 - **Status:** ❌ Failed
 - **Analysis / Findings:**
   The `list_invoices` endpoint returned a 500 Internal Server Error when called with date filters. This suggests:
@@ -46,10 +48,12 @@
 - **Test Name:** create_invoice_with_multiple_line_items_and_payment_terms
 - **Test Code:** [TC002_create_invoice_with_multiple_line_items_and_payment_terms.py](./TC002_create_invoice_with_multiple_line_items_and_payment_terms.py)
 - **Test Error:**
+
   ```
   requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: http://localhost:3000/api/v1/tools/create_customer
   ```
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/e85c2d21-c718-4d44-816c-d84908b81c72/607e828c-da6e-4a02-8f8e-9c3d2414dba5
+
+- **Test Visualization and Result:** <https://www.testsprite.com/dashboard/mcp/tests/e85c2d21-c718-4d44-816c-d84908b81c72/607e828c-da6e-4a02-8f8e-9c3d2414dba5>
 - **Status:** ❌ Failed
 - **Analysis / Findings:**
   Test failed during prerequisite customer creation step. The `create_customer` endpoint returned 500 error before invoice creation could be tested.
@@ -63,9 +67,11 @@
 - **Test Name:** get_invoice_details_by_id
 - **Test Code:** [TC003_get_invoice_details_by_id.py](./TC003_get_invoice_details_by_id.py)
 - **Test Error:**
+
   ```
   requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: http://localhost:3000/api/v1/tools/create_customer
   ```
+
 - **Status:** ❌ Failed
 - **Analysis / Findings:** Same root cause as TC002 - customer creation prerequisite failed
 
@@ -122,9 +128,11 @@
 - **Test Name:** list_customers_with_search_and_pagination
 - **Test Code:** [TC009_list_customers_with_search_and_pagination.py](./TC009_list_customers_with_search_and_pagination.py)
 - **Test Error:**
+
   ```
   requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: http://localhost:3000/api/v1/tools/create_customer
   ```
+
 - **Status:** ❌ Failed
 - **Analysis / Findings:**
   The `list_customers` test attempted to create a test customer first, which failed with 500 error. This prevents testing the list functionality.
@@ -137,9 +145,11 @@
 - **Test Name:** create_customer_with_contact_information
 - **Test Code:** [TC010_create_customer_with_contact_information.py](./TC010_create_customer_with_contact_information.py)
 - **Test Error:**
+
   ```
   requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: http://localhost:3000/api/v1/tools/create_customer
   ```
+
 - **Status:** ❌ Failed
 - **Analysis / Findings:**
   **CRITICAL:** This is the core failing endpoint affecting all other tests.

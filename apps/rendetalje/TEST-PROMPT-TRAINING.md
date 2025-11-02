@@ -3,6 +3,7 @@
 ## ✅ **IMPLEMENTERET**
 
 ### **1. Prompt Training System** ✅
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/promptTraining.ts`
 - **Indeholder:**
   - SYSTEM_PROMPT med alle 24 memories
@@ -11,6 +12,7 @@
   - Context-aware prompt generation
 
 ### **2. Gemini AI Integration** ✅
+
 - **Fil:** `services/tekup-ai/packages/inbox-orchestrator/src/index.ts`
 - **Integration:**
   - Gemini client initialization
@@ -23,6 +25,7 @@
 ## 🧪 **TESTS**
 
 ### **Test 1: MEMORY_1 - Time Check**
+
 ```bash
 curl -X POST http://localhost:3011/chat \
   -H "Content-Type: application/json" \
@@ -30,12 +33,14 @@ curl -X POST http://localhost:3011/chat \
 ```
 
 **Forventet:**
+
 - ✅ Korrekt dato valideret
 - ✅ Time-aware response
 
 ---
 
 ### **Test 2: MEMORY_7 - Email Search First**
+
 ```bash
 curl -X POST http://localhost:3011/generate-reply \
   -H "Content-Type: application/json" \
@@ -43,12 +48,14 @@ curl -X POST http://localhost:3011/generate-reply \
 ```
 
 **Forventet:**
+
 - ✅ Warning hvis tidligere emails fundet
 - ✅ "Undgå dobbelt-tilbud!"
 
 ---
 
 ### **Test 3: MEMORY_11 + Prompt Training**
+
 ```bash
 curl -X POST http://localhost:3011/generate-reply \
   -H "Content-Type: application/json" \
@@ -56,6 +63,7 @@ curl -X POST http://localhost:3011/generate-reply \
 ```
 
 **Forventet:**
+
 - ✅ AI genererer tilbud med prompt training
 - ✅ Validation checker alle felter
 - ✅ Memory rules enforced
@@ -65,17 +73,20 @@ curl -X POST http://localhost:3011/generate-reply \
 ## 📊 **PROMPT TRAINING FEATURES**
 
 ### **System Prompt:**
+
 - Alle 24 memories dokumenteret
 - Eksempler og best practices
 - Output format guidelines
 - Vigtige regler højdepunkt
 
 ### **Training Examples:**
+
 1. Lead Response eksempel
 2. Quote Generation eksempel
 3. Booking Request eksempel
 
 ### **Context-Aware:**
+
 - Relevant eksempler baseret på input
 - Lead data i context
 - Memories der gælder
@@ -90,6 +101,7 @@ GEMINI_API_KEY=your-api-key
 ```
 
 **Fallback:**
+
 - Hvis Gemini ikke er tilgængelig → bruger template
 - Hvis AI response ikke validerer → bruger template
 - Memory rules enforced uanset AI eller template

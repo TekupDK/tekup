@@ -17,9 +17,11 @@
 5. Find **"Tekup-Billy Accounting"** eller **"Billy Accounting"** i listen
 6. Klik på **"Edit"** eller **"⚙️"** ikon ved siden af connectoren
 7. Opdater **URL** til:
+
    ```
    https://tekup-billy-production.up.railway.app
    ```
+
 8. Klik **"Save"** eller **"Update"**
 
 ### Metode 2: Delete & Re-add (Hvis Edit Ikke Fungerer)
@@ -67,9 +69,11 @@ eller
 
 1. Klik på **"Edit"** eller **"⚙️"** ved siden af "billy" connectoren
 2. Opdater **URL** feltet til:
+
    ```
    https://tekup-billy-production.up.railway.app
    ```
+
 3. Klik **"Save"** eller **"Update"**
 
 ### Alternative: Delete & Re-add
@@ -112,6 +116,7 @@ curl https://tekup-billy-production.up.railway.app/health
 ```
 
 **Forventet:**
+
 ```json
 {
   "status": "healthy",
@@ -218,15 +223,14 @@ curl -X POST https://tekup-billy-production.up.railway.app/mcp \
 
 Hvis problemer fortsætter:
 
-1. Check Railway logs: https://railway.com/project/[PROJECT_ID]/service/[SERVICE_ID]
+1. Check Railway logs: <https://railway.com/project/[PROJECT_ID]/service/[SERVICE_ID>]
 2. Verify deployment status i Railway dashboard
 3. Test direkte med curl commands ovenfor
-4. Contact: support@tekup.dk
+4. Contact: <support@tekup.dk>
 
 ---
 
 **Last Updated:** 2025-10-31  
 **Migration Status:** ✅ Ready  
-**Railway URL:** https://tekup-billy-production.up.railway.app  
-**Old Render URL:** https://tekup-billy.onrender.com (deprecated - kan slettes)
-
+**Railway URL:** <https://tekup-billy-production.up.railway.app>  
+**Old Render URL:** <https://tekup-billy.onrender.com> (deprecated - kan slettes)
