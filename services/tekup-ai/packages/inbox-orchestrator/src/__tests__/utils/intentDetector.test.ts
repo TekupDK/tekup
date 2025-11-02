@@ -2,7 +2,7 @@
  * Tests for Intent Detector
  */
 
-import { detectIntent, getRelevantMemoriesForIntent, type Intent } from '../../utils/intentDetector';
+import { detectIntent, getRelevantMemoriesForIntent } from '../../utils/intentDetector';
 
 describe('Intent Detector', () => {
   describe('detectIntent', () => {
