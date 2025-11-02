@@ -1,4 +1,7 @@
-name: RenOS Tests
+name: RenOS Tests (DISABLED - replaced by Friday Chat Interface)
+
+# DISABLED: RenOS application deprecated in favor of Friday chat interface
+# To re-enable, remove the 'if: false' condition from all jobs below
 
 on:
   push:
@@ -16,6 +19,7 @@ jobs:
   backend-tests:
     name: Backend Tests
     runs-on: ubuntu-latest
+    if: false  # DISABLED - RenOS deprecated
 
     defaults:
       run:
@@ -59,6 +63,7 @@ jobs:
   frontend-tests:
     name: Frontend Tests
     runs-on: ubuntu-latest
+    if: false  # DISABLED - RenOS deprecated
 
     defaults:
       run:
@@ -103,6 +108,7 @@ jobs:
   shared-tests:
     name: Shared Library Tests
     runs-on: ubuntu-latest
+    if: false  # DISABLED - RenOS deprecated
 
     defaults:
       run:
@@ -145,6 +151,7 @@ jobs:
   frontend-e2e-tests:
     name: Frontend E2E Tests
     runs-on: ubuntu-latest
+    if: false  # DISABLED - RenOS deprecated
     needs: [backend-tests, frontend-tests] # Ensure basic tests pass first
 
     defaults:
@@ -194,6 +201,7 @@ jobs:
   quality-check:
     name: Quality Gates
     runs-on: ubuntu-latest
+    if: false  # DISABLED - RenOS deprecated
     needs: [backend-tests, frontend-tests, shared-tests, frontend-e2e-tests]
 
     steps:
