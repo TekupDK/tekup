@@ -12,7 +12,7 @@ ChatGPT kan ikke finde "Jørgen Pagh" selvom han eksisterer i Billy systemet.
 **Bekræftet facts fra Billy UI:**
 - ✅ Name: Jørgen Pagh
 - ✅ Phone: 30666685
-- ✅ Email: joergenpagh1948@gmail.com (contact person)
+- ✅ Email: <joergenpagh1948@gmail.com> (contact person)
 - ✅ Address: Sølykken 20, 8530 Hjortshøj
 - ✅ 4 fakturaer
 
@@ -95,6 +95,7 @@ ChatGPT kan ikke finde "Jørgen Pagh" selvom han eksisterer i Billy systemet.
 **Problem:** Vi henter kun første page af kontakter
 
 **Løsning:**
+
 ```typescript
 async getAllContacts(type: 'customer' | 'supplier', search?: string): Promise<BillyContact[]> {
   let allContacts: BillyContact[] = [];
@@ -130,6 +131,7 @@ async getAllContacts(type: 'customer' | 'supplier', search?: string): Promise<Bi
 
 **Løsning:**
 Når vi finder en kontakt der matcher name/phone, hent fuld contact details:
+
 ```typescript
 // After filtering
 if (params.search && contacts.length === 0) {
@@ -170,4 +172,3 @@ if (params.search && contacts.length === 0) {
 ---
 
 **Status:** 🔄 Awaiting pagination implementation
-

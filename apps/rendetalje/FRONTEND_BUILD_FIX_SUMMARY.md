@@ -15,12 +15,12 @@
 
 To complete the build fix, you **MUST** set these environment variables in Railway:
 
-1. Go to: https://railway.app/project/308687ac-3adf-4267-8d43-be5850a023e9
+1. Go to: <https://railway.app/project/308687ac-3adf-4267-8d43-be5850a023e9>
 2. Select **`rendetalje-ai`** service (frontend)
 3. Go to **"Variables"** tab
 4. Click **"New Variable"** and add:
 
-### Required Variables:
+### Required Variables
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://dummy.supabase.co
@@ -34,7 +34,7 @@ NEXT_PUBLIC_SUPABASE_URL=<your-actual-supabase-url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-actual-supabase-anon-key>
 ```
 
-### Additional Variables (if not already set):
+### Additional Variables (if not already set)
 
 ```
 NEXT_PUBLIC_API_URL=https://rendetalje-ai-production.up.railway.app
@@ -71,6 +71,7 @@ NODE_ENV=production
 ## 🎯 Expected Result
 
 After setting environment variables in Railway:
+
 - ✅ Build will complete successfully
 - ✅ Frontend will deploy
 - ✅ Domain will be assigned automatically
@@ -79,4 +80,3 @@ After setting environment variables in Railway:
 ---
 
 **Status:** Code fix deployed ✅ | Environment variables needed ⚠️
-

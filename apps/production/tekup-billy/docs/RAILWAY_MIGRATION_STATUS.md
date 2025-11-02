@@ -11,23 +11,26 @@
 ## ⚠️ Manual Steps Required
 
 ### 1. Railway Environment Variables
+
 **Action**: Paste environment variables into Railway UI
 
-1. Go to: https://railway.com/project/e2df644d-428f-498e-8b34-e73b3388060c
+1. Go to: <https://railway.com/project/e2df644d-428f-498e-8b34-e73b3388060c>
 2. Navigate to: Service → Variables → Raw Editor
 3. Paste the entire `.env.railway` file content (from `apps/production/tekup-billy/.env.railway`)
 4. Click Save
 5. Deploy will trigger automatically
 
 ### 2. TekupVault Database Migration
+
 **Action**: Run SQL in Supabase SQL Editor
 
-1. Open Supabase SQL Editor: https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/sql
+1. Open Supabase SQL Editor: <https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey/sql>
 2. Copy SQL from: `C:\Users\empir\Tekup\scripts\vault-remap-tekup-billy.sql`
 3. Execute in Supabase SQL Editor
 4. Verify counts match
 
 ### 3. Railway Deployment
+
 **Action**: Deploy after variables are set
 
 ```powershell
@@ -60,9 +63,3 @@ railway logs
 - Supabase REST API doesn't support PATCH for bulk updates - use SQL Editor instead
 - Dockerfile uses tsx runtime temporarily to avoid TypeScript compilation errors
 - All secrets preserved from Render.com configuration
-
-
-
-
-
-

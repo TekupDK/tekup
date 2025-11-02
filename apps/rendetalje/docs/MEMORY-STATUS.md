@@ -286,7 +286,7 @@
 
 ## 🎯 **PRIORITERING**
 
-### **KRITISKE** (implementer først):
+### **KRITISKE** (implementer først)
 
 1. ✅ **MEMORY_5** - Calendar Check (DONE)
 2. ❌ **MEMORY_7** - Email Search First (PARTIALLY)
@@ -294,14 +294,14 @@
 4. ❌ **MEMORY_8** - Overtid Kommunikation (KRITISK!)
 5. ❌ **MEMORY_1** - Time Check (KRITISK for datoer)
 
-### **VIKTIGE** (implementer derefter):
+### **VIKTIGE** (implementer derefter)
 
 6. ❌ **MEMORY_2** - Lead-System (workflow)
 7. ❌ **MEMORY_3** - Kundeservice Tilgang
 8. ❌ **MEMORY_9** - Conflict Resolution
 9. ❌ **MEMORY_10** - Lead Management
 
-### **NICE TO HAVE**:
+### **NICE TO HAVE**
 
 10. ❌ **MEMORY_6** - Kalender-Systematisering
 11. ❌ **MEMORY_12** - Business Intelligence

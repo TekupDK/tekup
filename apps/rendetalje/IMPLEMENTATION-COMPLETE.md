@@ -20,6 +20,7 @@
 ## ✅ **PROMPT TRAINING SYSTEM**
 
 ### **Implementeret:**
+
 - ✅ `promptTraining.ts` - System prompt med alle 24 memories
 - ✅ 3 training eksempler (Lead Response, Quote Generation, Booking)
 - ✅ Context-aware prompt generation
@@ -28,11 +29,13 @@
 - ✅ Memory validation efter AI response
 
 ### **Filer:**
+
 - `services/tekup-ai/packages/inbox-orchestrator/src/promptTraining.ts`
 - `services/tekup-ai/packages/inbox-orchestrator/src/memoryRules.ts`
 - `services/tekup-ai/packages/inbox-orchestrator/src/index.ts`
 
 ### **Integration:**
+
 - ✅ `generateSafeReply()` bruger prompt training
 - ✅ AI-genererede quotes og replies
 - ✅ Memory rules enforced uanset AI eller template
@@ -52,12 +55,14 @@
 
 **Problem:** `@google/generative-ai` package mangler i Docker image
 
-**Fix:** 
+**Fix:**
+
 - Package.json er opdateret ✅
 - Docker build skal køre igen med `--no-cache`
 - Eller: Rebuild container efter package.json update
 
 **Workaround:**
+
 - System virker med template fallback (uden AI)
 - Memory rules enforced uanset
 

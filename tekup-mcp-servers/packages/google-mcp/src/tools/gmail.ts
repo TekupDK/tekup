@@ -57,7 +57,7 @@ export async function listEmails(args: {
         try {
           const fullMessage = await getEmailById({ messageId: msg.id! });
           messages.push(fullMessage);
-        } catch (error) {
+        } catch {
           log.warn('Failed to fetch message details', { messageId: msg.id });
         }
       }
@@ -138,7 +138,7 @@ export async function searchEmails(
         try {
           const fullMessage = await getEmailById({ messageId: msg.id! });
           messages.push(fullMessage);
-        } catch (error) {
+        } catch {
           log.warn('Failed to fetch message details', { messageId: msg.id });
         }
       }

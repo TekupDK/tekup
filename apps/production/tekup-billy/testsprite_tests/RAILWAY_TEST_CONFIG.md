@@ -1,7 +1,7 @@
 # TestSprite Configuration for Railway Deployment
 
 **Dato:** 31. Oktober 2025  
-**Railway URL:** https://tekup-billy-production.up.railway.app
+**Railway URL:** <https://tekup-billy-production.up.railway.app>
 
 ---
 
@@ -9,7 +9,7 @@
 
 Da tekup-billy er deployed på Railway (ikke localhost), skal TestSprite konfigureres til at teste mod Railway URL.
 
-### Opdateret Configuration:
+### Opdateret Configuration
 
 | Setting            | Value                                           | Notes                           |
 | ------------------ | ----------------------------------------------- | ------------------------------- |
@@ -69,7 +69,7 @@ Railway deployment har allerede environment variables sat:
 
 ## 🚀 Re-run TestSprite Tests
 
-### Steps:
+### Steps
 
 1. **Opdater TestSprite Configuration:**
    - Change `http://localhost:3000` → `https://tekup-billy-production.up.railway.app`

@@ -5,19 +5,22 @@
 
 ## ✅ Environment Variables Set Autonomously
 
-### Frontend (rendetalje-ai service):
+### Frontend (rendetalje-ai service)
+
 ```
 ✅ NEXT_PUBLIC_SUPABASE_URL=https://dummy.supabase.co
 ✅ NEXT_PUBLIC_SUPABASE_ANON_KEY=dummy-anon-key-for-build
 ```
 
-### Backend (rendetalje-ai service):
+### Backend (rendetalje-ai service)
+
 ```
 ✅ AI_FRIDAY_URL=https://inbox-orchestrator-production.up.railway.app
 ✅ ENABLE_AI_FRIDAY=true
 ```
 
-### Inbox Orchestrator (already configured):
+### Inbox Orchestrator (already configured)
+
 ```
 ✅ GEMINI_API_KEY (set)
 ✅ GOOGLE_MCP_URL=https://google-mcp-production-d125.up.railway.app
@@ -35,8 +38,8 @@
 
 ## 📊 Service URLs
 
-- **Inbox Orchestrator:** https://inbox-orchestrator-production.up.railway.app
-- **Backend NestJS:** https://rendetalje-ai-production.up.railway.app
+- **Inbox Orchestrator:** <https://inbox-orchestrator-production.up.railway.app>
+- **Backend NestJS:** <https://rendetalje-ai-production.up.railway.app>
 - **Frontend Next.js:** Pending (domain will be assigned after build completes)
 
 ## 🔧 What Was Done Autonomously
@@ -52,7 +55,7 @@
 
 3. ✅ **Deployment Triggered:**
    - Frontend redeployed with new environment variables
-   - Build logs: https://railway.com/project/308687ac-3adf-4267-8d43-be5850a023e9/service/c6b61d98-19d1-4e41-b84f-5503da87a096
+   - Build logs: <https://railway.com/project/308687ac-3adf-4267-8d43-be5850a023e9/service/c6b61d98-19d1-4e41-b84f-5503da87a096>
 
 ## 📝 Commands Used
 
@@ -101,6 +104,7 @@ railway variables
 ## 🎯 Expected Result
 
 After frontend build completes (5-10 minutes):
+
 - ✅ All three services operational
 - ✅ Frontend accessible via Railway domain
 - ✅ Complete integration: Frontend → Backend → Orchestrator → Friday AI
@@ -110,4 +114,3 @@ After frontend build completes (5-10 minutes):
 
 **Deployment Method:** Fully Autonomous via Railway CLI  
 **No Manual Dashboard Interaction Required** ✅
-

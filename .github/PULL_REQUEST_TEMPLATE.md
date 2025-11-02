@@ -10,17 +10,18 @@ This pull request is ready for review. Before merging, please ensure all checks 
 
 ### Description
 
-[Provide a brief description of the changes in this pull request. Explain *what* and *why*, not *how*.]
+[Provide a brief description of the changes in this pull request. Explain _what_ and _why_, not _how_.]
 
 ### Changes Made
 
-- 
-- 
-- 
+-
+-
+-
 
 ### Reviewer Checklist
 
 #### Code Quality
+
 - [ ] **Commits:** All commits follow [conventional commit format](../docs/CONVENTIONAL_COMMITS.md)
 - [ ] **TypeScript Compilation:** The code compiles without errors
 - [ ] **Linting:** ESLint/Prettier checks pass
@@ -28,17 +29,20 @@ This pull request is ready for review. Before merging, please ensure all checks 
 - [ ] **Coverage:** Test coverage maintained or improved
 
 #### Build & Deploy
+
 - [ ] **Docker Build:** `docker-compose` build completes successfully (if applicable)
 - [ ] **CI Tests:** All tests pass in the continuous integration pipeline
 - [ ] **Breaking Changes:** Breaking changes are documented in commit footer
 
 #### Documentation & Process
+
 - [ ] **Documentation:** All relevant documentation has been updated
 - [ ] **Changelog:** Changes are reflected in CHANGELOG.md (if applicable)
 - [ ] **Migrations:** Database migrations are included and tested (if applicable)
 - [ ] **Environment Variables:** New env vars documented in README or .env.example
 
 #### Security & Compliance
+
 - [ ] **Secrets:** No credentials or secrets exposed
 - [ ] **Dependencies:** No known vulnerabilities in new dependencies
 - [ ] **CODEOWNERS:** Correct reviewers assigned per CODEOWNERS

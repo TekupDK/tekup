@@ -5,6 +5,7 @@ This directory contains Git hooks managed by [Husky](https://typicode.github.io/
 ## Hooks
 
 ### `commit-msg`
+
 Validates commit messages against [Conventional Commits](https://www.conventionalcommits.org/) format using commitlint.
 
 **Runs on:** `git commit`
@@ -27,6 +28,7 @@ git commit --no-verify -m "your message"
 ```
 
 ### `pre-commit`
+
 Runs markdown linting on staged markdown files.
 
 **Runs on:** `git commit` (before commit-msg)
@@ -45,6 +47,7 @@ This triggers the `prepare` script in `package.json`.
 ## Troubleshooting
 
 ### Hooks not running
+
 1. Check if hooks are executable:
    ```powershell
    # On Unix/macOS/WSL
@@ -63,12 +66,14 @@ This triggers the `prepare` script in `package.json`.
    ```
 
 ### Bypass hooks temporarily
+
 Use `--no-verify` flag (not recommended for production):
 ```powershell
 git commit --no-verify -m "your message"
 ```
 
 ### Disable hooks entirely
+
 Set environment variable:
 ```powershell
 # PowerShell
@@ -82,9 +87,10 @@ export HUSKY=0
 
 - **Commitlint config:** `commitlint.config.cjs`
 - **Conventional commits guide:** `docs/CONVENTIONAL_COMMITS.md`
-- **Husky documentation:** https://typicode.github.io/husky/
+- **Husky documentation:** <https://typicode.github.io/husky/>
 
 ## CI/CD
 
 Git hooks run locally only. CI validation runs via GitHub Actions:
+
 - `.github/workflows/commitlint.yml` - Validates all commits in PRs and pushes

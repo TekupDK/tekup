@@ -6,19 +6,21 @@
 ## Services Deployed
 
 ### 1. Inbox Orchestrator (Friday AI) ✅
-- **URL:** https://inbox-orchestrator-production.up.railway.app
+
+- **URL:** <https://inbox-orchestrator-production.up.railway.app>
 - **Status:** Already deployed and linked
-- **Health Check:** https://inbox-orchestrator-production.up.railway.app/health
+- **Health Check:** <https://inbox-orchestrator-production.up.railway.app/health>
 - **Environment Variables:**
   - `GEMINI_API_KEY` - ✅ Set
-  - `GOOGLE_MCP_URL` - ✅ Set (https://google-mcp-production-d125.up.railway.app)
+  - `GOOGLE_MCP_URL` - ✅ Set (<https://google-mcp-production-d125.up.railway.app>)
   - `NODE_ENV=production` - ✅ Set
   - `PORT=3011` - ✅ Set
 
 ### 2. Backend NestJS 🚧
-- **URL:** https://rendetalje-backend-production.up.railway.app (pending)
+
+- **URL:** <https://rendetalje-backend-production.up.railway.app> (pending)
 - **Status:** Deploying...
-- **Health Check:** https://rendetalje-backend-production.up.railway.app/health (pending)
+- **Health Check:** <https://rendetalje-backend-production.up.railway.app/health> (pending)
 - **Environment Variables:**
   - `AI_FRIDAY_URL` - ✅ Set to orchestrator URL
   - `ENABLE_AI_FRIDAY=true` - ✅ Set
@@ -26,7 +28,8 @@
   - `PORT=3001` - ✅ Set
 
 ### 3. Frontend Next.js 🚧
-- **URL:** https://rendetalje-frontend-production.up.railway.app (pending)
+
+- **URL:** <https://rendetalje-frontend-production.up.railway.app> (pending)
 - **Status:** Deploying...
 - **Environment Variables:**
   - `NEXT_PUBLIC_API_URL` - ✅ Set to backend URL
@@ -97,6 +100,7 @@ If services fail to start:
 ## Configuration Files
 
 All Railway configuration is in:
+
 - `services/backend-nestjs/railway.json`
 - `services/frontend-nextjs/railway.json`
 - `services/tekup-ai/packages/inbox-orchestrator/railway.json`
@@ -104,4 +108,3 @@ All Railway configuration is in:
 ## Deployment Script
 
 Re-run deployment: `.\deploy-railway-autonomous.ps1`
-

@@ -58,13 +58,13 @@ Da tekup-billy kører på Railway (ikke localhost), skal du **opdatere TestSprit
 
 ## 🚀 Re-run Tests
 
-### Via TestSprite UI:
+### Via TestSprite UI
 
 1. **Click "Run Tests"** eller "Execute Tests" button
 2. Tests vil nu køre mod Railway deployment
 3. **Expected:** All 10 tests should pass ✅
 
-### Via TestSprite MCP (Alternative):
+### Via TestSprite MCP (Alternative)
 
 Hvis du vil re-run via MCP tool:
 
@@ -92,13 +92,13 @@ Hvis du vil re-run via MCP tool:
 
 ## 🔍 Verification Commands
 
-### Test Health Endpoint:
+### Test Health Endpoint
 
 ```bash
 curl https://tekup-billy-production.up.railway.app/health
 ```
 
-### Test Customer List:
+### Test Customer List
 
 ```bash
 curl -X POST https://tekup-billy-production.up.railway.app/api/v1/tools/list_customers \
@@ -107,7 +107,7 @@ curl -X POST https://tekup-billy-production.up.railway.app/api/v1/tools/list_cus
   -d '{"limit":5}'
 ```
 
-### Test Customer Creation:
+### Test Customer Creation
 
 ```bash
 curl -X POST https://tekup-billy-production.up.railway.app/api/v1/tools/create_customer \

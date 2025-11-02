@@ -40,8 +40,8 @@
 
 ### 5. Railway Cloud Deployment
 
-- ✅ **Inbox Orchestrator:** https://inbox-orchestrator-production.up.railway.app
-- ✅ **Backend NestJS:** https://rendetalje-ai-production.up.railway.app
+- ✅ **Inbox Orchestrator:** <https://inbox-orchestrator-production.up.railway.app>
+- ✅ **Backend NestJS:** <https://rendetalje-ai-production.up.railway.app>
 - ✅ **Frontend Next.js:** Deployed (service: rendetalje-ai)
 - ✅ Environment variables sat autonomt via Railway CLI
 - ✅ Health checks passing for alle services
@@ -52,9 +52,9 @@
 
 | Service                | URL                                                  | Status      |
 | ---------------------- | ---------------------------------------------------- | ----------- |
-| **Inbox Orchestrator** | https://inbox-orchestrator-production.up.railway.app | ✅ Running  |
-| **Backend API**        | https://rendetalje-ai-production.up.railway.app      | ✅ Running  |
-| **Frontend**           | https://rendetalje-ai-production.up.railway.app      | ✅ Deployed |
+| **Inbox Orchestrator** | <https://inbox-orchestrator-production.up.railway.app> | ✅ Running  |
+| **Backend API**        | <https://rendetalje-ai-production.up.railway.app>      | ✅ Running  |
+| **Frontend**           | <https://rendetalje-ai-production.up.railway.app>      | ✅ Deployed |
 
 ---
 
@@ -94,11 +94,11 @@
 
 ## 📁 Files Created/Modified
 
-### Backend (1 file):
+### Backend (1 file)
 
 - `services/backend-nestjs/src/ai-friday/ai-friday.service.ts`
 
-### Frontend (6 files):
+### Frontend (6 files)
 
 - `services/frontend-nextjs/src/components/chat/FridayChatWidget.tsx` (new)
 - `services/frontend-nextjs/src/hooks/useFridayChat.ts` (new)
@@ -107,7 +107,7 @@
 - `services/frontend-nextjs/src/lib/supabase-server.ts` (new)
 - `services/frontend-nextjs/src/app/layout.tsx` (updated)
 
-### Inbox Orchestrator (14 new files):
+### Inbox Orchestrator (14 new files)
 
 - Complete test suite
 - Token optimization utilities
@@ -116,14 +116,14 @@
 - Metrics logging
 - TestSprite integration
 
-### Railway Configuration (4 files):
+### Railway Configuration (4 files)
 
 - `services/backend-nestjs/railway.json`
 - `services/frontend-nextjs/railway.json`
 - `services/frontend-nextjs/Dockerfile`
 - `services/tekup-ai/packages/inbox-orchestrator/railway.json`
 
-### Documentation (15+ files):
+### Documentation (15+ files)
 
 - Complete testing guides
 - Railway deployment guides
@@ -134,7 +134,7 @@
 
 ## 🔧 Configuration
 
-### Environment Variables Set:
+### Environment Variables Set
 
 **Inbox Orchestrator:**
 
@@ -158,20 +158,20 @@
 
 ## 🎯 How to Use Friday AI
 
-### Via Test Chat Interface (Simple):
+### Via Test Chat Interface (Simple)
 
 ```
 Open: C:\Users\empir\Tekup\apps\rendetalje\test-chat-interface.html
 ```
 
-### Via RendetaljeOS Frontend:
+### Via RendetaljeOS Frontend
 
-1. Open: https://rendetalje-ai-production.up.railway.app
+1. Open: <https://rendetalje-ai-production.up.railway.app>
 2. Login (when auth is configured)
 3. Click floating chat button (bottom right)
 4. Start chatting with Friday AI!
 
-### Via API (Direct):
+### Via API (Direct)
 
 ```powershell
 # Test orchestrator directly
@@ -189,26 +189,26 @@ curl -X POST https://rendetalje-ai-production.up.railway.app/api/v1/ai-friday/ch
 
 ## 📚 Documentation Index
 
-### Implementation:
+### Implementation
 
 - `FRIDAY_AI_COMPLETE.md` - Implementation overview
 - `IMPLEMENTATION_SUMMARY.md` - Complete summary
 - `FRIDAY_AI_FRONTEND_INTEGRATION.md` - Integration guide
 
-### Testing:
+### Testing
 
 - `TESTING_GUIDE.md` - Comprehensive testing scenarios
 - `TEST_RESULTS.md` - Test results summary
 - `testsprite_tests/testsprite-mcp-test-report.md` - TestSprite full report
 
-### Deployment:
+### Deployment
 
 - `RAILWAY_DEPLOYMENT.md` - Complete deployment guide
 - `RAILWAY_QUICK_START.md` - 5-minute quick start
 - `AUTONOMOUS_DEPLOYMENT_COMPLETE.md` - Autonomous deployment summary
 - `DEPLOYMENT_COMPLETE_FINAL.md` - Final deployment status
 
-### Configuration:
+### Configuration
 
 - `RAILWAY_ENV_TEMPLATE.md` - Environment variables reference
 - `PAUSE_STATUS.md` - Pause/resume documentation
@@ -236,10 +236,10 @@ curl -X POST https://rendetalje-ai-production.up.railway.app/api/v1/ai-friday/ch
 
 ## 🔗 Quick Links
 
-- **Inbox Orchestrator:** https://inbox-orchestrator-production.up.railway.app
-- **Backend API:** https://rendetalje-ai-production.up.railway.app/api/v1
+- **Inbox Orchestrator:** <https://inbox-orchestrator-production.up.railway.app>
+- **Backend API:** <https://rendetalje-ai-production.up.railway.app/api/v1>
 - **Health Checks:** `/health` on both services
-- **Railway Dashboard:** https://railway.app/project/308687ac-3adf-4267-8d43-be5850a023e9
+- **Railway Dashboard:** <https://railway.app/project/308687ac-3adf-4267-8d43-be5850a023e9>
 
 ---
 

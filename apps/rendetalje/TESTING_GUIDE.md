@@ -3,6 +3,7 @@
 ## Prerequisites
 
 1. **Start all services:**
+
 ```bash
 # Terminal 1: Inbox Orchestrator
 cd services/tekup-ai/packages/inbox-orchestrator
@@ -18,6 +19,7 @@ npm run dev  # Port 3002
 ```
 
 2. **Environment Variables:**
+
 ```bash
 # Backend .env
 AI_FRIDAY_URL=http://localhost:3011
@@ -99,24 +101,28 @@ curl -X POST http://localhost:3000/api/v1/ai-friday/chat \
 ### 4. Workflow Testing
 
 #### Lead Processing Workflow
+
 1. Message: "Hvad har vi fået af nye leads i dag?"
 2. Expected: List of leads with details
 3. Verify: Intent is "lead_processing"
 4. Verify: Actions include search_leads
 
 #### Booking Workflow
+
 1. Message: "Vis mig ledige tider i morgen"
 2. Expected: Calendar slots available
 3. Verify: Intent is "calendar_query"
 4. Verify: Actions include calendar check
 
 #### Customer Support Workflow
+
 1. Message: "Hjælp mig med at finde en kunde"
 2. Expected: Customer search or suggestions
 3. Verify: Intent is appropriate
 4. Verify: Helpful response
 
 #### Conflict Resolution Workflow
+
 1. Message: "Hvordan håndterer jeg en klage?"
 2. Expected: MEMORY_9 guidance
 3. Verify: Conflict resolution memory applied
@@ -125,18 +131,21 @@ curl -X POST http://localhost:3000/api/v1/ai-friday/chat \
 ### 5. Error Scenario Testing
 
 #### Network Error
+
 1. Stop inbox-orchestrator
 2. Send message from frontend
 3. Verify error message appears
 4. Verify fallback response
 
 #### Authentication Error
+
 1. Logout user
 2. Try to send message
 3. Verify authentication error
 4. Verify redirect to login
 
 #### Invalid Message
+
 1. Send empty message
 2. Verify validation error
 3. Verify no API call made
@@ -172,6 +181,7 @@ wait
 ## Debugging
 
 ### Backend Logs
+
 ```bash
 # Watch backend logs
 cd services/backend-nestjs
@@ -179,6 +189,7 @@ npm run start:dev | grep -i "friday\|ai"
 ```
 
 ### Inbox Orchestrator Logs
+
 ```bash
 # Watch orchestrator logs
 cd services/tekup-ai/packages/inbox-orchestrator
@@ -186,6 +197,7 @@ npm run dev | grep -i "friday"
 ```
 
 ### Frontend Console
+
 - Open browser DevTools
 - Check Console for errors
 - Check Network tab for API calls
@@ -194,17 +206,21 @@ npm run dev | grep -i "friday"
 ## Common Issues
 
 ### Issue: "AI Friday integration not configured properly"
+
 **Solution:** Set `AI_FRIDAY_URL=http://localhost:3011` in backend `.env`
 
 ### Issue: "CORS error"
+
 **Solution:** Ensure backend allows frontend origin in CORS config
 
 ### Issue: "401 Unauthorized"
+
 **Solution:** Check JWT token is valid and not expired
 
 ### Issue: "Chat widget not appearing"
+
 **Solution:** Check layout.tsx has FridayChatWidget imported and rendered
 
 ### Issue: "Messages not sending"
-**Solution:** Check browser console for errors, verify API endpoint path
 
+**Solution:** Check browser console for errors, verify API endpoint path

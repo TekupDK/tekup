@@ -163,11 +163,11 @@ analytics_events -- User tracking
 **Must Test Before Going Live:**
 
 1. **Chat Interface** - Basic conversation flow
-2. **Lead Creation** - "Opret lead: Lars Nielsen, lars@test.dk, 12345678"
+2. **Lead Creation** - "Opret lead: Lars Nielsen, <lars@test.dk>, 12345678"
 3. **Task Management** - "Opret opgave: Send tilbud, i morgen, høj prioritet"
 4. **Calendar Booking** - "Book Lars Nielsen til rengøring mandag kl 10-13"
 5. **Billy Integration** - "Lav faktura til Lars Nielsen for 6 timer"
-6. **Gmail Integration** - "Søg emails fra lars@test.dk"
+6. **Gmail Integration** - "Søg emails fra <lars@test.dk>"
 7. **Mobile Interface** - Test responsive design
 
 ---
@@ -364,8 +364,8 @@ MEMORY_24: Job completion requires 6-step checklist
 
 ### GitHub V2 Resources
 
-- **Live Demo:** https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer
-- **Repository:** https://github.com/TekupDK/tekup-friday
+- **Live Demo:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
+- **Repository:** <https://github.com/TekupDK/tekup-friday>
 - **Documentation:** README.md, STATUS.md, ANALYSIS.md
 
 ### TekUp Resources

@@ -56,6 +56,7 @@ src/trpc/
 ## Email Router Procedures
 
 ### `email.list`
+
 Liste emails fra Gmail via MCP server.
 
 **Input:**
@@ -76,6 +77,7 @@ Liste emails fra Gmail via MCP server.
 ```
 
 ### `email.get`
+
 Hent enkelt email by message ID.
 
 **Input:**
@@ -86,6 +88,7 @@ Hent enkelt email by message ID.
 ```
 
 ### `email.search`
+
 Søg emails med Gmail search syntax.
 
 **Input:**
@@ -97,6 +100,7 @@ Søg emails med Gmail search syntax.
 ```
 
 ### `email.send`
+
 Send email via Gmail MCP server.
 
 **Input:**
@@ -120,6 +124,7 @@ Send email via Gmail MCP server.
 ```
 
 ### `email.getLabels`
+
 Hent alle Gmail labels.
 
 **Output:**
@@ -132,6 +137,7 @@ Hent alle Gmail labels.
 ## AI Router Procedures
 
 ### `ai.chat`
+
 Send besked til AI og få respons (non-streaming).
 
 **Input:**
@@ -162,6 +168,7 @@ Send besked til AI og få respons (non-streaming).
 ```
 
 ### `ai.getModels`
+
 Hent tilgængelige AI modeller.
 
 **Output:**
@@ -200,6 +207,7 @@ Hver tRPC request har adgang til:
 ## Error Handling
 
 tRPC bruger standard error codes:
+
 - `UNAUTHORIZED` (401): Authentication required
 - `FORBIDDEN` (403): Access denied
 - `NOT_FOUND` (404): Resource not found
@@ -228,6 +236,7 @@ app.use('/trpc', async (req, res, next) => {
 ## Gmail MCP Server Configuration
 
 Email router forventer at Gmail MCP server er konfigureret i:
+
 - `aiMcpServerRegistry` table (server registry)
 - `aiUserSettings.enabledMcpServers` (user's enabled servers)
 

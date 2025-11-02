@@ -26,14 +26,16 @@
 
 ## 🚀 Deployment Status
 
-### Fixes Applied:
+### Fixes Applied
+
 - ✅ Server starter altid (fjernet alle conditions)
 - ✅ Healthcheck simplificeret (altid returnerer 200)
 - ✅ Railway startup detection forbedret
 - ✅ Dockerfile path korrekt (fra repo root)
 - ✅ Start command korrekt (`npx tsx src/http-server.ts`)
 
-### Expected Behavior:
+### Expected Behavior
+
 1. **Build:** Dockerfile bygger korrekt (✅ Verified)
 2. **Start:** Server starter automatisk
 3. **Healthcheck:** `/health` endpoint returnerer 200
@@ -41,9 +43,10 @@
 
 ---
 
-## 📊 Next Deployment Should Show:
+## 📊 Next Deployment Should Show
 
 **In Deploy Logs:**
+
 ```
 [STARTUP] Starting Tekup-Billy server...
 [STARTUP] PORT: 3000
@@ -60,7 +63,7 @@
 
 ---
 
-## 🎯 If Still Failing:
+## 🎯 If Still Failing
 
 **Check Deploy Logs for:**
 1. **Startup errors** - manglende imports eller config errors
@@ -77,4 +80,3 @@
 
 Alle fixes er pushet og environment variables er sat korrekt.
 Næste deployment bør virke!
-

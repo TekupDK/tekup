@@ -46,10 +46,10 @@
 
 **Branch Name:** `friday-ai-complete-v2`  
 **Based on:** `origin/master`  
-**URL:** https://github.com/TekupDK/tekup/tree/friday-ai-complete-v2
+**URL:** <https://github.com/TekupDK/tekup/tree/friday-ai-complete-v2>
 
 **Pull Request:**  
-https://github.com/TekupDK/tekup/pull/new/friday-ai-complete-v2
+<https://github.com/TekupDK/tekup/pull/new/friday-ai-complete-v2>
 
 ---
 
@@ -57,7 +57,7 @@ https://github.com/TekupDK/tekup/pull/new/friday-ai-complete-v2
 
 ### **1. Create Pull Request**
 
-- Visit: https://github.com/TekupDK/tekup/pull/new/friday-ai-complete-v2
+- Visit: <https://github.com/TekupDK/tekup/pull/new/friday-ai-complete-v2>
 - Review changes
 - Add description
 - Request review (if needed)

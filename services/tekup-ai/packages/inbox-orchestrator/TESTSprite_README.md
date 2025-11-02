@@ -9,13 +9,16 @@ Følg denne guide for at få Friday AI klar til TestSprite testing.
 ## 1. Verificer Server Setup
 
 ### 1.1 Installer Dependencies
+
 ```bash
 cd C:\Users\empir\Tekup\services\tekup-ai\packages\inbox-orchestrator
 npm install
 ```
 
 ### 1.2 Check Environment Variables
+
 Serveren har følgende environment variables:
+
 - `PORT`: 3011 (default)
 - `GEMINI_API_KEY`: (optional - fallback hvis mangler)
 - `GOOGLE_MCP_URL`: (optional - for production)
@@ -28,6 +31,7 @@ Serveren har følgende environment variables:
 ## 2. Start Friday AI Server
 
 ### 2.1 Development Mode
+
 ```bash
 cd C:\Users\empir\Tekup\services\tekup-ai\packages\inbox-orchestrator
 npm run dev
@@ -39,6 +43,7 @@ Friday AI (Inbox Orchestrator) listening on :3011
 ```
 
 ### 2.2 Verificer Server Kører
+
 Åbn browser eller terminal og test:
 
 ```bash
@@ -55,6 +60,7 @@ curl http://localhost:3011/health
 ## 3. TestSprite Configuration
 
 ### 3.1 Upload PRD Document
+
 I TestSprite dashboard, upload:
 ```
 C:\Users\empir\Tekup\services\tekup-ai\packages\inbox-orchestrator\FRIDAY_AI_PRD.md
@@ -73,18 +79,21 @@ C:\Users\empir\Tekup\services\tekup-ai\packages\inbox-orchestrator\FRIDAY_AI_PRD
 ## 4. Test Endpoints Ready
 
 ### 4.1 Health Check
+
 ```
 GET http://localhost:3011/health
 Response: {"ok": true}
 ```
 
 ### 4.2 Lead Parser Test
+
 ```
 GET http://localhost:3011/test/parser
 Response: {"success": true, "parsed": {...}}
 ```
 
 ### 4.3 Generate Reply
+
 ```
 POST http://localhost:3011/generate-reply
 Body: {"threadId": "test", "policy": {"searchBeforeSend": true}}
@@ -92,6 +101,7 @@ Response: {"recommendation": "...", "warnings": [], "shouldSend": true}
 ```
 
 ### 4.4 Approve and Send
+
 ```
 POST http://localhost:3011/approve-and-send
 Body: {"threadId": "test", "body": "Test reply"}
@@ -99,6 +109,7 @@ Response: {"ok": true}
 ```
 
 ### 4.5 Chat
+
 ```
 POST http://localhost:3011/chat
 Body: {"message": "Hvad har vi fået af nye leads i dag?"}
@@ -136,12 +147,14 @@ testsprite_tests/
 ## 7. Quick Start Commands
 
 ### Start Server
+
 ```bash
 cd C:\Users\empir\Tekup\services\tekup-ai\packages\inbox-orchestrator
 npm run dev
 ```
 
 ### Test Server Manually
+
 ```bash
 # Health check
 curl http://localhost:3011/health
@@ -156,6 +169,7 @@ curl -X POST http://localhost:3011/chat \
 ```
 
 ### Run Jest Tests (Optional)
+
 ```bash
 npm test
 ```
@@ -165,16 +179,19 @@ npm test
 ## 8. Troubleshooting
 
 ### Server won't start
+
 - Check port 3011 is not in use: `netstat -ano | findstr :3011`
 - Check Node.js version: `node --version` (should be 20+)
 - Check dependencies: `npm install`
 
 ### TestSprite can't connect
+
 - Verify server is running on port 3011
 - Check firewall settings
 - Try: `curl http://localhost:3011/health` from terminal
 
 ### API errors
+
 - Check console logs for errors
 - Verify environment variables (optional)
 - Check Google MCP service (if used)

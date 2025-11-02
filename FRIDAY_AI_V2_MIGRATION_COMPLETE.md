@@ -1,4 +1,4 @@
-# ✅ Friday AI V2 Migration - Complete!
+# ✅ Friday AI V2 Migration - Complete
 
 **Dato:** 1. november 2025  
 **Status:** MIGRATION COMPLETED  
@@ -281,8 +281,8 @@ pnpm dev
 
 ### Live Resources
 
-- **GitHub Repo:** https://github.com/TekupDK/tekup-friday
-- **Live Demo:** https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer
+- **GitHub Repo:** <https://github.com/TekupDK/tekup-friday>
+- **Live Demo:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
 - **Related Projects:** TekupDK/tekup-billy, TekupDK/tekup-secrets
 
 ### Development Tools

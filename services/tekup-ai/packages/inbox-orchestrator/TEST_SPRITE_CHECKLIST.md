@@ -142,7 +142,7 @@ curl http://localhost:3011/health
 
 ---
 
-## 🎉 Ready to Test!
+## 🎉 Ready to Test
 
 Alt er nu klar. Start serveren og konfigurer TestSprite med indstillingerne ovenfor!
 

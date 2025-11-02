@@ -17,7 +17,7 @@
 
 ## 📁 File Structure
 
-### Large Executable Files:
+### Large Executable Files
 
 1. **`apps/desktop-electron/release/Rendetalje AI-win32-x64/Rendetalje AI.exe`**
    - Size: **168.55 MB**
@@ -35,7 +35,7 @@
 
 Based on documentation and codebase analysis:
 
-### Primary Functions:
+### Primary Functions
 
 1. **AI Chat Interface**
    - Desktop-native chat UI
@@ -61,7 +61,7 @@ Based on documentation and codebase analysis:
 
 ## 🔍 Why Files Are Large
 
-### Electron Architecture:
+### Electron Architecture
 
 Electron apps bundle:
 
@@ -85,7 +85,7 @@ Electron apps bundle:
 
 ## 📦 Why We Have Desktop-Electron
 
-### Multi-Platform Strategy:
+### Multi-Platform Strategy
 
 Rendetalje AI is deployed across multiple platforms:
 
@@ -105,7 +105,7 @@ Rendetalje AI is deployed across multiple platforms:
 4. **Cloud Backend** (Railway)
    - All platforms connect to same backend
 
-### Benefits of Desktop App:
+### Benefits of Desktop App
 
 - ✅ Native Windows experience
 - ✅ Better performance than browser
@@ -118,11 +118,11 @@ Rendetalje AI is deployed across multiple platforms:
 
 ## ⚠️ Problem: Build Artifacts in Git
 
-### Issue:
+### Issue
 
 **Release/build artifacts should NOT be in git repository**
 
-### Why It's Wrong:
+### Why It's Wrong
 
 1. **Build artifacts are generated**, not source code
 2. **Large files** bloat repository
@@ -132,7 +132,7 @@ Rendetalje AI is deployed across multiple platforms:
    - Download servers
    - NOT in git history
 
-### What Should Be in Git:
+### What Should Be in Git
 
 ✅ Source code (`src/`, `package.json`, etc.)  
 ✅ Configuration files  
@@ -147,13 +147,13 @@ Rendetalje AI is deployed across multiple platforms:
 
 ## 🛠️ Current Situation
 
-### Files in Git History:
+### Files in Git History
 
 - Large `.exe` files were committed in past (commit `950ab07` or earlier)
 - Even if removed from working directory, they're in git history
 - Git push fails because history contains files >100MB
 
-### Git Status:
+### Git Status
 
 - Files may not exist in current working directory
 - But they exist in past commits
@@ -233,27 +233,27 @@ Move desktop-electron to its own repository:
 
 ## 📊 Summary
 
-### What the Files Are:
+### What the Files Are
 
 - **Rendetalje AI Desktop Application** executables
 - Windows 64-bit packaged Electron apps
 - 168.55 MB each (normal for Electron)
 - Build artifacts from `electron-builder`
 
-### Why We Have Them:
+### Why We Have Them
 
 - Multi-platform deployment strategy
 - Native desktop experience for Windows users
 - Part of Rendetalje AI ecosystem
 
-### Why They're Problematic:
+### Why They're Problematic
 
 - ✅ Should NOT be in git repository
 - ✅ Should be distributed via GitHub Releases
 - ✅ Currently blocking all git pushes
 - ✅ Need to be removed from git history
 
-### Recommended Action:
+### Recommended Action
 
 1. **Remove from git history** (unblock push immediately)
 2. **Update .gitignore** (prevent future commits)

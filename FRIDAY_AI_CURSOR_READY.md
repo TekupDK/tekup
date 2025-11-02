@@ -1,4 +1,4 @@
-# ✅ Friday AI - KLAR TIL CURSOR UDVIKLING!
+# ✅ Friday AI - KLAR TIL CURSOR UDVIKLING
 
 **Dato:** 1. november 2025  
 **Status:** 🟢 STANDALONE & READY  
@@ -56,9 +56,9 @@ pnpm dev
 
 ### **Access URLs**
 
-- **Friday AI Chat:** http://localhost:3000
-- **Database Admin:** http://localhost:8080
-- **API Health:** http://localhost:3000/api/health
+- **Friday AI Chat:** <http://localhost:3000>
+- **Database Admin:** <http://localhost:8080>
+- **API Health:** <http://localhost:3000/api/health>
 
 ---
 
@@ -98,7 +98,7 @@ customer.updateBalance; // Financial calculations
 
 ### **How to Test Customer Profiles:**
 
-1. **Start:** `pnpm dev` (http://localhost:3000)
+1. **Start:** `pnpm dev` (<http://localhost:3000>)
 2. **Navigate:** Leads tab
 3. **Click:** "View Profile" på any lead
 4. **Explore:** All 4 tabs (Overview, Invoices, Emails, Chat)

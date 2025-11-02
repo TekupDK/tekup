@@ -19,6 +19,7 @@
 ### Passing Tests (28 tests)
 
 ✅ **Token Counter Tests:**
+
 - Token estimation for empty strings
 - Token estimation for short/long text
 - Danish text handling
@@ -26,6 +27,7 @@
 - Prompt size validation
 
 ✅ **Intent Detector Tests:**
+
 - Lead processing intent detection
 - Booking intent detection
 - Quote generation intent detection
@@ -36,6 +38,7 @@
 - Memory selection per intent
 
 ✅ **Response Templates Tests:**
+
 - Empty leads list formatting
 - Single lead formatting
 - Lead list limiting (10 max)
@@ -46,6 +49,7 @@
 - Next steps formatting
 
 ✅ **Metrics Logger Tests:**
+
 - Metrics logging
 - Metrics storage limits (1000 max)
 - Metrics retrieval
@@ -56,6 +60,7 @@
 ### Test Coverage
 
 **Current Coverage:**
+
 - Token Counter: ~85%
 - Intent Detector: ~80%
 - Response Templates: ~75%
@@ -101,12 +106,14 @@ npm test -- tokenCounter.test.ts
 ## Test Quality
 
 ✅ **Good:**
+
 - Comprehensive unit test coverage
 - Realistic test data
 - Edge case handling
 - Error scenario testing
 
 ✅ **Best Practices:**
+
 - Arrange-Act-Assert pattern
 - Descriptive test names
 - Independent tests

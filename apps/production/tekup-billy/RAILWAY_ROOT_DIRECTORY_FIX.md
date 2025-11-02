@@ -26,4 +26,3 @@ Hvis Railpack stadig fejler:
 3. **Dockerfile Path:** `apps/production/tekup-billy/Dockerfile`
 4. **Docker Context:** `apps/production/tekup-billy`
 5. Gem og redeploy
-
