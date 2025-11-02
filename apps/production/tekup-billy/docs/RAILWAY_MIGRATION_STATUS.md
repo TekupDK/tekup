@@ -2,7 +2,7 @@
 
 ## ✅ Completed Automatically
 
-1. **Repository Archive**: JonasAbde/Tekup-Billy archived and set to private
+1. **Repository Archive**: Legacy repository archived and set to private
 2. **Legacy Documentation**: Created redirect file in `apps/production/tekup-billy/docs/legacy/`
 3. **Railway Project**: Created and linked (Project ID: e2df644d-428f-498e-8b34-e73b3388060c)
 4. **Dockerfile Updated**: Modified to use tsx runtime (avoids TypeScript compile errors)
