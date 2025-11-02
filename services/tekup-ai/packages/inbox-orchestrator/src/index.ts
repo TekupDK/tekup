@@ -279,6 +279,21 @@ import {
 } from "./utils/intentDetector";
 import { estimateCost, estimateTokens } from "./utils/tokenCounter";
 
+// Validate critical environment variables at startup
+const requiredEnvVars = {
+  GOOGLE_MCP_URL: process.env.GOOGLE_MCP_URL,
+};
+
+const missingVars = Object.entries(requiredEnvVars)
+  .filter(([_, value]) => !value)
+  .map(([key]) => key);
+
+if (missingVars.length > 0) {
+  console.warn(
+    `Warning: Missing environment variables: ${missingVars.join(", ")}. Using defaults where available.`
+  );
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -390,26 +405,37 @@ app.post("/approve-and-send", async (req: Request, res: Response) => {
 app.post("/chat", async (req: Request, res: Response) => {
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const startTime = Date.now();
-  const { message } = req.body || {};
-
-  if (!message || typeof message !== "string") {
-    return res.status(400).json({ error: "message required" });
-  }
-
-  // Phase 3: Intent Detection & Selective Memory Injection
-  const intentResult = detectIntent(message);
-  // Note: relevantMemories will be used for selective memory injection in Phase 3 optimization
-  const relevantMemories = getRelevantMemoriesForIntent(intentResult.intent);
-  if (process.env.DEBUG) {
-    console.warn(
-      `[Friday AI] Intent: ${intentResult.intent}, Memories: ${relevantMemories.join(", ")}`
-    );
-  }
-
-  const actions: Array<{ name: string; args: unknown }> = [];
-  let reply = "";
-
+  
   try {
+    const { message } = req.body || {};
+
+    // Validate input
+    if (!message || typeof message !== "string") {
+      return res.status(400).json({ error: "message required and must be a string" });
+    }
+
+    // Sanitize and validate message length
+    const sanitizedMessage = message.trim();
+    if (sanitizedMessage.length === 0) {
+      return res.status(400).json({ error: "message cannot be empty" });
+    }
+    if (sanitizedMessage.length > 5000) {
+      return res.status(400).json({ error: "message too long (max 5000 characters)" });
+    }
+
+    // Phase 3: Intent Detection & Selective Memory Injection
+    const intentResult = detectIntent(sanitizedMessage);
+    // Note: relevantMemories will be used for selective memory injection in Phase 3 optimization
+    const relevantMemories = getRelevantMemoriesForIntent(intentResult.intent);
+    if (process.env.DEBUG) {
+      console.warn(
+        `[Friday AI] Intent: ${intentResult.intent}, Memories: ${relevantMemories.join(", ")}`
+      );
+    }
+
+    const actions: Array<{ name: string; args: unknown }> = [];
+    let reply = "";
+
     // MEMORY_1: Time Check - Valider datoer/tider først
     const timeValidation = validateTimeCheck();
     if (!timeValidation.valid && timeValidation.error) {
@@ -418,7 +444,7 @@ app.post("/chat", async (req: Request, res: Response) => {
         .json({ error: `Time validation failed: ${timeValidation.error}` });
     }
 
-    const lower = message.toLowerCase();
+    const lower = sanitizedMessage.toLowerCase();
     const today = timeValidation.verifiedDate || new Date();
     // Use 2 days ago to catch more leads (we saw leads from 30/10 and 29/10)
     const searchDate = new Date(today);
@@ -747,7 +773,27 @@ app.post("/chat", async (req: Request, res: Response) => {
       },
     });
   } catch (e: any) {
-    return res.status(500).json({ error: e?.message || "chat failed" });
+    // Log error metrics
+    const latency = Date.now() - startTime;
+    logMetrics({
+      requestId,
+      timestamp: new Date().toISOString(),
+      promptTokens: 0,
+      completionTokens: 0,
+      totalTokens: 0,
+      latency,
+      cost: 0,
+      endpoint: "/chat",
+      success: false,
+      error: e?.message || "Unknown error",
+    });
+
+    // Determine appropriate status code
+    const statusCode = e?.name === "ValidationError" ? 400 : 500;
+    return res.status(statusCode).json({ 
+      error: e?.message || "An error occurred while processing your request",
+      requestId 
+    });
   }
 });
 

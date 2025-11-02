@@ -1,5 +1,8 @@
+import { withTimeout } from "../utils/timeout";
+
 export class GoogleMcpClient implements GmailAdapter, CalendarAdapter {
   private baseUrl: string;
+  private readonly defaultTimeout = 30000; // 30 seconds
 
   constructor(baseUrl?: string) {
     this.baseUrl =
@@ -12,25 +15,41 @@ export class GoogleMcpClient implements GmailAdapter, CalendarAdapter {
     maxResults: number = 25,
     readMask?: string[]
   ) {
-    const res = await fetch(`${this.baseUrl}/gmail/search`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, maxResults, readMask }),
-    });
-    if (!res.ok) return { ok: false, error: `searchThreads ${res.status}` };
-    const data = (await res.json()) as { threads?: unknown };
-    return { ok: true, data: data.threads };
+    try {
+      const res = await withTimeout(
+        fetch(`${this.baseUrl}/gmail/search`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, maxResults, readMask }),
+        }),
+        this.defaultTimeout,
+        "Gmail search request timed out"
+      );
+      if (!res.ok) return { ok: false, error: `searchThreads ${res.status}` };
+      const data = (await res.json()) as { threads?: unknown };
+      return { ok: true, data: data.threads };
+    } catch (error: any) {
+      return { ok: false, error: error?.message || "searchThreads failed" };
+    }
   }
 
   async getThread(threadId: string) {
-    const res = await fetch(`${this.baseUrl}/gmail/getThread`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ threadId }),
-    });
-    if (!res.ok) return { ok: false, error: `getThread ${res.status}` };
-    const data = await res.json();
-    return { ok: true, data };
+    try {
+      const res = await withTimeout(
+        fetch(`${this.baseUrl}/gmail/getThread`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ threadId }),
+        }),
+        this.defaultTimeout,
+        "Gmail getThread request timed out"
+      );
+      if (!res.ok) return { ok: false, error: `getThread ${res.status}` };
+      const data = await res.json();
+      return { ok: true, data };
+    } catch (error: any) {
+      return { ok: false, error: error?.message || "getThread failed" };
+    }
   }
 
   async getThreads(threadIds: string[]) {
@@ -44,13 +63,21 @@ export class GoogleMcpClient implements GmailAdapter, CalendarAdapter {
   }
 
   async sendReply(input: { threadId: string; body: string }) {
-    const res = await fetch(`${this.baseUrl}/gmail/sendReply`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    });
-    if (!res.ok) return { ok: false, error: `sendReply ${res.status}` };
-    return { ok: true };
+    try {
+      const res = await withTimeout(
+        fetch(`${this.baseUrl}/gmail/sendReply`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+        this.defaultTimeout,
+        "Gmail sendReply request timed out"
+      );
+      if (!res.ok) return { ok: false, error: `sendReply ${res.status}` };
+      return { ok: true };
+    } catch (error: any) {
+      return { ok: false, error: error?.message || "sendReply failed" };
+    }
   }
 
   async applyLabels(input: {
@@ -58,13 +85,21 @@ export class GoogleMcpClient implements GmailAdapter, CalendarAdapter {
     add: string[];
     remove?: string[];
   }) {
-    const res = await fetch(`${this.baseUrl}/gmail/applyLabels`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    });
-    if (!res.ok) return { ok: false, error: `applyLabels ${res.status}` };
-    return { ok: true };
+    try {
+      const res = await withTimeout(
+        fetch(`${this.baseUrl}/gmail/applyLabels`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+        this.defaultTimeout,
+        "Gmail applyLabels request timed out"
+      );
+      if (!res.ok) return { ok: false, error: `applyLabels ${res.status}` };
+      return { ok: true };
+    } catch (error: any) {
+      return { ok: false, error: error?.message || "applyLabels failed" };
+    }
   }
 
   // Calendar
@@ -75,31 +110,47 @@ export class GoogleMcpClient implements GmailAdapter, CalendarAdapter {
     end: string;
     location?: string;
   }) {
-    const res = await fetch(`${this.baseUrl}/calendar/create`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        summary: input.summary,
-        description: input.description,
-        start: input.start,
-        end: input.end,
-        location: input.location,
-      }),
-    });
-    if (!res.ok) return { ok: false, error: `createEvent ${res.status}` };
-    const data = await res.json();
-    return { ok: true, data };
+    try {
+      const res = await withTimeout(
+        fetch(`${this.baseUrl}/calendar/create`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            summary: input.summary,
+            description: input.description,
+            start: input.start,
+            end: input.end,
+            location: input.location,
+          }),
+        }),
+        this.defaultTimeout,
+        "Calendar createEvent request timed out"
+      );
+      if (!res.ok) return { ok: false, error: `createEvent ${res.status}` };
+      const data = await res.json();
+      return { ok: true, data };
+    } catch (error: any) {
+      return { ok: false, error: error?.message || "createEvent failed" };
+    }
   }
 
   async checkConflicts(input: { start: string; end: string }) {
-    const res = await fetch(`${this.baseUrl}/calendar/conflicts`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    });
-    if (!res.ok) return { ok: false, error: `checkConflicts ${res.status}` };
-    const data = await res.json();
-    return { ok: true, data };
+    try {
+      const res = await withTimeout(
+        fetch(`${this.baseUrl}/calendar/conflicts`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+        this.defaultTimeout,
+        "Calendar checkConflicts request timed out"
+      );
+      if (!res.ok) return { ok: false, error: `checkConflicts ${res.status}` };
+      const data = await res.json();
+      return { ok: true, data };
+    } catch (error: any) {
+      return { ok: false, error: error?.message || "checkConflicts failed" };
+    }
   }
 }
 
