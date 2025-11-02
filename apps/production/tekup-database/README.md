@@ -1,21 +1,27 @@
 # Tekup Database
 
-**Central Database Service for Tekup Portfolio**
+**✅ Single Consolidated Database for All Tekup Applications**
 
-🎯 **Purpose:** Single source of truth database for all Tekup applications  
-🗄️ **Technology:** PostgreSQL 16 + Prisma 6 + TypeScript  
-☁️ **Hosting:** Supabase (EU Frankfurt) + Docker (Local Development)  
+🎯 **Purpose:** Single source of truth - ONE Supabase database for entire Tekup platform  
+🗄️ **Technology:** PostgreSQL 16 + Prisma 6 + TypeScript + pgvector  
+☁️ **Production:** Supabase (oaevagdgrasfppbrxbey) - EU Frankfurt  
+🐳 **Development:** Docker (localhost) - Local development only  
 📦 **Version:** 1.3.0
 
 ---
 
 ## 🚀 Quick Status
 
-**Production:** Supabase (Frankfurt - RenOS projekt)  
-**Development:** Docker (localhost)  
-**Schemas:** 6 (vault, billy, renos, crm, flow, shared)  
-**Tables:** 53 deployed  
-**Cost:** FREE now → $25/mdr when scaled
+✅ **CONSOLIDATED:** All applications use ONE Supabase database  
+☁️ **Production Database:** Supabase (RenOS By Tekup project)  
+🔗 **Project URL:** https://oaevagdgrasfppbrxbey.supabase.co  
+📍 **Region:** EU Central 1 (Frankfurt, Germany)  
+🗄️ **Schemas:** 6 (vault, billy, renos, crm, flow, shared)  
+📊 **Tables:** 53 deployed  
+💰 **Cost:** $25/month (Pro tier recommended)  
+🔒 **Security:** RLS enabled, daily backups, EU data residency
+
+> **Important:** This is a SINGLE DATABASE architecture. All Tekup applications share one Supabase database with separate schemas. Local Docker is for development only.
 
 ---
 
@@ -57,10 +63,13 @@
 ### Prerequisites
 
 - Node.js 18+ LTS
-- PostgreSQL 16 (local) OR Render.com account
-- pnpm 8.15+ (anbefalet) eller npm
+- pnpm 8.15+ (recommended) or npm
+- Docker Desktop (for local development only)
+- Supabase account (for production)
 
-### Local Development
+### Production Setup (Supabase - Recommended)
+
+**All Tekup applications use the consolidated Supabase database in production.**
 
 ```bash
 # 1. Clone repo
@@ -70,33 +79,48 @@ cd tekup/apps/production/tekup-database
 # 2. Install dependencies
 pnpm install
 
-# 3. Setup environment
-cp .env.example .env
-# Edit .env med dit database URL
+# 3. Setup production environment
+cp .env.supabase.example .env.production
 
-# 4. Start local PostgreSQL (Docker)
+# 4. Get database password from Supabase
+# Visit: https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey
+# Settings → Database → Connection string → Copy password
+
+# 5. Update .env.production with your password
+# Replace YOUR_PASSWORD in DATABASE_URL
+
+# 6. Generate Prisma client
+pnpm db:generate
+
+# 7. Deploy schema to Supabase (if needed)
+pnpm db:push
+```
+
+### Local Development (Docker - Optional)
+
+**Note:** Docker setup is for LOCAL DEVELOPMENT ONLY. Production always uses Supabase.
+
+```bash
+# 1. Setup local environment
+cp .env.example .env
+
+# 2. Start local PostgreSQL (Docker)
 docker-compose up -d
 
-# 5. Run migrations
-pnpm db:migrate
+# 3. Generate Prisma client
+pnpm db:generate
 
-# 6. Seed test data
-pnpm db:seed
+# 4. Push schema to local database
+pnpm db:push
 
-# 7. Open Prisma Studio
+# 5. Open Prisma Studio
 pnpm db:studio
 ```
 
-### Production Deployment (Render.com)
-
-```bash
-# 1. Push til GitHub
-git push origin main
-
-# 2. På Render.com:
-#    - Create PostgreSQL database
-#    - Note connection string
-#    - Add til environment variables
+> **Production vs Development:**
+> - **Production:** Always use Supabase (oaevagdgrasfppbrxbey.supabase.co)
+> - **Development:** Use local Docker for offline work only
+> - Never deploy local Docker database to production
 
 # 3. Run migrations på production
 pnpm db:migrate:prod
@@ -170,72 +194,97 @@ tekup-database/
 
 ## 🗄️ Schema Organization
 
-### Multi-Schema Strategy
+### ✅ Single Database, Multi-Schema Strategy
 
-Vi bruger PostgreSQL schemas til at isolere forskellige applications:
+**Important:** All Tekup applications share ONE Supabase database with separate schemas for data isolation.
 
 ```sql
--- Vault Schema (TekupVault)
+-- Single Database: oaevagdgrasfppbrxbey.supabase.co
+
+-- Vault Schema (TekupVault - Knowledge Base)
 CREATE SCHEMA vault;
 -- Tables: vault.documents, vault.embeddings, vault.sync_status
+-- Purpose: Document storage and AI embeddings for semantic search
 
--- Billy Schema (Tekup-Billy)
+-- Billy Schema (Tekup-Billy - Accounting Integration)
 CREATE SCHEMA billy;
 -- Tables: billy.organizations, billy.cached_*, billy.audit_logs
+-- Purpose: Billy.dk API integration with caching layer
 
--- RenOS Schema (Tekup Google AI)
+-- RenOS Schema (RendetaljeOS - Cleaning Service)
 CREATE SCHEMA renos;
 -- Tables: renos.leads, renos.customers, renos.bookings, etc.
+-- Purpose: Complete cleaning service management system
 
--- CRM Schema (Tekup-org CRM)
+-- CRM Schema (Tekup CRM)
 CREATE SCHEMA crm;
--- Tables: crm.tenants, crm.users, crm.cleaning_jobs, etc.
+-- Tables: crm.companies, crm.contacts, crm.deals, etc.
+-- Purpose: Multi-tenant CRM platform
 
--- Flow Schema (Flow API)
+-- Flow Schema (Flow API - Workflows)
 CREATE SCHEMA flow;
--- Tables: flow.leads, flow.sms_tracking, etc.
+-- Tables: flow.workflows, flow.executions, flow.integrations, etc.
+-- Purpose: Workflow automation and lead generation
 
--- Shared Schema (Cross-app resources)
+-- Shared Schema (Cross-app Resources)
 CREATE SCHEMA shared;
--- Tables: shared.users, shared.audit_logs, shared.sessions
+-- Tables: shared.users, shared.audit_logs
+-- Purpose: Single sign-on and centralized audit logging
 ```
 
-**Fordele:**
+**Benefits of Single Database Architecture:**
 
-- ✅ Data isolation
-- ✅ Independent migrations
-- ✅ Separate permissions
-- ✅ Clear ownership
+- ✅ **Single Source of Truth** - All data in one place
+- ✅ **Data Isolation** - Schemas separate application data
+- ✅ **Shared Resources** - Common data in shared schema
+- ✅ **Simplified Management** - One database to backup/monitor
+- ✅ **Cost Effective** - $25/month for entire platform
+- ✅ **Auto Backups** - Daily automated backups by Supabase
+- ✅ **EU Compliance** - GDPR-compliant with Frankfurt hosting
 
 ---
 
 ## 🔌 Connection Strings
 
-### Local Development
+### Production (Supabase - Primary Database)
+
+**All Tekup applications use this single Supabase database in production:**
+
+```env
+# Main database connection
+DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?sslmode=require"
+
+# Supabase API credentials
+SUPABASE_URL="https://oaevagdgrasfppbrxbey.supabase.co"
+SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4Nzc3NjQsImV4cCI6MjA3NTQ1Mzc2NH0.M0Kt1Xi-3VVoq6NJ7VbhqBC0z9EK-JQ7ypssayMw7s8"
+SUPABASE_SERVICE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZXZhZ2RncmFzZnBwYnJ4YmV5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTg3Nzc2NCwiZXhwIjoyMDc1NDUzNzY0fQ.94lDERK4Enw8YTH_OtE9BpQhQWs8fg_7GZQGnYS8rNo"
+
+# Schema-specific URLs (for different applications)
+DATABASE_URL_VAULT="postgresql://postgres:YOUR_PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=vault"
+DATABASE_URL_BILLY="postgresql://postgres:YOUR_PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=billy"
+DATABASE_URL_RENOS="postgresql://postgres:YOUR_PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=renos"
+DATABASE_URL_CRM="postgresql://postgres:YOUR_PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=crm"
+DATABASE_URL_FLOW="postgresql://postgres:YOUR_PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=flow"
+DATABASE_URL_SHARED="postgresql://postgres:YOUR_PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=shared"
+```
+
+> **Get Password:** Visit https://supabase.com/dashboard/project/oaevagdgrasfppbrxbey → Settings → Database
+
+### Local Development (Docker - Optional)
+
+**Note:** Docker is for LOCAL DEVELOPMENT ONLY. Production always uses Supabase.
 
 ```env
 # PostgreSQL local (Docker)
 DATABASE_URL="postgresql://tekup:tekup123@localhost:5432/tekup_db"
 
-# Med schema specification
+# Schema-specific (local)
 DATABASE_URL_VAULT="postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=vault"
 DATABASE_URL_BILLY="postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=billy"
 DATABASE_URL_RENOS="postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=renos"
-```
-
-### Production (Render.com)
-
-```env
-# Main connection
-DATABASE_URL="postgresql://user:pass@dpg-xxxxx.frankfurt-postgres.render.com/db_name"
-
-# Connection pooling (anbefalet for production)
-DATABASE_URL_POOLED="postgresql://user:pass@dpg-xxxxx.frankfurt-postgres.render.com/db_name?pgbouncer=true&connection_limit=10"
-
-# Schema-specific (for apps)
-DATABASE_URL_VAULT="postgresql://user:pass@dpg-xxxxx.frankfurt-postgres.render.com/db_name?schema=vault"
-DATABASE_URL_BILLY="postgresql://user:pass@dpg-xxxxx.frankfurt-postgres.render.com/db_name?schema=billy"
-DATABASE_URL_RENOS="postgresql://user:pass@dpg-xxxxx.frankfurt-postgres.render.com/db_name?schema=renos"
+DATABASE_URL_CRM="postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=crm"
+DATABASE_URL_FLOW="postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=flow"
+DATABASE_URL_SHARED="postgresql://tekup:tekup123@localhost:5432/tekup_db?schema=shared"
 ```
 
 ---
