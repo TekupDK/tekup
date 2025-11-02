@@ -11,6 +11,11 @@
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   
+  // Ignore system-generated commits
+  ignores: [
+    (commit) => commit.includes('Initial plan'),
+  ],
+  
   rules: {
     // Subject must be in imperative mood, no period at end
     'subject-case': [2, 'never', ['upper-case', 'pascal-case']],
