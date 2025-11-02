@@ -528,7 +528,8 @@ Property 'date' does not exist on type 'GmailThread'
 #### **1. Klon repository**
 
 ```bash
-# Clone Friday AI repository
+# Clone Friday AI repository (from TekupDK organization)
+# Note: Repository URL should be verified with Tekup team
 git clone https://github.com/TekupDK/tekup-friday.git
 cd tekup-friday
 ```
@@ -574,7 +575,7 @@ pnpm dev
 
 #### **Adgang:**
 
-- **Live demo:** Kontakt Tekup for demo URL
+- **Live demo:** Kontakt Tekup team (se GITHUB_TEKUPDK_ORGANIZATION.md for kontaktinfo)
 - **Lokal:** <http://localhost:3000> (når developers starter server)
 
 #### **Hovedfunktioner:**
@@ -658,7 +659,7 @@ pnpm dev
 
 ### **Live Demo**
 
-- **URL:** Kontakt Tekup for adgang til live demo
+- **Adgang:** Kontakt Tekup team for demo URL og credentials
 - **Status:** Production-ready (deployment in progress)
 
 ---
