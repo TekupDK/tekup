@@ -172,38 +172,8 @@ apps/time-tracker/src/server/services/calendar.ts
 **Konfigurerede Repositories:**
 
 ```typescript
--TekupDK / tekup(Monorepo) -
-  TekupDK / renos -
-  backend -
-  TekupDK / renos -
-  frontend -
-  TekupDK / TekupVault -
-  TekupDK / tekup -
-  unified -
-  docs -
-  TekupDK / tekup -
-  ai -
-  assistant -
-  TekupDK / tekup -
-  cloud -
-  dashboard -
-  TekupDK / tekup -
-  renos -
-  TekupDK / tekup -
-  renos -
-  dashboard -
-  TekupDK / Tekup -
-  org -
-  TekupDK / Cleaning -
-  og -
-  Service -
-  TekupDK / tekup -
-  nexus -
-  dashboard -
-  TekupDK / rendetalje -
-  os -
-  TekupDK / Jarvis -
-  lite;
+// All projects consolidated into unified monorepo
+TekupDK/tekup  // Tekup Unified Monorepo - includes all services and apps
 ```
 
 **Lokation:**

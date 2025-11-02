@@ -55,11 +55,11 @@ export function loadConfig(): Config {
 
 /**
  * GitHub sync configuration
- * Active Tekup Portfolio repositories (updated 2025-10-18)
+ * Consolidated into unified TekupDK monorepo (updated 2025-11-02)
  */
 export const GITHUB_REPOS: Array<{ owner: string; repo: string }> = [
-  // Unified TekupDK Monorepo (All projects migrated to TekupDK organization)
-  { owner: 'TekupDK', repo: 'tekup' },          // Tekup Unified Monorepo
+  // All legacy repositories consolidated into unified monorepo
+  { owner: 'TekupDK', repo: 'tekup' },
 ];
 
 /**
