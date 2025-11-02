@@ -1,21 +1,40 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mail, FileText, Calendar, Users, CheckSquare } from "lucide-react";
-import EmailTab from "@/components/inbox/EmailTab";
-import InvoicesTab from "@/components/inbox/InvoicesTab";
-import CalendarTab from "@/components/inbox/CalendarTab";
-import LeadsTab from "@/components/inbox/LeadsTab";
-import TasksTab from "@/components/inbox/TasksTab";
+import { Calendar, CheckSquare, FileText, Mail, Users } from "lucide-react";
+import { lazy, Suspense, memo } from "react";
+
+// Lazy load tabs for better initial performance
+const EmailTab = lazy(() => import("@/components/inbox/EmailTab").then(m => ({ default: m.default })));
+const InvoicesTab = lazy(() => import("@/components/inbox/InvoicesTab").then(m => ({ default: m.default })));
+const CalendarTab = lazy(() => import("@/components/inbox/CalendarTab").then(m => ({ default: m.default })));
+const LeadsTab = lazy(() => import("@/components/inbox/LeadsTab").then(m => ({ default: m.default })));
+const TasksTab = lazy(() => import("@/components/inbox/TasksTab").then(m => ({ default: m.default })));
+
+const TabSkeleton = () => (
+  <div className="space-y-4 p-4">
+    <div className="h-4 bg-muted rounded w-3/4 animate-pulse"></div>
+    <div className="h-4 bg-muted rounded w-1/2 animate-pulse"></div>
+    <div className="h-4 bg-muted rounded w-2/3 animate-pulse"></div>
+  </div>
+);
 
 interface InboxPanelProps {
   activeTab: "email" | "invoices" | "calendar" | "leads" | "tasks";
-  onTabChange: (tab: "email" | "invoices" | "calendar" | "leads" | "tasks") => void;
+  onTabChange: (
+    tab: "email" | "invoices" | "calendar" | "leads" | "tasks"
+  ) => void;
 }
 
-export default function InboxPanel({ activeTab, onTabChange }: InboxPanelProps) {
+function InboxPanel({
+  activeTab,
+  onTabChange,
+}: InboxPanelProps) {
   return (
     <div className="h-full flex flex-col bg-muted/30">
-      <Tabs value={activeTab} onValueChange={(v) => onTabChange(v as any)} className="flex-1 flex flex-col">
+      <Tabs
+        value={activeTab}
+        onValueChange={v => onTabChange(v as any)}
+        className="flex-1 flex flex-col"
+      >
         <div className="border-b border-border px-2 sm:px-4">
           <TabsList className="w-full justify-start bg-transparent gap-1">
             <TabsTrigger value="email" className="flex items-center gap-2">
@@ -41,24 +60,51 @@ export default function InboxPanel({ activeTab, onTabChange }: InboxPanelProps) 
           </TabsList>
         </div>
 
-        <ScrollArea className="flex-1">
-          <TabsContent value="email" className="m-0 p-3 sm:p-4">
-            <EmailTab />
+        <div className="flex-1 overflow-hidden">
+          <TabsContent
+            value="email"
+            className="m-0 p-3 sm:p-4 h-full overflow-auto"
+          >
+            <Suspense fallback={<TabSkeleton />}>
+              <EmailTab />
+            </Suspense>
           </TabsContent>
-          <TabsContent value="invoices" className="m-0 p-3 sm:p-4">
-            <InvoicesTab />
+          <TabsContent
+            value="invoices"
+            className="m-0 p-3 sm:p-4 h-full overflow-auto"
+          >
+            <Suspense fallback={<TabSkeleton />}>
+              <InvoicesTab />
+            </Suspense>
           </TabsContent>
-          <TabsContent value="calendar" className="m-0 p-3 sm:p-4">
-            <CalendarTab />
+          <TabsContent
+            value="calendar"
+            className="m-0 p-3 sm:p-4 h-full overflow-auto"
+          >
+            <Suspense fallback={<TabSkeleton />}>
+              <CalendarTab />
+            </Suspense>
           </TabsContent>
-          <TabsContent value="leads" className="m-0 p-3 sm:p-4">
-            <LeadsTab />
+          <TabsContent
+            value="leads"
+            className="m-0 p-3 sm:p-4 h-full overflow-hidden"
+          >
+            <Suspense fallback={<TabSkeleton />}>
+              <LeadsTab />
+            </Suspense>
           </TabsContent>
-          <TabsContent value="tasks" className="m-0 p-3 sm:p-4">
-            <TasksTab />
+          <TabsContent
+            value="tasks"
+            className="m-0 p-3 sm:p-4 h-full overflow-auto"
+          >
+            <Suspense fallback={<TabSkeleton />}>
+              <TasksTab />
+            </Suspense>
           </TabsContent>
-        </ScrollArea>
+        </div>
       </Tabs>
     </div>
   );
 }
+
+export default memo(InboxPanel);

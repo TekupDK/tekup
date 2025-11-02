@@ -1,37 +1,3 @@
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { trpc } from "@/lib/trpc";
-import {
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  MapPin,
-  Clock,
-  FileText,
-  Copy,
-  ExternalLink,
-  Download,
-  CheckCircle2,
-  MoreVertical,
-  Edit,
-  Trash2,
-} from "lucide-react";
-import { useMemo, useState } from "react";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,10 +8,45 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
+import { useAdaptivePolling } from "@/hooks/useAdaptivePolling";
+import { useRateLimit } from "@/hooks/useRateLimit";
+import { trpc } from "@/lib/trpc";
+import {
+  Calendar as CalendarIcon,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Copy,
+  Download,
+  Edit,
+  ExternalLink,
+  FileText,
+  MapPin,
+  MoreVertical,
+  Trash2,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export default function CalendarTab() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -63,6 +64,9 @@ export default function CalendarTab() {
     location: "",
   });
 
+  // Rate limit handling
+  const rateLimit = useRateLimit();
+
   const utils = trpc.useUtils();
   const updateEventMutation = trpc.inbox.calendar.update.useMutation({
     onSuccess: () => {
@@ -71,7 +75,7 @@ export default function CalendarTab() {
       setIsEventDialogOpen(false);
       toast.success("Event opdateret!");
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(`Fejl ved opdatering: ${error.message}`);
     },
   });
@@ -83,7 +87,7 @@ export default function CalendarTab() {
       setIsEventDialogOpen(false);
       toast.success("Event slettet!");
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(`Fejl ved sletning: ${error.message}`);
     },
   });
@@ -110,17 +114,46 @@ export default function CalendarTab() {
     data: events,
     isLoading,
     isFetching,
-  } = trpc.inbox.calendar.list.useQuery(
-    dateRange,
-    {
-      // Performance optimizations:
-      staleTime: 60000, // Consider data fresh for 60 seconds (reduces refetches)
-      gcTime: 300000, // Cache data for 5 minutes
-      refetchInterval: 60000, // Auto-refresh every 60 seconds (reduced from 30)
-      refetchIntervalInBackground: true,
-      refetchOnWindowFocus: false, // Don't refetch when user switches tabs
+    error,
+    refetch,
+  } = trpc.inbox.calendar.list.useQuery(dateRange, {
+    // Performance optimizations:
+    staleTime: 60000,
+    gcTime: 300000,
+    // Disable automatic polling - use adaptive polling instead
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    enabled: !rateLimit.isRateLimited,
+    retry: (failureCount, error) => {
+      if (rateLimit.isRateLimitError(error)) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+  });
+
+  // Adaptive polling based on user activity
+  useAdaptivePolling({
+    baseInterval: 90000, // 90 seconds base
+    minInterval: 30000, // 30 seconds when active
+    maxInterval: 300000, // 5 minutes when inactive
+    inactivityThreshold: 60000, // 1 minute to consider inactive
+    pauseOnHidden: true,
+    enabled: !rateLimit.isRateLimited && !isLoading,
+    onPoll: async () => {
+      if (!rateLimit.isRateLimited) {
+        await refetch();
+      }
+    },
+  });
+
+  // Handle rate limit errors
+  useEffect(() => {
+    if (error && rateLimit.isRateLimitError(error)) {
+      rateLimit.handleRateLimitError(error);
     }
-  );
+  }, [error, rateLimit]);
 
   // Filter events for selected date
   const dayEvents = useMemo(() => {
@@ -177,8 +210,14 @@ export default function CalendarTab() {
   const handleEditClick = () => {
     if (!selectedEvent) return;
 
-    const startTime = selectedEvent.start?.dateTime || selectedEvent.start?.date || selectedEvent.start;
-    const endTime = selectedEvent.end?.dateTime || selectedEvent.end?.date || selectedEvent.end;
+    const startTime =
+      selectedEvent.start?.dateTime ||
+      selectedEvent.start?.date ||
+      selectedEvent.start;
+    const endTime =
+      selectedEvent.end?.dateTime ||
+      selectedEvent.end?.date ||
+      selectedEvent.end;
 
     setEditForm({
       summary: selectedEvent.summary || "",
@@ -197,7 +236,9 @@ export default function CalendarTab() {
       eventId: selectedEvent.id,
       summary: editForm.summary || undefined,
       description: editForm.description || undefined,
-      start: editForm.start ? new Date(editForm.start).toISOString() : undefined,
+      start: editForm.start
+        ? new Date(editForm.start).toISOString()
+        : undefined,
       end: editForm.end ? new Date(editForm.end).toISOString() : undefined,
       location: editForm.location || undefined,
     });
@@ -219,10 +260,16 @@ export default function CalendarTab() {
         </div>
 
         {/* Compact Calendar Grid Skeleton */}
-        <div className="relative border rounded-lg overflow-hidden bg-background" style={{ height: `${14 * 80}px` }}>
+        <div
+          className="relative border rounded-lg overflow-hidden bg-background"
+          style={{ height: `${14 * 80}px` }}
+        >
           <div className="absolute left-0 top-0 w-14 bg-muted/30 border-r">
             {Array.from({ length: 14 }).map((_, i) => (
-              <div key={i} className="h-20 border-b flex items-start justify-end pr-1.5 pt-0.5">
+              <div
+                key={i}
+                className="h-20 border-b flex items-start justify-end pr-1.5 pt-0.5"
+              >
                 <Skeleton className="h-2.5 w-6" />
               </div>
             ))}
@@ -350,8 +397,10 @@ export default function CalendarTab() {
                 </div>
                 <div className="text-xs opacity-90">
                   {(() => {
-                    const startTime = event.start?.dateTime || event.start?.date || event.start;
-                    const endTime = event.end?.dateTime || event.end?.date || event.end;
+                    const startTime =
+                      event.start?.dateTime || event.start?.date || event.start;
+                    const endTime =
+                      event.end?.dateTime || event.end?.date || event.end;
                     return `${new Date(startTime).toLocaleTimeString("da-DK", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -407,11 +456,19 @@ export default function CalendarTab() {
               <div className="flex items-start gap-2.5">
                 <Clock className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-xs text-muted-foreground mb-0.5">Tidspunkt</p>
+                  <p className="font-medium text-xs text-muted-foreground mb-0.5">
+                    Tidspunkt
+                  </p>
                   <p className="text-sm leading-tight">
                     {(() => {
-                      const startTime = selectedEvent.start?.dateTime || selectedEvent.start?.date || selectedEvent.start;
-                      const endTime = selectedEvent.end?.dateTime || selectedEvent.end?.date || selectedEvent.end;
+                      const startTime =
+                        selectedEvent.start?.dateTime ||
+                        selectedEvent.start?.date ||
+                        selectedEvent.start;
+                      const endTime =
+                        selectedEvent.end?.dateTime ||
+                        selectedEvent.end?.date ||
+                        selectedEvent.end;
                       const start = new Date(startTime);
                       const end = new Date(endTime);
                       const dateStr = start.toLocaleDateString("da-DK", {
@@ -430,7 +487,9 @@ export default function CalendarTab() {
                       return (
                         <>
                           <span className="block">{dateStr}</span>
-                          <span className="text-muted-foreground">{timeStr}</span>
+                          <span className="text-muted-foreground">
+                            {timeStr}
+                          </span>
                         </>
                       );
                     })()}
@@ -443,7 +502,9 @@ export default function CalendarTab() {
                 <div className="flex items-start gap-2.5">
                   <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-xs text-muted-foreground mb-0.5">Sted</p>
+                    <p className="font-medium text-xs text-muted-foreground mb-0.5">
+                      Sted
+                    </p>
                     <p className="text-sm leading-tight break-words">
                       {selectedEvent.location}
                     </p>
@@ -456,7 +517,9 @@ export default function CalendarTab() {
                 <div className="flex items-start gap-2.5">
                   <FileText className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-xs text-muted-foreground mb-0.5">Beskrivelse</p>
+                    <p className="font-medium text-xs text-muted-foreground mb-0.5">
+                      Beskrivelse
+                    </p>
                     <div className="text-sm text-muted-foreground whitespace-pre-wrap break-words max-h-[300px] overflow-y-auto pr-2">
                       {selectedEvent.description}
                     </div>
@@ -469,44 +532,54 @@ export default function CalendarTab() {
               <div className="flex items-center justify-between gap-2">
                 {/* Primary Actions - Most used */}
                 <div className="flex gap-2">
-                {/* Copy Event Details */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-1.5 text-xs"
-                  onClick={() => {
-                    const startTime = selectedEvent.start?.dateTime || selectedEvent.start?.date || selectedEvent.start;
-                    const endTime = selectedEvent.end?.dateTime || selectedEvent.end?.date || selectedEvent.end;
-                    const start = new Date(startTime);
-                    const end = new Date(endTime);
-                    const dateStr = start.toLocaleDateString("da-DK", {
-                      weekday: "short",
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    });
-                    const timeStr = `${start.toLocaleTimeString("da-DK", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })} - ${end.toLocaleTimeString("da-DK", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}`;
+                  {/* Copy Event Details */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1.5 text-xs"
+                    onClick={() => {
+                      const startTime =
+                        selectedEvent.start?.dateTime ||
+                        selectedEvent.start?.date ||
+                        selectedEvent.start;
+                      const endTime =
+                        selectedEvent.end?.dateTime ||
+                        selectedEvent.end?.date ||
+                        selectedEvent.end;
+                      const start = new Date(startTime);
+                      const end = new Date(endTime);
+                      const dateStr = start.toLocaleDateString("da-DK", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      });
+                      const timeStr = `${start.toLocaleTimeString("da-DK", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })} - ${end.toLocaleTimeString("da-DK", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}`;
 
-                    const details = [
-                      selectedEvent.summary,
-                      `${dateStr} ${timeStr}`,
-                      selectedEvent.location && `Sted: ${selectedEvent.location}`,
-                      selectedEvent.description && `Beskrivelse: ${selectedEvent.description}`,
-                    ].filter(Boolean).join("\n");
+                      const details = [
+                        selectedEvent.summary,
+                        `${dateStr} ${timeStr}`,
+                        selectedEvent.location &&
+                          `Sted: ${selectedEvent.location}`,
+                        selectedEvent.description &&
+                          `Beskrivelse: ${selectedEvent.description}`,
+                      ]
+                        .filter(Boolean)
+                        .join("\n");
 
-                    navigator.clipboard.writeText(details);
-                    toast.success("Event detaljer kopieret til clipboard!");
-                  }}
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                  Kopier
-                </Button>
+                      navigator.clipboard.writeText(details);
+                      toast.success("Event detaljer kopieret til clipboard!");
+                    }}
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    Kopier
+                  </Button>
 
                   {/* Open in Google Calendar */}
                   {selectedEvent.htmlLink && (
@@ -540,14 +613,25 @@ export default function CalendarTab() {
                     {/* Export to ICS */}
                     <DropdownMenuItem
                       onClick={() => {
-                        const startTime = selectedEvent.start?.dateTime || selectedEvent.start?.date || selectedEvent.start;
-                        const endTime = selectedEvent.end?.dateTime || selectedEvent.end?.date || selectedEvent.end;
+                        const startTime =
+                          selectedEvent.start?.dateTime ||
+                          selectedEvent.start?.date ||
+                          selectedEvent.start;
+                        const endTime =
+                          selectedEvent.end?.dateTime ||
+                          selectedEvent.end?.date ||
+                          selectedEvent.end;
                         const start = new Date(startTime);
                         const end = new Date(endTime);
 
                         // Format dates for ICS (YYYYMMDDTHHMMSS)
                         const formatICSDate = (date: Date) => {
-                          return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+                          return (
+                            date
+                              .toISOString()
+                              .replace(/[-:]/g, "")
+                              .split(".")[0] + "Z"
+                          );
                         };
 
                         const icsContent = [
@@ -558,14 +642,20 @@ export default function CalendarTab() {
                           `DTSTART:${formatICSDate(start)}`,
                           `DTEND:${formatICSDate(end)}`,
                           `SUMMARY:${selectedEvent.summary || ""}`,
-                          selectedEvent.description && `DESCRIPTION:${selectedEvent.description.replace(/\n/g, "\\n")}`,
-                          selectedEvent.location && `LOCATION:${selectedEvent.location}`,
+                          selectedEvent.description &&
+                            `DESCRIPTION:${selectedEvent.description.replace(/\n/g, "\\n")}`,
+                          selectedEvent.location &&
+                            `LOCATION:${selectedEvent.location}`,
                           `UID:${selectedEvent.id}@friday-ai`,
                           "END:VEVENT",
                           "END:VCALENDAR",
-                        ].filter(Boolean).join("\r\n");
+                        ]
+                          .filter(Boolean)
+                          .join("\r\n");
 
-                        const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+                        const blob = new Blob([icsContent], {
+                          type: "text/calendar;charset=utf-8",
+                        });
                         const url = URL.createObjectURL(blob);
                         const link = document.createElement("a");
                         link.href = url;
@@ -597,9 +687,7 @@ export default function CalendarTab() {
                     </DropdownMenuItem>
 
                     {/* Edit Event */}
-                    <DropdownMenuItem
-                      onClick={handleEditClick}
-                    >
+                    <DropdownMenuItem onClick={handleEditClick}>
                       <Edit className="w-4 h-4 mr-2" />
                       Rediger event
                     </DropdownMenuItem>
@@ -633,60 +721,82 @@ export default function CalendarTab() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold">Rediger Event</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">
+              Rediger Event
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-3 py-2">
             <div className="space-y-1.5">
-              <Label htmlFor="edit-summary" className="text-xs">Titel *</Label>
+              <Label htmlFor="edit-summary" className="text-xs">
+                Titel *
+              </Label>
               <Input
                 id="edit-summary"
                 value={editForm.summary}
-                onChange={(e) => setEditForm({ ...editForm, summary: e.target.value })}
+                onChange={e =>
+                  setEditForm({ ...editForm, summary: e.target.value })
+                }
                 placeholder="Event titel"
                 className="h-8 text-sm"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="edit-start" className="text-xs">Start tidspunkt *</Label>
+              <Label htmlFor="edit-start" className="text-xs">
+                Start tidspunkt *
+              </Label>
               <Input
                 id="edit-start"
                 type="datetime-local"
                 value={editForm.start}
-                onChange={(e) => setEditForm({ ...editForm, start: e.target.value })}
+                onChange={e =>
+                  setEditForm({ ...editForm, start: e.target.value })
+                }
                 className="h-8 text-sm"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="edit-end" className="text-xs">Slut tidspunkt *</Label>
+              <Label htmlFor="edit-end" className="text-xs">
+                Slut tidspunkt *
+              </Label>
               <Input
                 id="edit-end"
                 type="datetime-local"
                 value={editForm.end}
-                onChange={(e) => setEditForm({ ...editForm, end: e.target.value })}
+                onChange={e =>
+                  setEditForm({ ...editForm, end: e.target.value })
+                }
                 className="h-8 text-sm"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="edit-location" className="text-xs">Lokation</Label>
+              <Label htmlFor="edit-location" className="text-xs">
+                Lokation
+              </Label>
               <Input
                 id="edit-location"
                 value={editForm.location}
-                onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                onChange={e =>
+                  setEditForm({ ...editForm, location: e.target.value })
+                }
                 placeholder="Event lokation"
                 className="h-8 text-sm"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="edit-description" className="text-xs">Beskrivelse</Label>
+              <Label htmlFor="edit-description" className="text-xs">
+                Beskrivelse
+              </Label>
               <Textarea
                 id="edit-description"
                 value={editForm.description}
-                onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                onChange={e =>
+                  setEditForm({ ...editForm, description: e.target.value })
+                }
                 placeholder="Event beskrivelse"
                 rows={6}
                 className="text-sm max-h-[200px] overflow-y-auto resize-none"
@@ -705,7 +815,12 @@ export default function CalendarTab() {
             <Button
               size="sm"
               onClick={handleSaveEdit}
-              disabled={updateEventMutation.isPending || !editForm.summary || !editForm.start || !editForm.end}
+              disabled={
+                updateEventMutation.isPending ||
+                !editForm.summary ||
+                !editForm.start ||
+                !editForm.end
+              }
             >
               {updateEventMutation.isPending ? "Gemmer..." : "Gem"}
             </Button>
@@ -714,12 +829,16 @@ export default function CalendarTab() {
       </Dialog>
 
       {/* Delete Event Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Er du sikker?</AlertDialogTitle>
             <AlertDialogDescription>
-              Dette vil slette eventet "{selectedEvent?.summary}". Denne handling kan ikke fortrydes.
+              Dette vil slette eventet "{selectedEvent?.summary}". Denne
+              handling kan ikke fortrydes.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

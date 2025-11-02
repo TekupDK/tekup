@@ -183,3 +183,5 @@ pnpm check  # ✅ Alle fixes er på plads (0 errors)
 
 Ved problemer, tjek `DOCKER_SETUP.md` for mere detaljeret guide.
 
+
+

@@ -4,10 +4,64 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import * as db from "../db";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
+import { ENV } from "./env";
 import { registerOAuthRoutes } from "./oauth";
 import { serveStatic, setupVite } from "./vite";
+
+/**
+ * Check if historical data import is needed and run it automatically
+ */
+async function runAutoImportIfNeeded() {
+  try {
+    // Get the owner user (created via dev-login or OAuth)
+    const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
+
+    if (!ownerUser) {
+      console.log(
+        "[Auto-Import] No owner user found, skipping import (user needs to login first)"
+      );
+      return;
+    }
+
+    // Check if user already has leads
+    const hasLeads = await db.hasUserLeads(ownerUser.id);
+
+    if (hasLeads) {
+      console.log(
+        "[Auto-Import] User already has leads, skipping historical import"
+      );
+      return;
+    }
+
+    console.log(
+      "[Auto-Import] No leads found, starting historical data import from July 2025..."
+    );
+
+    // Import historical data
+    const { importHistoricalData } = await import("../import-historical-data");
+    const fromDate = new Date("2025-07-01");
+    const result = await importHistoricalData(ownerUser.id, fromDate);
+
+    console.log(
+      `[Auto-Import] ✅ Import complete! Created ${result.leadsCreated} leads and ${result.customersCreated} customer profiles`
+    );
+
+    if (result.errors.length > 0) {
+      console.warn(
+        `[Auto-Import] ⚠️  ${result.errors.length} errors occurred during import`
+      );
+      result.errors
+        .slice(0, 5)
+        .forEach(error => console.warn(`[Auto-Import] Error: ${error}`));
+    }
+  } catch (error) {
+    console.error("[Auto-Import] ❌ Error during automatic import:", error);
+    // Don't throw - server should still start even if import fails
+  }
+}
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -47,6 +101,9 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  // Inbound email webhook endpoint
+  const { handleInboundEmail } = await import("../api/inbound-email");
+  app.post("/api/inbound/email", handleInboundEmail);
   // tRPC API
   app.use(
     "/api/trpc",
@@ -69,8 +126,14 @@ async function startServer() {
     console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
-  server.listen(port, () => {
+  server.listen(port, async () => {
     console.log(`Server running on http://localhost:${port}/`);
+
+    // Run automatic historical data import if needed (non-blocking)
+    // This only runs if no leads exist in the database
+    runAutoImportIfNeeded().catch(error => {
+      console.error("[Auto-Import] Failed to run automatic import:", error);
+    });
   });
 }
 
