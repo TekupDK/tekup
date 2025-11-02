@@ -81,6 +81,7 @@ Tekup har udviklet et **komplet kunde 360° system** med 4 tabs:
 - **Chat Tab** - Dedikeret Friday chat per kunde (klar til implementering)
 
 **Database support:**
+
 - `customer_profiles` - Balance, AI resume, kontaktinfo
 - `customer_invoices` - Billy invoice tracking
 - `customer_emails` - Gmail thread history
@@ -366,11 +367,11 @@ Property 'date' does not exist on type 'GmailThread'
 
 #### **Core Workflows ikke testet lokalt:**
 
-1. **Lead Creation** - "Opret lead: Lars Nielsen, lars@test.dk, 12345678"
+1. **Lead Creation** - "Opret lead: Lars Nielsen, <lars@test.dk>, 12345678"
 2. **Task Management** - "Opret opgave: Send tilbud, i morgen, høj prioritet"
 3. **Calendar Booking** - "Book Lars Nielsen til rengøring mandag kl 10-13"
 4. **Billy Integration** - "Lav faktura til Lars Nielsen for 6 timer"
-5. **Gmail Integration** - "Søg emails fra lars@test.dk"
+5. **Gmail Integration** - "Søg emails fra <lars@test.dk>"
 6. **Customer Profile Sync** - Test "Opdater" og "Sync Gmail" buttons
 7. **Mobile Interface** - Test responsive design på mobil
 
@@ -575,8 +576,8 @@ pnpm dev
 
 #### **Adgang:**
 
-- **Live demo:** https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer
-- **Lokal:** http://localhost:3000 (når developers starter server)
+- **Live demo:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
+- **Lokal:** <http://localhost:3000> (når developers starter server)
 
 #### **Hovedfunktioner:**
 
@@ -587,10 +588,10 @@ pnpm dev
 
 #### **Eksempel kommandoer:**
 
-- "Opret lead: Lars Nielsen, lars@example.dk, 12345678"
+- "Opret lead: Lars Nielsen, <lars@example.dk>, 12345678"
 - "Book Lars Nielsen til rengøring mandag kl 10-13"
 - "Lav faktura til Lars Nielsen for 6 timer"
-- "Søg emails fra lars@example.dk"
+- "Søg emails fra <lars@example.dk>"
 - "Opret opgave: Send tilbud, i morgen, høj prioritet"
 
 ---
@@ -633,10 +634,10 @@ pnpm dev
 
 **Næste uge:**
 
-5. Implement Customer Chat tab
-6. Setup production deployment
-7. Performance testing
-8. Security audit
+1. Implement Customer Chat tab
+2. Setup production deployment
+3. Performance testing
+4. Security audit
 
 ---
 
@@ -644,10 +645,10 @@ pnpm dev
 
 ### **Repositories**
 
-- **Main:** https://github.com/TekupDK/tekup-friday
-- **Billy Integration:** https://github.com/TekupDK/tekup-billy
-- **Workspace:** https://github.com/TekupDK/tekup
-- **Secrets:** https://github.com/TekupDK/tekup-secrets (private)
+- **Main:** <https://github.com/TekupDK/tekup-friday>
+- **Billy Integration:** <https://github.com/TekupDK/tekup-billy>
+- **Workspace:** <https://github.com/TekupDK/tekup>
+- **Secrets:** <https://github.com/TekupDK/tekup-secrets> (private)
 
 ### **Dokumentation**
 
@@ -659,7 +660,7 @@ pnpm dev
 
 ### **Live Demo**
 
-- **URL:** https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer
+- **URL:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
 - **Status:** Live (Manus platform)
 
 ---
