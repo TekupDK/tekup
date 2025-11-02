@@ -531,7 +531,7 @@ Tekup-org monorepo leverer:
 **Kontakt:**
 
 - LinkedIn: [jonas-abde-22691a12a](https://www.linkedin.com/in/jonas-abde-22691a12a/)
-- GitHub: [JonasAbde](https://github.com/JonasAbde)
+- GitHub: [TekupDK](https://github.com/TekupDK)
 
 ---
 

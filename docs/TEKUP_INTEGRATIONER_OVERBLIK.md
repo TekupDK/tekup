@@ -173,36 +173,36 @@ apps/time-tracker/src/server/services/calendar.ts
 
 ```typescript
 -TekupDK / tekup(Monorepo) -
-  JonasAbde / renos -
+  TekupDK / renos -
   backend -
-  JonasAbde / renos -
+  TekupDK / renos -
   frontend -
-  JonasAbde / TekupVault -
-  JonasAbde / tekup -
+  TekupDK / TekupVault -
+  TekupDK / tekup -
   unified -
   docs -
-  JonasAbde / tekup -
+  TekupDK / tekup -
   ai -
   assistant -
-  JonasAbde / tekup -
+  TekupDK / tekup -
   cloud -
   dashboard -
-  JonasAbde / tekup -
+  TekupDK / tekup -
   renos -
-  JonasAbde / tekup -
+  TekupDK / tekup -
   renos -
   dashboard -
-  JonasAbde / Tekup -
+  TekupDK / Tekup -
   org -
-  JonasAbde / Cleaning -
+  TekupDK / Cleaning -
   og -
   Service -
-  JonasAbde / tekup -
+  TekupDK / tekup -
   nexus -
   dashboard -
-  JonasAbde / rendetalje -
+  TekupDK / rendetalje -
   os -
-  JonasAbde / Jarvis -
+  TekupDK / Jarvis -
   lite;
 ```
 

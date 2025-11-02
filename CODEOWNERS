@@ -7,90 +7,90 @@
 # =============================================================================
 # WORKSPACE ROOT
 # =============================================================================
-* @JonasAbde
+* @TekupDK
 
 # Workspace configuration files
-/.github/ @JonasAbde
-/configs/ @JonasAbde
-/scripts/ @JonasAbde
-README.md @JonasAbde
-CODEOWNERS @JonasAbde
+/.github/ @TekupDK
+/configs/ @TekupDK
+/scripts/ @TekupDK
+README.md @TekupDK
+CODEOWNERS @TekupDK
 
 # =============================================================================
 # PRODUCTION SERVICES
 # =============================================================================
 
 # Central Database (CRITICAL)
-/apps/production/tekup-database/ @JonasAbde
-/apps/production/tekup-database/prisma/ @JonasAbde
-/apps/production/tekup-database/migrations/ @JonasAbde
+/apps/production/tekup-database/ @TekupDK
+/apps/production/tekup-database/prisma/ @TekupDK
+/apps/production/tekup-database/migrations/ @TekupDK
 
 # TekupVault (Knowledge Layer)
-/apps/production/tekup-vault/ @JonasAbde
+/apps/production/tekup-vault/ @TekupDK
 
 # Tekup-Billy (Billy.dk MCP)
-/apps/production/tekup-billy/ @JonasAbde
+/apps/production/tekup-billy/ @TekupDK
 
 # =============================================================================
 # WEB APPLICATIONS
 # =============================================================================
 
 # RendetaljeOS (Cleaning Platform)
-/apps/web/rendetalje-os/ @JonasAbde
+/apps/web/rendetalje-os/ @TekupDK
 
 # Tekup Cloud Dashboard
-/apps/web/tekup-cloud-dashboard/ @JonasAbde
+/apps/web/tekup-cloud-dashboard/ @TekupDK
 
 # Tekup Chat
-/apps/web/tekup-chat/ @JonasAbde
+/apps/web/tekup-chat/ @TekupDK
 
 # =============================================================================
 # BACKEND SERVICES
 # =============================================================================
 
 # Tekup AI (AI Infrastructure)
-/services/tekup-ai/ @JonasAbde
-/services/tekup-ai/packages/ai-llm/ @JonasAbde
-/services/tekup-ai/packages/ai-agents/ @JonasAbde
+/services/tekup-ai/ @TekupDK
+/services/tekup-ai/packages/ai-llm/ @TekupDK
+/services/tekup-ai/packages/ai-agents/ @TekupDK
 
 # Gmail Services
-/services/tekup-gmail-services/ @JonasAbde
+/services/tekup-gmail-services/ @TekupDK
 
 # Tekup Cloud (RenOS Tools)
-/services/tekup-cloud/ @JonasAbde
-/services/tekup-cloud/renos-calendar-mcp/ @JonasAbde
+/services/tekup-cloud/ @TekupDK
+/services/tekup-cloud/renos-calendar-mcp/ @TekupDK
 
 # =============================================================================
 # SHARED PACKAGES
 # =============================================================================
 
 # All shared packages require workspace owner review
-/packages/ @JonasAbde
+/packages/ @TekupDK
 
 # =============================================================================
 # DOCUMENTATION
 # =============================================================================
 
 # All documentation
-/docs/ @JonasAbde
+/docs/ @TekupDK
 
 # Architecture decisions
-/docs/architecture/ @JonasAbde
+/docs/architecture/ @TekupDK
 
 # =============================================================================
 # TESTS
 # =============================================================================
 
 # Workspace-level tests
-/tests/ @JonasAbde
+/tests/ @TekupDK
 
 # =============================================================================
 # SPECIAL CASES
 # =============================================================================
 
 # Archive (read-only, no PRs expected)
-/archive/ @JonasAbde
+/archive/ @TekupDK
 
 # Tools and scripts
-/tools/ @JonasAbde
-/scripts/ @JonasAbde
+/tools/ @TekupDK
+/scripts/ @TekupDK

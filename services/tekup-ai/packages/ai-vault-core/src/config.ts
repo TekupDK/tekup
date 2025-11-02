@@ -58,27 +58,8 @@ export function loadConfig(): Config {
  * Active Tekup Portfolio repositories (updated 2025-10-18)
  */
 export const GITHUB_REPOS: Array<{ owner: string; repo: string }> = [
-  // Core Production Systems (High Priority)
-  { owner: 'JonasAbde', repo: 'Tekup-Billy' },          // Billy.dk MCP Server - Pushed 2025-10-18
-  { owner: 'JonasAbde', repo: 'renos-backend' },        // RenOS Backend API - Pushed 2025-10-15
-  { owner: 'JonasAbde', repo: 'renos-frontend' },       // RenOS Frontend - Pushed 2025-10-17
-  { owner: 'JonasAbde', repo: 'TekupVault' },           // Central Knowledge Layer - Pushed 2025-10-17
-  
-  // Documentation & Configuration
-  { owner: 'JonasAbde', repo: 'tekup-unified-docs' },   // Unified Documentation - Pushed 2025-10-17
-  { owner: 'JonasAbde', repo: 'tekup-ai-assistant' },   // AI Assistant Integration - Pushed 2025-10-16
-  
-  // Active Development
-  { owner: 'JonasAbde', repo: 'tekup-cloud-dashboard' }, // Cloud Dashboard - Pushed 2025-10-16
-  { owner: 'JonasAbde', repo: 'tekup-renos' },          // RenOS Main System - Pushed 2025-10-08
-  { owner: 'JonasAbde', repo: 'tekup-renos-dashboard' }, // RenOS Dashboard - Pushed 2025-09-30
-  { owner: 'JonasAbde', repo: 'Tekup-org' },            // Tekup Organization Monorepo - Pushed 2025-09-19
-  { owner: 'JonasAbde', repo: 'Cleaning-og-Service' },  // Cleaning & Service System - Pushed 2025-09-18
-  { owner: 'JonasAbde', repo: 'tekup-nexus-dashboard' }, // Nexus Dashboard - Pushed 2025-09-12
-  
-  // Public/Open Source Projects
-  { owner: 'JonasAbde', repo: 'rendetalje-os' },        // Professional Cleaning Management System
-  { owner: 'JonasAbde', repo: 'Jarvis-lite' },          // AI Assistant Educational Project
+  // Unified TekupDK Monorepo (All projects migrated to TekupDK organization)
+  { owner: 'TekupDK', repo: 'tekup' },          // Tekup Unified Monorepo
 ];
 
 /**

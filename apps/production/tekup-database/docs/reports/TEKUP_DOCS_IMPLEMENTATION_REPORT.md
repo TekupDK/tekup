@@ -326,7 +326,7 @@ cd c:/Users/empir/TekupVault
 # 2. Update vault-core config
 # Add to SYNC_CONFIG:
 # {
-#   owner: "JonasAbde",
+#   owner: "TekupDK",
 #   repo: "tekup-unified-docs",
 #   branch: "main"
 # }

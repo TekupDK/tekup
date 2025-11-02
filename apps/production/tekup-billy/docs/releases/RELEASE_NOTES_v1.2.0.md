@@ -325,7 +325,7 @@ v1.2.0 (2025-10-13)
 
 - ⭐ Star the repo for updates
 - 👀 Watch for new releases
-- 📢 Follow [@TekupDK](https://github.com/JonasAbde)
+- 📢 Follow [@TekupDK](https://github.com/TekupDK)
 
 ---
 

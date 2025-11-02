@@ -1,7 +1,7 @@
 # 👨‍💻 Solo Developer Workflow Guide
 
 **Project:** Tekup-Billy MCP Server  
-**Developer:** Jonas Abde ([LinkedIn](https://www.linkedin.com/in/jonas-abde-22691a12a/) | [GitHub](https://github.com/JonasAbde))
+**Developer:** Jonas Abde ([LinkedIn](https://www.linkedin.com/in/jonas-abde-22691a12a/) | [GitHub](https://github.com/TekupDK))
 
 ## 🚀 Optimeret Solo Workflow
 
