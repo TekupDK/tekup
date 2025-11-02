@@ -271,7 +271,12 @@ import {
   validateQuoteFormat,
   validateTimeCheck,
 } from "./memoryRules";
-import { logMetrics, RequestMetrics } from "./monitoring/metricsLogger";
+import { 
+  logMetrics, 
+  RequestMetrics, 
+  getAllMetrics, 
+  getMetricsSummary 
+} from "./monitoring/metricsLogger";
 import { buildEnhancedPrompt, SYSTEM_PROMPT } from "./promptTraining";
 import {
   detectIntent,
@@ -340,6 +345,20 @@ const orchestrator = new InboxOrchestrator(
 })();
 
 app.get("/health", (_req: Request, res: Response) => res.json({ ok: true }));
+
+// Metrics endpoints
+app.get("/metrics", (_req: Request, res: Response) => {
+  const timeWindow = _req.query.timeWindow ? parseInt(_req.query.timeWindow as string) : undefined;
+  const summary = getMetricsSummary(timeWindow);
+  res.json(summary);
+});
+
+app.get("/metrics/export", (_req: Request, res: Response) => {
+  const allMetrics = getAllMetrics();
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', `attachment; filename=friday-ai-metrics-${Date.now()}.json`);
+  res.json(allMetrics);
+});
 
 // Test parser endpoint
 app.get("/test/parser", async (_req: Request, res: Response) => {
