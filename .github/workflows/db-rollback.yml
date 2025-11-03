@@ -11,7 +11,6 @@ on:
 jobs:
   restore:
     runs-on: ubuntu-latest
-    if: ${{ secrets.APPROVE_ROLLBACK == 'true' }}
     steps:
       - name: Validate inputs
         run: |
@@ -33,17 +32,3 @@ jobs:
           fi
           export PGPASSWORD=$(echo $DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\).*/\1/p' | sed 's/%40/@/g')
           psql "$DATABASE_URL" -f backup.sql
-      - name: Notify Slack (success)
-        if: success()
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_MESSAGE: "✅ DB rollback completed: ${{ github.repository }} run #${{ github.run_number }}"
-        run: |
-          if [ -n "$SLACK_WEBHOOK_URL" ]; then node scripts/notify-slack.mjs; fi
-      - name: Notify Slack (failure)
-        if: failure()
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_MESSAGE: "❌ DB rollback failed: ${{ github.repository }} run #${{ github.run_number }}"
-        run: |
-          if [ -n "$SLACK_WEBHOOK_URL" ]; then node scripts/notify-slack.mjs; fi

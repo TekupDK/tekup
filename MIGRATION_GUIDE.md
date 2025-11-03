@@ -82,7 +82,7 @@ export PGPASSWORD=...; psql "postgresql://user@host:5432/db?sslmode=require" -f 
 
 If you set repository secret `PREVIEW_DATABASE_URL`, every PR runs a safe dry-run via `.github/workflows/migration-check.yml`. No secrets in Git; workflow safely skips if the secret is not defined.
 
-Optional: set `SLACK_WEBHOOK_URL` to receive a Slack message when the check fails.
+Note: Slack notifications are not enabled in this repository.
 
 ## Notes
 
