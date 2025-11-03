@@ -4,7 +4,43 @@ All notable changes to this project related to the PostgreSQL migration from MyS
 
 ---
 
-## [Unreleased] - 2025-01-XX
+## [1.3.0] - 2025-11-03
+
+### 🚀 Major Features
+
+#### Added
+- **Database-First Strategy for Invoices**: Invoice caching from Billy API to Supabase database
+  - `server/invoice-cache.ts`: Background caching of Billy invoices
+  - Database-first query strategy (query DB first, fallback to API)
+  - Automatic customer profile creation/update from invoices
+- **Email Context Tracking** (Shortwave-style):
+  - `client/src/contexts/EmailContext.tsx`: Context provider for email UI state
+  - Automatic context syncing from EmailTab to AI chatbot
+  - AI now understands "dem her", "denne email" based on UI state
+- **Email Caching System**:
+  - `server/email-cache.ts`: Background caching of Gmail threads
+  - Database-first strategy for email queries
+  - Automatic fallback to Gmail API if database empty
+- **Workspace Configuration**:
+  - `tekup-ai-v2.code-workspace`: Single-root workspace for cloud agents
+  - Optimized TypeScript and Prettier settings
+
+#### Changed
+- **Invoices Tab**: Now uses Supabase database as primary source
+- **Email Tab**: Database-first strategy implemented
+- **Database References**: Updated all config files from MySQL/TiDB to Supabase PostgreSQL
+  - `env.template.txt`: Updated to Supabase PostgreSQL format
+  - `docker-compose.yml`: Marked MySQL service as deprecated
+- **All Tabs Now Database-First**: Emails, Leads, Tasks, and Invoices all use Supabase
+
+#### Fixed
+- Database connection handling with schema isolation (`friday_ai` schema)
+- Invoice amount calculation from Billy API line items
+- Customer profile linking for invoices
+
+---
+
+## [Unreleased] - 2025-11-03
 
 ### 🎉 PostgreSQL Migration - Complete
 
