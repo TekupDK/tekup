@@ -1,0 +1,36 @@
+name: Migration Check
+
+on:
+  pull_request:
+    paths:
+      - 'drizzle/migrations/**'
+      - 'scripts/migration-check.mjs'
+      - 'run-pipeline-migration.mjs'
+      - 'server/**'
+      - 'drizzle/schema.ts'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install PNPM
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.20.0 --activate
+      - name: Install deps
+        run: pnpm install --frozen-lockfile=false
+      - name: Migration dry-run (skips if no preview DB secret)
+        env:
+          DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "No PREVIEW_DATABASE_URL secret set. Skipping migration check."
+            exit 0
+          fi
+          node scripts/migration-check.mjs --dry-run

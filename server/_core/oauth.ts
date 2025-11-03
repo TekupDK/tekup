@@ -1,7 +1,6 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
-import { getSessionCookieOptions } from "./cookies";
 import { ENV } from "./env";
 import { sdk } from "./sdk";
 
@@ -62,7 +61,7 @@ export function registerOAuthRoutes(app: Express) {
           name: "Jonas",
           email: "jonas@rendetalje.dk",
           loginMethod: "dev",
-          lastSignedIn: new Date(),
+          lastSignedIn: new Date().toISOString(),
         });
         user = await db.getUserByOpenId(ownerOpenId);
       }
@@ -79,26 +78,27 @@ export function registerOAuthRoutes(app: Express) {
       });
 
       // Set cookie with proper options
-      const cookieOptions = getSessionCookieOptions(req);
-      
-      // In test mode, make httpOnly false so tests can read the cookie
-      // In production, keep it secure
-      const finalCookieOptions = {
-        ...cookieOptions,
-        maxAge: ONE_YEAR_MS,
-        httpOnly: isTestMode || isTestEnvironment ? false : cookieOptions.httpOnly,
-        path: "/",
-      };
-
+      // CRITICAL FIX: For localhost development, override sameSite/secure settings
+      // The default production settings (sameSite="none" + secure=false) are INVALID
+      // and cause browsers to reject the cookie entirely
+        const finalCookieOptions = {
+          maxAge: ONE_YEAR_MS,
+          httpOnly: true,
+          path: "/",
+          domain: undefined,
+          sameSite: "lax" as const,
+          secure: process.env.NODE_ENV === 'production'
+        };
       res.cookie(COOKIE_NAME, sessionToken, finalCookieOptions);
-      
+
       console.log("[AUTH] Session cookie set successfully:", {
         cookieName: COOKIE_NAME,
         sameSite: finalCookieOptions.sameSite,
         secure: finalCookieOptions.secure,
         httpOnly: finalCookieOptions.httpOnly,
         maxAge: finalCookieOptions.maxAge,
-        domain: req.get("host"),
+        domain: finalCookieOptions.domain,
+        path: finalCookieOptions.path,
       });
 
       // Return JSON in test mode, redirect otherwise
@@ -117,8 +117,22 @@ export function registerOAuthRoutes(app: Express) {
         });
       }
 
-      // Redirect to home (browser mode)
-      res.redirect(302, "/");
+      // For browser mode: Return HTML with client-side redirect
+      // This ensures cookie is set before redirect happens
+      res.status(200).send(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Logging in...</title>
+            <meta http-equiv="refresh" content="0; url=/">
+          </head>
+          <body>
+            <p>Logging in... Redirecting to home page.</p>
+            <script>window.location.href = "/";</script>
+          </body>
+        </html>
+      `);
     } catch (error) {
       console.error("[Auth] Dev login failed", error);
       const errorMessage =

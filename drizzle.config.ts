@@ -1,7 +1,17 @@
-import * as dotenv from "dotenv";
 import { defineConfig } from "drizzle-kit";
+import * as dotenv from "dotenv";
+import * as fs from "fs";
+import * as path from "path";
 
-dotenv.config({ path: ".env.supabase" });
+// Prefer environment provided by caller (dotenv-cli). Fallback to local files if missing.
+if (!process.env.DATABASE_URL) {
+  const prodPath = path.resolve('.env.prod');
+  const devPath = path.resolve('.env.dev');
+  const chosen = fs.existsSync(prodPath) ? prodPath : (fs.existsSync(devPath) ? devPath : undefined);
+  if (chosen) {
+    dotenv.config({ path: chosen });
+  }
+}
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -15,6 +25,8 @@ const schemaName = schemaParam || "friday_ai";
 
 // Remove schema from URL (postgres.js doesn't support it as query param)
 url.searchParams.delete("schema");
+// Ensure SSL works with Supabase self-signed certs
+url.searchParams.set("sslmode", "no-verify");
 const cleanUrl = url.toString();
 
 export default defineConfig({
@@ -23,7 +35,8 @@ export default defineConfig({
   dialect: "postgresql",
   dbCredentials: {
     url: cleanUrl,
-    ssl: { rejectUnauthorized: false }, // Supabase uses self-signed certs
+    // Accept self-signed certificates (Supabase)
+    ssl: { rejectUnauthorized: false },
   },
   schemaFilter: [schemaName], // Only process this schema
   verbose: true,

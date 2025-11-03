@@ -1,7 +1,7 @@
 # Friday Chat Interface - Project Status
 
 **Project:** TekupDK Friday AI Chat Interface  
-**Date:** November 1, 2025  
+**Date:** November 3, 2025  
 **Version:** eda657b5
 
 ---
@@ -184,7 +184,7 @@
 - Express 4
 - tRPC 11
 - Drizzle ORM
-- MySQL/TiDB database
+- PostgreSQL (Supabase)
 
 **AI & Integrations:**
 - Gemini 2.5 Flash (via Manus Forge API)
@@ -242,11 +242,22 @@ Before publishing:
 
 - **Project Path:** `/home/ubuntu/tekup-friday`
 - **Dev Server:** `https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer`
-- **Database:** MySQL/TiDB (configured via platform)
+- **Database:** PostgreSQL (Supabase)
 - **MCP Servers:** `gmail`, `google-calendar`
 - **Billy API:** `https://api.billysbilling.com/v2`
 
 ---
 
-**Last Updated:** November 1, 2025 08:00 GMT+1  
-**Status:** Ready for final testing and OAuth configuration
+**Last Updated:** November 3, 2025 23:20 GMT+1  
+**Status:** Migration automation in place; ready for PR-based checks
+
+---
+
+## 2025-11-03 – Migration automation & security
+
+- Added automated migration pre/post check script: `scripts/migration-check.mjs`
+- Added backup helper: `scripts/backup-db.ps1`
+- Created CI workflow `.github/workflows/migration-check.yml` (dry-run on PRs if `PREVIEW_DATABASE_URL` is set)
+- Fixed cookie security: `httpOnly: true` and `secure` in production
+- Drizzle config updated to work with Supabase SSL and respect `.env.prod`
+- Ran `pnpm db:push:prod` and applied pipeline migration with verification
