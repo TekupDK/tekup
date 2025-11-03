@@ -28,6 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { useAdaptivePolling } from "@/hooks/useAdaptivePolling";
+import { useCalendarView } from "@/hooks/useCalendarView";
 import { useRateLimit } from "@/hooks/useRateLimit";
 import { trpc } from "@/lib/trpc";
 import {
@@ -41,12 +42,14 @@ import {
   Edit,
   ExternalLink,
   FileText,
+  LayoutGrid,
   MapPin,
   MoreVertical,
   Trash2,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import FullCalendarView from "./FullCalendarView";
 
 export default function CalendarTab() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -54,6 +57,9 @@ export default function CalendarTab() {
   const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // Calendar view toggle (Grid vs FullCalendar)
+  const [calendarView, setCalendarView] = useCalendarView("grid");
 
   // Rate limit handling
   const rateLimit = useRateLimit();
@@ -69,26 +75,95 @@ export default function CalendarTab() {
 
   const utils = trpc.useUtils();
   const updateEventMutation = trpc.inbox.calendar.update.useMutation({
+    onMutate: async variables => {
+      // Cancel outgoing refetches (optimistic update)
+      await utils.inbox.calendar.list.cancel();
+
+      // Snapshot previous value
+      const previousEvents = utils.inbox.calendar.list.getData(dateRange);
+
+      // Optimistically update the cache
+      if (previousEvents && selectedEvent) {
+        const updatedEvents = previousEvents.map((event: any) =>
+          event.id === selectedEvent.id
+            ? {
+                ...event,
+                summary: variables.summary ?? event.summary,
+                description: variables.description ?? event.description,
+                location: variables.location ?? event.location,
+                start: variables.start
+                  ? { dateTime: variables.start }
+                  : event.start,
+                end: variables.end ? { dateTime: variables.end } : event.end,
+              }
+            : event
+        );
+        utils.inbox.calendar.list.setData(dateRange, updatedEvents);
+      }
+
+      return { previousEvents };
+    },
     onSuccess: () => {
       utils.inbox.calendar.list.invalidate();
       setIsEditDialogOpen(false);
       setIsEventDialogOpen(false);
       toast.success("Event opdateret!");
     },
-    onError: error => {
-      toast.error(`Fejl ved opdatering: ${error.message}`);
+    onError: (error, variables, context) => {
+      // Rollback optimistic update on error
+      if (context?.previousEvents) {
+        utils.inbox.calendar.list.setData(dateRange, context.previousEvents);
+      }
+      const errorMessage = error.message || "Ukendt fejl";
+      if (rateLimit.isRateLimitError(error)) {
+        rateLimit.handleRateLimitError(error);
+        toast.error(
+          `Rate limit: ${rateLimit.getRetryAfterText() || "Prøv igen senere"}`
+        );
+      } else {
+        toast.error(`Fejl ved opdatering: ${errorMessage}`);
+      }
     },
   });
 
   const deleteEventMutation = trpc.inbox.calendar.delete.useMutation({
+    onMutate: async () => {
+      // Cancel outgoing refetches
+      await utils.inbox.calendar.list.cancel();
+
+      // Snapshot previous value
+      const previousEvents = utils.inbox.calendar.list.getData(dateRange);
+
+      // Optimistically remove the event
+      if (previousEvents && selectedEvent) {
+        const filteredEvents = previousEvents.filter(
+          (event: any) => event.id !== selectedEvent.id
+        );
+        utils.inbox.calendar.list.setData(dateRange, filteredEvents);
+      }
+
+      return { previousEvents };
+    },
     onSuccess: () => {
       utils.inbox.calendar.list.invalidate();
       setIsDeleteDialogOpen(false);
       setIsEventDialogOpen(false);
       toast.success("Event slettet!");
     },
-    onError: error => {
-      toast.error(`Fejl ved sletning: ${error.message}`);
+    onError: (error, variables, context) => {
+      // Rollback optimistic update on error
+      if (context?.previousEvents) {
+        utils.inbox.calendar.list.setData(dateRange, context.previousEvents);
+      }
+      const errorMessage = error.message || "Ukendt fejl";
+      if (rateLimit.isRateLimitError(error)) {
+        rateLimit.handleRateLimitError(error);
+        toast.error(
+          `Rate limit: ${rateLimit.getRetryAfterText() || "Prøv igen senere"}`
+        );
+      } else {
+        toast.error(`Fejl ved sletning: ${errorMessage}`);
+      }
     },
   });
 
@@ -178,19 +253,126 @@ export default function CalendarTab() {
   // Generate hourly slots (7:00 - 20:00)
   const hours = Array.from({ length: 14 }, (_, i) => i + 7);
 
+  // Calculate event positions with overlap detection
+  const getEventPositions = useMemo(() => {
+    if (!dayEvents || dayEvents.length === 0) return new Map();
+
+    // Parse all events first
+    const parsedEvents = dayEvents.map((event: any) => {
+      const startTime =
+        event.start?.dateTime || event.start?.date || event.start;
+      const endTime = event.end?.dateTime || event.end?.date || event.end;
+
+      if (!startTime || !endTime) return null;
+
+      const start = new Date(startTime);
+      const end = new Date(endTime);
+      const startHour = start.getHours() + start.getMinutes() / 60;
+      const endHour = end.getHours() + end.getMinutes() / 60;
+
+      // Handle all-day events (date without time)
+      const isAllDay = event.start?.date && !event.start?.dateTime;
+
+      return {
+        event,
+        start,
+        end,
+        startHour,
+        endHour,
+        isAllDay,
+        duration: endHour - startHour,
+      };
+    }).filter((e): e is NonNullable<typeof e> => e !== null);
+
+    // Filter out events outside visible range (with some padding)
+    const visibleEvents = parsedEvents.filter(e => {
+      if (e.isAllDay) return false; // Don't show all-day in hourly view
+      // Show events that overlap with 7-20 range
+      return (
+        (e.startHour >= 7 && e.startHour <= 20) ||
+        (e.endHour >= 7 && e.endHour <= 20) ||
+        (e.startHour < 7 && e.endHour > 20)
+      );
+    });
+
+    // Sort by start time
+    visibleEvents.sort((a, b) => a.startHour - b.startHour);
+
+    // Group overlapping events
+    const eventGroups: Array<typeof visibleEvents> = [];
+    visibleEvents.forEach(event => {
+      let added = false;
+      for (const group of eventGroups) {
+        // Check if event overlaps with any event in group
+        const overlaps = group.some(
+          existing =>
+            (event.startHour < existing.endHour &&
+              event.endHour > existing.startHour) ||
+            Math.abs(event.startHour - existing.startHour) < 0.01
+        );
+        if (overlaps) {
+          group.push(event);
+          added = true;
+          break;
+        }
+      }
+      if (!added) {
+        eventGroups.push([event]);
+      }
+    });
+
+    // Calculate positions for each event with overlap handling
+    const positions = new Map();
+    eventGroups.forEach(group => {
+      group.forEach((event, index) => {
+        const groupWidth = 100 / group.length;
+        const leftPercent = (index * groupWidth);
+        const widthPercent = groupWidth - 2; // Small gap between events
+
+        // Clamp start/end to visible range
+        const clampedStart = Math.max(7, Math.min(20, event.startHour));
+        const clampedEnd = Math.max(7, Math.min(20, event.endHour));
+        const clampedDuration = clampedEnd - clampedStart;
+
+        positions.set(event.event.id, {
+          top: `${(clampedStart - 7) * 80}px`,
+          height: `${Math.max(20, clampedDuration * 80)}px`, // Min 20px height
+          left: `${leftPercent + 1}%`,
+          width: `${widthPercent}%`,
+          zIndex: group.length - index, // Later events on top
+        });
+      });
+    });
+
+    return positions;
+  }, [dayEvents]);
+
   const getEventPosition = (event: any) => {
-    // Handle both old and new format
+    const position = getEventPositions.get(event.id);
+    if (position) return position;
+
+    // Fallback for events without parsed position
     const startTime = event.start?.dateTime || event.start?.date || event.start;
     const endTime = event.end?.dateTime || event.end?.date || event.end;
+
+    if (!startTime || !endTime) {
+      return { top: "0px", height: "40px", left: "2%", width: "96%" };
+    }
 
     const start = new Date(startTime);
     const end = new Date(endTime);
     const startHour = start.getHours() + start.getMinutes() / 60;
     const endHour = end.getHours() + end.getMinutes() / 60;
 
+    // Clamp to visible range
+    const clampedStart = Math.max(7, Math.min(20, startHour));
+    const clampedEnd = Math.max(7, Math.min(20, endHour));
+
     return {
-      top: `${(startHour - 7) * 80}px`,
-      height: `${(endHour - startHour) * 80}px`,
+      top: `${(clampedStart - 7) * 80}px`,
+      height: `${Math.max(20, (clampedEnd - clampedStart) * 80)}px`,
+      left: "2%",
+      width: "96%",
     };
   };
 
@@ -294,6 +476,7 @@ export default function CalendarTab() {
             size="icon"
             onClick={() => navigateWeek("prev")}
             title="Forrige uge"
+            className={calendarView === "fullcalendar" ? "hidden" : ""}
           >
             <ChevronLeft className="w-4 h-4" />
             <ChevronLeft className="w-4 h-4 -ml-2" />
@@ -303,6 +486,7 @@ export default function CalendarTab() {
             size="icon"
             onClick={() => navigateDay("prev")}
             title="Forrige dag"
+            className={calendarView === "fullcalendar" ? "hidden" : ""}
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -318,6 +502,7 @@ export default function CalendarTab() {
             size="icon"
             onClick={() => navigateDay("next")}
             title="Næste dag"
+            className={calendarView === "fullcalendar" ? "hidden" : ""}
           >
             <ChevronRight className="w-4 h-4" />
           </Button>
@@ -326,25 +511,67 @@ export default function CalendarTab() {
             size="icon"
             onClick={() => navigateWeek("next")}
             title="Næste uge"
+            className={calendarView === "fullcalendar" ? "hidden" : ""}
           >
             <ChevronRight className="w-4 h-4" />
             <ChevronRight className="w-4 h-4 -ml-2" />
           </Button>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setSelectedDate(new Date())}
-        >
-          Today
-        </Button>
+        <div className="flex items-center gap-2">
+          {/* View Toggle */}
+          <div className="flex items-center gap-1 border rounded-md p-1">
+            <Button
+              variant={calendarView === "grid" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setCalendarView("grid")}
+              className="h-7 text-xs"
+              title="Grid View"
+            >
+              <LayoutGrid className="w-3 h-3 mr-1" />
+              Grid
+            </Button>
+            <Button
+              variant={calendarView === "fullcalendar" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setCalendarView("fullcalendar")}
+              className="h-7 text-xs"
+              title="FullCalendar View"
+            >
+              <CalendarIcon className="w-3 h-3 mr-1" />
+              FullCalendar
+            </Button>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setSelectedDate(new Date())}
+          >
+            Today
+          </Button>
+        </div>
       </div>
 
-      {/* Hourly Grid - Show loading indicator during refetch */}
-      <div className="relative border rounded-lg overflow-hidden bg-background">
+      {/* Calendar View - Conditional Rendering */}
+      {calendarView === "fullcalendar" ? (
+        <div className="border rounded-lg overflow-hidden bg-background">
+          <FullCalendarView
+            dateRange={dateRange}
+            selectedDate={selectedDate}
+            onDateSelect={setSelectedDate}
+            onEventClick={event => {
+              setSelectedEvent(event);
+              setIsEventDialogOpen(true);
+            }}
+            rateLimited={rateLimit.isRateLimited}
+          />
+        </div>
+      ) : (
+        <>
+          {/* Hourly Grid - Show loading indicator during refetch */}
+          <div className="relative border rounded-lg overflow-y-auto overflow-x-hidden bg-background max-h-[600px]">
         {isFetching && !isLoading && (
-          <div className="absolute top-2 right-2 z-10">
-            <div className="flex items-center gap-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md border text-xs text-muted-foreground">
+          <div className="absolute top-2 right-2 z-50">
+            <div className="flex items-center gap-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md border text-xs text-muted-foreground shadow-sm">
               <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               Opdaterer...
             </div>
@@ -381,11 +608,24 @@ export default function CalendarTab() {
               ? "bg-red-900/80"
               : "bg-primary/80";
 
+            // Skip all-day events (they show in a different section)
+            const startTime =
+              event.start?.dateTime || event.start?.date || event.start;
+            const isAllDay = event.start?.date && !event.start?.dateTime;
+            if (isAllDay) return null;
+
             return (
               <div
                 key={event.id}
-                className={`absolute left-2 right-2 ${eventColor} text-white rounded-md p-2 overflow-hidden border-l-4 border-primary cursor-pointer hover:opacity-90 hover:shadow-lg transition-all`}
-                style={position}
+                className={`absolute ${eventColor} text-white rounded-md p-2 overflow-hidden border-l-4 border-primary cursor-pointer hover:opacity-90 hover:shadow-lg transition-all`}
+                style={{
+                  ...position,
+                  top: position.top,
+                  height: position.height,
+                  left: position.left || "2%",
+                  width: position.width || "96%",
+                  zIndex: position.zIndex || 1,
+                }}
                 onClick={() => {
                   setSelectedEvent(event);
                   setIsEventDialogOpen(true);
@@ -395,21 +635,21 @@ export default function CalendarTab() {
                 <div className="text-xs font-medium truncate">
                   {event.summary}
                 </div>
-                <div className="text-xs opacity-90">
-                  {(() => {
-                    const startTime =
-                      event.start?.dateTime || event.start?.date || event.start;
-                    const endTime =
-                      event.end?.dateTime || event.end?.date || event.end;
-                    return `${new Date(startTime).toLocaleTimeString("da-DK", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })} - ${new Date(endTime).toLocaleTimeString("da-DK", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}`;
-                  })()}
-                </div>
+                {parseFloat(position.height?.replace("px", "") || "0") > 30 && (
+                  <div className="text-xs opacity-90">
+                    {(() => {
+                      const endTime =
+                        event.end?.dateTime || event.end?.date || event.end;
+                      return `${new Date(startTime).toLocaleTimeString("da-DK", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })} - ${new Date(endTime).toLocaleTimeString("da-DK", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}`;
+                    })()}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -419,13 +659,15 @@ export default function CalendarTab() {
             (() => {
               const now = new Date();
               const currentHour = now.getHours() + now.getMinutes() / 60;
+              const currentMinute = now.getMinutes();
               if (currentHour >= 7 && currentHour <= 20) {
+                const topPosition = (currentHour - 7) * 80 + (currentMinute / 60) * 80;
                 return (
                   <div
-                    className="absolute left-0 right-0 border-t-2 border-orange-500"
-                    style={{ top: `${(currentHour - 7) * 80}px` }}
+                    className="absolute left-0 right-0 border-t-2 border-orange-500 z-50 pointer-events-none"
+                    style={{ top: `${topPosition}px` }}
                   >
-                    <div className="w-2 h-2 bg-orange-500 rounded-full -mt-1" />
+                    <div className="absolute left-0 w-2 h-2 bg-orange-500 rounded-full -mt-1 -ml-1" />
                   </div>
                 );
               }
@@ -433,8 +675,10 @@ export default function CalendarTab() {
             })()}
         </div>
       </div>
+        </>
+      )}
 
-      {dayEvents.length === 0 && (
+      {calendarView === "grid" && dayEvents.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           <CalendarIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
           <p>No events scheduled for this day</p>

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte, inArray, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import {
@@ -334,15 +334,131 @@ export async function createLead(data: InsertLead): Promise<Lead> {
   return result[0];
 }
 
-export async function getUserLeads(userId: number): Promise<Lead[]> {
+export async function getUserLeads(
+  userId: number,
+  options?: {
+    status?: string;
+    source?: string;
+    searchQuery?: string;
+    hideBillyImport?: boolean;
+    sortBy?: "date" | "score" | "name";
+    limit?: number;
+  }
+): Promise<Array<Lead & { duplicateCount: number }>> {
   const db = await getDb();
   if (!db) return [];
 
-  return db
+  // Build where conditions
+  const conditions = [eq(leads.userId, userId)];
+
+  if (options?.status && options.status !== "all") {
+    conditions.push(eq(leads.status, options.status as any));
+  }
+
+  if (options?.source && options.source !== "all") {
+    conditions.push(eq(leads.source, options.source));
+  }
+
+  if (options?.hideBillyImport) {
+    conditions.push(sql`${leads.source} != 'billy_import'`);
+  }
+
+  // Get all leads first (we need all to calculate duplicates)
+  const allLeads = await db
     .select()
     .from(leads)
-    .where(eq(leads.userId, userId))
-    .orderBy(desc(leads.createdAt));
+    .where(conditions.length > 0 ? and(...conditions) : eq(leads.userId, userId))
+    .execute();
+
+  // Apply search filter (client-side for now, can be optimized with SQL LIKE later)
+  if (options?.searchQuery) {
+    const searchLower = options.searchQuery.toLowerCase();
+    allLeads = allLeads.filter(
+      lead =>
+        lead.name?.toLowerCase().includes(searchLower) ||
+        lead.email?.toLowerCase().includes(searchLower) ||
+        lead.phone?.toLowerCase().includes(searchLower) ||
+        lead.company?.toLowerCase().includes(searchLower)
+    );
+  }
+
+  // Calculate duplicate counts using SQL (more efficient)
+  // For now, do it in memory (can be optimized with SQL GROUP BY later)
+  const keyMap = new Map<string, number[]>();
+  const duplicateMap = new Map<number, number>();
+
+  // Helper to normalize phone
+  const normalizePhone = (phone: string | null | undefined): string | null => {
+    if (!phone) return null;
+    return phone.replace(/\s+/g, "").replace(/[^\d+]/g, "") || null;
+  };
+
+  // Helper to get deduplication key
+  const getDeduplicationKey = (lead: Lead): string | null => {
+    const emailKey = lead.email?.toLowerCase().trim();
+    if (emailKey) return `email:${emailKey}`;
+
+    const phoneKey = normalizePhone(lead.phone);
+    if (phoneKey) return `phone:${phoneKey}`;
+
+    const nameCompanyKey =
+      lead.name && lead.company
+        ? `name:${lead.name.toLowerCase().trim()}_${lead.company.toLowerCase().trim()}`
+        : null;
+    if (nameCompanyKey) return nameCompanyKey;
+
+    return null;
+  };
+
+  // Build key map
+  for (const lead of allLeads) {
+    const key = getDeduplicationKey(lead);
+    if (key) {
+      if (!keyMap.has(key)) {
+        keyMap.set(key, []);
+      }
+      keyMap.get(key)!.push(lead.id);
+    }
+  }
+
+  // Calculate duplicate counts
+  keyMap.forEach(leadIds => {
+    const count = leadIds.length;
+    if (count > 1) {
+      leadIds.forEach(id => duplicateMap.set(id, count));
+    }
+  });
+
+  // Add duplicateCount to all leads
+  const leadsWithCounts = allLeads.map(lead => ({
+    ...lead,
+    duplicateCount: duplicateMap.get(lead.id) || 1,
+  }));
+
+  // Apply sorting
+  if (options?.sortBy === "score") {
+    leadsWithCounts.sort((a, b) => b.score - a.score);
+  } else if (options?.sortBy === "name") {
+    leadsWithCounts.sort((a, b) => {
+      const nameA = a.name?.toLowerCase() || "";
+      const nameB = b.name?.toLowerCase() || "";
+      return nameA.localeCompare(nameB);
+    });
+  } else {
+    // Default: sort by date
+    leadsWithCounts.sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
+  }
+
+  // Apply limit if specified
+  if (options?.limit) {
+    return leadsWithCounts.slice(0, options.limit);
+  }
+
+  return leadsWithCounts;
 }
 
 /**

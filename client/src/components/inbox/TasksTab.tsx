@@ -399,7 +399,7 @@ export default function TasksTab() {
   }, [groupedTasks]);
 
   // Virtualizer - only enable if total tasks > 50 for performance
-  const shouldVirtualize = filteredTasks.length > 50;
+  const shouldVirtualize = flatTaskList.length > 50;
 
   const virtualizer = useVirtualizer({
     count: shouldVirtualize ? flatTaskList.length : 0,
@@ -408,9 +408,20 @@ export default function TasksTab() {
       const item = flatTaskList[index];
       return item?.type === "header" ? 48 : 96; // Header smaller (48px), tasks larger (96px)
     },
-    overscan: 5,
+    overscan: 10, // Increased overscan for smoother scrolling
     enabled: shouldVirtualize,
+    // Measure actual element sizes for better accuracy
+    measureElement: element => {
+      return element?.getBoundingClientRect().height ?? 96;
+    },
   });
+
+  // Update virtualizer when flatTaskList changes (e.g., after drag-drop)
+  useEffect(() => {
+    if (shouldVirtualize && virtualizer) {
+      virtualizer.measureElement(undefined); // Force remeasure
+    }
+  }, [flatTaskList.length, shouldVirtualize, virtualizer]);
 
   const handleCreateTask = () => {
     if (!newTaskForm.title.trim()) {
@@ -525,7 +536,13 @@ export default function TasksTab() {
     const { active, over } = event;
     setActiveTask(null);
 
-    if (!over || active.id === over.id) return;
+    if (!over || active.id === over.id) {
+      // If virtualized, force remeasure after drag
+      if (shouldVirtualize && virtualizer) {
+        virtualizer.measureElement(undefined);
+      }
+      return;
+    }
 
     // Find which group contains the active task
     let activeGroup: string | null = null;
@@ -578,6 +595,12 @@ export default function TasksTab() {
         orderIndex: index,
       }));
       bulkUpdateOrderMutation.mutate(updates);
+      // Force virtualizer remeasure after reorder
+      if (shouldVirtualize && virtualizer) {
+        setTimeout(() => {
+          virtualizer.measureElement(undefined);
+        }, 100);
+      }
       return;
     }
 
@@ -926,6 +949,7 @@ export default function TasksTab() {
               <div
                 ref={scrollableRef}
                 className="flex-1 overflow-y-auto min-h-0"
+                data-scroll-container
               >
                 <div
                   style={{
@@ -940,18 +964,23 @@ export default function TasksTab() {
 
                     if (item.type === "header") {
                       const { label, count, color } = item.data;
+                      // Check if this header should be sticky (first item in viewport or at top)
+                      const isSticky = virtualItem.start <= 0 || virtualItem.index === 0;
                       return (
                         <div
                           key={`header-${item.group}`}
+                          data-index={virtualItem.index}
+                          ref={virtualizer.measureElement}
                           style={{
-                            position: "absolute",
-                            top: 0,
+                            position: isSticky ? "sticky" : "absolute",
+                            top: isSticky ? "0" : undefined,
                             left: 0,
                             width: "100%",
                             height: `${virtualItem.size}px`,
-                            transform: `translateY(${virtualItem.start}px)`,
+                            transform: isSticky ? undefined : `translateY(${virtualItem.start}px)`,
+                            zIndex: 20,
                           }}
-                          className="px-4 py-2 bg-muted/30 border-b sticky top-0 z-10 flex items-center"
+                          className="px-4 py-2 bg-background border-b flex items-center"
                         >
                           <h3
                             className={`text-sm font-semibold flex items-center gap-2 ${
@@ -977,6 +1006,8 @@ export default function TasksTab() {
                     return (
                       <div
                         key={task.id}
+                        data-index={virtualItem.index}
+                        ref={virtualizer.measureElement}
                         style={{
                           position: "absolute",
                           top: 0,

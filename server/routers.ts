@@ -1094,12 +1094,51 @@ export const appRouter = router({
             location: z.string().optional(),
           })
         )
-        .mutation(async ({ input }) => mcpUpdateCalendarEvent(input)),
+        .mutation(async ({ input }) => {
+          try {
+            const result = await mcpUpdateCalendarEvent(input);
+            return result;
+          } catch (error: any) {
+            // Check if it's a rate limit error
+            if (
+              error.message?.includes("rate limit") ||
+              error.message?.includes("429") ||
+              error.message?.includes("too many requests")
+            ) {
+              const retryAfter = error.message.match(/retry after ([^,]+)/i)?.[1];
+              throw new Error(
+                `Rate limit exceeded. Retry after ${retryAfter || "later"}`
+              );
+            }
+            // Re-throw other errors with better message
+            throw new Error(
+              `Failed to update calendar event: ${error.message || "Unknown error"}`
+            );
+          }
+        }),
       delete: protectedProcedure
         .input(z.object({ eventId: z.string() }))
         .mutation(async ({ input }) => {
-          await mcpDeleteCalendarEvent(input);
-          return { success: true };
+          try {
+            await mcpDeleteCalendarEvent(input);
+            return { success: true };
+          } catch (error: any) {
+            // Check if it's a rate limit error
+            if (
+              error.message?.includes("rate limit") ||
+              error.message?.includes("429") ||
+              error.message?.includes("too many requests")
+            ) {
+              const retryAfter = error.message.match(/retry after ([^,]+)/i)?.[1];
+              throw new Error(
+                `Rate limit exceeded. Retry after ${retryAfter || "later"}`
+              );
+            }
+            // Re-throw other errors with better message
+            throw new Error(
+              `Failed to delete calendar event: ${error.message || "Unknown error"}`
+            );
+          }
         }),
       checkAvailability: protectedProcedure
         .input(z.object({ start: z.string(), end: z.string() }))
@@ -1122,9 +1161,20 @@ export const appRouter = router({
         }),
     }),
     leads: router({
-      list: protectedProcedure.query(async ({ ctx }) =>
-        getUserLeads(ctx.user.id)
-      ),
+      list: protectedProcedure
+        .input(
+          z.object({
+            status: z.string().optional(),
+            source: z.string().optional(),
+            searchQuery: z.string().optional(),
+            hideBillyImport: z.boolean().optional(),
+            sortBy: z.enum(["date", "score", "name"]).optional(),
+            limit: z.number().optional(),
+          })
+        )
+        .query(async ({ ctx, input }) =>
+          getUserLeads(ctx.user.id, input)
+        ),
       create: protectedProcedure
         .input(
           z.object({

@@ -58,41 +58,46 @@ function ChatPanel() {
 
   // Poll for title updates when conversation has no title
   useEffect(() => {
-    if (!conversationData?.conversation) return;
+    if (!conversationData?.conversation || !selectedConversationId) return;
 
     const needsTitleUpdate =
       !conversationData.conversation.title ||
       conversationData.conversation.title === "New Conversation";
     if (!needsTitleUpdate) return;
 
+    // Limit polling to prevent infinite loops - max 10 polls (30 seconds)
+    let pollCount = 0;
+    const maxPolls = 10;
+
     const interval = setInterval(() => {
-      refetchMessages();
-      refetchConversations();
+      pollCount++;
+      if (pollCount >= maxPolls) {
+        clearInterval(interval);
+        return;
+      }
+
+      // Only refetch if still mounted and conversation selected
+      if (selectedConversationId) {
+        refetchMessages().catch(err => {
+          console.error("[ChatPanel] Error refetching messages:", err);
+        });
+        refetchConversations().catch(err => {
+          console.error("[ChatPanel] Error refetching conversations:", err);
+        });
+      } else {
+        clearInterval(interval);
+      }
     }, 3000);
 
-    return () => clearInterval(interval);
-  }, [conversationData?.conversation, refetchMessages, refetchConversations]);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [conversationData?.conversation, selectedConversationId, refetchMessages, refetchConversations]);
 
   const createConversation = trpc.chat.create.useMutation({
     onSuccess: data => {
       setSelectedConversationId(data.id);
       refetchConversations();
-    },
-  });
-
-  const sendMessage = trpc.chat.sendMessage.useMutation({
-    onSuccess: data => {
-      refetchMessages();
-      setInputMessage("");
-
-      // Check if there's a pending action
-      if (data.pendingAction) {
-        setPendingAction(data.pendingAction);
-        setShowApprovalModal(true);
-      }
-    },
-    onError: error => {
-      toast.error("Failed to send message: " + error.message);
     },
   });
 
@@ -108,6 +113,47 @@ function ChatPanel() {
     },
   });
 
+  const sendMessage = trpc.chat.sendMessage.useMutation({
+    onSuccess: data => {
+      // Refetch messages to get updated conversation
+      refetchMessages().catch(err => {
+        console.error("[ChatPanel] Error refetching messages:", err);
+      });
+      setInputMessage("");
+
+      // Check if there's a pending action
+      if (data.pendingAction) {
+        // Check if user has auto-approve enabled for this action type
+        const autoApproveKey = `auto-approve-${data.pendingAction.type}`;
+        const shouldAutoApprove =
+          data.pendingAction.riskLevel === "low" &&
+          localStorage.getItem(autoApproveKey) === "true";
+
+        if (shouldAutoApprove && selectedConversationId) {
+          // Auto-approve if enabled
+          console.log(
+            `[ChatPanel] Auto-approving action: ${data.pendingAction.type}`
+          );
+          executeAction.mutate({
+            conversationId: selectedConversationId,
+            actionId: data.pendingAction.id,
+            actionType: data.pendingAction.type,
+            actionParams: data.pendingAction.params,
+          });
+        } else {
+          // Show approval modal
+          setPendingAction(data.pendingAction);
+          setShowApprovalModal(true);
+        }
+      }
+    },
+    onError: error => {
+      const errorMessage = error.message || "Unknown error occurred";
+      toast.error("Failed to send message: " + errorMessage);
+      console.error("[ChatPanel] Send message error:", error);
+    },
+  });
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollRef.current) {
@@ -119,7 +165,8 @@ function ChatPanel() {
     if (!inputMessage.trim()) return;
 
     // Build context from email state (Shortwave-style)
-    const context = {
+    // Filter out undefined/null values to avoid sending invalid data
+    const rawContext = {
       page: window.location.pathname.includes("/inbox")
         ? "email-tab"
         : undefined,
@@ -135,6 +182,15 @@ function ChatPanel() {
       previewThreadId: emailContext.state.previewThreadId || undefined,
     };
 
+    // Clean context: remove undefined/null values and empty arrays
+    const context = Object.fromEntries(
+      Object.entries(rawContext).filter(([_, value]) => {
+        if (value === undefined || value === null) return false;
+        if (Array.isArray(value) && value.length === 0) return false;
+        return true;
+      })
+    );
+
     if (!selectedConversationId) {
       // Create new conversation first
       createConversation.mutate(
@@ -147,6 +203,9 @@ function ChatPanel() {
               model: selectedModel,
               context: Object.keys(context).length > 0 ? context : undefined,
             });
+          },
+          onError: error => {
+            toast.error("Failed to create conversation: " + error.message);
           },
         }
       );
@@ -171,13 +230,17 @@ function ChatPanel() {
     (alwaysApprove: boolean) => {
       if (!pendingAction || !selectedConversationId) return;
 
-      // TODO: Store "always approve" preference if enabled
+      // Store "always approve" preference if enabled
       if (alwaysApprove) {
         console.log(
           `[Action Approval] User enabled auto-approve for: ${pendingAction.type}`
         );
-        // Store in localStorage or user preferences
-        localStorage.setItem(`auto-approve-${pendingAction.type}`, "true");
+        // Store in localStorage (can be migrated to user preferences later)
+        try {
+          localStorage.setItem(`auto-approve-${pendingAction.type}`, "true");
+        } catch (error) {
+          console.warn("[ChatPanel] Failed to store auto-approve preference:", error);
+        }
       }
 
       executeAction.mutate({
