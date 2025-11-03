@@ -366,7 +366,20 @@ const LeadRow = memo(function LeadRow({
 });
 
 export default function LeadsTab() {
-  const { data: leads, isLoading, refetch } = trpc.inbox.leads.list.useQuery();
+  const [statusFilter, setStatusFilter] = useState<LeadStatus | "all">("all");
+  const [sourceFilter, setSourceFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showOnlyUnique, setShowOnlyUnique] = useState(true);
+  const [hideBillyImport, setHideBillyImport] = useState(true);
+  const [sortBy, setSortBy] = useState<"date" | "score" | "name">("date");
+
+  const { data: leads, isLoading, refetch } = trpc.inbox.leads.list.useQuery({
+    status: statusFilter === "all" ? undefined : statusFilter,
+    source: sourceFilter === "all" ? undefined : sourceFilter,
+    searchQuery: searchQuery || undefined,
+    hideBillyImport,
+    sortBy,
+  });
   const updateStatusMutation = trpc.inbox.leads.updateStatus.useMutation({
     onSuccess: () => {
       refetch();
@@ -389,14 +402,8 @@ export default function LeadsTab() {
   });
 
   const [selectedLeadId, setSelectedLeadId] = useState<number | null>(null);
-  const [statusFilter, setStatusFilter] = useState<LeadStatus | "all">("all");
-  const [sourceFilter, setSourceFilter] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isPerformanceModalOpen, setIsPerformanceModalOpen] = useState(false);
-  const [showOnlyUnique, setShowOnlyUnique] = useState(true);
-  const [hideBillyImport, setHideBillyImport] = useState(true);
-  const [sortBy, setSortBy] = useState<"date" | "score" | "name">("date");
   const [newLeadForm, setNewLeadForm] = useState({
     name: "",
     email: "",
@@ -411,39 +418,18 @@ export default function LeadsTab() {
     { enabled: !!selectedLeadId }
   );
 
-  // Calculate duplicate counts and deduplicate in one pass
+  // Process leads - deduplicate if showOnlyUnique is enabled
+  // Backend now handles filtering, sorting, and duplicate counting
   const processedLeads = useMemo(() => {
     if (!leads || leads.length === 0) return [];
 
-    // Step 1: Build key map and calculate duplicate counts
-    const keyMap = new Map<string, number[]>();
-    const duplicateMap = new Map<number, number>();
-
-    for (const lead of leads) {
-      const key = getDeduplicationKey(lead);
-      if (key) {
-        if (!keyMap.has(key)) {
-          keyMap.set(key, []);
-        }
-        keyMap.get(key)!.push(lead.id);
-      }
-    }
-
-    // Step 2: Calculate duplicate counts
-    keyMap.forEach(leadIds => {
-      const count = leadIds.length;
-      if (count > 1) {
-        leadIds.forEach(id => duplicateMap.set(id, count));
-      }
-    });
-
-    // Step 3: Add duplicateCount to all leads
+    // Leads already have duplicateCount from backend
     const leadsWithCounts: LeadWithDuplicateCount[] = leads.map(lead => ({
       ...lead,
-      duplicateCount: duplicateMap.get(lead.id) || 1,
+      duplicateCount: lead.duplicateCount || 1,
     }));
 
-    // Step 4: Deduplicate if showOnlyUnique is enabled
+    // Deduplicate if showOnlyUnique is enabled
     if (!showOnlyUnique) {
       return leadsWithCounts;
     }
@@ -481,52 +467,11 @@ export default function LeadsTab() {
     return unique;
   }, [leads, showOnlyUnique]);
 
-  // Filter leads
+  // Filtered leads - backend already did most filtering and sorting
+  // Frontend only handles deduplication if showOnlyUnique is enabled
   const filteredLeads = useMemo(() => {
-    if (!processedLeads || processedLeads.length === 0) return [];
-
-    let result = processedLeads.filter(lead => {
-      const matchesStatus =
-        statusFilter === "all" || lead.status === statusFilter;
-      const matchesSource =
-        sourceFilter === "all" || lead.source === sourceFilter;
-      const matchesHideBilly =
-        !hideBillyImport || lead.source !== "billy_import";
-      const matchesSearch =
-        searchQuery === "" ||
-        lead.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.company?.toLowerCase().includes(searchQuery.toLowerCase());
-      return (
-        matchesStatus && matchesSource && matchesHideBilly && matchesSearch
-      );
-    });
-
-    // Sort
-    result = [...result].sort((a, b) => {
-      if (sortBy === "date") {
-        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return dateB - dateA;
-      } else if (sortBy === "score") {
-        return b.score - a.score;
-      } else {
-        const nameA = a.name?.toLowerCase() || "";
-        const nameB = b.name?.toLowerCase() || "";
-        return nameA.localeCompare(nameB);
-      }
-    });
-
-    return result;
-  }, [
-    processedLeads,
-    statusFilter,
-    sourceFilter,
-    hideBillyImport,
-    searchQuery,
-    sortBy,
-  ]);
+    return processedLeads;
+  }, [processedLeads]);
 
   // Get unique sources for filter
   const sources = useMemo(() => {

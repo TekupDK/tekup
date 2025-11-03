@@ -19,7 +19,6 @@ import {
   searchCustomerByEmail,
 } from "./billy";
 import { customerRouter } from "./customer-router";
-import { cacheInvoicesToDatabase } from "./invoice-cache";
 import {
   bulkDeleteTasks,
   bulkUpdateTaskOrder,
@@ -52,6 +51,7 @@ import {
   updateUserName,
   updateUserPreferences,
 } from "./db";
+import { cacheInvoicesToDatabase } from "./invoice-cache";
 // Use MCP for Google services instead of direct API
 import {
   addLabelToThread,
@@ -420,7 +420,9 @@ export const appRouter = router({
               }
 
               // Database is empty - fetch from Gmail API and cache to database
-              console.log("[Email List] Database empty, fetching from Gmail API and caching...");
+              console.log(
+                "[Email List] Database empty, fetching from Gmail API and caching..."
+              );
             } catch (error) {
               console.warn(
                 "[Email List] Database query failed, falling back to Gmail API:",
@@ -996,15 +998,24 @@ export const appRouter = router({
               return invoiceRecords.map(({ invoice, customer }) => ({
                 id: invoice.billyInvoiceId,
                 invoiceNo: invoice.invoiceNo || undefined,
-                contactId: customer.billyCustomerId || invoice.customerId.toString(),
-                entryDate: invoice.entryDate?.toISOString() || new Date().toISOString(),
-                paymentTermsDays: invoice.dueDate && invoice.entryDate
-                  ? Math.round(
-                      (invoice.dueDate.getTime() - invoice.entryDate.getTime()) /
-                        (1000 * 60 * 60 * 24)
-                    )
-                  : 14,
-                state: invoice.status as "draft" | "approved" | "sent" | "paid" | "overdue",
+                contactId:
+                  customer.billyCustomerId || invoice.customerId.toString(),
+                entryDate:
+                  invoice.entryDate?.toISOString() || new Date().toISOString(),
+                paymentTermsDays:
+                  invoice.dueDate && invoice.entryDate
+                    ? Math.round(
+                        (invoice.dueDate.getTime() -
+                          invoice.entryDate.getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      )
+                    : 14,
+                state: invoice.status as
+                  | "draft"
+                  | "approved"
+                  | "sent"
+                  | "paid"
+                  | "overdue",
                 lines: [], // Lines not stored in customer_invoices table
                 organizationId: customer.billyOrganizationId || "",
               }));
@@ -1083,12 +1094,51 @@ export const appRouter = router({
             location: z.string().optional(),
           })
         )
-        .mutation(async ({ input }) => mcpUpdateCalendarEvent(input)),
+        .mutation(async ({ input }) => {
+          try {
+            const result = await mcpUpdateCalendarEvent(input);
+            return result;
+          } catch (error: any) {
+            // Check if it's a rate limit error
+            if (
+              error.message?.includes("rate limit") ||
+              error.message?.includes("429") ||
+              error.message?.includes("too many requests")
+            ) {
+              const retryAfter = error.message.match(/retry after ([^,]+)/i)?.[1];
+              throw new Error(
+                `Rate limit exceeded. Retry after ${retryAfter || "later"}`
+              );
+            }
+            // Re-throw other errors with better message
+            throw new Error(
+              `Failed to update calendar event: ${error.message || "Unknown error"}`
+            );
+          }
+        }),
       delete: protectedProcedure
         .input(z.object({ eventId: z.string() }))
         .mutation(async ({ input }) => {
-          await mcpDeleteCalendarEvent(input);
-          return { success: true };
+          try {
+            await mcpDeleteCalendarEvent(input);
+            return { success: true };
+          } catch (error: any) {
+            // Check if it's a rate limit error
+            if (
+              error.message?.includes("rate limit") ||
+              error.message?.includes("429") ||
+              error.message?.includes("too many requests")
+            ) {
+              const retryAfter = error.message.match(/retry after ([^,]+)/i)?.[1];
+              throw new Error(
+                `Rate limit exceeded. Retry after ${retryAfter || "later"}`
+              );
+            }
+            // Re-throw other errors with better message
+            throw new Error(
+              `Failed to delete calendar event: ${error.message || "Unknown error"}`
+            );
+          }
         }),
       checkAvailability: protectedProcedure
         .input(z.object({ start: z.string(), end: z.string() }))
@@ -1111,9 +1161,20 @@ export const appRouter = router({
         }),
     }),
     leads: router({
-      list: protectedProcedure.query(async ({ ctx }) =>
-        getUserLeads(ctx.user.id)
-      ),
+      list: protectedProcedure
+        .input(
+          z.object({
+            status: z.string().optional(),
+            source: z.string().optional(),
+            searchQuery: z.string().optional(),
+            hideBillyImport: z.boolean().optional(),
+            sortBy: z.enum(["date", "score", "name"]).optional(),
+            limit: z.number().optional(),
+          })
+        )
+        .query(async ({ ctx, input }) =>
+          getUserLeads(ctx.user.id, input)
+        ),
       create: protectedProcedure
         .input(
           z.object({

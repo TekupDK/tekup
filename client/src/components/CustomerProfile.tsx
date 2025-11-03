@@ -29,7 +29,7 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
-import { Streamdown } from "streamdown";
+import { SafeStreamdown } from "./SafeStreamdown";
 
 interface CustomerProfileProps {
   leadId: number;
@@ -272,7 +272,7 @@ export default function CustomerProfile({
                   <CardContent>
                     {profile?.aiResume ? (
                       <div className="prose prose-sm max-w-none dark:prose-invert">
-                        <Streamdown>{profile.aiResume}</Streamdown>
+                        <SafeStreamdown content={profile.aiResume} />
                       </div>
                     ) : (
                       <div className="text-sm text-muted-foreground">

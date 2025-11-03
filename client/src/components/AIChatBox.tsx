@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Loader2, Send, Sparkles, User } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Streamdown } from "streamdown";
+import { SafeStreamdown } from "./SafeStreamdown";
 
 /**
  * Message type matching server-side LLM Message interface
@@ -154,12 +154,13 @@ function AIChatBox({
   }, []);
 
   // Scroll to bottom helper function with smooth animation
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     const viewport = scrollAreaRef.current?.querySelector(
       "[data-radix-scroll-area-viewport]"
     ) as HTMLDivElement;
 
     if (viewport) {
+      // Use requestAnimationFrame for smooth scrolling
       requestAnimationFrame(() => {
         viewport.scrollTo({
           top: viewport.scrollHeight,
@@ -167,7 +168,7 @@ function AIChatBox({
         });
       });
     }
-  };
+  }, []);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -178,13 +179,19 @@ function AIChatBox({
       onSendMessage(trimmedInput);
       setInput("");
 
-      // Scroll immediately after sending
+      // Scroll immediately after sending, then again after a short delay
+      // to ensure we catch async content updates
       scrollToBottom();
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
 
       // Keep focus on input
-      textareaRef.current?.focus();
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 0);
     },
-    [input, isLoading, onSendMessage]
+    [input, isLoading, onSendMessage, scrollToBottom]
   );
 
   const handleKeyDown = useCallback(
@@ -273,7 +280,7 @@ function AIChatBox({
                     >
                       {message.role === "assistant" ? (
                         <div className="prose prose-sm dark:prose-invert max-w-none">
-                          <Streamdown>{message.content}</Streamdown>
+                          <SafeStreamdown content={message.content} />
                         </div>
                       ) : (
                         <p className="whitespace-pre-wrap text-sm">

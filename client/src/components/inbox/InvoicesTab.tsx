@@ -29,7 +29,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Streamdown } from "streamdown";
+import { SafeStreamdown } from "../SafeStreamdown";
 
 /**
  * InvoicesTab - Displays and manages Billy.dk invoices
@@ -450,7 +450,7 @@ Please analyze this invoice and provide:
             ) : aiAnalysis ? (
               <>
                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <Streamdown>{aiAnalysis}</Streamdown>
+                  <SafeStreamdown content={aiAnalysis} />
                 </div>
                 <div className="mt-4 pt-4 border-t space-y-3">
                   <div className="flex items-center justify-between">
