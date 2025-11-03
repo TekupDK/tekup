@@ -5,7 +5,7 @@
  * and stores it in the database with enrichment.
  */
 
-import { createHash } from "crypto";
+import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { eq } from "drizzle-orm";
 import { Request, Response } from "express";
 import { existsSync } from "fs";
@@ -61,17 +61,66 @@ async function storeAttachment(
 }
 
 /**
- * Verify webhook signature (if configured)
+ * Verify webhook signature using HMAC-SHA256
  */
 function verifyWebhookSignature(req: Request): boolean {
   if (!WEBHOOK_SECRET) {
     // If no secret configured, skip verification (development mode)
+    // Log warning in production
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[InboundEmail] ⚠️  WEBHOOK_SECRET not configured - skipping verification"
+      );
+    }
     return true;
   }
 
-  // TODO: Implement HMAC signature verification
-  // For now, return true to allow development
-  return true;
+  // Get signature from header (standard format: "sha256=...")
+  const signatureHeader = req.headers["x-webhook-signature"] as string;
+  if (!signatureHeader) {
+    console.error("[InboundEmail] Missing signature header");
+    return false;
+  }
+
+  // Extract signature value (remove "sha256=" prefix if present)
+  const signature = signatureHeader.replace(/^sha256=/, "");
+
+  // Get raw request body as string
+  // Note: Express json() middleware may have already parsed body
+  // We need the raw body - for now, use stringified version
+  // TODO: Consider using express.raw() middleware for webhook route
+  const bodyString =
+    typeof req.body === "string"
+      ? req.body
+      : JSON.stringify(req.body || {});
+
+  // Calculate expected HMAC
+  const expectedSignature = createHmac("sha256", WEBHOOK_SECRET)
+    .update(bodyString)
+    .digest("hex");
+
+  // Use timing-safe comparison to prevent timing attacks
+  try {
+    const signatureBuffer = Buffer.from(signature, "hex");
+    const expectedBuffer = Buffer.from(expectedSignature, "hex");
+
+    if (signatureBuffer.length !== expectedBuffer.length) {
+      console.error("[InboundEmail] Signature length mismatch");
+      return false;
+    }
+
+    const isEqual = timingSafeEqual(signatureBuffer, expectedBuffer);
+
+    if (!isEqual) {
+      console.error("[InboundEmail] Signature verification failed");
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("[InboundEmail] Error verifying signature:", error);
+    return false;
+  }
 }
 
 /**

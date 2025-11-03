@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Loader2, Send, Sparkles, User } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Streamdown } from "streamdown";
+import { SafeStreamdown } from "./SafeStreamdown";
 
 /**
  * Message type matching server-side LLM Message interface
@@ -273,7 +273,7 @@ function AIChatBox({
                     >
                       {message.role === "assistant" ? (
                         <div className="prose prose-sm dark:prose-invert max-w-none">
-                          <Streamdown>{message.content}</Streamdown>
+                          <SafeStreamdown content={message.content} />
                         </div>
                       ) : (
                         <p className="whitespace-pre-wrap text-sm">

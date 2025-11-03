@@ -12,7 +12,7 @@ import { format, parseISO } from "date-fns";
 import { da } from "date-fns/locale";
 import { Archive, ArrowRight, Clock, Mail, Reply, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Streamdown } from "streamdown";
+import { SafeStreamdown } from "../SafeStreamdown";
 
 interface EmailPreviewModalProps {
   open: boolean;
@@ -127,7 +127,7 @@ export default function EmailPreviewModal({
 
             {/* Email Content */}
             <div className="prose prose-sm max-w-none dark:prose-invert">
-              <Streamdown>{latestMessage.body || thread.snippet}</Streamdown>
+              <SafeStreamdown content={latestMessage.body || thread.snippet} />
             </div>
 
             {/* Show thread info if multiple messages */}

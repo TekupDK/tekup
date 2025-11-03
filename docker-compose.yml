@@ -10,14 +10,15 @@ services:
     env_file:
       - .env
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV:-development}
       # Database URL - defaults to Supabase PostgreSQL if .env.supabase is used
       # For Supabase PostgreSQL: use .env.supabase DATABASE_URL
       # Legacy MySQL reference (deprecated - use Supabase PostgreSQL instead)
       # For Supabase: use postgresql://postgres:PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:Habibie12345%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require}
-      - JWT_SECRET=change-this-in-production
-      - OWNER_OPEN_ID=owner-friday-ai-dev
+      # CRITICAL: Set a strong JWT_SECRET in .env file (minimum 32 characters)
+      - JWT_SECRET=${JWT_SECRET:-change-this-in-production-minimum-32-chars}
+      - OWNER_OPEN_ID=${OWNER_OPEN_ID:-owner-friday-ai-dev}
       # AI Keys (loaded from .env file in project root)
       # IMPORTANT: Ensure .env file exists with OPENAI_API_KEY and GEMINI_API_KEY
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
