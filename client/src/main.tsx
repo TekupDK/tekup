@@ -16,8 +16,8 @@ const queryClient = new QueryClient({
     queries: {
       // Intelligent caching: Different staleTime based on data type
       // Can be overridden per-query for emails (30-60s), labels (5min), etc.
-      staleTime: 60 * 1000, // 1 minute default (opdateret fra 30s)
-      // Keep unused data for 15 minutes (opdateret fra 5 minutter)
+      staleTime: 60 * 1000, // 1 minute default (updated from 30s)
+      // Keep unused data for 15 minutes (updated from 5 minutes)
       gcTime: 15 * 60 * 1000,
       // Enable structural sharing for better cache hit rates
       structuralSharing: true,

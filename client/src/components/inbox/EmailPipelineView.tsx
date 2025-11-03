@@ -400,7 +400,6 @@ export default function EmailPipelineView({
         venter_pa_svar: "Venter på svar",
         i_kalender: "I kalender",
         finance: "Finance",
-        afsluttet: "Afsluttet",
       };
 
       toast.success(`Email flyttet til '${stageNames[newStage]}'`);
