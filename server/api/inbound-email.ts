@@ -182,12 +182,14 @@ export async function handleInboundEmail(req: Request, res: Response) {
       .values({
         userId,
         providerId,
-        fromEmail: body.from,
-        toEmail: body.to,
+        fromEmail: body.from || "",
+        toEmail: body.to || "",
         subject: body.subject || null,
         text: body.text || null,
         html: body.html || null,
-        receivedAt: new Date(body.receivedAt || Date.now()),
+        receivedAt: new Date(
+          body.receivedAt || Date.now()
+        ).toISOString(),
         threadKey,
         customerId: null, // Will be set by enrichment
         emailThreadId: null, // Will be linked after enrichment
@@ -252,7 +254,7 @@ export async function handleInboundEmail(req: Request, res: Response) {
             subject: body.subject || null,
             snippet: body.text?.substring(0, 200) || body.snippet || null,
             labels: [],
-            lastMessageAt: new Date(body.receivedAt || Date.now()),
+            lastMessageAt: new Date(body.receivedAt || Date.now()).toISOString(),
             isRead: false,
           })
           .returning();

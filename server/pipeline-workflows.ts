@@ -5,7 +5,7 @@
  * - Phase 2: Critical Rules, Auto-Calendar, Auto-Invoice
  */
 
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { emails, emailThreads } from "../drizzle/schema";
 import { createInvoice } from "./billy";
 import { getDb, getPipelineState } from "./db";
@@ -17,6 +17,7 @@ import { createCalendarEvent } from "./mcp";
  * Called when pipeline stage is updated
  */
 export async function handlePipelineTransition(
+  userId: number,
   threadId: string,
   newStage:
     | "needs_action"
@@ -25,7 +26,7 @@ export async function handlePipelineTransition(
     | "finance"
     | "afsluttet"
 ): Promise<void> {
-  const pipelineState = await getPipelineState(threadId);
+  const pipelineState = await getPipelineState(userId, threadId);
   if (!pipelineState) {
     console.warn(
       `[PipelineWorkflow] No pipeline state found for thread ${threadId}`
@@ -39,10 +40,10 @@ export async function handlePipelineTransition(
 
   switch (newStage) {
     case "i_kalender":
-      await handleCalendarStage(threadId, pipelineState);
+      await handleCalendarStage(userId, threadId, pipelineState);
       break;
     case "finance":
-      await handleFinanceStage(threadId, pipelineState);
+      await handleFinanceStage(userId, threadId, pipelineState);
       break;
   }
 }
@@ -51,6 +52,7 @@ export async function handlePipelineTransition(
  * Auto-Calendar: Create calendar event when "I kalender" stage is reached
  */
 async function handleCalendarStage(
+  userId: number,
   threadId: string,
   pipelineState: any
 ): Promise<void> {
@@ -67,7 +69,12 @@ async function handleCalendarStage(
     const [thread] = await db
       .select()
       .from(emailThreads)
-      .where(eq(emailThreads.gmailThreadId, threadId))
+      .where(
+        and(
+          eq(emailThreads.gmailThreadId, threadId),
+          eq(emailThreads.userId, userId)
+        )
+      )
       .limit(1)
       .execute();
 
@@ -76,7 +83,12 @@ async function handleCalendarStage(
       const [email] = await db
         .select()
         .from(emails)
-        .where(eq(emails.threadKey, threadId))
+        .where(
+          and(
+            eq(emails.threadKey, threadId),
+            eq(emails.userId, userId)
+          )
+        )
         .limit(1)
         .execute();
 
@@ -168,6 +180,7 @@ async function handleCalendarStage(
  * Auto-Invoice: Create Billy invoice when "Finance" stage is reached
  */
 async function handleFinanceStage(
+  userId: number,
   threadId: string,
   pipelineState: any
 ): Promise<void> {

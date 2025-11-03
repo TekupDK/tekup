@@ -233,18 +233,43 @@ async function createAllTables() {
         "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
       )`,
 
-      // Email threads table
+      // Email threads table (matches drizzle/schema.ts)
       `CREATE TABLE IF NOT EXISTS ${schema}.email_threads (
         id SERIAL PRIMARY KEY,
         "userId" INTEGER NOT NULL,
-        "threadId" VARCHAR(255) UNIQUE NOT NULL,
+        "gmailThreadId" VARCHAR(255) NOT NULL,
         subject TEXT,
-        "participantEmails" TEXT,
-        "messageCount" INTEGER DEFAULT 0,
+        participants JSONB,
+        snippet TEXT,
+        labels JSONB,
         "lastMessageAt" TIMESTAMP,
-        "pipelineStage" ${schema}.email_pipeline_stage,
+        "isRead" BOOLEAN DEFAULT false NOT NULL,
         "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
         "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+      )`,
+
+      // Email pipeline state table
+      `CREATE TABLE IF NOT EXISTS ${schema}.email_pipeline_state (
+        id SERIAL PRIMARY KEY,
+        "userId" INTEGER NOT NULL,
+        "threadId" VARCHAR(255) NOT NULL,
+        stage ${schema}.email_pipeline_stage NOT NULL,
+        "transitionedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+        "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+        "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+        UNIQUE("threadId", "userId")
+      )`,
+
+      // Email pipeline transitions table
+      `CREATE TABLE IF NOT EXISTS ${schema}.email_pipeline_transitions (
+        id SERIAL PRIMARY KEY,
+        "userId" INTEGER NOT NULL,
+        "threadId" VARCHAR(255) NOT NULL,
+        "fromStage" ${schema}.email_pipeline_stage,
+        "toStage" ${schema}.email_pipeline_stage NOT NULL,
+        "transitionedBy" VARCHAR(255),
+        reason TEXT,
+        "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
       )`,
 
       // User settings table

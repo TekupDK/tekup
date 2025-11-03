@@ -398,22 +398,22 @@ export const appRouter = router({
               if (emailRecords.length > 0) {
                 // Return from database - DATA IS HERE!
                 return emailRecords.map(email => ({
-                  id: email.threadKey || email.providerId,
+                  id: (email.emailThreadId ? String(email.emailThreadId) : (email.threadKey || email.providerId)),
                   snippet: email.text?.substring(0, 200) || email.subject || "",
                   subject: email.subject,
                   from: email.fromEmail,
-                  date: email.receivedAt.toISOString(),
+                  date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
                   labels: [],
                   unread: true,
                   messages: [
                     {
                       id: email.providerId,
-                      threadId: email.threadKey || email.providerId,
+                      threadId: (email.emailThreadId ? String(email.emailThreadId) : (email.threadKey || email.providerId)),
                       from: email.fromEmail,
                       to: email.toEmail,
                       subject: email.subject || "",
                       body: email.text || email.html || "",
-                      date: email.receivedAt.toISOString(),
+                      date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
                     },
                   ],
                 }));
@@ -725,22 +725,22 @@ export const appRouter = router({
 
           // Transform to GmailThread-like format for compatibility
           return emailRecords.map(email => ({
-            id: email.threadKey || email.providerId,
+            id: (email.emailThreadId ? String(email.emailThreadId) : (email.threadKey || email.providerId)),
             snippet: email.text?.substring(0, 200) || email.subject || "",
             subject: email.subject,
             from: email.fromEmail,
-            date: email.receivedAt.toISOString(),
+            date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
             labels: [],
             unread: true,
             messages: [
               {
                 id: email.providerId,
-                threadId: email.threadKey || email.providerId,
+                threadId: (email.emailThreadId ? String(email.emailThreadId) : (email.threadKey || email.providerId)),
                 from: email.fromEmail,
                 to: email.toEmail,
                 subject: email.subject || "",
                 body: email.text || email.html || "",
-                date: email.receivedAt.toISOString(),
+                date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
               },
             ],
           }));
@@ -838,7 +838,7 @@ export const appRouter = router({
               to: email.toEmail,
               subject: email.subject || "",
               body: email.text || email.html || "",
-              date: email.receivedAt.toISOString(),
+              date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
               attachments: allAttachments.filter(a => a.emailId === email.id),
             })),
             labels: (thread.labels as string[]) || [],
@@ -915,8 +915,8 @@ export const appRouter = router({
       // Pipeline endpoints
       getPipelineState: protectedProcedure
         .input(z.object({ threadId: z.string() }))
-        .query(async ({ input }) => {
-          return getPipelineState(input.threadId);
+        .query(async ({ ctx, input }) => {
+          return getPipelineState(ctx.user.id, input.threadId);
         }),
       updatePipelineStage: protectedProcedure
         .input(
@@ -934,6 +934,7 @@ export const appRouter = router({
         )
         .mutation(async ({ ctx, input }) => {
           const state = await updatePipelineStage(
+            ctx.user.id,
             input.threadId,
             input.stage,
             input.triggeredBy || `user:${ctx.user.id}`
@@ -950,8 +951,8 @@ export const appRouter = router({
         }),
       getPipelineTransitions: protectedProcedure
         .input(z.object({ threadId: z.string() }))
-        .query(async ({ input }) => {
-          return getPipelineTransitions(input.threadId);
+        .query(async ({ ctx, input }) => {
+          return getPipelineTransitions(ctx.user.id, input.threadId);
         }),
       getPipelineStates: protectedProcedure
         .input(

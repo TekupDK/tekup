@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Calendar, DollarSign, Mail, Send } from "lucide-react";
+import { Calendar, DollarSign, Mail, Send, CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import EmailPreviewModal from "./EmailPreviewModal";
@@ -27,7 +27,8 @@ type PipelineStage =
   | "needs_action"
   | "venter_pa_svar"
   | "i_kalender"
-  | "finance";
+  | "finance"
+  | "afsluttet";
 
 interface PipelineColumn {
   id: PipelineStage;
@@ -60,6 +61,12 @@ const columns: PipelineColumn[] = [
     title: "Finance",
     color: "bg-blue-500",
     icon: <DollarSign className="w-4 h-4" />,
+  },
+  {
+    id: "afsluttet",
+    title: "Afsluttet",
+    color: "bg-gray-500",
+    icon: <CheckCircle2 className="w-4 h-4" />,
   },
 ];
 
@@ -293,32 +300,57 @@ export default function EmailPipelineView({
   const [previewThreadId, setPreviewThreadId] = useState<string | null>(null);
 
   const utils = trpc.useUtils();
+  const { data: pipelineStates } = trpc.inbox.email.getPipelineStates.useQuery({});
+
+  const inferStageFromEmail = (email: EmailMessage): PipelineStage => {
+    if (email.labels?.includes("Venter på svar")) {
+      return "venter_pa_svar";
+    }
+    if (email.labels?.includes("I kalender")) {
+      return "i_kalender";
+    }
+    if (email.labels?.includes("Finance")) {
+      return "finance";
+    }
+    if (email.labels?.includes("Afsluttet")) {
+      return "afsluttet";
+    }
+    return "needs_action";
+  };
+
+  useEffect(() => {
+    if (!pipelineStates) {
+      return;
+    }
+    const next: Record<string, PipelineStage> = {};
+    pipelineStates.forEach(state => {
+      next[state.threadId] = state.stage as PipelineStage;
+    });
+    setPipelineState(prev => ({ ...prev, ...next }));
+  }, [pipelineStates]);
   const updatePipelineMutation =
     trpc.inbox.email.updatePipelineStage.useMutation({
       onSuccess: () => {
         utils.inbox.email.list.invalidate();
+        utils.inbox.email.getPipelineStates.invalidate();
       },
     });
 
-  // Initialize pipeline state (default all to "needs_action" for now)
+  // Ensure local state contains entries for all loaded emails
   useEffect(() => {
-    const state: Record<string, PipelineStage> = {};
-    emails.forEach(email => {
-      // Determine stage from labels or default to needs_action
-      if (!state[email.threadId]) {
-        if (email.labels?.includes("Venter på svar")) {
-          state[email.threadId] = "venter_pa_svar";
-        } else if (email.labels?.includes("I kalender")) {
-          state[email.threadId] = "i_kalender";
-        } else if (email.labels?.includes("Finance")) {
-          state[email.threadId] = "finance";
-        } else {
-          state[email.threadId] = "needs_action";
+    setPipelineState(prev => {
+      const next = { ...prev };
+      emails.forEach(email => {
+        if (!next[email.threadId]) {
+          next[email.threadId] = inferStageFromEmail(email);
         }
-      }
+      });
+      return next;
     });
-    setPipelineState(state);
   }, [emails]);
+
+  const getStageTitle = (stage: PipelineStage) =>
+    columns.find(column => column.id === stage)?.title ?? stage;
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -354,9 +386,7 @@ export default function EmailPipelineView({
       triggeredBy: "user",
     });
 
-    toast.success(
-      `Email flyttet til ${columns.find(c => c.id === targetColumnId)?.title}`
-    );
+    toast.success(`Email flyttet til ${getStageTitle(targetColumnId)}`);
   };
 
   const handleQuickAction = async (action: string, emailId: string) => {
@@ -395,24 +425,17 @@ export default function EmailPipelineView({
         triggeredBy: "quick_action",
       });
 
-      const stageNames: Record<PipelineStage, string> = {
-        needs_action: "Needs Action",
-        venter_pa_svar: "Venter på svar",
-        i_kalender: "I kalender",
-        finance: "Finance",
-        afsluttet: "Afsluttet",
-      };
-
-      toast.success(`Email flyttet til '${stageNames[newStage]}'`);
+      toast.success(`Email flyttet til '${getStageTitle(newStage)}'`);
     }
   };
 
   // Group emails by pipeline stage
   const emailsByStage = columns.reduce(
     (acc, column) => {
-      acc[column.id] = emails.filter(
-        email => pipelineState[email.threadId] === column.id
-      );
+      acc[column.id] = emails.filter(email => {
+        const stage = pipelineState[email.threadId] ?? inferStageFromEmail(email);
+        return stage === column.id;
+      });
       return acc;
     },
     {} as Record<PipelineStage, EmailMessage[]>

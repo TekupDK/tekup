@@ -113,11 +113,11 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     }
 
     if (!values.lastSignedIn) {
-      values.lastSignedIn = new Date();
+      values.lastSignedIn = new Date().toISOString();
     }
 
     if (Object.keys(updateSet).length === 0) {
-      updateSet.lastSignedIn = new Date();
+      updateSet.lastSignedIn = new Date().toISOString();
     }
 
     await db.insert(users).values(values).onConflictDoUpdate({
@@ -366,7 +366,9 @@ export async function getUserLeads(
   let allLeads = await db
     .select()
     .from(leads)
-    .where(conditions.length > 0 ? and(...conditions) : eq(leads.userId, userId))
+    .where(
+      conditions.length > 0 ? and(...conditions) : eq(leads.userId, userId)
+    )
     .execute();
 
   // Apply search filter (client-side for now, can be optimized with SQL LIKE later)
@@ -660,7 +662,7 @@ export async function updateTask(
     .update(tasks)
     .set({
       ...updates,
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(tasks.id, id));
 
@@ -698,7 +700,7 @@ export async function bulkUpdateTaskStatus(
 
   await db
     .update(tasks)
-    .set({ status, updatedAt: new Date() })
+    .set({ status, updatedAt: new Date().toISOString() })
     .where(inArray(tasks.id, ids));
   return ids.length;
 }
@@ -713,7 +715,7 @@ export async function bulkUpdateTaskPriority(
 
   await db
     .update(tasks)
-    .set({ priority, updatedAt: new Date() })
+    .set({ priority, updatedAt: new Date().toISOString() })
     .where(inArray(tasks.id, ids));
   return ids.length;
 }
@@ -727,7 +729,7 @@ export async function updateTaskOrder(
 
   await db
     .update(tasks)
-    .set({ orderIndex, updatedAt: new Date() })
+    .set({ orderIndex, updatedAt: new Date().toISOString() })
     .where(eq(tasks.id, taskId));
 }
 
@@ -742,7 +744,10 @@ export async function bulkUpdateTaskOrder(
   for (const update of updates) {
     await db
       .update(tasks)
-      .set({ orderIndex: update.orderIndex, updatedAt: new Date() })
+      .set({
+        orderIndex: update.orderIndex,
+        updatedAt: new Date().toISOString(),
+      })
       .where(eq(tasks.id, update.taskId));
   }
 }
@@ -931,6 +936,7 @@ export async function updateUserName(
  * Get pipeline state for a thread
  */
 export async function getPipelineState(
+  userId: number,
   threadId: string
 ): Promise<EmailPipelineState | null> {
   const db = await getDb();
@@ -945,7 +951,12 @@ export async function getPipelineState(
     const [state] = await db
       .select()
       .from(emailPipelineState)
-      .where(eq(emailPipelineState.threadId, threadId))
+      .where(
+        and(
+          eq(emailPipelineState.threadId, threadId),
+          eq(emailPipelineState.userId, userId)
+        )
+      )
       .limit(1)
       .execute();
 
@@ -960,6 +971,7 @@ export async function getPipelineState(
  * Update pipeline stage for a thread
  */
 export async function updatePipelineStage(
+  userId: number,
   threadId: string,
   stage:
     | "needs_action"
@@ -979,7 +991,7 @@ export async function updatePipelineStage(
 
   try {
     // Get current state to track transition
-    const currentState = await getPipelineState(threadId);
+    const currentState = await getPipelineState(userId, threadId);
     const fromStage = currentState?.stage || null;
 
     // Update or create pipeline state
@@ -988,18 +1000,24 @@ export async function updatePipelineStage(
         .update(emailPipelineState)
         .set({
           stage,
-          transitionedAt: new Date(),
-          updatedAt: new Date(),
+          transitionedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         })
-        .where(eq(emailPipelineState.threadId, threadId))
+        .where(
+          and(
+            eq(emailPipelineState.threadId, threadId),
+            eq(emailPipelineState.userId, userId)
+          )
+        )
         .execute();
     } else {
       await db
         .insert(emailPipelineState)
         .values({
+          userId,
           threadId,
           stage,
-          transitionedAt: new Date(),
+          transitionedAt: new Date().toISOString(),
         })
         .execute();
     }
@@ -1008,6 +1026,7 @@ export async function updatePipelineStage(
     await db
       .insert(emailPipelineTransitions)
       .values({
+        userId,
         threadId,
         fromStage,
         toStage: stage,
@@ -1018,7 +1037,7 @@ export async function updatePipelineStage(
     // Trigger workflow automation for stage transitions
     if (fromStage !== stage) {
       const { handlePipelineTransition } = await import("./pipeline-workflows");
-      handlePipelineTransition(threadId, stage).catch(error => {
+      handlePipelineTransition(userId, threadId, stage).catch(error => {
         console.error(
           `[Database] Failed to trigger pipeline workflow for thread ${threadId}:`,
           error
@@ -1026,7 +1045,7 @@ export async function updatePipelineStage(
       });
     }
 
-    return await getPipelineState(threadId);
+    return await getPipelineState(userId, threadId);
   } catch (error) {
     console.error("[Database] Failed to update pipeline stage:", error);
     return null;
@@ -1037,6 +1056,7 @@ export async function updatePipelineStage(
  * Get pipeline transitions for a thread
  */
 export async function getPipelineTransitions(
+  userId: number,
   threadId: string
 ): Promise<EmailPipelineTransition[]> {
   const db = await getDb();
@@ -1051,7 +1071,12 @@ export async function getPipelineTransitions(
     return await db
       .select()
       .from(emailPipelineTransitions)
-      .where(eq(emailPipelineTransitions.threadId, threadId))
+      .where(
+        and(
+          eq(emailPipelineTransitions.threadId, threadId),
+          eq(emailPipelineTransitions.userId, userId)
+        )
+      )
       .orderBy(desc(emailPipelineTransitions.createdAt))
       .execute();
   } catch (error) {
@@ -1085,11 +1110,20 @@ export async function getUserPipelineStates(
       return await db
         .select()
         .from(emailPipelineState)
-        .where(eq(emailPipelineState.stage, stage))
+        .where(
+          and(
+            eq(emailPipelineState.stage, stage),
+            eq(emailPipelineState.userId, userId)
+          )
+        )
         .execute();
-    } else {
-      return await db.select().from(emailPipelineState).execute();
     }
+
+    return await db
+      .select()
+      .from(emailPipelineState)
+      .where(eq(emailPipelineState.userId, userId))
+      .execute();
   } catch (error) {
     console.error("[Database] Failed to get user pipeline states:", error);
     return [];

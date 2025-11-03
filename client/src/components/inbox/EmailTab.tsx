@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useEmailContext } from "@/contexts/EmailContext";
 import { useAdaptivePolling } from "@/hooks/useAdaptivePolling";
 import { useRateLimit } from "@/hooks/useRateLimit";
 import { throttle } from "@/lib/rateLimitUtils";
@@ -18,7 +19,6 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useEmailContext } from "@/contexts/EmailContext";
 import CustomerProfile from "../CustomerProfile";
 import AdvancedEmailSearch from "./AdvancedEmailSearch";
 import EmailComposer from "./EmailComposer";
@@ -65,9 +65,12 @@ export default function EmailTab() {
     "list"
   );
   const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
+  const [bulkActionPending, setBulkActionPending] = useState(false);
 
   // Rate limit handling
   const rateLimit = useRateLimit();
+  const archiveThreadMutation = trpc.inbox.email.archive.useMutation();
+  const deleteThreadMutation = trpc.inbox.email.delete.useMutation();
 
   // Shortwave-style context tracking
   const emailContext = useEmailContext();
@@ -84,6 +87,7 @@ export default function EmailTab() {
       openDrafts: composerOpen ? 1 : 0,
       selectedThreads: selectedEmails,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectedFolder,
     viewMode,
@@ -93,7 +97,7 @@ export default function EmailTab() {
     previewThreadId,
     composerOpen,
     selectedEmails,
-    emailContext,
+    // NOTE: emailContext is NOT in deps to avoid infinite loop
   ]);
 
   // Build query based on folder and labels
@@ -356,6 +360,78 @@ export default function EmailTab() {
   };
 
   const utils = trpc.useUtils();
+  const handleBulkArchive = async () => {
+    if (selectedEmails.size === 0 || bulkActionPending) {
+      return;
+    }
+    setBulkActionPending(true);
+    const threadIds = Array.from(selectedEmails);
+    let successCount = 0;
+
+    for (const threadId of threadIds) {
+      try {
+        await archiveThreadMutation.mutateAsync({ threadId });
+        successCount += 1;
+      } catch (error) {
+        console.error("[EmailTab] Bulk archive failed", { threadId, error });
+      }
+    }
+
+    await Promise.all([
+      utils.inbox.email.list.invalidate(),
+      utils.inbox.email.getPipelineStates.invalidate(),
+    ]);
+
+    setSelectedEmails(new Set());
+    setBulkActionPending(false);
+
+    if (successCount === threadIds.length) {
+      toast.success(`${successCount} emails arkiveret`);
+    } else if (successCount > 0) {
+      toast.warning(
+        `${successCount} emails arkiveret, ${threadIds.length - successCount} mislykkedes`
+      );
+    } else {
+      toast.error("Kunne ikke arkivere emails");
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedEmails.size === 0 || bulkActionPending) {
+      return;
+    }
+    setBulkActionPending(true);
+    const threadIds = Array.from(selectedEmails);
+    let successCount = 0;
+
+    for (const threadId of threadIds) {
+      try {
+        await deleteThreadMutation.mutateAsync({ threadId });
+        successCount += 1;
+      } catch (error) {
+        console.error("[EmailTab] Bulk delete failed", { threadId, error });
+      }
+    }
+
+    await Promise.all([
+      utils.inbox.email.list.invalidate(),
+      utils.inbox.email.getPipelineStates.invalidate(),
+    ]);
+
+    setSelectedEmails(new Set());
+    setBulkActionPending(false);
+
+    if (successCount === threadIds.length) {
+      toast.success(`${successCount} emails slettet`);
+    } else if (successCount > 0) {
+      toast.warning(
+        `${successCount} emails slettet, ${threadIds.length - successCount} mislykkedes`
+      );
+    } else {
+      toast.error("Kunne ikke slette emails");
+    }
+  };
+
   const createLeadMutation = trpc.inbox.email.createLeadFromEmail.useMutation();
 
   const handleSenderClick = async (email: string, e: React.MouseEvent) => {
@@ -540,7 +616,7 @@ export default function EmailTab() {
               }}
             />
           ) : (
-            <div className="overflow-y-auto h-full" ref={parentRef}>
+            <div className="overflow-y-auto overflow-x-hidden h-full" ref={parentRef}>
               {/* Bulk Actions Bar */}
               {selectedEmails.size > 0 && (
                 <div className="mb-4 p-3 bg-primary/10 border rounded-lg flex items-center justify-between">
@@ -554,16 +630,8 @@ export default function EmailTab() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => {
-                        // Bulk archive
-                        selectedEmails.forEach(threadId => {
-                          // TODO: Call archive API
-                        });
-                        setSelectedEmails(new Set());
-                        toast.success(
-                          `${selectedEmails.size} emails arkiveret`
-                        );
-                      }}
+                      onClick={handleBulkArchive}
+                      disabled={bulkActionPending}
                     >
                       <Archive className="w-4 h-4 mr-2" />
                       Arkivér
@@ -571,14 +639,8 @@ export default function EmailTab() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => {
-                        // Bulk delete
-                        selectedEmails.forEach(threadId => {
-                          // TODO: Call delete API
-                        });
-                        setSelectedEmails(new Set());
-                        toast.success(`${selectedEmails.size} emails slettet`);
-                      }}
+                      onClick={handleBulkDelete}
+                      disabled={bulkActionPending}
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Slet
@@ -587,6 +649,7 @@ export default function EmailTab() {
                       size="sm"
                       variant="outline"
                       onClick={() => setSelectedEmails(new Set())}
+                      disabled={bulkActionPending}
                     >
                       Annuller
                     </Button>
@@ -688,7 +751,7 @@ export default function EmailTab() {
                         className="mb-2 ml-6"
                       >
                         <Card
-                          className={`p-4 hover:bg-accent/50 cursor-pointer transition-colors ${
+                          className={`w-full p-4 hover:bg-accent/50 cursor-pointer transition-colors ${
                             selectedEmails.has(email.threadId)
                               ? "ring-2 ring-primary"
                               : ""

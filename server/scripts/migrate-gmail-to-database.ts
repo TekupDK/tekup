@@ -91,8 +91,8 @@ async function migrateThread(
           snippet: thread.snippet || null,
           labels: (thread.labels || []) as any,
           lastMessageAt: firstMessage.date
-            ? new Date(firstMessage.date)
-            : new Date(),
+            ? new Date(firstMessage.date).toISOString()
+            : new Date().toISOString(),
           isRead: !thread.unread,
         })
         .returning();
@@ -131,7 +131,9 @@ async function migrateThread(
           subject: message.subject || thread.subject || null,
           text: message.body || null,
           html: null, // Gmail API doesn't provide HTML separately
-          receivedAt: message.date ? new Date(message.date) : new Date(),
+          receivedAt: message.date
+            ? new Date(message.date).toISOString()
+            : new Date().toISOString(),
           threadKey,
           customerId: null, // Will be set by enrichment
           emailThreadId,
