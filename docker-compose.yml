@@ -8,9 +8,9 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - .env.prod
     environment:
-      - NODE_ENV=${NODE_ENV:-development}
+      - NODE_ENV=${NODE_ENV:-production}
       # Database URL - defaults to Supabase PostgreSQL if .env.supabase is used
       # For Supabase PostgreSQL: use .env.supabase DATABASE_URL
       # Legacy MySQL reference (deprecated - use Supabase PostgreSQL instead)
