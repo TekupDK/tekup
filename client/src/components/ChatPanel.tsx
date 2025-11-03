@@ -15,6 +15,10 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ActionApprovalModal, type PendingAction } from "./ActionApprovalModal";
 import { SafeStreamdown } from "./SafeStreamdown";
+import { SuggestionsBar } from "./SuggestionsBar";
+import { useActionSuggestions } from "@/hooks/useActionSuggestions";
+
+type ChatModel = "gemini-2.5-flash" | "claude-3-5-sonnet" | "gpt-4o" | "manus-ai";
 
 interface Message {
   id: number;
@@ -29,9 +33,7 @@ function ChatPanel() {
   >(null);
   const [inputMessage, setInputMessage] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<
-    "gemini-2.5-flash" | "claude-3-5-sonnet" | "gpt-4o" | "manus-ai"
-  >("gemini-2.5-flash");
+  const [selectedModel, setSelectedModel] = useState<ChatModel>("gemini-2.5-flash");
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(
     null
   );
@@ -46,15 +48,24 @@ function ChatPanel() {
       staleTime: 30000, // Cache for 30 seconds
       refetchOnWindowFocus: false, // Don't refetch on window focus
     });
-  const { data: conversationData, refetch: refetchMessages } =
-    trpc.chat.get.useQuery(
-      { conversationId: selectedConversationId! },
-      {
-        enabled: !!selectedConversationId,
-        staleTime: 10000, // Cache for 10 seconds
-        refetchOnWindowFocus: false,
-      }
-    );
+
+  useEffect(() => {
+    if (!selectedConversationId && conversations && conversations.length > 0) {
+      setSelectedConversationId(conversations[0].id);
+    }
+  }, [conversations, selectedConversationId]);
+  const conversationId = selectedConversationId ?? 0;
+  const {
+    data: conversationData,
+    refetch: refetchMessages,
+  } = trpc.chat.get.useQuery(
+    { conversationId },
+    {
+      enabled: selectedConversationId !== null,
+      staleTime: 10000, // Cache for 10 seconds
+      refetchOnWindowFocus: false,
+    }
+  );
 
   // Poll for title updates when conversation has no title
   useEffect(() => {
@@ -286,6 +297,11 @@ function ChatPanel() {
     recognition.start();
   }, []);
 
+  // Lightweight client-only suggestions (gated by feature flag)
+  const { suggestions } = useActionSuggestions({
+    conversationId: selectedConversationId,
+  });
+
   return (
     <>
       <div className="h-full flex">
@@ -305,12 +321,13 @@ function ChatPanel() {
           </div>
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-1">
-              {conversations?.map(conv => {
-                const isSelected = selectedConversationId === conv.id;
-                const formattedTitle =
-                  conv.title && conv.title !== "New Conversation"
-                    ? conv.title
-                    : `Ny samtale ${new Date(conv.createdAt).toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" })}`;
+              {conversations && conversations.length > 0 ? (
+                conversations.map(conv => {
+                  const isSelected = selectedConversationId === conv.id;
+                  const formattedTitle =
+                    conv.title && conv.title !== "New Conversation"
+                      ? conv.title
+                      : `Ny samtale ${new Date(conv.createdAt).toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" })}`;
                 const formattedDate = new Date(
                   conv.updatedAt
                 ).toLocaleDateString("da-DK", {
@@ -339,8 +356,13 @@ function ChatPanel() {
                     </div>
                     <div className="text-xs opacity-70">{formattedDate}</div>
                   </button>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div className="text-xs text-muted-foreground px-3 py-4 text-center">
+                  Ingen samtaler endnu. Start en ny chat for at komme i gang.
+                </div>
+              )}
             </div>
           </ScrollArea>
         </div>
@@ -402,6 +424,17 @@ function ChatPanel() {
                 </div>
               </div>
 
+              {/* Suggestions (feature-flagged) */}
+              <div className="px-3 sm:px-6">
+                <SuggestionsBar
+                  suggestions={suggestions}
+                  onApprove={s => {
+                    setPendingAction(s);
+                    setShowApprovalModal(true);
+                  }}
+                />
+              </div>
+
               {/* Input Area */}
               <div className="sticky bottom-0 z-50 bg-background border-t border-border p-3 sm:p-4 backdrop-blur supports-backdrop-filter:backdrop-blur">
                 <div className="max-w-3xl mx-auto space-y-2">
@@ -409,7 +442,7 @@ function ChatPanel() {
                     <Bot className="w-4 h-4" />
                     <Select
                       value={selectedModel}
-                      onValueChange={(value: any) => setSelectedModel(value)}
+                      onValueChange={(value: ChatModel) => setSelectedModel(value)}
                     >
                       <SelectTrigger className="w-[200px] h-8">
                         <SelectValue />
@@ -427,7 +460,14 @@ function ChatPanel() {
                     </Select>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="icon" className="shrink-0">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0"
+                      onClick={() =>
+                        toast.info("Fil-upload understøttes snart")
+                      }
+                    >
                       <Paperclip className="w-4 h-4" />
                     </Button>
                     <Input
