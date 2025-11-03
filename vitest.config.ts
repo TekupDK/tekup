@@ -44,8 +44,9 @@ export default defineConfig({
     },
   },
   ssr: {
-    // Don't externalize CSS files - handle them as modules
-    noExternal: [/\.css$/],
+    // Ensure Vite transforms problematic deps that import CSS (e.g., streamdown -> katex)
+    // and don't externalize CSS files
+    noExternal: ["streamdown", "katex", /\.css$/],
   },
   optimizeDeps: {
     // Exclude problematic CSS imports from optimization
@@ -63,10 +64,10 @@ export default defineConfig({
       "client/**/*.test.tsx",
       "client/**/*.spec.tsx",
     ],
-    // Exclude CSS and katex from transform
-    transformIgnorePatterns: [
-      "node_modules/(?!(.*\\.css$)|(streamdown)|(katex))",
-    ],
+    deps: {
+      // Inline these dependencies so Vite transforms their CSS imports under test
+      inline: ["streamdown", "katex"],
+    },
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
