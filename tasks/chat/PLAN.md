@@ -32,12 +32,30 @@ Context: see `docs/CHAT_APPROVALS_SPEC.md` and `docs/FRIDAY_ACTION_ROLLOUT.md`.
 
 ## Steps (suggested)
 
-- [ ] Finalize ActionCatalog schema and validators.
-- [ ] Implement server endpoints and tests.
+### Phase 1: MVP UI (✅ Completed)
 - [x] Build ApprovalModal with risk levels and dry-run view.
 - [x] Gate with `FRIDAY_ACTION_SUGGESTIONS` flag (see rollout doc).
 - [x] Create SuggestionsBar component with MVP static suggestions.
 - [x] Wire suggestions into ChatPanel behind feature flag.
 - [x] Export necessary constants from ActionApprovalModal.
 - [x] Build and deploy container with all changes.
+
+### Phase 2: Backend & Intelligence (🔄 In Progress)
+- [ ] Finalize ActionCatalog schema and validators.
+- [ ] Implement `dryRunAction` TRPC endpoint with validation.
+- [ ] Implement `executeAction` TRPC endpoint with idempotency keys.
+- [ ] Add server-side rate limiting and role checks.
+- [ ] Replace static suggestions with Gemini-based context-aware suggestions.
+- [ ] Implement audit logging (shown/approved/rejected/executed/failed events).
+
+### Phase 3: UI Polish (📋 Planned)
+- [ ] Add icons to suggestion cards (reuse from ActionApprovalModal).
+- [ ] Add loading/refresh animations for suggestions.
+- [ ] Add collapse/expand toggle for suggestions bar.
+- [ ] Implement keyboard shortcuts for approve/reject.
+
+### Phase 4: Rollout (⏳ Pending)
+- [ ] Implement server endpoints and tests.
 - [ ] Canary + policy gate green.
+- [ ] A/B test with 10% of users.
+- [ ] Gradual rollout: 10% → 50% → 100%.

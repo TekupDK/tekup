@@ -533,15 +533,17 @@ export default function EmailTab() {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Search Bar */}
-        <div className="flex gap-2 items-center p-4 border-b bg-background">
-          <AdvancedEmailSearch
-            value={searchQuery}
-            onChange={setSearchQuery}
-            onSearch={throttledRefetch}
-            placeholder="Søg emails, kontakter, labels..."
-          />
+        <div className="flex gap-2 items-center p-2 border-b bg-background">
+          <div className="flex-1 max-w-md">
+            <AdvancedEmailSearch
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onSearch={throttledRefetch}
+              placeholder="Søg emails, kontakter, labels..."
+            />
+          </div>
           {/* View Toggle */}
-          <div className="flex gap-1 border rounded-md p-1">
+          <div className="flex gap-1 border rounded-md p-0.5">
             <Button
               variant={viewMode === "list" ? "default" : "ghost"}
               size="sm"
@@ -549,7 +551,7 @@ export default function EmailTab() {
                 setViewMode("list");
                 setSelectedEmails(new Set());
               }}
-              className="h-8"
+              className="h-7 text-xs"
             >
               Liste
             </Button>
@@ -560,7 +562,7 @@ export default function EmailTab() {
                 setViewMode("pipeline");
                 setSelectedEmails(new Set());
               }}
-              className="h-8"
+              className="h-7 text-xs"
             >
               Pipeline
             </Button>
@@ -571,7 +573,7 @@ export default function EmailTab() {
                 setViewMode("dashboard");
                 setSelectedEmails(new Set());
               }}
-              className="h-8"
+              className="h-7 text-xs"
             >
               Dashboard
             </Button>
@@ -581,6 +583,7 @@ export default function EmailTab() {
             size="icon"
             onClick={throttledRefetch}
             disabled={isFetching || rateLimit.isRateLimited}
+            className="h-7 w-7"
             title={
               rateLimit.isRateLimited
                 ? `Rate limit aktiveret. Prøv igen om ${rateLimit.getRetryAfterText() || "et øjeblik"}.`
@@ -588,15 +591,9 @@ export default function EmailTab() {
             }
           >
             <RefreshCw
-              className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`}
+              className={`w-3 h-3 ${isFetching ? "animate-spin" : ""}`}
             />
           </Button>
-          {rateLimit.isRateLimited && (
-            <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
-              <Clock className="w-3 h-3" />
-              <span>Rate limit: {rateLimit.getRetryAfterText()}</span>
-            </div>
-          )}
           {isFetching && !rateLimit.isRateLimited && (
             <span className="text-xs text-muted-foreground whitespace-nowrap">
               Syncer...
@@ -616,10 +613,10 @@ export default function EmailTab() {
               }}
             />
           ) : (
-            <div className="overflow-y-auto overflow-x-hidden h-full" ref={parentRef}>
+            <div className="h-full flex flex-col">
               {/* Bulk Actions Bar */}
               {selectedEmails.size > 0 && (
-                <div className="mb-4 p-3 bg-primary/10 border rounded-lg flex items-center justify-between">
+                <div className="mb-3 p-2 bg-primary/10 border rounded-lg flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">
                       {selectedEmails.size} email
@@ -632,8 +629,9 @@ export default function EmailTab() {
                       variant="outline"
                       onClick={handleBulkArchive}
                       disabled={bulkActionPending}
+                      className="h-7 text-xs"
                     >
-                      <Archive className="w-4 h-4 mr-2" />
+                      <Archive className="w-3 h-3 mr-1" />
                       Arkivér
                     </Button>
                     <Button
@@ -641,8 +639,9 @@ export default function EmailTab() {
                       variant="outline"
                       onClick={handleBulkDelete}
                       disabled={bulkActionPending}
+                      className="h-7 text-xs"
                     >
-                      <Trash2 className="w-4 h-4 mr-2" />
+                      <Trash2 className="w-3 h-3 mr-1" />
                       Slet
                     </Button>
                     <Button
@@ -650,6 +649,7 @@ export default function EmailTab() {
                       variant="outline"
                       onClick={() => setSelectedEmails(new Set())}
                       disabled={bulkActionPending}
+                      className="h-7 text-xs"
                     >
                       Annuller
                     </Button>
@@ -698,21 +698,48 @@ export default function EmailTab() {
                   </Button>
                 </div>
               ) : (
-                <div
-                  style={{
-                    height: `${virtualizer.getTotalSize()}px`,
-                    position: "relative",
-                  }}
-                >
-                  {virtualizer.getVirtualItems().map(virtualRow => {
-                    const item = virtualizedItems[virtualRow.index];
-                    if (!item) return null;
+                <div className="flex-1 overflow-y-auto overflow-x-hidden" ref={parentRef}>
+                  <div
+                    style={{
+                      height: `${virtualizer.getTotalSize()}px`,
+                      position: "relative",
+                    }}
+                  >
+                    {virtualizer.getVirtualItems().map(virtualRow => {
+                      const item = virtualizedItems[virtualRow.index];
+                      if (!item) return null;
 
-                    if (item.type === "section") {
-                      const { title, count } = item.data;
+                      if (item.type === "section") {
+                        const { title, count } = item.data;
+                        return (
+                          <div
+                            key={`section-${title}`}
+                            data-index={virtualRow.index}
+                            ref={virtualizer.measureElement}
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              width: "100%",
+                              transform: `translateY(${virtualRow.start}px)`,
+                            }}
+                            className="py-2 px-1"
+                          >
+                            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                              <ChevronDown className="w-4 h-4" />
+                              {title}
+                              <Badge variant="secondary" className="ml-auto text-xs">
+                                {count}
+                              </Badge>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      const email = item.data as EmailMessage;
                       return (
                         <div
-                          key={`section-${title}`}
+                          key={email.id}
                           data-index={virtualRow.index}
                           ref={virtualizer.measureElement}
                           style={{
@@ -721,35 +748,10 @@ export default function EmailTab() {
                             left: 0,
                             width: "100%",
                             transform: `translateY(${virtualRow.start}px)`,
+                            paddingLeft: "1.5rem",
                           }}
-                          className="mb-2"
+                          className="py-1"
                         >
-                          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                            <ChevronDown className="w-4 h-4" />
-                            {title}
-                            <Badge variant="secondary" className="ml-auto">
-                              {count}
-                            </Badge>
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    const email = item.data as EmailMessage;
-                    return (
-                      <div
-                        key={email.id}
-                        data-index={virtualRow.index}
-                        ref={virtualizer.measureElement}
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          transform: `translateY(${virtualRow.start}px)`,
-                        }}
-                        className="mb-2 ml-6"
-                      >
                         <Card
                           className={`w-full p-4 hover:bg-accent/50 cursor-pointer transition-colors ${
                             selectedEmails.has(email.threadId)
@@ -857,33 +859,34 @@ export default function EmailTab() {
                       </div>
                     );
                   })}
+                  </div>
+
+                  {emailMessages &&
+                  emailMessages.length === 0 &&
+                  !isLoading &&
+                  !isError && (
+                    <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                      <Mail className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
+                      <p className="text-lg font-semibold mb-2">
+                        Ingen emails fundet
+                      </p>
+                      <p className="text-sm text-muted-foreground mb-4 max-w-md">
+                        {buildQuery() !== "in:inbox"
+                          ? "Prøv at ændre dine filtre eller søg efter noget andet."
+                          : "Din indbakke ser ud til at være tom. Nye emails vil blive vist her automatisk."}
+                      </p>
+                      <Button
+                        onClick={throttledRefetch}
+                        size="sm"
+                        disabled={rateLimit.isRateLimited}
+                      >
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        Opdater
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
-
-              {emailMessages &&
-                emailMessages.length === 0 &&
-                !isLoading &&
-                !isError && (
-                  <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                    <Mail className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
-                    <p className="text-lg font-semibold mb-2">
-                      Ingen emails fundet
-                    </p>
-                    <p className="text-sm text-muted-foreground mb-4 max-w-md">
-                      {buildQuery() !== "in:inbox"
-                        ? "Prøv at ændre dine filtre eller søg efter noget andet."
-                        : "Din indbakke ser ud til at være tom. Nye emails vil blive vist her automatisk."}
-                    </p>
-                    <Button
-                      onClick={throttledRefetch}
-                      size="sm"
-                      disabled={rateLimit.isRateLimited}
-                    >
-                      <RefreshCw className="w-4 h-4 mr-2" />
-                      Opdater
-                    </Button>
-                  </div>
-                )}
             </div>
           )}
         </div>
