@@ -130,17 +130,17 @@ export type InsertMessage = typeof messages.$inferInsert;
  */
 export const emailThreads = pgTable("email_threads", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  gmailThreadId: varchar("gmail_thread_id", { length: 255 }).notNull(),
+  userId: integer("userId").notNull(),
+  gmailThreadId: varchar("gmailThreadId", { length: 255 }).notNull(),
   subject: text("subject"),
   participants:
     jsonb("participants").$type<Array<{ name: string; email: string }>>(),
   snippet: text("snippet"),
   labels: jsonb("labels").$type<string[]>(),
-  lastMessageAt: timestamp("last_message_at"),
-  isRead: boolean("is_read").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  lastMessageAt: timestamp("lastMessageAt"),
+  isRead: boolean("isRead").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type EmailThread = typeof emailThreads.$inferSelect;
