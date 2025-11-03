@@ -34,3 +34,15 @@ jobs:
             exit 0
           fi
           node scripts/migration-check.mjs --dry-run
+
+      - name: Notify Slack on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_MESSAGE: "❌ Migration check failed on ${{ github.repository }}@${{ github.ref_name }} (#${{ github.run_number }})"
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "No SLACK_WEBHOOK_URL secret set. Skipping Slack notification."
+            exit 0
+          fi
+          node scripts/notify-slack.mjs

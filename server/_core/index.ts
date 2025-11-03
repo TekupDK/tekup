@@ -6,6 +6,7 @@ import rateLimit from "express-rate-limit";
 import { createServer } from "http";
 import net from "net";
 import * as db from "../db";
+import { logger } from "./logger";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { ENV } from "./env";
@@ -21,7 +22,7 @@ async function runAutoImportIfNeeded() {
     const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
 
     if (!ownerUser) {
-      console.log(
+      logger.info(
         "[Auto-Import] No owner user found, skipping import (user needs to login first)"
       );
       return;
@@ -31,13 +32,13 @@ async function runAutoImportIfNeeded() {
     const hasLeads = await db.hasUserLeads(ownerUser.id);
 
     if (hasLeads) {
-      console.log(
+      logger.info(
         "[Auto-Import] User already has leads, skipping historical import"
       );
       return;
     }
 
-    console.log(
+    logger.info(
       "[Auto-Import] No leads found, starting historical data import from July 2025..."
     );
 
@@ -46,20 +47,20 @@ async function runAutoImportIfNeeded() {
     const fromDate = new Date("2025-07-01");
     const result = await importHistoricalData(ownerUser.id, fromDate);
 
-    console.log(
+    logger.info(
       `[Auto-Import] ✅ Import complete! Created ${result.leadsCreated} leads and ${result.customersCreated} customer profiles`
     );
 
     if (result.errors.length > 0) {
-      console.warn(
+      logger.warn(
         `[Auto-Import] ⚠️  ${result.errors.length} errors occurred during import`
       );
       result.errors
         .slice(0, 5)
-        .forEach(error => console.warn(`[Auto-Import] Error: ${error}`));
+        .forEach(error => logger.warn({ err: error }, `[Auto-Import] Error`));
     }
   } catch (error) {
-    console.error("[Auto-Import] ❌ Error during automatic import:", error);
+  logger.error({ err: error }, "[Auto-Import] ❌ Error during automatic import");
     // Don't throw - server should still start even if import fails
   }
 }
@@ -136,18 +137,18 @@ async function startServer() {
   const port = await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {
-    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
+    logger.warn({ preferredPort, port }, `Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
   server.listen(port, async () => {
-    console.log(`Server running on http://localhost:${port}/`);
+    logger.info({ port, env: process.env.NODE_ENV }, `Server running on http://localhost:${port}/`);
 
     // Run automatic historical data import if needed (non-blocking)
     // This only runs if no leads exist in the database
     runAutoImportIfNeeded().catch(error => {
-      console.error("[Auto-Import] Failed to run automatic import:", error);
+      logger.error({ err: error }, "[Auto-Import] Failed to run automatic import");
     });
   });
 }
 
-startServer().catch(console.error);
+startServer().catch(err => logger.error({ err }, "Server start failed"));

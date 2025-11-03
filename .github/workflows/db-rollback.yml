@@ -1,0 +1,49 @@
+name: Manual DB Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_sql_url:
+        description: 'URL to .sql backup file (public or pre-signed)'
+        required: true
+        type: string
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.APPROVE_ROLLBACK == 'true' }}
+    steps:
+      - name: Validate inputs
+        run: |
+          if [ -z "${{ inputs.backup_sql_url }}" ]; then
+            echo "backup_sql_url is required" && exit 1
+          fi
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client curl
+      - name: Download backup
+        run: |
+          curl -fsSL "${{ inputs.backup_sql_url }}" -o backup.sql
+          ls -lah backup.sql
+      - name: Restore backup (psql)
+        env:
+          DATABASE_URL: ${{ secrets.ROLLBACK_DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "ROLLBACK_DATABASE_URL secret is missing" && exit 1
+          fi
+          export PGPASSWORD=$(echo $DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\).*/\1/p' | sed 's/%40/@/g')
+          psql "$DATABASE_URL" -f backup.sql
+      - name: Notify Slack (success)
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_MESSAGE: "✅ DB rollback completed: ${{ github.repository }} run #${{ github.run_number }}"
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then node scripts/notify-slack.mjs; fi
+      - name: Notify Slack (failure)
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_MESSAGE: "❌ DB rollback failed: ${{ github.repository }} run #${{ github.run_number }}"
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then node scripts/notify-slack.mjs; fi
