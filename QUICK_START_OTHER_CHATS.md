@@ -12,6 +12,7 @@ cd C:\Users\empir\Tekup\services\tekup-ai-v2
 ```
 
 **Det gør automatisk:**
+
 - ✅ Stasher dine uncommitted changes
 - ✅ Opretter ny branch: `cursor/20250115-143022-abc123`
 - ✅ Skifter til den branch

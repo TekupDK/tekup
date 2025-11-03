@@ -1,10 +1,10 @@
 # API Optimering - Test Notater Template
 
-**Test Session Dato:** _______________
-**Tester:** _______________
-**Branch:** _______________
-**Browser:** _______________
-**Network Throttling:** _______________
+**Test Session Dato:** **\*\***\_\_\_**\*\***
+**Tester:** **\*\***\_\_\_**\*\***
+**Branch:** **\*\***\_\_\_**\*\***
+**Browser:** **\*\***\_\_\_**\*\***
+**Network Throttling:** **\*\***\_\_\_**\*\***
 
 ---
 
@@ -13,19 +13,22 @@
 **Status:** ⏳ Pending / ✅ Pass / ❌ Fail
 
 **Steps Udført:**
+
 - [ ] Åbn CalendarTab
 - [ ] Skift til InvoicesTab og tilbage
 - [ ] Observer Network tab
 
 **Observations:**
+
 ```
 [Indsæt notater her]
 ```
 
 **Result:**
+
 - Cache Hit: ⏳ Yes / No
-- API Calls: _____ (forventet: 0 hvis cached)
-- Issues: _______________
+- API Calls: **\_** (forventet: 0 hvis cached)
+- Issues: **\*\***\_\_\_**\*\***
 
 ---
 
@@ -34,11 +37,13 @@
 **Status:** ⏳ Pending / ✅ Pass / ❌ Fail
 
 **Steps Udført:**
+
 - [ ] Observer console logs ved fejl
 - [ ] Verificer retry delays
 - [ ] Check jitter variation
 
 **Observations:**
+
 ```
 Retry 1: _____ms
 Retry 2: _____ms
@@ -47,9 +52,10 @@ Jitter observed: Yes/No
 ```
 
 **Result:**
+
 - Exponential backoff: ⏳ Working / Not working
 - Jitter: ⏳ Working / Not working
-- Issues: _______________
+- Issues: **\*\***\_\_\_**\*\***
 
 ---
 
@@ -58,6 +64,7 @@ Jitter observed: Yes/No
 **Status:** ⏳ Pending / ✅ Pass / ❌ Fail
 
 **Steps Udført:**
+
 - [ ] Åbn CalendarTab
 - [ ] Observer Network tab
 - [ ] Interager med siden
@@ -65,6 +72,7 @@ Jitter observed: Yes/No
 - [ ] Observer interval changes
 
 **Observations:**
+
 ```
 Active interval: _____s (forventet: 30s)
 After 1min inactive: _____s
@@ -72,9 +80,10 @@ After 2min inactive: _____s (forventet: ~90s+)
 ```
 
 **Result:**
+
 - Activity detection: ⏳ Working / Not working
 - Interval adjustment: ⏳ Working / Not working
-- Issues: _______________
+- Issues: **\*\***\_\_\_**\*\***
 
 ---
 
@@ -83,6 +92,7 @@ After 2min inactive: _____s (forventet: ~90s+)
 **Status:** ⏳ Pending / ✅ Pass / ❌ Fail
 
 **Steps Udført:**
+
 - [ ] Åbn tab med polling
 - [ ] Observer Network tab
 - [ ] Skift til anden tab (2 min)
@@ -90,6 +100,7 @@ After 2min inactive: _____s (forventet: ~90s+)
 - [ ] Observer polling resume
 
 **Observations:**
+
 ```
 Tab hidden: _____ API calls (forventet: 0)
 Tab visible again: Immediate call? Yes/No
@@ -97,9 +108,10 @@ Polling resumed: Yes/No
 ```
 
 **Result:**
+
 - Page visibility pausing: ⏳ Working / Not working
 - Auto-resume: ⏳ Working / Not working
-- Issues: _______________
+- Issues: **\*\***\_\_\_**\*\***
 
 ---
 
@@ -108,6 +120,7 @@ Polling resumed: Yes/No
 **Status:** ⏳ Pending / ✅ Pass / ❌ Fail
 
 **Steps Udført:**
+
 - [ ] Trigger rate limit (hvis muligt)
 - [ ] Prøv flere API calls
 - [ ] Observer console logs
@@ -115,6 +128,7 @@ Polling resumed: Yes/No
 - [ ] Verificer queue processing
 
 **Observations:**
+
 ```
 Rate limit triggered: Yes/No
 Queue size: _____
@@ -123,9 +137,10 @@ Queue processed: Yes/No
 ```
 
 **Result:**
+
 - Request queue: ⏳ Working / Not working
 - Auto-processing: ⏳ Working / Not working
-- Issues: _______________
+- Issues: **\*\***\_\_\_**\*\***
 
 ---
 
@@ -134,12 +149,14 @@ Queue processed: Yes/No
 **Status:** ⏳ Pending / ✅ Pass / ❌ Fail
 
 **Steps Udført:**
+
 - [ ] Observer UI ved rate limit
 - [ ] Check countdown timer
 - [ ] Verificer polling pause
 - [ ] Check retry-after timestamp
 
 **Observations:**
+
 ```
 UI Error shown: Yes/No
 Countdown visible: Yes/No
@@ -149,10 +166,11 @@ Retry-after timestamp: _______________
 ```
 
 **Result:**
+
 - Error UI: ⏳ Working / Not working
 - Countdown timer: ⏳ Working / Not working
 - Polling pause: ⏳ Working / Not working
-- Issues: _______________
+- Issues: **\*\***\_\_\_**\*\***
 
 ---
 
@@ -161,12 +179,14 @@ Retry-after timestamp: _______________
 **Status:** ⏳ Pending / ✅ Pass / ❌ Fail
 
 **Steps Udført:**
+
 - [ ] Åbn alle tabs (Email, Calendar, Invoices)
 - [ ] Observer Network tab i 10 minutter
 - [ ] Tæl total API calls
 - [ ] Kategoriser (aktiv vs inaktiv)
 
 **Observations:**
+
 ```
 Test Duration: _____ minutter
 
@@ -184,10 +204,11 @@ Tab Hidden:
 ```
 
 **Result:**
-- Active reduction: _____% (target: 30-40%)
-- Inactive reduction: _____% (target: 60-70%)
+
+- Active reduction: **\_**% (target: 30-40%)
+- Inactive reduction: **\_**% (target: 60-70%)
 - Overall: ⏳ Success / Needs improvement
-- Issues: _______________
+- Issues: **\*\***\_\_\_**\*\***
 
 ---
 
@@ -209,18 +230,20 @@ Scroll Performance: _______ (subjektiv: Smooth/Slow)
 ## 🐛 Issues Found
 
 ### Issue #1
-**Description:** _______________
+
+**Description:** **\*\***\_\_\_**\*\***
 **Severity:** High / Medium / Low
-**Steps to Reproduce:** _______________
-**Expected:** _______________
-**Actual:** _______________
+**Steps to Reproduce:** **\*\***\_\_\_**\*\***
+**Expected:** **\*\***\_\_\_**\*\***
+**Actual:** **\*\***\_\_\_**\*\***
 
 ### Issue #2
-**Description:** _______________
+
+**Description:** **\*\***\_\_\_**\*\***
 **Severity:** High / Medium / Low
-**Steps to Reproduce:** _______________
-**Expected:** _______________
-**Actual:** _______________
+**Steps to Reproduce:** **\*\***\_\_\_**\*\***
+**Expected:** **\*\***\_\_\_**\*\***
+**Actual:** **\*\***\_\_\_**\*\***
 
 ---
 
@@ -229,17 +252,18 @@ Scroll Performance: _______ (subjektiv: Smooth/Slow)
 **Status:** ⏳ In Progress / ✅ Pass / ❌ Fail / ⚠️ Partial
 
 **Summary:**
+
 ```
 [Kort sammenfatning af test resultater]
 ```
 
 **Recommendations:**
-1. _______________
-2. _______________
-3. _______________
+
+1. ***
+2. ***
+3. ***
 
 ---
 
-**Test Completed:** _______________
-**Next Steps:** _______________
-
+**Test Completed:** **\*\***\_\_\_**\*\***
+**Next Steps:** **\*\***\_\_\_**\*\***

@@ -1,7 +1,13 @@
 import { COOKIE_NAME } from "@shared/const";
 import { and, asc, desc, eq, inArray, or } from "drizzle-orm";
 import { z } from "zod";
-import { attachments, emails, emailThreads } from "../drizzle/schema";
+import {
+  attachments,
+  customerInvoices,
+  customerProfiles,
+  emails,
+  emailThreads,
+} from "../drizzle/schema";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -13,6 +19,7 @@ import {
   searchCustomerByEmail,
 } from "./billy";
 import { customerRouter } from "./customer-router";
+import { cacheInvoicesToDatabase } from "./invoice-cache";
 import {
   bulkDeleteTasks,
   bulkUpdateTaskOrder,
@@ -164,6 +171,19 @@ export const appRouter = router({
               z.object({ url: z.string(), name: z.string(), type: z.string() })
             )
             .optional(),
+          // Shortwave-style context tracking
+          context: z
+            .object({
+              page: z.string().optional(), // Current page/tab
+              selectedThreads: z.array(z.string()).optional(), // Selected email thread IDs
+              openThreadId: z.string().optional(), // Currently viewing thread
+              folder: z.string().optional(), // inbox, sent, archive, starred
+              viewMode: z.string().optional(), // list, pipeline, dashboard
+              selectedLabels: z.array(z.string()).optional(),
+              searchQuery: z.string().optional(),
+              openDrafts: z.number().optional(),
+            })
+            .optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -171,7 +191,20 @@ export const appRouter = router({
           conversationId: input.conversationId,
           content: input.content?.substring(0, 50) + "...",
           model: input.model,
+          hasContext: !!input.context,
         });
+
+        // Log context if present (Shortwave-style tracking)
+        if (input.context) {
+          console.log("[Chat] Context received:", {
+            page: input.context.page,
+            selectedThreads: input.context.selectedThreads?.length || 0,
+            openThreadId: input.context.openThreadId,
+            folder: input.context.folder,
+            viewMode: input.context.viewMode,
+          });
+        }
+
         console.log("[Chat] Creating user message...");
         const userMessage = await createMessage({
           conversationId: input.conversationId,
@@ -212,12 +245,15 @@ export const appRouter = router({
           role: m.role as "user" | "assistant" | "system",
           content: m.content,
         }));
+
+        // Add context to system prompt if provided (Shortwave-style)
         const aiResponse = await routeAI({
           messages: aiMessages,
           taskType: "chat",
           userId: ctx.user.id,
           preferredModel: input.model,
           requireApproval: true,
+          context: input.context, // Pass context to AI router
         });
         const assistantMessage = await createMessage({
           conversationId: input.conversationId,
@@ -346,7 +382,7 @@ export const appRouter = router({
           })
         )
         .query(async ({ ctx, input }) => {
-          // Try database first, fallback to Gmail API
+          // DATABASE-FIRST STRATEGY: Try database first, only fallback if empty
           const db = await getDb();
           if (db) {
             try {
@@ -360,7 +396,7 @@ export const appRouter = router({
                 .execute();
 
               if (emailRecords.length > 0) {
-                // Transform to GmailThread-like format
+                // Return from database - DATA IS HERE!
                 return emailRecords.map(email => ({
                   id: email.threadKey || email.providerId,
                   snippet: email.text?.substring(0, 200) || email.subject || "",
@@ -382,6 +418,9 @@ export const appRouter = router({
                   ],
                 }));
               }
+
+              // Database is empty - fetch from Gmail API and cache to database
+              console.log("[Email List] Database empty, fetching from Gmail API and caching...");
             } catch (error) {
               console.warn(
                 "[Email List] Database query failed, falling back to Gmail API:",
@@ -390,11 +429,22 @@ export const appRouter = router({
             }
           }
 
-          // Fallback to Gmail API
-          return mcpSearchGmailThreads(
-            input.query || "in:inbox",
-            input.maxResults || 20
-          );
+          // Fallback to Gmail API (direkte Google API, ikke MCP)
+          const { searchGmailThreads } = await import("./google-api");
+          const threads = await searchGmailThreads({
+            query: input.query || "in:inbox",
+            maxResults: input.maxResults || 20,
+          });
+
+          // Cache to database in background (don't await to speed up response)
+          if (db && threads.length > 0) {
+            const { cacheEmailsToDatabase } = await import("./email-cache");
+            cacheEmailsToDatabase(threads, ctx.user.id, db).catch(error => {
+              console.error("[Email List] Background cache failed:", error);
+            });
+          }
+
+          return threads;
         }),
       get: protectedProcedure
         .input(z.object({ threadId: z.string() }))
@@ -920,7 +970,69 @@ export const appRouter = router({
         }),
     }),
     invoices: router({
-      list: protectedProcedure.query(async () => getBillyInvoices()),
+      list: protectedProcedure.query(async ({ ctx }) => {
+        // DATABASE-FIRST STRATEGY: Try database first, only fallback if empty
+        const db = await getDb();
+        if (db) {
+          try {
+            // Query customer_invoices via customer_profiles for this user
+            const invoiceRecords = await db
+              .select({
+                invoice: customerInvoices,
+                customer: customerProfiles,
+              })
+              .from(customerInvoices)
+              .innerJoin(
+                customerProfiles,
+                eq(customerInvoices.customerId, customerProfiles.id)
+              )
+              .where(eq(customerProfiles.userId, ctx.user.id))
+              .orderBy(desc(customerInvoices.entryDate))
+              .limit(100)
+              .execute();
+
+            if (invoiceRecords.length > 0) {
+              // Transform to Billy invoice format for frontend compatibility
+              return invoiceRecords.map(({ invoice, customer }) => ({
+                id: invoice.billyInvoiceId,
+                invoiceNo: invoice.invoiceNo || undefined,
+                contactId: customer.billyCustomerId || invoice.customerId.toString(),
+                entryDate: invoice.entryDate?.toISOString() || new Date().toISOString(),
+                paymentTermsDays: invoice.dueDate && invoice.entryDate
+                  ? Math.round(
+                      (invoice.dueDate.getTime() - invoice.entryDate.getTime()) /
+                        (1000 * 60 * 60 * 24)
+                    )
+                  : 14,
+                state: invoice.status as "draft" | "approved" | "sent" | "paid" | "overdue",
+                lines: [], // Lines not stored in customer_invoices table
+                organizationId: customer.billyOrganizationId || "",
+              }));
+            }
+
+            console.log(
+              "[Invoice List] Database empty, fetching from Billy API and caching..."
+            );
+          } catch (error) {
+            console.warn(
+              "[Invoice List] Database query failed, falling back to Billy API:",
+              error
+            );
+          }
+        }
+
+        // Fallback to Billy API if database empty or unavailable
+        const invoices = await getBillyInvoices();
+
+        // Background cache to database
+        if (db && invoices.length > 0) {
+          cacheInvoicesToDatabase(invoices, ctx.user.id, db).catch(error => {
+            console.error("[Invoice List] Background cache failed:", error);
+          });
+        }
+
+        return invoices;
+      }),
       create: protectedProcedure
         .input(
           z.object({

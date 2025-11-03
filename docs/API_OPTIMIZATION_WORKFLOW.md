@@ -24,6 +24,7 @@ git push -u origin HEAD
 ### Test Workflow
 
 1. **Start Dev Server**
+
    ```bash
    pnpm dev
    ```
@@ -112,8 +113,8 @@ pnpm tsc --noEmit
 
 ```javascript
 // Browser console
-window.__requestQueue?.getQueueSize()
-window.__requestQueue?.isRateLimited()
+window.__requestQueue?.getQueueSize();
+window.__requestQueue?.isRateLimited();
 
 // React DevTools
 // Inspect component state for adaptive polling
@@ -134,6 +135,7 @@ window.__requestQueue?.isRateLimited()
 **Symptom:** Merge conflicts med email-tab branch
 
 **Solution:**
+
 ```bash
 git fetch origin
 git rebase origin/email-tab-development-branch
@@ -146,6 +148,7 @@ git rebase --continue
 **Symptom:** Features virker ikke som forventet
 
 **Steps:**
+
 1. Check console for errors
 2. Verify all dependencies installed
 3. Check branch is up-to-date
@@ -156,6 +159,7 @@ git rebase --continue
 **Symptom:** Metrics viser ingen forbedring
 
 **Investigation:**
+
 1. Verify features er aktiveret
 2. Check Network tab for API calls
 3. Monitor cache hit rates
@@ -171,4 +175,3 @@ git rebase --continue
 
 **Last Updated:** ${new Date().toISOString().split('T')[0]}
 **Maintained By:** Development Team
-

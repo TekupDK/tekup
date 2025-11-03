@@ -101,9 +101,22 @@
 
 ```javascript
 // I browser console (development only)
-window.__requestQueue?.getQueueSize()
-window.__requestQueue?.isRateLimited()
-window.__requestQueue?.clearRateLimit() // Manual clear
+window.__requestQueue?.getQueueSize();
+window.__requestQueue?.isRateLimited();
+window.__requestQueue?.clearRateLimit(); // Manual clear
+```
+
+**Check API Performance:**
+
+```javascript
+// Get summary statistics
+window.__apiMonitor?.getSummary();
+
+// Cache hit rate
+window.__apiMonitor?.getCacheHitRate(); // Returns percentage
+
+// Recent API calls
+window.__apiMonitor?.getRecentMetrics(20);
 ```
 
 **Check Rate Limit State:**
@@ -111,6 +124,7 @@ window.__requestQueue?.clearRateLimit() // Manual clear
 ```javascript
 // Se i console logs
 // "[Rate Limit]" viser state
+// "[RequestQueue]" viser queue activity
 ```
 
 **Check Cache State:**
@@ -118,7 +132,10 @@ window.__requestQueue?.clearRateLimit() // Manual clear
 ```javascript
 // React Query DevTools (hvis installeret)
 // Eller observer Network tab for cache headers
+// Eller brug: window.__apiMonitor?.getCacheHitRate()
 ```
+
+**Full Monitoring Guide:** Se `API_OPTIMIZATION_MONITORING.md`
 
 ---
 

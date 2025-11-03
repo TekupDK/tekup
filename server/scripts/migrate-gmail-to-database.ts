@@ -6,14 +6,16 @@
  */
 
 import { createHash } from "crypto";
+import * as dotenv from "dotenv";
 import { eq } from "drizzle-orm";
 import { emails, emailThreads } from "../../drizzle/schema";
 import { getDb } from "../db";
 import { enrichEmailFromSources } from "../email-enrichment";
-import {
-  getFullGmailThread as mcpGetFullGmailThread,
-  searchGmailThreads as mcpSearchGmailThreads,
-} from "../mcp";
+import { getGmailThread, searchGmailThreads } from "../google-api";
+
+// Load environment variables from .env.supabase if available, otherwise .env
+dotenv.config({ path: ".env.supabase" });
+dotenv.config(); // Fallback to .env
 
 interface MigrationStats {
   threadsProcessed: number;
@@ -46,8 +48,8 @@ async function migrateThread(
   db: any
 ): Promise<{ emailsInserted: number; threadCreated: boolean; error?: string }> {
   try {
-    // Get full thread from Gmail API
-    const thread = await mcpGetFullGmailThread(threadId);
+    // Get full thread from Gmail API (direkte Google API, ikke MCP)
+    const thread = await getGmailThread(threadId);
     if (!thread || !thread.messages || thread.messages.length === 0) {
       return {
         emailsInserted: 0,
@@ -182,10 +184,28 @@ export async function migrateGmailToDatabase(
     throw new Error("Database connection failed");
   }
 
+  // Ensure search_path is set for this connection
+  // (getDb should handle this, but double-check for script execution)
+  const dbUrl = process.env.DATABASE_URL;
+  if (dbUrl) {
+    const url = new URL(dbUrl);
+    const schema = url.searchParams.get("schema");
+    if (schema) {
+      // Execute raw SQL to set search_path
+      const client = (db as any).client || (db as any)._;
+      if (client && typeof client.unsafe === "function") {
+        await client.unsafe(`SET search_path TO "${schema}"`);
+      }
+    }
+  }
+
   try {
-    // Fetch threads from Gmail API
-    console.log("📧 Fetching threads from Gmail API...");
-    const threads = await mcpSearchGmailThreads("in:inbox", maxThreads);
+    // Fetch threads from Gmail API (direkte Google API, ikke MCP)
+    console.log("📧 Fetching threads from Gmail API (direkte)...");
+    const threads = await searchGmailThreads({
+      query: "in:inbox",
+      maxResults: maxThreads,
+    });
     console.log(`✅ Found ${threads.length} threads\n`);
 
     if (threads.length === 0) {

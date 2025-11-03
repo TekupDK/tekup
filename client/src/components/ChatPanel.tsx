@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEmailContext } from "@/contexts/EmailContext";
 import { trpc } from "@/lib/trpc";
 import { Bot, Mic, Paperclip, Plus, Send } from "lucide-react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -36,6 +37,9 @@ function ChatPanel() {
   );
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Get email context for Shortwave-style tracking
+  const emailContext = useEmailContext();
 
   const { data: conversations, refetch: refetchConversations } =
     trpc.chat.list.useQuery(undefined, {
@@ -114,6 +118,20 @@ function ChatPanel() {
   const handleSendMessage = useCallback(() => {
     if (!inputMessage.trim()) return;
 
+    // Build context from email state (Shortwave-style)
+    const context = {
+      page: window.location.pathname.includes("/inbox")
+        ? "email-tab"
+        : undefined,
+      selectedThreads: Array.from(emailContext.state.selectedThreads),
+      openThreadId: emailContext.state.openThreadId || undefined,
+      folder: emailContext.state.folder,
+      viewMode: emailContext.state.viewMode,
+      selectedLabels: emailContext.state.selectedLabels,
+      searchQuery: emailContext.state.searchQuery || undefined,
+      openDrafts: emailContext.state.openDrafts || undefined,
+    };
+
     if (!selectedConversationId) {
       // Create new conversation first
       createConversation.mutate(
@@ -124,6 +142,7 @@ function ChatPanel() {
               conversationId: data.id,
               content: inputMessage,
               model: selectedModel,
+              context: Object.keys(context).length > 0 ? context : undefined,
             });
           },
         }
@@ -133,6 +152,7 @@ function ChatPanel() {
         conversationId: selectedConversationId,
         content: inputMessage,
         model: selectedModel,
+        context: Object.keys(context).length > 0 ? context : undefined,
       });
     }
   }, [
@@ -141,6 +161,7 @@ function ChatPanel() {
     selectedModel,
     createConversation,
     sendMessage,
+    emailContext.state,
   ]);
 
   const handleApproveAction = useCallback(

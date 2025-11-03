@@ -8,11 +8,7 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 import { requestQueue } from "./lib/requestQueue";
-import {
-  extractRetryAfter,
-  intelligentRetryDelay,
-  shouldRetry,
-} from "./lib/retryStrategy";
+import { intelligentRetryDelay, shouldRetry } from "./lib/retryStrategy";
 
 // Optimized QueryClient for better performance
 const queryClient = new QueryClient({

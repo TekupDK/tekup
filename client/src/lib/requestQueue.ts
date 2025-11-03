@@ -55,14 +55,19 @@ class RequestQueue {
    */
   setRateLimitUntil(retryAfter: Date): void {
     this.rateLimitUntil = retryAfter;
-    console.log(
-      "[RequestQueue] Rate limit active until:",
-      retryAfter.toISOString()
-    );
-
-    // Schedule processing when rate limit expires
     const now = new Date();
     const msUntilRetry = Math.max(0, retryAfter.getTime() - now.getTime());
+
+    if (process.env.NODE_ENV === "development") {
+      console.warn(
+        "[RequestQueue] Rate limit active until:",
+        retryAfter.toISOString(),
+        `(${Math.ceil(msUntilRetry / 1000)}s)`,
+        `Queue size: ${this.queue.length}`
+      );
+    }
+
+    // Schedule processing when rate limit expires
 
     if (this.processingTimeout) {
       clearTimeout(this.processingTimeout);
@@ -85,6 +90,14 @@ class RequestQueue {
       clearTimeout(this.processingTimeout);
       this.processingTimeout = null;
     }
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        "[RequestQueue] Rate limit cleared. Processing queue...",
+        `Queue size: ${this.queue.length}`
+      );
+    }
+
     this.processQueue();
   }
 
@@ -138,6 +151,11 @@ class RequestQueue {
       // Process next request after small delay (prevent burst)
       if (this.queue.length > 0 && !this.isRateLimited()) {
         setTimeout(() => this.processQueue(), 100);
+      } else if (
+        this.queue.length === 0 &&
+        process.env.NODE_ENV === "development"
+      ) {
+        console.log("[RequestQueue] Queue empty");
       }
     }
   }

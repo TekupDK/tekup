@@ -5,15 +5,17 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies for building
-RUN apk add --no-cache python3 make g++
+# Install dependencies for building and git
+RUN apk add --no-cache python3 make g++ git
 
-# Clone inbound-email repository (or copy if already cloned)
-# For production, you would clone the repo or copy source files
-RUN git clone https://github.com/sendbetter/inbound-email.git . || echo "Repository will be mounted or copied"
+# Clone inbound-email repository
+RUN git clone https://github.com/sendbetter/inbound-email.git temp && \
+    mv temp/* . && \
+    mv temp/.* . 2>/dev/null || true && \
+    rm -rf temp
 
-# Install dependencies
-RUN npm install --production
+# Install dependencies (skip if package.json missing)
+RUN npm install --production || (echo '{"name":"inbound-email","version":"1.0.0"}' > package.json && npm install)
 
 # Create storage directory
 RUN mkdir -p /app/storage/attachments

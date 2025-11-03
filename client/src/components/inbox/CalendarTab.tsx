@@ -55,6 +55,9 @@ export default function CalendarTab() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  // Rate limit handling
+  const rateLimit = useRateLimit();
+
   // Edit form state
   const [editForm, setEditForm] = useState({
     summary: "",
@@ -63,9 +66,6 @@ export default function CalendarTab() {
     end: "",
     location: "",
   });
-
-  // Rate limit handling
-  const rateLimit = useRateLimit();
 
   const utils = trpc.useUtils();
   const updateEventMutation = trpc.inbox.calendar.update.useMutation({
@@ -118,12 +118,12 @@ export default function CalendarTab() {
     refetch,
   } = trpc.inbox.calendar.list.useQuery(dateRange, {
     // Performance optimizations:
-    staleTime: 60000,
-    gcTime: 300000,
+    staleTime: 60000, // Consider data fresh for 60 seconds (reduces refetches)
+    gcTime: 300000, // Cache data for 5 minutes
     // Disable automatic polling - use adaptive polling instead
     refetchInterval: false,
     refetchIntervalInBackground: false,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: false, // Don't refetch when user switches tabs
     enabled: !rateLimit.isRateLimited,
     retry: (failureCount, error) => {
       if (rateLimit.isRateLimitError(error)) {
@@ -135,7 +135,7 @@ export default function CalendarTab() {
 
   // Adaptive polling based on user activity
   useAdaptivePolling({
-    baseInterval: 90000, // 90 seconds base
+    baseInterval: 90000, // 90 seconds base (was 60s fixed)
     minInterval: 30000, // 30 seconds when active
     maxInterval: 300000, // 5 minutes when inactive
     inactivityThreshold: 60000, // 1 minute to consider inactive
@@ -505,7 +505,7 @@ export default function CalendarTab() {
                     <p className="font-medium text-xs text-muted-foreground mb-0.5">
                       Sted
                     </p>
-                    <p className="text-sm leading-tight break-words">
+                    <p className="text-sm leading-tight wrap-break-word">
                       {selectedEvent.location}
                     </p>
                   </div>
@@ -520,7 +520,7 @@ export default function CalendarTab() {
                     <p className="font-medium text-xs text-muted-foreground mb-0.5">
                       Beskrivelse
                     </p>
-                    <div className="text-sm text-muted-foreground whitespace-pre-wrap break-words max-h-[300px] overflow-y-auto pr-2">
+                    <div className="text-sm text-muted-foreground whitespace-pre-wrap wrap-break-word max-h-[300px] overflow-y-auto pr-2">
                       {selectedEvent.description}
                     </div>
                   </div>

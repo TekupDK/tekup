@@ -16,18 +16,21 @@
 ### For de 2 andre chats:
 
 **Option 1: Via Cursor Task (Anbefalet)**
+
 1. I den anden chat, tryk `Ctrl+Shift+P`
 2. Skriv: `Tasks: Run Task`
 3. Vælg: `🔄 Create Cursor Chat Branch`
 4. Arbejd isoleret! ✨
 
 **Option 2: Via PowerShell**
+
 ```powershell
 cd C:\Users\empir\Tekup\services\tekup-ai-v2
 .\scripts\create-chat-branch.ps1
 ```
 
 **Option 3: Manuelt**
+
 ```bash
 git checkout -b cursor/chat-2-work
 git push -u origin cursor/chat-2-work
@@ -48,6 +51,7 @@ git push -u origin cursor/chat-2-work
 ### Når du starter en ny chat:
 
 1. **Tjek hvilken branch du er på:**
+
    ```bash
    git branch --show-current
    ```
@@ -106,12 +110,14 @@ A: Ja, hvis du er den ENESTE der arbejder på migration. Men bedre at isolere.
 ## 📝 Eksempel
 
 **Chat 1 (Migration):**
+
 ```bash
 # Du er på: migration/postgresql-supabase ✅
 # Fortsæt her - ingen ændringer nødvendig
 ```
 
 **Chat 2 (Feature):**
+
 ```bash
 # Kør: Create Cursor Chat Branch
 # Opretter: cursor/20250115-143022-abc123
@@ -119,6 +125,7 @@ A: Ja, hvis du er den ENESTE der arbejder på migration. Men bedre at isolere.
 ```
 
 **Chat 3 (Bugfix):**
+
 ```bash
 # Kør: Create Cursor Chat Branch
 # Opretter: cursor/20250115-150045-xyz789

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useEmailContext } from "@/contexts/EmailContext";
 import CustomerProfile from "../CustomerProfile";
 import AdvancedEmailSearch from "./AdvancedEmailSearch";
 import EmailComposer from "./EmailComposer";
@@ -67,6 +68,33 @@ export default function EmailTab() {
 
   // Rate limit handling
   const rateLimit = useRateLimit();
+
+  // Shortwave-style context tracking
+  const emailContext = useEmailContext();
+
+  // Sync local state to EmailContext (for AI context tracking)
+  useEffect(() => {
+    emailContext.updateState({
+      folder: selectedFolder,
+      viewMode,
+      selectedLabels,
+      searchQuery,
+      openThreadId: selectedThreadId,
+      previewThreadId,
+      openDrafts: composerOpen ? 1 : 0,
+      selectedThreads: selectedEmails,
+    });
+  }, [
+    selectedFolder,
+    viewMode,
+    selectedLabels,
+    searchQuery,
+    selectedThreadId,
+    previewThreadId,
+    composerOpen,
+    selectedEmails,
+    emailContext,
+  ]);
 
   // Build query based on folder and labels
   const buildQuery = () => {
@@ -416,7 +444,7 @@ export default function EmailTab() {
   return (
     <div className="h-full flex">
       {/* Sidebar */}
-      <div className="w-64 flex-shrink-0">
+      <div className="w-64 shrink-0">
         <EmailSidebar
           selectedFolder={selectedFolder}
           onFolderChange={setSelectedFolder}

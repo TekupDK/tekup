@@ -43,7 +43,25 @@ let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      const client = postgres(process.env.DATABASE_URL);
+      // Parse DATABASE_URL to extract schema parameter (PostgreSQL doesn't accept schema in connection string)
+      const dbUrl = new URL(process.env.DATABASE_URL);
+      const schema = dbUrl.searchParams.get("schema");
+
+      // Remove schema from URL as postgres.js doesn't support it as query parameter
+      if (schema) {
+        dbUrl.searchParams.delete("schema");
+      }
+
+      // Create client without schema in connection string
+      const connectionString = dbUrl.toString();
+      const client = postgres(connectionString);
+
+      // If schema is specified, set search_path after connection
+      // Note: Schema name must be directly in SQL string, not as parameter
+      if (schema) {
+        await client.unsafe(`SET search_path TO "${schema}"`);
+      }
+
       _db = drizzle(client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);

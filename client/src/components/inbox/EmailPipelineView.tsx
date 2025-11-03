@@ -8,12 +8,12 @@ import {
   DragOverlay,
   DragStartEvent,
   PointerSensor,
+  useDroppable,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  useDroppable,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";

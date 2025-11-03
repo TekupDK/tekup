@@ -158,7 +158,7 @@ export default function EmailSidebar({
                       >
                         {/* Color dot indicator */}
                         <div
-                          className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                          className={`w-2 h-2 rounded-full shrink-0 ${
                             label.name === "Leads"
                               ? "bg-blue-500"
                               : label.name === "Needs Reply" ||

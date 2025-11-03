@@ -75,6 +75,11 @@ Fuld dokumentation suite til API optimeringer - alt hvad du skal bruge.
 **Use When:** Forstå virtual scrolling i EmailTab
 **Time:** Reference når relevant
 
+### 13. `API_OPTIMIZATION_MONITORING.md`
+**Purpose:** Monitoring og debugging guide
+**Use When:** Debug issues eller track performance
+**Time:** Reference dokument
+
 ## 📊 Documentation by Use Case
 
 ### Starting Testing

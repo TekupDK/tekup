@@ -17,3 +17,24 @@ export const ENV = {
   billyApiKey: process.env.BILLY_API_KEY ?? "",
   billyOrganizationId: process.env.BILLY_ORGANIZATION_ID ?? "",
 };
+
+// Validate required environment variables
+function validateEnv() {
+  const required = [
+    "JWT_SECRET",
+    "OWNER_OPEN_ID",
+    "DATABASE_URL",
+    "VITE_APP_ID",
+  ];
+  const missing = required.filter(key => !process.env[key]);
+
+  if (missing.length > 0) {
+    console.warn(
+      `⚠️ [ENV] Missing required environment variables: ${missing.join(", ")}`
+    );
+    console.warn("📄 Copy env.template.txt to .env and fill in your values");
+  }
+}
+
+// Run validation on module load
+validateEnv();

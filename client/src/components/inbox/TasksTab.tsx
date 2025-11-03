@@ -1,77 +1,77 @@
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import {
-    closestCenter,
-    DndContext,
-    DragEndEvent,
-    DragOverlay,
-    DragStartEvent,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import {
-    arrayMove,
-    SortableContext,
-    sortableKeyboardCoordinates,
-    useSortable,
-    verticalListSortingStrategy,
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { format } from "date-fns";
 import { da } from "date-fns/locale";
 import {
-    Calendar,
-    CheckSquare,
-    Clock,
-    Download,
-    Filter,
-    GripVertical,
-    Link2,
-    MoreVertical,
-    Plus,
-    Search,
-    Trash2,
-    X,
+  Calendar,
+  CheckSquare,
+  Clock,
+  Download,
+  Filter,
+  GripVertical,
+  Link2,
+  MoreVertical,
+  Plus,
+  Search,
+  Trash2,
+  X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -139,47 +139,6 @@ export default function TasksTab() {
 
   // Virtual scrolling - flatten all groups with headers into single list for virtualization
   const scrollableRef = useRef<HTMLDivElement>(null);
-
-  // Create flat list with headers and tasks
-  const flatTaskList = useMemo(() => {
-    const items: Array<{ type: "header" | "task"; data: any; group: string }> = [];
-
-    if (groupedTasks.overdue.length > 0) {
-      items.push({ type: "header", data: { label: "Overdue", count: groupedTasks.overdue.length, color: "destructive" }, group: "overdue" });
-      groupedTasks.overdue.forEach(task => items.push({ type: "task", data: task, group: "overdue" }));
-    }
-
-    if (groupedTasks.today.length > 0) {
-      items.push({ type: "header", data: { label: "Due Today", count: groupedTasks.today.length, color: "yellow" }, group: "today" });
-      groupedTasks.today.forEach(task => items.push({ type: "task", data: task, group: "today" }));
-    }
-
-    if (groupedTasks.upcoming.length > 0) {
-      items.push({ type: "header", data: { label: "Upcoming", count: groupedTasks.upcoming.length }, group: "upcoming" });
-      groupedTasks.upcoming.forEach(task => items.push({ type: "task", data: task, group: "upcoming" }));
-    }
-
-    if (groupedTasks.noDate.length > 0) {
-      items.push({ type: "header", data: { label: "No Due Date", count: groupedTasks.noDate.length }, group: "noDate" });
-      groupedTasks.noDate.forEach(task => items.push({ type: "task", data: task, group: "noDate" }));
-    }
-
-    return items;
-  }, [groupedTasks]);
-
-  // Virtualizer - only enable if total tasks > 50 for performance
-  const shouldVirtualize = filteredTasks.length > 50;
-
-  const virtualizer = useVirtualizer({
-    count: shouldVirtualize ? flatTaskList.length : 0,
-    getScrollElement: () => scrollableRef.current,
-    estimateSize: (index) => {
-      const item = flatTaskList[index];
-      return item?.type === "header" ? 48 : 96; // Header smaller (48px), tasks larger (96px)
-    },
-    overscan: 5,
-    enabled: shouldVirtualize,
-  });
 
   const [newTaskForm, setNewTaskForm] = useState({
     title: "",
@@ -253,38 +212,46 @@ export default function TasksTab() {
   });
 
   const bulkDeleteMutation = trpc.inbox.tasks.bulkDelete.useMutation({
-    onSuccess: (data) => {
+    onSuccess: data => {
       utils.inbox.tasks.list.invalidate();
       setIsBulkDeleteDialogOpen(false);
       setSelectedTasks(new Set());
-      toast.success(`${data.deletedCount} task${data.deletedCount !== 1 ? "s" : ""} slettet!`);
+      toast.success(
+        `${data.deletedCount} task${data.deletedCount !== 1 ? "s" : ""} slettet!`
+      );
     },
     onError: error => {
       toast.error(`Fejl ved sletning: ${error.message}`);
     },
   });
 
-  const bulkUpdateStatusMutation = trpc.inbox.tasks.bulkUpdateStatus.useMutation({
-    onSuccess: (data) => {
-      utils.inbox.tasks.list.invalidate();
-      setSelectedTasks(new Set());
-      toast.success(`${data.updatedCount} task${data.updatedCount !== 1 ? "s" : ""} opdateret!`);
-    },
-    onError: error => {
-      toast.error(`Fejl ved opdatering: ${error.message}`);
-    },
-  });
+  const bulkUpdateStatusMutation =
+    trpc.inbox.tasks.bulkUpdateStatus.useMutation({
+      onSuccess: data => {
+        utils.inbox.tasks.list.invalidate();
+        setSelectedTasks(new Set());
+        toast.success(
+          `${data.updatedCount} task${data.updatedCount !== 1 ? "s" : ""} opdateret!`
+        );
+      },
+      onError: error => {
+        toast.error(`Fejl ved opdatering: ${error.message}`);
+      },
+    });
 
-  const bulkUpdatePriorityMutation = trpc.inbox.tasks.bulkUpdatePriority.useMutation({
-    onSuccess: (data) => {
-      utils.inbox.tasks.list.invalidate();
-      setSelectedTasks(new Set());
-      toast.success(`${data.updatedCount} task${data.updatedCount !== 1 ? "s" : ""} opdateret!`);
-    },
-    onError: error => {
-      toast.error(`Fejl ved opdatering: ${error.message}`);
-    },
-  });
+  const bulkUpdatePriorityMutation =
+    trpc.inbox.tasks.bulkUpdatePriority.useMutation({
+      onSuccess: data => {
+        utils.inbox.tasks.list.invalidate();
+        setSelectedTasks(new Set());
+        toast.success(
+          `${data.updatedCount} task${data.updatedCount !== 1 ? "s" : ""} opdateret!`
+        );
+      },
+      onError: error => {
+        toast.error(`Fejl ved opdatering: ${error.message}`);
+      },
+    });
 
   const bulkUpdateOrderMutation = trpc.inbox.tasks.bulkUpdateOrder.useMutation({
     onSuccess: () => {
@@ -370,6 +337,80 @@ export default function TasksTab() {
 
     return groups;
   }, [filteredTasks]);
+
+  // Create flat list with headers and tasks (after groupedTasks is defined)
+  const flatTaskList = useMemo(() => {
+    const items: Array<{ type: "header" | "task"; data: any; group: string }> =
+      [];
+
+    if (groupedTasks.overdue.length > 0) {
+      items.push({
+        type: "header",
+        data: {
+          label: "Overdue",
+          count: groupedTasks.overdue.length,
+          color: "destructive",
+        },
+        group: "overdue",
+      });
+      groupedTasks.overdue.forEach(task =>
+        items.push({ type: "task", data: task, group: "overdue" })
+      );
+    }
+
+    if (groupedTasks.today.length > 0) {
+      items.push({
+        type: "header",
+        data: {
+          label: "Due Today",
+          count: groupedTasks.today.length,
+          color: "yellow",
+        },
+        group: "today",
+      });
+      groupedTasks.today.forEach(task =>
+        items.push({ type: "task", data: task, group: "today" })
+      );
+    }
+
+    if (groupedTasks.upcoming.length > 0) {
+      items.push({
+        type: "header",
+        data: { label: "Upcoming", count: groupedTasks.upcoming.length },
+        group: "upcoming",
+      });
+      groupedTasks.upcoming.forEach(task =>
+        items.push({ type: "task", data: task, group: "upcoming" })
+      );
+    }
+
+    if (groupedTasks.noDate.length > 0) {
+      items.push({
+        type: "header",
+        data: { label: "No Due Date", count: groupedTasks.noDate.length },
+        group: "noDate",
+      });
+      groupedTasks.noDate.forEach(task =>
+        items.push({ type: "task", data: task, group: "noDate" })
+      );
+    }
+
+    return items;
+  }, [groupedTasks]);
+
+  // Virtualizer - only enable if total tasks > 50 for performance
+  const shouldVirtualize = filteredTasks.length > 50;
+
+  const virtualizer = useVirtualizer({
+    count: shouldVirtualize ? flatTaskList.length : 0,
+    getScrollElement: () => scrollableRef.current,
+    estimateSize: index => {
+      const item = flatTaskList[index];
+      return item?.type === "header" ? 48 : 96; // Header smaller (48px), tasks larger (96px)
+    },
+    overscan: 5,
+    enabled: shouldVirtualize,
+  });
 
   const handleCreateTask = () => {
     if (!newTaskForm.title.trim()) {
@@ -546,7 +587,7 @@ export default function TasksTab() {
       if (!activeTask) return;
 
       // Find the task being dragged over
-      let overTask: typeof filteredTasks[0] | null = null;
+      let overTask: (typeof filteredTasks)[0] | null = null;
       if (overGroup === "overdue") {
         overTask = groupedTasks.overdue[overIndex] || null;
       } else if (overGroup === "today") {
@@ -563,7 +604,9 @@ export default function TasksTab() {
           taskId: activeTask.id,
           status: overTask.status as TaskStatus,
         });
-        toast.success(`Task status opdateret til ${STATUS_CONFIG[overTask.status as TaskStatus]?.label}`);
+        toast.success(
+          `Task status opdateret til ${STATUS_CONFIG[overTask.status as TaskStatus]?.label}`
+        );
         return;
       }
 
@@ -660,9 +703,13 @@ export default function TasksTab() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="todo">Markér som To Do</SelectItem>
-                  <SelectItem value="in_progress">Markér som In Progress</SelectItem>
+                  <SelectItem value="in_progress">
+                    Markér som In Progress
+                  </SelectItem>
                   <SelectItem value="done">Markér som Done</SelectItem>
-                  <SelectItem value="cancelled">Markér som Cancelled</SelectItem>
+                  <SelectItem value="cancelled">
+                    Markér som Cancelled
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <Select
@@ -694,14 +741,31 @@ export default function TasksTab() {
                   );
 
                   // Generate CSV
-                  const headers = ["Titel", "Beskrivelse", "Status", "Priority", "Due Date", "Created Date"];
+                  const headers = [
+                    "Titel",
+                    "Beskrivelse",
+                    "Status",
+                    "Priority",
+                    "Due Date",
+                    "Created Date",
+                  ];
                   const rows = selectedTasksData.map(task => [
                     task.title || "",
                     task.description || "",
-                    STATUS_CONFIG[task.status as TaskStatus]?.label || task.status,
-                    PRIORITY_CONFIG[task.priority as TaskPriority]?.label || task.priority,
-                    task.dueDate ? format(new Date(task.dueDate), "dd-MM-yyyy", { locale: da }) : "",
-                    task.createdAt ? format(new Date(task.createdAt), "dd-MM-yyyy", { locale: da }) : "",
+                    STATUS_CONFIG[task.status as TaskStatus]?.label ||
+                      task.status,
+                    PRIORITY_CONFIG[task.priority as TaskPriority]?.label ||
+                      task.priority,
+                    task.dueDate
+                      ? format(new Date(task.dueDate), "dd-MM-yyyy", {
+                          locale: da,
+                        })
+                      : "",
+                    task.createdAt
+                      ? format(new Date(task.createdAt), "dd-MM-yyyy", {
+                          locale: da,
+                        })
+                      : "",
                   ]);
 
                   const csvContent = [
@@ -709,11 +773,16 @@ export default function TasksTab() {
                     ...rows.map(row => row.map(cell => `"${cell}"`).join(",")),
                   ].join("\n");
 
-                  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+                  const blob = new Blob([csvContent], {
+                    type: "text/csv;charset=utf-8;",
+                  });
                   const link = document.createElement("a");
                   const url = URL.createObjectURL(blob);
                   link.setAttribute("href", url);
-                  link.setAttribute("download", `tasks-${format(new Date(), "yyyy-MM-dd")}.csv`);
+                  link.setAttribute(
+                    "download",
+                    `tasks-${format(new Date(), "yyyy-MM-dd")}.csv`
+                  );
                   link.style.visibility = "hidden";
                   document.body.appendChild(link);
                   link.click();
@@ -841,250 +910,266 @@ export default function TasksTab() {
         </div>
       )}
 
-          {/* Task List */}
-          {!hasNoTasks && (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={filteredTasks.map(t => t.id)}
-                strategy={verticalListSortingStrategy}
+      {/* Task List */}
+      {!hasNoTasks && (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={filteredTasks.map(t => t.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            {shouldVirtualize ? (
+              <div
+                ref={scrollableRef}
+                className="flex-1 overflow-y-auto min-h-0"
               >
-                {shouldVirtualize ? (
-                  <div
-                    ref={scrollableRef}
-                    className="flex-1 overflow-y-auto min-h-0"
-                  >
-                    <div
-                      style={{
-                        height: `${virtualizer.getTotalSize()}px`,
-                        width: "100%",
-                        position: "relative",
-                      }}
-                    >
-                      {virtualizer.getVirtualItems().map((virtualItem) => {
-                        const item = flatTaskList[virtualItem.index];
-                        if (!item) return null;
+                <div
+                  style={{
+                    height: `${virtualizer.getTotalSize()}px`,
+                    width: "100%",
+                    position: "relative",
+                  }}
+                >
+                  {virtualizer.getVirtualItems().map(virtualItem => {
+                    const item = flatTaskList[virtualItem.index];
+                    if (!item) return null;
 
-                        if (item.type === "header") {
-                          const { label, count, color } = item.data;
-                          return (
-                            <div
-                              key={`header-${item.group}`}
-                              style={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: `${virtualItem.size}px`,
-                                transform: `translateY(${virtualItem.start}px)`,
-                              }}
-                              className="px-4 py-2 bg-muted/30 border-b sticky top-0 z-10 flex items-center"
-                            >
-                              <h3
-                                className={`text-sm font-semibold flex items-center gap-2 ${
-                                  color === "destructive"
-                                    ? "text-destructive"
-                                    : color === "yellow"
-                                      ? "text-yellow-600 dark:text-yellow-400"
-                                      : "text-muted-foreground"
-                                }`}
-                              >
-                                {color === "destructive" || color === "yellow" ? (
-                                  <Clock className="w-4 h-4" />
-                                ) : (
-                                  <Calendar className="w-4 h-4" />
-                                )}
-                                {label} ({count})
-                              </h3>
-                            </div>
-                          );
-                        }
-
-                        const task = item.data;
-                        return (
-                          <div
-                            key={task.id}
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              width: "100%",
-                              height: `${virtualItem.size}px`,
-                              transform: `translateY(${virtualItem.start}px)`,
-                            }}
-                            className="px-4"
+                    if (item.type === "header") {
+                      const { label, count, color } = item.data;
+                      return (
+                        <div
+                          key={`header-${item.group}`}
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: `${virtualItem.size}px`,
+                            transform: `translateY(${virtualItem.start}px)`,
+                          }}
+                          className="px-4 py-2 bg-muted/30 border-b sticky top-0 z-10 flex items-center"
+                        >
+                          <h3
+                            className={`text-sm font-semibold flex items-center gap-2 ${
+                              color === "destructive"
+                                ? "text-destructive"
+                                : color === "yellow"
+                                  ? "text-yellow-600 dark:text-yellow-400"
+                                  : "text-muted-foreground"
+                            }`}
                           >
-                            <SortableTaskCard
-                              task={task}
-                              isSelected={selectedTasks.has(task.id)}
-                              onSelect={isSomeSelected ? handleTaskSelect : undefined}
-                              onCheckboxChange={handleCheckboxChange}
-                              onEditClick={handleEditClick}
-                              onDeleteClick={handleDeleteClick}
-                              onStatusChange={handleStatusChange}
-                              getDueDateDisplay={getDueDateDisplay}
-                            />
-                          </div>
-                        );
-                      })}
+                            {color === "destructive" || color === "yellow" ? (
+                              <Clock className="w-4 h-4" />
+                            ) : (
+                              <Calendar className="w-4 h-4" />
+                            )}
+                            {label} ({count})
+                          </h3>
+                        </div>
+                      );
+                    }
+
+                    const task = item.data;
+                    return (
+                      <div
+                        key={task.id}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: `${virtualItem.size}px`,
+                          transform: `translateY(${virtualItem.start}px)`,
+                        }}
+                        className="px-4"
+                      >
+                        <SortableTaskCard
+                          task={task}
+                          isSelected={selectedTasks.has(task.id)}
+                          onSelect={
+                            isSomeSelected ? handleTaskSelect : undefined
+                          }
+                          onCheckboxChange={handleCheckboxChange}
+                          onEditClick={handleEditClick}
+                          onDeleteClick={handleDeleteClick}
+                          onStatusChange={handleStatusChange}
+                          getDueDateDisplay={getDueDateDisplay}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div
+                ref={scrollableRef}
+                className="flex-1 overflow-y-auto space-y-4"
+              >
+                {/* Overdue Tasks */}
+                {groupedTasks.overdue.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-destructive mb-2 flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
+                      Overdue ({groupedTasks.overdue.length})
+                    </h3>
+                    <div className="space-y-2">
+                      {groupedTasks.overdue.map(task => (
+                        <SortableTaskCard
+                          key={task.id}
+                          task={task}
+                          isSelected={selectedTasks.has(task.id)}
+                          onSelect={
+                            isSomeSelected ? handleTaskSelect : undefined
+                          }
+                          onCheckboxChange={handleCheckboxChange}
+                          onEditClick={handleEditClick}
+                          onDeleteClick={handleDeleteClick}
+                          onStatusChange={handleStatusChange}
+                          getDueDateDisplay={getDueDateDisplay}
+                        />
+                      ))}
                     </div>
                   </div>
-                ) : (
-                <div ref={scrollableRef} className="flex-1 overflow-y-auto space-y-4">
-                  {/* Overdue Tasks */}
-                  {groupedTasks.overdue.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-destructive mb-2 flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        Overdue ({groupedTasks.overdue.length})
-                      </h3>
-                      <div className="space-y-2">
-                        {groupedTasks.overdue.map(task => (
-                          <SortableTaskCard
-                            key={task.id}
-                            task={task}
-                            isSelected={selectedTasks.has(task.id)}
-                            onSelect={isSomeSelected ? handleTaskSelect : undefined}
-                            onCheckboxChange={handleCheckboxChange}
-                            onEditClick={handleEditClick}
-                            onDeleteClick={handleDeleteClick}
-                            onStatusChange={handleStatusChange}
-                            getDueDateDisplay={getDueDateDisplay}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                )}
 
-                  {/* Due Today */}
-                  {groupedTasks.today.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-yellow-600 dark:text-yellow-400 mb-2 flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        Due Today ({groupedTasks.today.length})
-                      </h3>
-                      <div className="space-y-2">
-                        {groupedTasks.today.map(task => (
-                          <SortableTaskCard
-                            key={task.id}
-                            task={task}
-                            isSelected={selectedTasks.has(task.id)}
-                            onSelect={isSomeSelected ? handleTaskSelect : undefined}
-                            onCheckboxChange={handleCheckboxChange}
-                            onEditClick={handleEditClick}
-                            onDeleteClick={handleDeleteClick}
-                            onStatusChange={handleStatusChange}
-                            getDueDateDisplay={getDueDateDisplay}
-                          />
-                        ))}
-                      </div>
+                {/* Due Today */}
+                {groupedTasks.today.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-yellow-600 dark:text-yellow-400 mb-2 flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
+                      Due Today ({groupedTasks.today.length})
+                    </h3>
+                    <div className="space-y-2">
+                      {groupedTasks.today.map(task => (
+                        <SortableTaskCard
+                          key={task.id}
+                          task={task}
+                          isSelected={selectedTasks.has(task.id)}
+                          onSelect={
+                            isSomeSelected ? handleTaskSelect : undefined
+                          }
+                          onCheckboxChange={handleCheckboxChange}
+                          onEditClick={handleEditClick}
+                          onDeleteClick={handleDeleteClick}
+                          onStatusChange={handleStatusChange}
+                          getDueDateDisplay={getDueDateDisplay}
+                        />
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Upcoming */}
-                  {groupedTasks.upcoming.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        Upcoming ({groupedTasks.upcoming.length})
-                      </h3>
-                      <div className="space-y-2">
-                        {groupedTasks.upcoming.map(task => (
-                          <SortableTaskCard
-                            key={task.id}
-                            task={task}
-                            isSelected={selectedTasks.has(task.id)}
-                            onSelect={isSomeSelected ? handleTaskSelect : undefined}
-                            onCheckboxChange={handleCheckboxChange}
-                            onEditClick={handleEditClick}
-                            onDeleteClick={handleDeleteClick}
-                            onStatusChange={handleStatusChange}
-                            getDueDateDisplay={getDueDateDisplay}
-                          />
-                        ))}
-                      </div>
+                {/* Upcoming */}
+                {groupedTasks.upcoming.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Upcoming ({groupedTasks.upcoming.length})
+                    </h3>
+                    <div className="space-y-2">
+                      {groupedTasks.upcoming.map(task => (
+                        <SortableTaskCard
+                          key={task.id}
+                          task={task}
+                          isSelected={selectedTasks.has(task.id)}
+                          onSelect={
+                            isSomeSelected ? handleTaskSelect : undefined
+                          }
+                          onCheckboxChange={handleCheckboxChange}
+                          onEditClick={handleEditClick}
+                          onDeleteClick={handleDeleteClick}
+                          onStatusChange={handleStatusChange}
+                          getDueDateDisplay={getDueDateDisplay}
+                        />
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* No Due Date */}
-                  {groupedTasks.noDate.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        No Due Date ({groupedTasks.noDate.length})
-                      </h3>
-                      <div className="space-y-2">
-                        {groupedTasks.noDate.map(task => (
-                          <SortableTaskCard
-                            key={task.id}
-                            task={task}
-                            isSelected={selectedTasks.has(task.id)}
-                            onSelect={isSomeSelected ? handleTaskSelect : undefined}
-                            onCheckboxChange={handleCheckboxChange}
-                            onEditClick={handleEditClick}
-                            onDeleteClick={handleDeleteClick}
-                            onStatusChange={handleStatusChange}
-                            getDueDateDisplay={getDueDateDisplay}
-                          />
-                        ))}
-                      </div>
+                {/* No Due Date */}
+                {groupedTasks.noDate.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      No Due Date ({groupedTasks.noDate.length})
+                    </h3>
+                    <div className="space-y-2">
+                      {groupedTasks.noDate.map(task => (
+                        <SortableTaskCard
+                          key={task.id}
+                          task={task}
+                          isSelected={selectedTasks.has(task.id)}
+                          onSelect={
+                            isSomeSelected ? handleTaskSelect : undefined
+                          }
+                          onCheckboxChange={handleCheckboxChange}
+                          onEditClick={handleEditClick}
+                          onDeleteClick={handleDeleteClick}
+                          onStatusChange={handleStatusChange}
+                          getDueDateDisplay={getDueDateDisplay}
+                        />
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Filtered Empty State */}
-                  {filteredTasks.length === 0 && !hasNoTasks && (
-                    <div className="flex flex-col items-center justify-center py-12 text-center">
-                      <CheckSquare className="w-10 h-10 text-muted-foreground/50 mb-3" />
-                      <p className="text-sm font-medium mb-1">
-                        Ingen tasks matcher dine filtre
+                {/* Filtered Empty State */}
+                {filteredTasks.length === 0 && !hasNoTasks && (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <CheckSquare className="w-10 h-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-medium mb-1">
+                      Ingen tasks matcher dine filtre
+                    </p>
+                    <p className="text-xs text-muted-foreground mb-4">
+                      Prøv at justere din søgning eller filter kriterier.
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setStatusFilter("all");
+                        setPriorityFilter("all");
+                      }}
+                    >
+                      Ryd filtre
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+          </SortableContext>
+
+          {activeTask && (
+            <DragOverlay>
+              <Card className="p-4 shadow-lg opacity-95 bg-background">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium">{activeTask.title}</p>
+                    {activeTask.description && (
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                        {activeTask.description}
                       </p>
-                      <p className="text-xs text-muted-foreground mb-4">
-                        Prøv at justere din søgning eller filter kriterier.
-                      </p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSearchQuery("");
-                          setStatusFilter("all");
-                          setPriorityFilter("all");
-                        }}
-                      >
-                        Ryd filtre
-                      </Button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              )}
-
-              {activeTask && (
-                <DragOverlay>
-                  <Card className="p-4 shadow-lg opacity-95 bg-background">
-                    <div className="flex items-start gap-3">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium">{activeTask.title}</p>
-                        {activeTask.description && (
-                          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                            {activeTask.description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                </DragOverlay>
-              )}
-            </DndContext>
+              </Card>
+            </DragOverlay>
           )}
+        </DndContext>
+      )}
 
       {/* Create Task Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
         <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold">Opret ny Task</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">
+              Opret ny Task
+            </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
               Opret en ny task for at holde styr på dine opgaver.
             </DialogDescription>
@@ -1187,8 +1272,12 @@ export default function TasksTab() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold">Rediger Task</DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">Opdater task detaljer.</DialogDescription>
+            <DialogTitle className="text-lg font-semibold">
+              Rediger Task
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Opdater task detaljer.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -1427,9 +1516,7 @@ function SortableTaskCard({
         {onSelect ? (
           <Checkbox
             checked={isSelected || false}
-            onCheckedChange={checked =>
-              onSelect(task.id, checked === true)
-            }
+            onCheckedChange={checked => onSelect(task.id, checked === true)}
             className="mt-1"
             onClick={e => e.stopPropagation()}
           />
