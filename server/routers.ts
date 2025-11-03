@@ -19,7 +19,6 @@ import {
   searchCustomerByEmail,
 } from "./billy";
 import { customerRouter } from "./customer-router";
-import { cacheInvoicesToDatabase } from "./invoice-cache";
 import {
   bulkDeleteTasks,
   bulkUpdateTaskOrder,
@@ -52,6 +51,7 @@ import {
   updateUserName,
   updateUserPreferences,
 } from "./db";
+import { cacheInvoicesToDatabase } from "./invoice-cache";
 // Use MCP for Google services instead of direct API
 import {
   addLabelToThread,
@@ -420,7 +420,9 @@ export const appRouter = router({
               }
 
               // Database is empty - fetch from Gmail API and cache to database
-              console.log("[Email List] Database empty, fetching from Gmail API and caching...");
+              console.log(
+                "[Email List] Database empty, fetching from Gmail API and caching..."
+              );
             } catch (error) {
               console.warn(
                 "[Email List] Database query failed, falling back to Gmail API:",
@@ -996,15 +998,24 @@ export const appRouter = router({
               return invoiceRecords.map(({ invoice, customer }) => ({
                 id: invoice.billyInvoiceId,
                 invoiceNo: invoice.invoiceNo || undefined,
-                contactId: customer.billyCustomerId || invoice.customerId.toString(),
-                entryDate: invoice.entryDate?.toISOString() || new Date().toISOString(),
-                paymentTermsDays: invoice.dueDate && invoice.entryDate
-                  ? Math.round(
-                      (invoice.dueDate.getTime() - invoice.entryDate.getTime()) /
-                        (1000 * 60 * 60 * 24)
-                    )
-                  : 14,
-                state: invoice.status as "draft" | "approved" | "sent" | "paid" | "overdue",
+                contactId:
+                  customer.billyCustomerId || invoice.customerId.toString(),
+                entryDate:
+                  invoice.entryDate?.toISOString() || new Date().toISOString(),
+                paymentTermsDays:
+                  invoice.dueDate && invoice.entryDate
+                    ? Math.round(
+                        (invoice.dueDate.getTime() -
+                          invoice.entryDate.getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      )
+                    : 14,
+                state: invoice.status as
+                  | "draft"
+                  | "approved"
+                  | "sent"
+                  | "paid"
+                  | "overdue",
                 lines: [], // Lines not stored in customer_invoices table
                 organizationId: customer.billyOrganizationId || "",
               }));

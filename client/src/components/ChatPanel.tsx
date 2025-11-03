@@ -13,8 +13,8 @@ import { trpc } from "@/lib/trpc";
 import { Bot, Mic, Paperclip, Plus, Send } from "lucide-react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Streamdown } from "streamdown";
 import { ActionApprovalModal, type PendingAction } from "./ActionApprovalModal";
+import { SafeStreamdown } from "./SafeStreamdown";
 
 interface Message {
   id: number;
@@ -123,13 +123,16 @@ function ChatPanel() {
       page: window.location.pathname.includes("/inbox")
         ? "email-tab"
         : undefined,
-      selectedThreads: Array.from(emailContext.state.selectedThreads),
+      selectedThreads: Array.from(
+        emailContext.state.selectedThreads
+      ) as string[],
       openThreadId: emailContext.state.openThreadId || undefined,
       folder: emailContext.state.folder,
       viewMode: emailContext.state.viewMode,
       selectedLabels: emailContext.state.selectedLabels,
       searchQuery: emailContext.state.searchQuery || undefined,
       openDrafts: emailContext.state.openDrafts || undefined,
+      previewThreadId: emailContext.state.previewThreadId || undefined,
     };
 
     if (!selectedConversationId) {
@@ -306,7 +309,7 @@ function ChatPanel() {
                       >
                         {message.role === "assistant" ? (
                           <div className="prose prose-sm max-w-none dark:prose-invert">
-                            <Streamdown>{message.content}</Streamdown>
+                            <SafeStreamdown content={message.content} />
                           </div>
                         ) : (
                           <p className="whitespace-pre-wrap text-sm leading-relaxed">
@@ -337,7 +340,7 @@ function ChatPanel() {
               </div>
 
               {/* Input Area */}
-              <div className="border-t border-border p-3 sm:p-4">
+              <div className="sticky bottom-0 z-50 bg-background border-t border-border p-3 sm:p-4 backdrop-blur supports-backdrop-filter:backdrop-blur">
                 <div className="max-w-3xl mx-auto space-y-2">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Bot className="w-4 h-4" />

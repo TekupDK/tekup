@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { trpc } from "@/lib/trpc";
 import { format } from "date-fns";
 import { da } from "date-fns/locale";
-import { Streamdown } from "streamdown";
+import { SafeStreamdown } from "../SafeStreamdown";
 import EmailActions from "./EmailActions";
 
 interface EmailThreadViewProps {
@@ -113,7 +113,7 @@ export default function EmailThreadView({
               {/* Message Body */}
               <div className="prose prose-sm max-w-none dark:prose-invert">
                 {message.body ? (
-                  <Streamdown>{message.body}</Streamdown>
+                  <SafeStreamdown content={message.body} />
                 ) : (
                   <p className="text-muted-foreground">Ingen indhold</p>
                 )}
