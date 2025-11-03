@@ -58,7 +58,7 @@ pnpm dev
 - **Repository:** [TekupDK/tekup-friday](https://github.com/TekupDK/tekup-friday)
 - **Tech:** React 19, tRPC, Express, Drizzle ORM
 - **Features:** Unified inbox, Multi-AI, Billy.dk integration
-- **Live Demo:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
+- **Live Demo (Dev Instance):** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
 
 ### **Rendetalje**
 

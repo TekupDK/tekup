@@ -97,7 +97,7 @@ Efter setup kan du:
 
 - ✅ **Læse den komplette guide:** Se [TEKUP_AI_V2_UDVIKLINGS_GUIDE.md](TEKUP_AI_V2_UDVIKLINGS_GUIDE.md)
 - ✅ **Udforske koden:** Browse `services/tekup-ai-v2/client` og `server`
-- ✅ **Se live demo:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
+- ✅ **Se live demo (dev instance):** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
 - ✅ **Besøg repository:** <https://github.com/TekupDK/tekup-friday>
 
 ---

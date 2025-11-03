@@ -376,7 +376,8 @@ pnpm db:studio
 
 ### **Live Resources**
 
-- **Friday AI Live Demo:** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
+- **Friday AI Live Demo (Development Instance):** <https://3000-ijhgukurr5hhbd1h5s5sk-e0f84be7.manusvm.computer>
+  - *Note: This is a temporary development environment and may not always be available*
 - **GitHub TekupDK Org:** <https://github.com/TekupDK>
 
 ---
