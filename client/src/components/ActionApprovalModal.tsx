@@ -21,7 +21,7 @@ interface ActionApprovalModalProps {
   onReject: () => void;
 }
 
-const ACTION_ICONS = {
+export const ACTION_ICONS = {
   create_lead: UserPlus,
   create_task: Plus,
   book_meeting: Calendar,
@@ -31,7 +31,7 @@ const ACTION_ICONS = {
   job_completion: FileText,
 };
 
-const ACTION_LABELS = {
+export const ACTION_LABELS = {
   create_lead: 'Opret Lead',
   create_task: 'Opret Opgave',
   book_meeting: 'Book Kalenderaftale',
@@ -41,13 +41,13 @@ const ACTION_LABELS = {
   job_completion: 'Afslut Job',
 };
 
-const RISK_COLORS = {
+export const RISK_COLORS = {
   low: 'bg-green-100 text-green-800 border-green-200',
   medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
   high: 'bg-red-100 text-red-800 border-red-200',
 };
 
-const RISK_LABELS = {
+export const RISK_LABELS = {
   low: 'Lav risiko',
   medium: 'Mellem risiko',
   high: 'Høj risiko',
