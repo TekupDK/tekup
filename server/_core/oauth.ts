@@ -80,23 +80,26 @@ export function registerOAuthRoutes(app: Express) {
 
       // Set cookie with proper options
       const cookieOptions = getSessionCookieOptions(req);
-      console.log("[AUTH] Setting session cookie:", {
-        cookieName: COOKIE_NAME,
-        options: cookieOptions,
-        domain: req.get("host"),
-      });
-
-      // Cookie options for tests need to be more permissive
+      
+      // In test mode, make httpOnly false so tests can read the cookie
+      // In production, keep it secure
       const finalCookieOptions = {
         ...cookieOptions,
         maxAge: ONE_YEAR_MS,
-        httpOnly: false, // Allow frontend to read for debugging
-        secure: false, // Allow over HTTP in development
-        sameSite: isTestMode || isTestEnvironment ? "none" : "lax", // Most permissive for tests
+        httpOnly: isTestMode || isTestEnvironment ? false : cookieOptions.httpOnly,
         path: "/",
       };
 
       res.cookie(COOKIE_NAME, sessionToken, finalCookieOptions);
+      
+      console.log("[AUTH] Session cookie set successfully:", {
+        cookieName: COOKIE_NAME,
+        sameSite: finalCookieOptions.sameSite,
+        secure: finalCookieOptions.secure,
+        httpOnly: finalCookieOptions.httpOnly,
+        maxAge: finalCookieOptions.maxAge,
+        domain: req.get("host"),
+      });
 
       // Return JSON in test mode, redirect otherwise
       if (isTestMode || isTestEnvironment) {
