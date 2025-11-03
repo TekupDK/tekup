@@ -34,6 +34,10 @@ Context: see `docs/CHAT_APPROVALS_SPEC.md` and `docs/FRIDAY_ACTION_ROLLOUT.md`.
 
 - [ ] Finalize ActionCatalog schema and validators.
 - [ ] Implement server endpoints and tests.
-- [ ] Build ApprovalModal with risk levels and dry-run view.
-- [ ] Gate with `FRIDAY_ACTION_SUGGESTIONS` flag (see rollout doc).
+- [x] Build ApprovalModal with risk levels and dry-run view.
+- [x] Gate with `FRIDAY_ACTION_SUGGESTIONS` flag (see rollout doc).
+- [x] Create SuggestionsBar component with MVP static suggestions.
+- [x] Wire suggestions into ChatPanel behind feature flag.
+- [x] Export necessary constants from ActionApprovalModal.
+- [x] Build and deploy container with all changes.
 - [ ] Canary + policy gate green.
