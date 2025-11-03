@@ -1,0 +1,150 @@
+services:
+  # Friday AI Chat Application (Main Fullstack)
+  # NOTE: This version uses Supabase PostgreSQL instead of MySQL
+  # Use: docker-compose -f docker-compose.supabase.yml up
+  friday-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: friday-ai-container-supabase
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.supabase
+    environment:
+      - NODE_ENV=development
+      # Supabase PostgreSQL connection (from .env.supabase)
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:Habibie12345%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require}
+      - JWT_SECRET=change-this-in-production
+      - OWNER_OPEN_ID=owner-friday-ai-dev
+      # AI Keys (loaded from .env.supabase file)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-${GEMINI_KEY:-}}
+      # Billy Integration
+      - BILLY_API_KEY=${BILLY_API_KEY:-}
+      - BILLY_ORGANIZATION_ID=${BILLY_ORGANIZATION_ID:-}
+      # Google Integration
+      - GOOGLE_SERVICE_ACCOUNT_KEY=${GOOGLE_SERVICE_ACCOUNT_KEY:-}
+      - GOOGLE_IMPERSONATED_USER=info@rendetalje.dk
+      - GOOGLE_CALENDAR_ID=c_39570a852bf141658572fa37bb229c7246564a6cca47560bc66a4f9e4fec67ff@group.calendar.google.com
+      # MCP Server URLs
+      - GOOGLE_MCP_URL=http://calendar-mcp:3001
+      - GMAIL_MCP_URL=http://gmail-mcp:3000
+      # Frontend variables
+      - VITE_APP_ID=friday-ai
+      - VITE_APP_TITLE=Friday AI Chat
+      - VITE_APP_LOGO=/logo.svg
+    # NOTE: No depends_on db service - using external Supabase
+    restart: unless-stopped
+    networks:
+      - tekup-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })",
+        ]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+
+  # Inbox Orchestrator (API Service) - Unchanged
+  inbox-orchestrator:
+    build:
+      context: ../tekup-ai/packages/inbox-orchestrator
+      dockerfile: Dockerfile
+    container_name: inbox-orchestrator-container
+    ports:
+      - "3011:3011"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/friday_ai_metrics
+      - GOOGLE_MCP_URL=${GOOGLE_MCP_URL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - tekup-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3011/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })",
+        ]
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+
+  # PostgreSQL Database (for Inbox Orchestrator Metrics only)
+  # NOTE: friday-ai service uses external Supabase, not this local postgres
+  postgres:
+    image: postgres:15-alpine
+    container_name: friday-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: friday_ai_metrics
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tekup-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: friday-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - tekup-network
+
+  # Inbound Email SMTP Server (Phase 0)
+  inbound-email:
+    build:
+      context: ./inbound-email
+      dockerfile: Dockerfile
+    container_name: inbound-email-container
+    ports:
+      - "25:25" # SMTP
+      - "587:587" # SMTP Submission
+    environment:
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://friday-ai:3000/api/inbound/email
+      - WEBHOOK_SECRET=${INBOUND_EMAIL_WEBHOOK_SECRET:-}
+      - STORAGE_TYPE=${INBOUND_STORAGE_TYPE:-supabase}
+      - STORAGE_PATH=/app/storage/attachments
+      - PORT=25
+      - SUBMISSION_PORT=587
+    volumes:
+      - inbound_email_storage:/app/storage
+    networks:
+      - tekup-network
+    depends_on:
+      friday-ai:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  inbound_email_storage:
+
+networks:
+  tekup-network:
+    driver: bridge

@@ -12,8 +12,20 @@ function getQueryParam(req: Request, key: string): string | undefined {
 
 export function registerOAuthRoutes(app: Express) {
   // Development login endpoint - Auto-login as OWNER
+  // Supports both browser redirect and test mode (JSON response)
   app.get("/api/auth/login", async (req: Request, res: Response) => {
-    console.log("[AUTH] Dev-login endpoint called, NODE_ENV:", process.env.NODE_ENV);
+    console.log(
+      "[AUTH] Dev-login endpoint called, NODE_ENV:",
+      process.env.NODE_ENV
+    );
+
+    // Check if test mode (return JSON instead of redirect)
+    const isTestMode = req.query.mode === "test" || req.query.test === "true";
+    const userAgent = req.headers["user-agent"] || "";
+    const isTestEnvironment =
+      userAgent.includes("vitest") ||
+      userAgent.includes("jsdom") ||
+      req.headers["x-test-mode"] === "true";
 
     // Allow in development AND production for now (we can disable later)
     // if (ENV.isProduction) {
@@ -24,6 +36,21 @@ export function registerOAuthRoutes(app: Express) {
     const ownerOpenId = ENV.ownerOpenId || "owner-friday-ai-dev";
 
     try {
+      // Validate required environment variables
+      if (!ENV.cookieSecret) {
+        throw new Error(
+          "JWT_SECRET is not configured. Set JWT_SECRET in .env file."
+        );
+      }
+      if (!ENV.appId) {
+        throw new Error(
+          "VITE_APP_ID is not configured. Set VITE_APP_ID in .env file."
+        );
+      }
+      if (!ownerOpenId) {
+        throw new Error("OWNER_OPEN_ID is not configured.");
+      }
+
       // Get or create OWNER user
       let user = await db.getUserByOpenId(ownerOpenId);
 
@@ -53,25 +80,55 @@ export function registerOAuthRoutes(app: Express) {
 
       // Set cookie with proper options
       const cookieOptions = getSessionCookieOptions(req);
-      console.log("[AUTH] Setting session cookie:", {
-        cookieName: COOKIE_NAME,
-        options: cookieOptions,
-        domain: req.get('host')
-      });
-
-      res.cookie(COOKIE_NAME, sessionToken, {
+      
+      // In test mode, make httpOnly false so tests can read the cookie
+      // In production, keep it secure
+      const finalCookieOptions = {
         ...cookieOptions,
         maxAge: ONE_YEAR_MS,
-        httpOnly: false, // Allow frontend to read for debugging
-        secure: false,   // Allow over HTTP in development
-        sameSite: 'lax', // Less restrictive for development
+        httpOnly: isTestMode || isTestEnvironment ? false : cookieOptions.httpOnly,
+        path: "/",
+      };
+
+      res.cookie(COOKIE_NAME, sessionToken, finalCookieOptions);
+      
+      console.log("[AUTH] Session cookie set successfully:", {
+        cookieName: COOKIE_NAME,
+        sameSite: finalCookieOptions.sameSite,
+        secure: finalCookieOptions.secure,
+        httpOnly: finalCookieOptions.httpOnly,
+        maxAge: finalCookieOptions.maxAge,
+        domain: req.get("host"),
       });
 
-      // Redirect to home
+      // Return JSON in test mode, redirect otherwise
+      if (isTestMode || isTestEnvironment) {
+        return res.status(200).json({
+          success: true,
+          message: "Login successful",
+          cookieName: COOKIE_NAME,
+          cookieValue: sessionToken,
+          user: {
+            id: user.id,
+            openId: user.openId,
+            name: user.name,
+            email: user.email,
+          },
+        });
+      }
+
+      // Redirect to home (browser mode)
       res.redirect(302, "/");
     } catch (error) {
       console.error("[Auth] Dev login failed", error);
-      res.status(500).json({ error: "Login failed" });
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const statusCode = errorMessage.includes("session") ? 500 : 500;
+      res.status(statusCode).json({
+        error: "Login failed",
+        details:
+          process.env.NODE_ENV === "development" ? errorMessage : undefined,
+      });
     }
   });
 

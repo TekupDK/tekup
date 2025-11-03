@@ -1,0 +1,47 @@
+{
+	"folders": [
+		{
+			"name": "tekup-ai-v2",
+			"path": "."
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "node_modules/typescript/lib",
+		"typescript.enablePromptUseWorkspaceTsdk": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": "explicit",
+			"source.organizeImports": "explicit"
+		},
+		"files.exclude": {
+			"**/node_modules": true,
+			"**/dist": true,
+			"**/.git": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/dist": true
+		},
+		"files.watcherExclude": {
+			"**/node_modules/**": true,
+			"**/dist/**": true
+		},
+		"cursor.general.enableCloudAgents": true
+	},
+	"extensions": {
+		"recommendations": [
+			"dbaeumer.vscode-eslint",
+			"esbenp.prettier-vscode",
+			"bradlc.vscode-tailwindcss",
+			"ms-vscode.vscode-typescript-next",
+			"bradlc.vscode-tailwindcss",
+			"usernamehw.errorlens",
+			"ms-vscode.vscode-json"
+		]
+	},
+	"tasks": {
+		"version": "2.0.0"
+	}
+}
+

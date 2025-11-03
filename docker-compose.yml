@@ -7,14 +7,22 @@ services:
     container_name: friday-ai-container
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=mysql://friday_user:friday_password@db:3306/friday_ai
-      - JWT_SECRET=change-this-in-production
-      - OWNER_OPEN_ID=owner-friday-ai-dev
-      # AI Keys (set via .env file or environment variables)
+      - NODE_ENV=${NODE_ENV:-development}
+      # Database URL - defaults to Supabase PostgreSQL if .env.supabase is used
+      # For Supabase PostgreSQL: use .env.supabase DATABASE_URL
+      # Legacy MySQL reference (deprecated - use Supabase PostgreSQL instead)
+      # For Supabase: use postgresql://postgres:PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:Habibie12345%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require}
+      # CRITICAL: Set a strong JWT_SECRET in .env file (minimum 32 characters)
+      - JWT_SECRET=${JWT_SECRET:-change-this-in-production-minimum-32-chars}
+      - OWNER_OPEN_ID=${OWNER_OPEN_ID:-owner-friday-ai-dev}
+      # AI Keys (loaded from .env file in project root)
+      # IMPORTANT: Ensure .env file exists with OPENAI_API_KEY and GEMINI_API_KEY
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-${GEMINI_KEY:-}}
       # Billy Integration (set via .env file or environment variables)
       - BILLY_API_KEY=${BILLY_API_KEY:-}
       - BILLY_ORGANIZATION_ID=${BILLY_ORGANIZATION_ID:-}
@@ -29,9 +37,10 @@ services:
       - VITE_APP_ID=friday-ai
       - VITE_APP_TITLE=Friday AI Chat
       - VITE_APP_LOGO=/logo.svg
-    depends_on:
-      db:
-        condition: service_healthy
+    # NOTE: When using Supabase, remove depends_on db service
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
     restart: unless-stopped
     networks:
       - tekup-network
@@ -80,7 +89,8 @@ services:
       start_period: 10s
       retries: 3
 
-  # MySQL Database (for Friday AI)
+  # MySQL Database (DEPRECATED - Use Supabase PostgreSQL instead)
+  # This service is kept for legacy support only - new deployments should use Supabase
   db:
     image: mysql:8.0
     container_name: friday-ai-db
@@ -144,7 +154,7 @@ services:
     networks:
       - tekup-network
 
-  # Database Admin (optional - for MySQL)
+  # Database Admin (DEPRECATED - for legacy MySQL only, use Supabase dashboard for PostgreSQL)
   adminer:
     image: adminer
     container_name: friday-adminer
@@ -156,9 +166,40 @@ services:
     depends_on:
       - db
 
+  # Inbound Email SMTP Server (Phase 0)
+  # NOTE: Requires inbound-email repository to be cloned or source files available
+  # Setup: git clone https://github.com/sendbetter/inbound-email.git ./inbound-email
+  inbound-email:
+    build:
+      context: ./inbound-email
+      dockerfile: Dockerfile
+    container_name: inbound-email-container
+    ports:
+      - "25:25" # SMTP
+      - "587:587" # SMTP Submission
+    environment:
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://friday-ai:3000/api/inbound/email
+      - WEBHOOK_SECRET=${INBOUND_EMAIL_WEBHOOK_SECRET:-}
+      - STORAGE_TYPE=${INBOUND_STORAGE_TYPE:-local}
+      - STORAGE_PATH=/app/storage/attachments
+      - PORT=25
+      - SUBMISSION_PORT=587
+    volumes:
+      - inbound_email_storage:/app/storage
+    networks:
+      - tekup-network
+    depends_on:
+      friday-ai:
+        condition: service_healthy
+    restart: unless-stopped
+    # Healthcheck disabled - inbound-email may not have health endpoint
+    # Remove healthcheck or implement if inbound-email supports it
+
 volumes:
   mysql_data:
   postgres_data:
+  inbound_email_storage:
 
 networks:
   tekup-network:

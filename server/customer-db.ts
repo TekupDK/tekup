@@ -1,16 +1,17 @@
-import { eq, and, desc } from "drizzle-orm";
-import { getDb } from "./db";
+import { and, desc, eq } from "drizzle-orm";
 import {
-  customerProfiles,
-  customerInvoices,
-  customerEmails,
+  CalendarEvent,
+  calendarEvents,
   customerConversations,
-  leads,
-  InsertCustomerProfile,
-  InsertCustomerInvoice,
-  InsertCustomerEmail,
+  customerEmails,
+  customerInvoices,
+  customerProfiles,
   InsertCustomerConversation,
+  InsertCustomerEmail,
+  InsertCustomerInvoice,
+  InsertCustomerProfile,
 } from "../drizzle/schema";
+import { getDb } from "./db";
 
 /**
  * Customer Profile Database Helpers
@@ -24,33 +25,54 @@ export async function getCustomerProfileByEmail(email: string, userId: number) {
   const result = await db
     .select()
     .from(customerProfiles)
-    .where(and(eq(customerProfiles.email, email), eq(customerProfiles.userId, userId)))
+    .where(
+      and(
+        eq(customerProfiles.email, email),
+        eq(customerProfiles.userId, userId)
+      )
+    )
     .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
 
-export async function getCustomerProfileByLeadId(leadId: number, userId: number) {
+export async function getCustomerProfileByLeadId(
+  leadId: number,
+  userId: number
+) {
   const db = await getDb();
   if (!db) return undefined;
 
   const result = await db
     .select()
     .from(customerProfiles)
-    .where(and(eq(customerProfiles.leadId, leadId), eq(customerProfiles.userId, userId)))
+    .where(
+      and(
+        eq(customerProfiles.leadId, leadId),
+        eq(customerProfiles.userId, userId)
+      )
+    )
     .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
 
-export async function getCustomerProfileById(customerId: number, userId: number) {
+export async function getCustomerProfileById(
+  customerId: number,
+  userId: number
+) {
   const db = await getDb();
   if (!db) return undefined;
 
   const result = await db
     .select()
     .from(customerProfiles)
-    .where(and(eq(customerProfiles.id, customerId), eq(customerProfiles.userId, userId)))
+    .where(
+      and(
+        eq(customerProfiles.id, customerId),
+        eq(customerProfiles.userId, userId)
+      )
+    )
     .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
@@ -77,8 +99,8 @@ export async function createOrUpdateCustomerProfile(
     return existing.id;
   } else {
     // Create new profile
-    const result = await db.insert(customerProfiles).values(data);
-    return Number((result as any).insertId);
+    const result = await db.insert(customerProfiles).values(data).returning();
+    return result[0].id;
   }
 }
 
@@ -127,8 +149,8 @@ export async function addCustomerInvoice(data: InsertCustomerInvoice) {
     return existing[0].id;
   } else {
     // Insert new invoice
-    const result = await db.insert(customerInvoices).values(data);
-    return Number((result as any).insertId);
+    const result = await db.insert(customerInvoices).values(data).returning();
+    return result[0].id;
   }
 }
 
@@ -179,12 +201,15 @@ export async function addCustomerEmail(data: InsertCustomerEmail) {
     return existing[0].id;
   } else {
     // Insert new email thread
-    const result = await db.insert(customerEmails).values(data);
-    return Number((result as any).insertId);
+    const result = await db.insert(customerEmails).values(data).returning();
+    return result[0].id;
   }
 }
 
-export async function getCustomerConversation(customerId: number, userId: number) {
+export async function getCustomerConversation(
+  customerId: number,
+  userId: number
+) {
   const db = await getDb();
   if (!db) return undefined;
 
@@ -201,12 +226,17 @@ export async function getCustomerConversation(customerId: number, userId: number
   return result.length > 0 ? result[0] : undefined;
 }
 
-export async function createCustomerConversation(data: InsertCustomerConversation) {
+export async function createCustomerConversation(
+  data: InsertCustomerConversation
+) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const result = await db.insert(customerConversations).values(data);
-  return Number((result as any).insertId);
+  const result = await db
+    .insert(customerConversations)
+    .values(data)
+    .returning();
+  return result[0].id;
 }
 
 export async function updateCustomerBalance(customerId: number) {
@@ -279,4 +309,44 @@ export async function getAllCustomerProfiles(userId: number) {
     .orderBy(desc(customerProfiles.lastContactDate));
 
   return result;
+}
+
+/**
+ * Get calendar events for a customer
+ * Matches events by customer name or email in event title/description
+ */
+export async function getCustomerCalendarEvents(
+  customerId: number,
+  userId: number
+): Promise<CalendarEvent[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  // First get the customer
+  const customer = await getCustomerProfileById(customerId, userId);
+  if (!customer || !customer.name || !customer.email) return [];
+
+  const customerName = customer.name.toLowerCase();
+  const customerEmail = customer.email.toLowerCase();
+
+  // Get all calendar events for the user
+  const allEvents = await db
+    .select()
+    .from(calendarEvents)
+    .where(eq(calendarEvents.userId, userId))
+    .orderBy(desc(calendarEvents.startTime));
+
+  // Match events by name or email in title/description
+  return allEvents.filter(event => {
+    const title = (event.title || "").toLowerCase();
+    const description = (event.description || "").toLowerCase();
+
+    // Check if customer name or email appears in event title/description
+    return (
+      title.includes(customerName) ||
+      description.includes(customerName) ||
+      title.includes(customerEmail) ||
+      description.includes(customerEmail)
+    );
+  });
 }
