@@ -12,7 +12,8 @@ services:
     environment:
       - NODE_ENV=development
       # Database URL - defaults to Supabase PostgreSQL if .env.supabase is used
-      # For MySQL: use mysql://friday_user:friday_password@db:3306/friday_ai
+      # For Supabase PostgreSQL: use .env.supabase DATABASE_URL
+      # Legacy MySQL reference (deprecated - use Supabase PostgreSQL instead)
       # For Supabase: use postgresql://postgres:PASSWORD@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:Habibie12345%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require}
       - JWT_SECRET=change-this-in-production
@@ -87,7 +88,8 @@ services:
       start_period: 10s
       retries: 3
 
-  # MySQL Database (for Friday AI)
+  # MySQL Database (DEPRECATED - Use Supabase PostgreSQL instead)
+  # This service is kept for legacy support only - new deployments should use Supabase
   db:
     image: mysql:8.0
     container_name: friday-ai-db
@@ -151,7 +153,7 @@ services:
     networks:
       - tekup-network
 
-  # Database Admin (optional - for MySQL)
+  # Database Admin (DEPRECATED - for legacy MySQL only, use Supabase dashboard for PostgreSQL)
   adminer:
     image: adminer
     container_name: friday-adminer
