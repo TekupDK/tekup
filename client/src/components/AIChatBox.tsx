@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { Loader2, Send, User, Sparkles } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { Streamdown } from "streamdown";
+import { Loader2, Send, Sparkles, User } from "lucide-react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { SafeStreamdown } from "./SafeStreamdown";
 
 /**
  * Message type matching server-side LLM Message interface
@@ -110,7 +110,7 @@ export type AIChatBoxProps = {
  * };
  * ```
  */
-export function AIChatBox({
+function AIChatBox({
   messages,
   onSendMessage,
   isLoading = false,
@@ -126,8 +126,11 @@ export function AIChatBox({
   const inputAreaRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Filter out system messages
-  const displayMessages = messages.filter((msg) => msg.role !== "system");
+  // Filter out system messages - memoized for performance
+  const displayMessages = useMemo(
+    () => messages.filter(msg => msg.role !== "system"),
+    [messages]
+  );
 
   // Calculate min-height for last assistant message to push user message to top
   const [minHeightForLastMessage, setMinHeightForLastMessage] = useState(0);
@@ -143,7 +146,8 @@ export function AIChatBox({
       // - user message: 40px (item height) + 16px (margin-top from space-y-4) = 56px
       // Note: margin-bottom is not counted because it naturally pushes the assistant message down
       const userMessageReservedHeight = 56;
-      const calculatedHeight = scrollAreaHeight - 32 - userMessageReservedHeight;
+      const calculatedHeight =
+        scrollAreaHeight - 32 - userMessageReservedHeight;
 
       setMinHeightForLastMessage(Math.max(0, calculatedHeight));
     }
@@ -152,40 +156,46 @@ export function AIChatBox({
   // Scroll to bottom helper function with smooth animation
   const scrollToBottom = () => {
     const viewport = scrollAreaRef.current?.querySelector(
-      '[data-radix-scroll-area-viewport]'
+      "[data-radix-scroll-area-viewport]"
     ) as HTMLDivElement;
 
     if (viewport) {
       requestAnimationFrame(() => {
         viewport.scrollTo({
           top: viewport.scrollHeight,
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       });
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmedInput = input.trim();
-    if (!trimmedInput || isLoading) return;
-
-    onSendMessage(trimmedInput);
-    setInput("");
-
-    // Scroll immediately after sending
-    scrollToBottom();
-
-    // Keep focus on input
-    textareaRef.current?.focus();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
       e.preventDefault();
-      handleSubmit(e);
-    }
-  };
+      const trimmedInput = input.trim();
+      if (!trimmedInput || isLoading) return;
+
+      onSendMessage(trimmedInput);
+      setInput("");
+
+      // Scroll immediately after sending
+      scrollToBottom();
+
+      // Keep focus on input
+      textareaRef.current?.focus();
+    },
+    [input, isLoading, onSendMessage]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit(e);
+      }
+    },
+    [handleSubmit]
+  );
 
   return (
     <div
@@ -214,6 +224,7 @@ export function AIChatBox({
                       onClick={() => onSendMessage(prompt)}
                       disabled={isLoading}
                       className="rounded-lg border border-border bg-card px-4 py-2 text-sm transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+                      aria-label={`Send prompt: ${prompt}`}
                     >
                       {prompt}
                     </button>
@@ -262,7 +273,7 @@ export function AIChatBox({
                     >
                       {message.role === "assistant" ? (
                         <div className="prose prose-sm dark:prose-invert max-w-none">
-                          <Streamdown>{message.content}</Streamdown>
+                          <SafeStreamdown content={message.content} />
                         </div>
                       ) : (
                         <p className="whitespace-pre-wrap text-sm">
@@ -311,7 +322,7 @@ export function AIChatBox({
         <Textarea
           ref={textareaRef}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className="flex-1 max-h-32 resize-none min-h-9"
@@ -333,3 +344,6 @@ export function AIChatBox({
     </div>
   );
 }
+
+export const AIChatBoxMemo = memo(AIChatBox);
+export { AIChatBoxMemo as AIChatBox };

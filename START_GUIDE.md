@@ -146,6 +146,64 @@ pnpm check  # ✅ Alle fixes er på plads (0 errors)
 
 ---
 
+## 🔐 **Login Troubleshooting**
+
+Hvis du får `{"error":"Login failed"}`:
+
+### 1. **Tjek .env fil er oprettet**
+
+```bash
+ls -la .env  # eller `dir .env` på Windows
+```
+
+Hvis filen ikke findes:
+
+```bash
+cp env.template.txt .env
+```
+
+### 2. **Tjek .env har de mindste påkrævede værdier**
+
+```bash
+cat .env | grep -E "JWT_SECRET|OWNER_OPEN_ID|DATABASE_URL|VITE_APP_ID"
+```
+
+Skal se noget lig:
+
+```
+JWT_SECRET=your-secure-jwt-secret-change-this-in-production
+OWNER_OPEN_ID=owner-friday-ai-dev
+DATABASE_URL=mysql://friday_user:friday_password@localhost:3306/friday_ai
+VITE_APP_ID=friday-ai
+```
+
+### 3. **Tjek server logs for fejldetaljer**
+
+Når du starter serveren med `pnpm dev`, skal du se logs som:
+
+```
+[AUTH] Dev-login endpoint called, NODE_ENV: development
+[AUTH] Setting session cookie: { cookieName: 'friday-ai-session', ... }
+```
+
+Hvis du i stedet ser en fejl, vil den nu indeholde detaljer i development mode.
+
+### 4. **Tjek database forbindelse**
+
+```bash
+# Test MySQL forbindelse
+mysql -h localhost -u friday_user -p friday_ai -e "SELECT COUNT(*) FROM users;"
+```
+
+### 5. **Åbn Developer Console i Browser**
+
+- Tryk `F12`
+- Gå til `Network` tab
+- Prøv at login (`/api/auth/login`)
+- Se response body for fejldetaljer
+
+---
+
 ## 📊 **Status Checklist**
 
 - [x] TypeScript errors fixet (16 → 0)

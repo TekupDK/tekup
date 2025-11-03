@@ -67,6 +67,11 @@ export interface GmailThread {
   id: string;
   snippet: string;
   messages: GmailMessage[];
+  subject?: string;
+  from?: string;
+  date?: string;
+  labels?: string[];
+  unread?: boolean;
 }
 
 export interface GmailMessage {
@@ -154,16 +159,81 @@ export async function searchGmailThreads(params: {
         }
       }
 
+      // Extract labels from thread
+      const labels = threadDetail.data.labelIds || [];
+
       threads.push({
         id: thread.id,
         snippet: threadDetail.data.snippet || "",
         messages,
+        labels: labels,
+        unread: labels.includes("UNREAD"),
+        subject:
+          messages.length > 0 ? messages[messages.length - 1].subject : "",
+        from: messages.length > 0 ? messages[messages.length - 1].from : "",
+        date: messages.length > 0 ? messages[messages.length - 1].date : "",
       });
     }
 
     return threads;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error searching Gmail:", error);
+
+    // Handle rate limiting specifically
+    if (error?.response?.status === 429) {
+      const retryAfterHeader =
+        error?.response?.headers?.["retry-after"] ||
+        error?.response?.headers?.["Retry-After"];
+      let retryAfter: Date | null = null;
+
+      // Try to parse retry-after header (can be seconds or timestamp)
+      if (retryAfterHeader) {
+        const retryAfterSeconds = parseInt(retryAfterHeader, 10);
+        if (!isNaN(retryAfterSeconds)) {
+          retryAfter = new Date(Date.now() + retryAfterSeconds * 1000);
+        } else {
+          try {
+            retryAfter = new Date(retryAfterHeader);
+            if (isNaN(retryAfter.getTime())) {
+              retryAfter = null;
+            }
+          } catch {
+            retryAfter = null;
+          }
+        }
+      }
+
+      // Default: 60 seconds from now if no header
+      if (!retryAfter) {
+        retryAfter = new Date(Date.now() + 60000);
+      }
+
+      console.warn(
+        "Gmail API rate limit exceeded. Retry after:",
+        retryAfter.toISOString()
+      );
+
+      const errorMessage = retryAfter
+        ? `Gmail API rate limit exceeded. Retry after ${retryAfter.toISOString()}`
+        : "Gmail API rate limit exceeded. Please wait a moment and try again.";
+
+      const rateLimitError = new Error(errorMessage);
+      // Attach retry-after to error for TRPC
+      (rateLimitError as any).data = {
+        code: "RATE_LIMIT_EXCEEDED",
+        retryAfter: retryAfter.toISOString(),
+      };
+      throw rateLimitError;
+    }
+
+    // Handle authentication errors
+    if (error?.response?.status === 401 || error?.response?.status === 403) {
+      console.error("Gmail API authentication error");
+      throw new Error(
+        "Gmail API authentication failed. Please check service account configuration."
+      );
+    }
+
     throw error;
   }
 }
@@ -230,10 +300,17 @@ export async function getGmailThread(
       }
     }
 
+    const labels = threadDetail.data.labelIds || [];
+
     return {
       id: threadId,
       snippet: threadDetail.data.snippet || "",
       messages,
+      labels: labels,
+      unread: labels.includes("UNREAD"),
+      subject: messages.length > 0 ? messages[messages.length - 1].subject : "",
+      from: messages.length > 0 ? messages[messages.length - 1].from : "",
+      date: messages.length > 0 ? messages[messages.length - 1].date : "",
     };
   } catch (error) {
     console.error("Error getting Gmail thread:", error);
@@ -248,19 +325,23 @@ export async function createGmailDraft(params: {
   to: string;
   subject: string;
   body: string;
+  cc?: string;
+  bcc?: string;
 }): Promise<{ id: string; message: string }> {
   try {
     const auth = await getAuthClient();
     const gmail = google.gmail({ version: "v1", auth });
 
     // Create email in RFC 2822 format
-    const email = [
+    const headers: string[] = [
       `To: ${params.to}`,
       `Subject: ${params.subject}`,
-      "Content-Type: text/plain; charset=utf-8",
-      "",
-      params.body,
-    ].join("\n");
+    ];
+    if (params.cc) headers.push(`Cc: ${params.cc}`);
+    if (params.bcc) headers.push(`Bcc: ${params.bcc}`);
+    headers.push("Content-Type: text/plain; charset=utf-8", "");
+
+    const email = [...headers, params.body].join("\n");
 
     const encodedEmail = Buffer.from(email)
       .toString("base64")
@@ -283,6 +364,177 @@ export async function createGmailDraft(params: {
     };
   } catch (error) {
     console.error("Error creating Gmail draft:", error);
+    throw error;
+  }
+}
+
+/**
+ * Send Gmail message (not just draft)
+ */
+export async function sendGmailMessage(params: {
+  to: string;
+  subject: string;
+  body: string;
+  cc?: string;
+  bcc?: string;
+  replyToMessageId?: string;
+  replyToThreadId?: string;
+}): Promise<{ id: string; threadId: string }> {
+  try {
+    const auth = await getAuthClient();
+    const gmail = google.gmail({ version: "v1", auth });
+
+    // Create email in RFC 2822 format
+    const headers: string[] = [
+      `To: ${params.to}`,
+      `Subject: ${params.subject}`,
+    ];
+    if (params.cc) headers.push(`Cc: ${params.cc}`);
+    if (params.bcc) headers.push(`Bcc: ${params.bcc}`);
+    if (params.replyToMessageId) {
+      headers.push(`In-Reply-To: ${params.replyToMessageId}`);
+      headers.push(`References: ${params.replyToMessageId}`);
+    }
+    headers.push("Content-Type: text/plain; charset=utf-8", "");
+
+    const email = [...headers, params.body].join("\n");
+
+    const encodedEmail = Buffer.from(email)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    const requestBody: any = {
+      raw: encodedEmail,
+    };
+
+    if (params.replyToThreadId) {
+      requestBody.threadId = params.replyToThreadId;
+    }
+
+    const response = await gmail.users.messages.send({
+      userId: "me",
+      requestBody,
+    });
+
+    return {
+      id: response.data.id || "",
+      threadId: response.data.threadId || params.replyToThreadId || "",
+    };
+  } catch (error) {
+    console.error("Error sending Gmail message:", error);
+    throw error;
+  }
+}
+
+/**
+ * Modify Gmail thread (add/remove labels, archive, etc.)
+ */
+export async function modifyGmailThread(params: {
+  threadId: string;
+  addLabelIds?: string[];
+  removeLabelIds?: string[];
+}): Promise<void> {
+  try {
+    const auth = await getAuthClient();
+    const gmail = google.gmail({ version: "v1", auth });
+
+    const requestBody: any = {};
+    if (params.addLabelIds && params.addLabelIds.length > 0) {
+      requestBody.addLabelIds = params.addLabelIds;
+    }
+    if (params.removeLabelIds && params.removeLabelIds.length > 0) {
+      requestBody.removeLabelIds = params.removeLabelIds;
+    }
+
+    await gmail.users.threads.modify({
+      userId: "me",
+      id: params.threadId,
+      requestBody,
+    });
+
+    console.log(`Modified thread ${params.threadId}`);
+  } catch (error) {
+    console.error("Error modifying Gmail thread:", error);
+    throw error;
+  }
+}
+
+/**
+ * Delete Gmail thread
+ */
+export async function deleteGmailThread(threadId: string): Promise<void> {
+  try {
+    const auth = await getAuthClient();
+    const gmail = google.gmail({ version: "v1", auth });
+
+    await gmail.users.threads.delete({
+      userId: "me",
+      id: threadId,
+    });
+
+    console.log(`Deleted thread ${threadId}`);
+  } catch (error) {
+    console.error("Error deleting Gmail thread:", error);
+    throw error;
+  }
+}
+
+/**
+ * Mark message as read or unread
+ */
+export async function markGmailMessageAsRead(
+  messageId: string,
+  read: boolean
+): Promise<void> {
+  try {
+    const auth = await getAuthClient();
+    const gmail = google.gmail({ version: "v1", auth });
+
+    const requestBody: any = {};
+    if (read) {
+      requestBody.removeLabelIds = ["UNREAD"];
+    } else {
+      requestBody.addLabelIds = ["UNREAD"];
+    }
+
+    await gmail.users.messages.modify({
+      userId: "me",
+      id: messageId,
+      requestBody,
+    });
+  } catch (error) {
+    console.error("Error marking message as read/unread:", error);
+    throw error;
+  }
+}
+
+/**
+ * Star or unstar Gmail message
+ */
+export async function starGmailMessage(
+  messageId: string,
+  starred: boolean
+): Promise<void> {
+  try {
+    const auth = await getAuthClient();
+    const gmail = google.gmail({ version: "v1", auth });
+
+    const requestBody: any = {};
+    if (starred) {
+      requestBody.addLabelIds = ["STARRED"];
+    } else {
+      requestBody.removeLabelIds = ["STARRED"];
+    }
+
+    await gmail.users.messages.modify({
+      userId: "me",
+      id: messageId,
+      requestBody,
+    });
+  } catch (error) {
+    console.error("Error starring/unstarring message:", error);
     throw error;
   }
 }
@@ -515,7 +767,8 @@ export async function updateCalendarEvent(params: {
     const event: any = {};
 
     if (params.summary !== undefined) event.summary = params.summary;
-    if (params.description !== undefined) event.description = params.description;
+    if (params.description !== undefined)
+      event.description = params.description;
     if (params.location !== undefined) event.location = params.location;
 
     if (params.start) {

@@ -1,0 +1,37 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Dev Server",
+			"type": "npm",
+			"script": "dev",
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "typescript",
+				"pattern": {
+					"regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error)\\s+(TS\\d+)\\s*:\\s*(.+)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"code": 5,
+					"message": 6
+				},
+				"background": {
+					"beginsPattern": "^.*Starting.*$",
+					"endsPattern": "^.*Server running.*$"
+				}
+			},
+			"group": {"kind": "build", "isDefault": true},
+			"presentation": {"reveal": "always", "panel": "dedicated"}
+		},
+		{"label": "Build Production", "type": "npm", "script": "build", "group": "build"},
+		{"label": "TypeScript Check", "type": "npm", "script": "check", "group": "test"},
+		{"label": "Format Code", "type": "npm", "script": "format"},
+		{"label": "Run Tests", "type": "npm", "script": "test", "group": "test"},
+		{"label": "Database Push", "type": "npm", "script": "db:push"},
+		{"label": "Database Migrate", "type": "npm", "script": "db:migrate"},
+		{"label": "Migrate Emails", "type": "npm", "script": "migrate:emails"},
+		{"label": "Install Dependencies", "type": "shell", "command": "pnpm install", "group": "build"}
+	]
+}

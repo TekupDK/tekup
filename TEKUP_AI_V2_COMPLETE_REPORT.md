@@ -1,6 +1,7 @@
 # Tekup AI v2 - Gennemgående Rapport
-**Dato:** 2. november 2025  
-**Version:** 1.0.0  
+
+**Dato:** 2. november 2025
+**Version:** 1.0.0
 **Repository:** TekupDK/tekup (services/tekup-ai-v2)
 
 ---
@@ -10,6 +11,7 @@
 **Tekup AI v2** (også kendt som Friday AI Chat) er en produktionsklar, intelligent AI-assistant bygget specifikt til Rendetalje.dk's rengøringsvirksomhed. Systemet kombinerer AI-drevet konversation med real-time inbox management, kalenderbooking, fakturahåndtering og lead tracking.
 
 ### Status
+
 - ✅ **Produktionsklar** - Alle core features implementeret
 - ✅ **Containeriseret** - Docker & docker-compose klar
 - ✅ **Performance optimeret** - Smart caching og data optimering
@@ -21,6 +23,7 @@
 ## 🏗️ Arkitektur Overview
 
 ### Projekt Struktur
+
 ```
 tekup-ai-v2/
 ├── client/              # React 19 frontend
@@ -45,6 +48,7 @@ tekup-ai-v2/
 ### Teknologi Stack
 
 #### Frontend
+
 - **React 19.1.1** - Latest React features
 - **TypeScript 5.9.3** - Type safety
 - **Tailwind CSS 4.1.14** - Utility-first styling
@@ -56,6 +60,7 @@ tekup-ai-v2/
 - **Sonner** - Toast notifications
 
 #### Backend
+
 - **Express 4.21.2** - HTTP server
 - **tRPC Server 11.6.0** - Type-safe API layer
 - **Drizzle ORM 0.44.5** - Database ORM
@@ -65,10 +70,12 @@ tekup-ai-v2/
 - **Axios 1.12.0** - HTTP client
 
 #### Database
+
 - **MySQL/TiDB** - Primary database (9 tables)
 - **PostgreSQL** - Metrics storage (for inbox-orchestrator)
 
 #### Integrations
+
 - **Google Workspace** - Gmail + Calendar (domain-wide delegation)
 - **Billy.dk** - Invoice management
 - **OpenAI** - GPT-4o model
@@ -115,6 +122,7 @@ tekup-ai-v2/
 ### 1. AI Chat Interface
 
 #### Multi-Model Support
+
 - **4 AI Models** tilgængelige:
   - Gemini 2.5 Flash (default)
   - Claude 3.5 Sonnet
@@ -122,6 +130,7 @@ tekup-ai-v2/
   - Manus AI (legacy)
 
 #### Chat Features
+
 - ✅ Full conversation history context
 - ✅ Markdown rendering med syntax highlighting
 - ✅ Voice input (Web Speech API - dansk)
@@ -130,6 +139,7 @@ tekup-ai-v2/
 - ✅ Action approval system
 
 #### Intent Detection (7 types)
+
 1. **lead_processing** - Opretter leads fra beskeder
 2. **quote_generation** - Genererer tilbud
 3. **booking** - Book møder i kalenderen
@@ -141,6 +151,7 @@ tekup-ai-v2/
 ### 2. Unified Inbox (Shortwave.ai-inspired)
 
 #### Email Tab
+
 - ✅ Gmail integration via MCP
 - ✅ Time-based grouping (TODAY, YESTERDAY, LAST 7 DAYS)
 - ✅ Auto-refresh hver 30 sekunder
@@ -149,6 +160,7 @@ tekup-ai-v2/
 - ✅ Draft creation
 
 #### Calendar Tab ⭐ (Ny implementeret i dag)
+
 - ✅ Hourly grid view (7:00-20:00)
 - ✅ Date navigation (dag + uge navigation)
 - ✅ **Klikbare events** med detail dialog
@@ -160,6 +172,7 @@ tekup-ai-v2/
 - ✅ Loading indicators
 
 #### Invoices Tab
+
 - ✅ Billy.dk integration
 - ✅ Invoice listing med status badges
 - ✅ AI analysis af fakturaer
@@ -167,11 +180,13 @@ tekup-ai-v2/
 - ✅ Feedback system (thumbs up/down)
 
 #### Leads Tab
+
 - ✅ Pipeline view (new → qualified → won → lost)
 - ✅ Lead scoring
 - ✅ Source tracking (Rengøring.nu, AdHelp, etc.)
 
 #### Tasks Tab
+
 - ✅ Priority-based task management
 - ✅ Status tracking
 - ✅ Due date management
@@ -179,7 +194,9 @@ tekup-ai-v2/
 ### 3. Business Automation
 
 #### 25 MEMORY Business Rules
+
 Kritiske forretningsregler indlejret i AI system prompt:
+
 - **MEMORY_16**: Flytterengøring → Request photos FIRST, block quote sending
 - **MEMORY_17**: Billy invoices ALWAYS draft-only, never auto-approve (349 kr/hour)
 - **MEMORY_19**: NEVER add attendees to Google Calendar events
@@ -188,7 +205,9 @@ Kritiske forretningsregler indlejret i AI system prompt:
 - ... og 20 flere
 
 #### Intent-Based Actions
+
 Automatisk detection og execution af 7 action typer:
+
 1. Create Lead
 2. Create Task
 3. Book Meeting
@@ -202,6 +221,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🔌 API Endpoints (tRPC)
 
 ### Chat Routes (`chat.*`)
+
 - `list` - Hent alle samtaler
 - `get` - Hent specifik samtale med messages
 - `create` - Opret ny samtale
@@ -211,12 +231,14 @@ Automatisk detection og execution af 7 action typer:
 ### Inbox Routes (`inbox.*`)
 
 #### Email (`inbox.email.*`)
+
 - `list` - List Gmail threads
 - `get` - Hent specifik thread
 - `search` - Søg i emails
 - `createDraft` - Opret draft email
 
 #### Calendar (`inbox.calendar.*`) ⭐
+
 - `list` - List calendar events (med date range)
 - `create` - Opret event
 - `update` - **Opdater event** (ny i dag)
@@ -225,10 +247,12 @@ Automatisk detection og execution af 7 action typer:
 - `findFreeSlots` - Find ledige tidspunkter
 
 #### Invoices (`inbox.invoices.*`)
+
 - `list` - List Billy invoices
 - `create` - Opret faktura
 
 #### Customer (`customer.*`)
+
 - `search` - Søg kunder
 - `getProfile` - Hent kundeprofil
 
@@ -239,33 +263,39 @@ Automatisk detection og execution af 7 action typer:
 ### Core Modules (`server/_core/`)
 
 #### `env.ts`
+
 - Centraliseret environment variable management
 - Fjernet Manus dependencies
 - Support for OpenAI, Gemini, Google, Billy
 
 #### `oauth.ts`
+
 - Development mode auto-login
 - Session cookie management
 - User creation/retrieval
 
 #### `llm.ts`
+
 - Multi-model LLM routing
 - Gemini + OpenAI support
 - Token optimization
 - Budget tracking
 
 #### `trpc.ts`
+
 - tRPC setup
 - Protected procedures
 - Context creation
 
 #### `context.ts`
+
 - Request context (user, cookies)
 - Authentication middleware
 
 ### Integration Modules
 
 #### `mcp.ts` ⭐
+
 - **Model Context Protocol client**
 - HTTP API calls til MCP servers
 - Fallback til direct Google API
@@ -278,6 +308,7 @@ Automatisk detection og execution af 7 action typer:
   - `createGmailDraft`
 
 #### `google-api.ts`
+
 - **Direct Google API fallback**
 - Service account authentication
 - Domain-wide delegation
@@ -289,22 +320,26 @@ Automatisk detection og execution af 7 action typer:
   - `checkCalendarAvailability`
 
 #### `billy.ts`
+
 - Billy.dk API integration
 - Invoice management
 - Customer management
 
 #### `intent-actions.ts`
+
 - Intent parsing (7 types)
 - Action execution
 - Business logic automation
 
 #### `ai-router.ts`
+
 - AI model routing
 - System prompts
 - 25 MEMORY rules integration
 - Tool handlers
 
 #### `title-generator.ts`
+
 - Automatic conversation title generation
 - 3-tier fallback system
 
@@ -313,6 +348,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🎨 Frontend Components
 
 ### Main Components
+
 - **ChatPanel** - Main chat interface
 - **InboxPanel** - Unified inbox container
 - **DashboardLayout** - Main layout med split-panel
@@ -322,6 +358,7 @@ Automatisk detection og execution af 7 action typer:
 ### Inbox Components
 
 #### CalendarTab.tsx ⭐ (Største forbedringer i dag)
+
 - **701 lines** - Komplet kalender implementation
 - Hourly grid view
 - Date navigation (dag + uge)
@@ -333,26 +370,31 @@ Automatisk detection og execution af 7 action typer:
 - Skeleton loading
 
 #### EmailTab.tsx
+
 - Gmail integration
 - Time-based grouping
 - Auto-refresh
 - Email detail view
 
 #### InvoicesTab.tsx
+
 - Billy invoice listing
 - AI analysis
 - CSV export
 - Feedback system
 
 #### LeadsTab.tsx
+
 - Pipeline view
 - Lead management
 
 #### TasksTab.tsx
+
 - Task listing
 - Priority management
 
 ### UI Components (60+)
+
 - Complete Radix UI component library
 - Custom styling med Tailwind
 - Dark theme support
@@ -388,6 +430,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🔒 Security
 
 ### Implementeret
+
 - ✅ API keys fjernet fra version control
 - ✅ Environment variables via .env
 - ✅ JWT session authentication
@@ -396,6 +439,7 @@ Automatisk detection og execution af 7 action typer:
 - ✅ Cookie security (httpOnly, secure flags)
 
 ### Environment Variables
+
 - `OPENAI_API_KEY` - Set via .env
 - `GEMINI_API_KEY` - Set via .env
 - `GOOGLE_SERVICE_ACCOUNT_KEY` - Set via .env
@@ -408,6 +452,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🐳 Docker & Deployment
 
 ### Docker Setup
+
 - **Dockerfile**: Production-ready med multi-stage build
 - **docker-compose.yml**: Full orchestration
   - Friday AI container
@@ -418,6 +463,7 @@ Automatisk detection og execution af 7 action typer:
   - Adminer (database admin)
 
 ### Services
+
 1. **friday-ai** (port 3000)
    - Main fullstack application
    - Health checks configured
@@ -439,6 +485,7 @@ Automatisk detection og execution af 7 action typer:
 ## 📝 Dokumentation
 
 ### Dokumentationsfiler (17+)
+
 1. **README.md** - Main project overview
 2. **START_GUIDE.md** - Quick start guide
 3. **DOCKER_SETUP.md** - Docker installation
@@ -462,6 +509,7 @@ Automatisk detection og execution af 7 action typer:
 ## 📈 Code Statistics
 
 ### Fil Typer
+
 - **TypeScript files**: ~150+ files
 - **React components**: 60+ components
 - **Backend modules**: 20+ modules
@@ -469,6 +517,7 @@ Automatisk detection og execution af 7 action typer:
 - **API endpoints**: 30+ tRPC procedures
 
 ### Lines of Code (estimat)
+
 - **Frontend**: ~15,000+ lines
 - **Backend**: ~8,000+ lines
 - **Shared**: ~500+ lines
@@ -479,6 +528,7 @@ Automatisk detection og execution af 7 action typer:
 ## ✅ Tested Features
 
 ### Calendar Tab (Tested Today)
+
 - ✅ Event listing med date range
 - ✅ Event detail dialog (kompakt design)
 - ✅ Edit event (fuldt form)
@@ -491,6 +541,7 @@ Automatisk detection og execution af 7 action typer:
 - ✅ Performance optimeringer
 
 ### Other Features
+
 - ✅ Chat interface
 - ✅ Email integration
 - ✅ Invoice management
@@ -504,6 +555,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🚀 Deployment Status
 
 ### Container Status
+
 - ✅ **friday-ai** - Running (port 3000)
 - ✅ **inbox-orchestrator** - Running (port 3011)
 - ✅ **MySQL** - Running (port 3306)
@@ -511,6 +563,7 @@ Automatisk detection og execution af 7 action typer:
 - ✅ **Redis** - Running (port 6379)
 
 ### Environment
+
 - **Development**: ✅ Lokalt kørende
 - **Production**: ⏳ Ready for deployment
 - **Docker**: ✅ Containeriseret
@@ -520,6 +573,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🔄 Recent Changes (I dag)
 
 ### Calendar Tab Improvements
+
 1. ✅ Events klikbare med detail dialog
 2. ✅ Edit event funktionalitet
 3. ✅ Delete event funktionalitet
@@ -530,11 +584,13 @@ Automatisk detection og execution af 7 action typer:
 8. ✅ Backend API endpoints (update, delete)
 
 ### Security
+
 1. ✅ API keys fjernet fra docker-compose.yml
 2. ✅ API keys fjernet fra dokumentation
 3. ✅ Environment variables setup
 
 ### Git
+
 - ✅ Commit: `94ba60a`
 - ✅ Branch: `main`
 - ✅ Repository: TekupDK/tekup
@@ -545,6 +601,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🎯 Feature Status
 
 ### Completed (100%)
+
 - ✅ Chat interface med multi-model support
 - ✅ Unified inbox (5 tabs)
 - ✅ Calendar integration
@@ -559,10 +616,12 @@ Automatisk detection og execution af 7 action typer:
 - ✅ Security hardening
 
 ### In Progress (90%)
+
 - ⚠️ Chat API communication (intermittent cookie issues)
 - ✅ Calendar events (fully working efter i dags fixes)
 
 ### Future Enhancements
+
 - ⏳ WebSocket for real-time updates
 - ⏳ Advanced analytics
 - ⏳ Mobile app
@@ -573,16 +632,19 @@ Automatisk detection og execution af 7 action typer:
 ## 📊 Code Quality
 
 ### TypeScript
+
 - ✅ Strict mode enabled
 - ✅ Type safety throughout
 - ✅ No `any` types in critical paths
 
 ### Testing
+
 - ⚠️ Unit tests: Partial (vitest configured)
 - ✅ Manual testing: Comprehensive
 - ✅ Integration testing: Via docker-compose
 
 ### Documentation
+
 - ✅ Comprehensive documentation (17+ files)
 - ✅ Code comments where needed
 - ✅ API documentation
@@ -592,10 +654,12 @@ Automatisk detection og execution af 7 action typer:
 ## 🐛 Known Issues
 
 ### Minor Issues
+
 1. **Chat API** - Intermittent cookie transmission (debugged, ved løsning)
 2. **Performance** - Kan optimeres yderligere med pagination
 
 ### Resolved Today
+
 1. ✅ Calendar events ikke synlige - Fixed
 2. ✅ Dialog for stor - Fixed (kompakt design)
 3. ✅ Performance langsom - Fixed (data reduction)
@@ -606,6 +670,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🔐 Security Considerations
 
 ### Implemented
+
 - ✅ API keys ikke i version control
 - ✅ JWT authentication
 - ✅ Protected routes
@@ -613,6 +678,7 @@ Automatisk detection og execution af 7 action typer:
 - ✅ Cookie security
 
 ### Recommendations
+
 - ⚠️ Rotate API keys regularly
 - ⚠️ Use secrets management (tekup-secrets)
 - ⚠️ Enable Secret Scanning på GitHub
@@ -622,16 +688,18 @@ Automatisk detection og execution af 7 action typer:
 ## 📦 Dependencies
 
 ### Production Dependencies
+
 - **Core**: express, @trpc/server, @trpc/client
 - **Database**: drizzle-orm, mysql2
 - **Auth**: jose, cookie
-- **UI**: react, react-dom, @radix-ui/*
+- **UI**: react, react-dom, @radix-ui/\*
 - **Styling**: tailwindcss, framer-motion
 - **Integrations**: googleapis, axios
 
 ### Dev Dependencies
+
 - **Build**: vite, esbuild, tsx
-- **TypeScript**: typescript, @types/*
+- **TypeScript**: typescript, @types/\*
 - **Testing**: vitest
 - **Linting**: prettier
 - **Database**: drizzle-kit
@@ -641,6 +709,7 @@ Automatisk detection og execution af 7 action typer:
 ## 🎓 Development Workflow
 
 ### Local Development
+
 ```bash
 # Start development server
 pnpm dev
@@ -656,6 +725,7 @@ pnpm db:push
 ```
 
 ### Docker Development
+
 ```bash
 # Start all services
 docker-compose up -d
@@ -672,6 +742,7 @@ docker-compose build --no-cache friday-ai
 ## 📋 Todo Status
 
 ### Completed Today
+
 - ✅ Make events clickable
 - ✅ Add edit event functionality
 - ✅ Add delete event functionality
@@ -680,6 +751,7 @@ docker-compose build --no-cache friday-ai
 - ✅ Security fixes (API keys)
 
 ### Pending (From todo.md)
+
 - ⏳ Additional testing
 - ⏳ WebSocket implementation
 - ⏳ Advanced analytics
@@ -703,7 +775,6 @@ docker-compose build --no-cache friday-ai
 
 ---
 
-**Rapport genereret**: 2. november 2025  
-**Version**: 1.0.0  
+**Rapport genereret**: 2. november 2025
+**Version**: 1.0.0
 **Status**: ✅ Production Ready
-
