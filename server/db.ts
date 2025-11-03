@@ -57,9 +57,8 @@ export async function getDb() {
       const client = postgres(connectionString);
 
       // If schema is specified, set search_path after connection
-      // Note: Schema name must be directly in SQL string, not as parameter
       if (schema) {
-        await client.unsafe(`SET search_path TO "${schema}"`);
+        await client`SET search_path TO ${client(schema)}`;
       }
 
       _db = drizzle(client);
