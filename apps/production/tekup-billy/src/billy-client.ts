@@ -167,10 +167,11 @@ export class BillyClient {
         rollingCountTimeout: 10000, // 10 second rolling window
         rollingCountBuckets: 10, // 10 buckets in rolling window
         name: "billy-api-circuit-breaker",
-        // Fallback function
-        fallback: this.handleCircuitBreakerFallback.bind(this),
       }
     );
+
+    // Set fallback function after initialization
+    this.circuitBreaker.fallback(this.handleCircuitBreakerFallback.bind(this));
 
     // Circuit breaker event handlers
     this.circuitBreaker.on("open", () => {
@@ -379,12 +380,11 @@ export class BillyClient {
       log.info("Billy API Response", {
         endpoint,
         method,
-        circuitBreakerState:
-          (this.circuitBreaker.stats as any).state || "unknown",
+        circuitBreakerState: this.circuitBreaker.opened ? "open" : (this.circuitBreaker.halfOpen ? "half-open" : "closed"),
         dataSize: JSON.stringify(result).length,
       });
 
-      return result;
+      return result as T;
     } catch (error: any) {
       // Enhanced error logging with full Billy API error details
       const errorDetails = {
@@ -1080,7 +1080,7 @@ export class BillyClient {
         apiKeyPresent: !!this.config.apiKey,
         organizationId: this.config.organizationId,
         apiBase: this.config.apiBase,
-        circuitBreakerState: this.circuitBreaker.stats.state,
+        circuitBreakerState: this.circuitBreaker.opened ? "open" : (this.circuitBreaker.halfOpen ? "half-open" : "closed"),
       });
 
       const org = await this.getOrganization();

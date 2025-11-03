@@ -97,17 +97,19 @@ export function withAuditLogging<TArgs, TResult>(
 
             // Log audit event asynchronously
             logAuditEvent({
-                organization_id: organizationId,
-                user_id: userId,
-                tool_name: toolName,
+                organizationId: organizationId,
+                userId: userId,
                 action,
-                success,
-                duration_ms: durationMs,
-                input_params: inputParams,
-                output_data: outputData,
-                error_message: errorMessage,
-                ip_address: ipAddress,
-                user_agent: userAgent,
+                resource: toolName,
+                details: {
+                    success,
+                    duration_ms: durationMs,
+                    input_params: inputParams,
+                    output_data: outputData,
+                    error_message: errorMessage,
+                },
+                ipAddress: ipAddress,
+                userAgent: userAgent,
             }).catch((auditError) => {
                 // Log audit failures but don't throw
                 logger.error(`Audit log failed for ${toolName}`, auditError instanceof Error ? auditError : new Error(String(auditError)));
@@ -183,17 +185,19 @@ export class AuditLogger {
         errorMessage?: string
     ): Promise<void> {
         await logAuditEvent({
-            organization_id: this.organizationId,
-            user_id: this.userId,
-            tool_name: toolName,
+            organizationId: this.organizationId,
+            userId: this.userId,
             action,
-            success,
-            duration_ms: durationMs,
-            input_params: inputParams,
-            output_data: outputData,
-            error_message: errorMessage,
-            ip_address: this.ipAddress,
-            user_agent: this.userAgent,
+            resource: toolName,
+            details: {
+                success,
+                duration_ms: durationMs,
+                input_params: inputParams,
+                output_data: outputData,
+                error_message: errorMessage,
+            },
+            ipAddress: this.ipAddress,
+            userAgent: this.userAgent,
         });
     }
 }

@@ -2,9 +2,9 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "DOCKERFILE",
-    "dockerfilePath": "apps/production/tekup-billy/Dockerfile",
-    "dockerContext": "apps/production/tekup-billy",
-    "watchPaths": ["apps/production/tekup-billy/**"]
+    "dockerfilePath": "Dockerfile",
+    "dockerContext": ".",
+    "watchPaths": ["src/**", "package.json", "Dockerfile"]
   },
   "deploy": {
     "numReplicas": 1,
