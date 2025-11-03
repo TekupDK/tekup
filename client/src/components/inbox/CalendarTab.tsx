@@ -28,7 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { useAdaptivePolling } from "@/hooks/useAdaptivePolling";
-import { useCalendarView } from "@/hooks/useCalendarView";
+// import { useCalendarView } from "@/hooks/useCalendarView"; // TODO: Implement
 import { useRateLimit } from "@/hooks/useRateLimit";
 import { trpc } from "@/lib/trpc";
 import {
@@ -49,7 +49,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import FullCalendarView from "./FullCalendarView";
+// import FullCalendarView from "./FullCalendarView"; // TODO: Implement
 
 export default function CalendarTab() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -59,7 +59,7 @@ export default function CalendarTab() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Calendar view toggle (Grid vs FullCalendar)
-  const [calendarView, setCalendarView] = useCalendarView("grid");
+  const [calendarView, setCalendarView] = useState<"grid" | "fullcalendar">("grid"); // TODO: Use useCalendarView hook when implemented
 
   // Rate limit handling
   const rateLimit = useRateLimit();
@@ -553,17 +553,9 @@ export default function CalendarTab() {
 
       {/* Calendar View - Conditional Rendering */}
       {calendarView === "fullcalendar" ? (
-        <div className="border rounded-lg overflow-hidden bg-background">
-          <FullCalendarView
-            dateRange={dateRange}
-            selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
-            onEventClick={event => {
-              setSelectedEvent(event);
-              setIsEventDialogOpen(true);
-            }}
-            rateLimited={rateLimit.isRateLimited}
-          />
+        <div className="border rounded-lg overflow-hidden bg-background p-8 text-center text-muted-foreground">
+          {/* TODO: Implement FullCalendarView component */}
+          <p>FullCalendar view coming soon...</p>
         </div>
       ) : (
         <>
