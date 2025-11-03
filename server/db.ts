@@ -364,7 +364,7 @@ export async function getUserLeads(
   }
 
   // Get all leads first (we need all to calculate duplicates)
-  const allLeads = await db
+  let allLeads = await db
     .select()
     .from(leads)
     .where(conditions.length > 0 ? and(...conditions) : eq(leads.userId, userId))
