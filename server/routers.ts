@@ -1,4 +1,5 @@
 import { COOKIE_NAME } from "@shared/const";
+import { TRPCError } from "@trpc/server";
 import { and, asc, desc, eq, inArray, or } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -329,45 +330,446 @@ export const appRouter = router({
           actionId: z.string(),
           actionType: z.string(),
           actionParams: z.record(z.string(), z.any()),
+          idempotencyKey: z.string().optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
-        // Execute the approved action
-        const intent = {
-          intent: input.actionType as any,
-          params: input.actionParams,
-          confidence: 1.0,
-        };
-        const actionResult = await executeAction(intent, ctx.user.id);
+        const { rateLimiter, RATE_LIMITS, createRateLimitKey } = await import(
+          "./rate-limiter"
+        );
+        const { isActionAllowed, validateActionParams } = await import(
+          "./action-catalog"
+        );
+        const {
+          checkIdempotency,
+          storeIdempotencyRecord,
+          generateIdempotencyKey,
+        } = await import("./idempotency");
+        const { logActionExecuted, logActionFailed, generateCorrelationId } =
+          await import("./action-audit");
+        const { getUserRole, hasPermission, getRoleName } = await import(
+          "./rbac"
+        );
+        const { isFeatureAvailable, logRolloutMetric } = await import(
+          "./feature-rollout"
+        );
+        const { trackMetric } = await import("./metrics");
 
-        // Create system message with action result
-        const resultMessage = await createMessage({
-          conversationId: input.conversationId,
-          role: "system",
-          content: `[Action Executed] ${actionResult.success ? "Success" : "Failed"}: ${actionResult.message}${actionResult.data ? "\nData: " + JSON.stringify(actionResult.data, null, 2) : ""}${actionResult.error ? "\nError: " + actionResult.error : ""}`,
-        });
+        // Store action start time for time-to-action metric
+        const actionStartTime = Date.now();
 
-        // Get AI response acknowledging the action
-        const messages = await getConversationMessages(input.conversationId);
-        const aiMessages = messages.map(m => ({
-          role: m.role as "user" | "assistant" | "system",
-          content: m.content,
-        }));
-        const aiResponse = await routeAI({
-          messages: aiMessages,
-          taskType: "chat",
-          userId: ctx.user.id,
-          requireApproval: false,
-        });
+        // Feature rollout check
+        if (!isFeatureAvailable(ctx.user.id, "action_execution")) {
+          logRolloutMetric(ctx.user.id, "action_execution", "check");
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Action execution is not available for your account yet. Stay tuned!",
+          });
+        }
 
-        const assistantMessage = await createMessage({
-          conversationId: input.conversationId,
-          role: "assistant",
-          content: aiResponse.content,
-          model: aiResponse.model,
-        });
+        // Rate limiting check
+        const rateLimitKey = createRateLimitKey(ctx.user.id, "executeAction");
+        if (
+          rateLimiter.isRateLimited(rateLimitKey, RATE_LIMITS.ACTION_EXECUTION)
+        ) {
+          const resetTime = rateLimiter.getResetTime(rateLimitKey);
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: `Too many action executions. Try again in ${Math.ceil((resetTime || 0) / 1000)} seconds.`,
+          });
+        }
 
-        return { actionResult, assistantMessage };
+        // Validate action type
+        if (!isActionAllowed(input.actionType)) {
+          throw new Error(`Action type not allowed: ${input.actionType}`);
+        }
+
+        // Role-based access control
+        const userRole = getUserRole(ctx.user.id);
+        if (!hasPermission(userRole, input.actionType)) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: `You don't have permission to execute '${input.actionType}'. Required role or higher is needed. Your role: ${getRoleName(userRole)}`,
+          });
+        }
+
+        logRolloutMetric(ctx.user.id, "action_execution", "use");
+
+        // Validate params
+        const validation = validateActionParams(
+          input.actionType,
+          input.actionParams
+        );
+        if (!validation.success) {
+          throw new Error(validation.error);
+        }
+
+        // Generate or use provided idempotency key
+        const idempotencyKey =
+          input.idempotencyKey ||
+          generateIdempotencyKey(
+            ctx.user.id,
+            input.actionType,
+            input.conversationId,
+            input.actionId
+          );
+
+        // Check for duplicate execution
+        const idempotencyCheck = checkIdempotency(idempotencyKey);
+        if (idempotencyCheck.isDuplicate) {
+          console.log(`[Chat] Duplicate action detected: ${idempotencyKey}`);
+          return idempotencyCheck.result;
+        }
+
+        const correlationId = generateCorrelationId();
+
+        try {
+          // Execute the approved action
+          const intent = {
+            intent: input.actionType as any,
+            params: validation.data,
+            confidence: 1.0,
+          };
+          const actionResult = await executeAction(intent, ctx.user.id);
+
+          // Store idempotency record
+          storeIdempotencyRecord(
+            idempotencyKey,
+            input.actionType,
+            ctx.user.id,
+            actionResult
+          );
+
+          // Log execution
+          await logActionExecuted(
+            input.actionType,
+            input.actionId,
+            ctx.user.id,
+            correlationId,
+            actionResult,
+            input.conversationId,
+            idempotencyKey
+          );
+
+          // Track success metrics
+          trackMetric(ctx.user.id, "action_executed", {
+            actionType: input.actionType,
+            suggestionId: input.actionId,
+            conversationId: input.conversationId,
+            timeToAction: Date.now() - actionStartTime,
+          });
+          trackMetric(ctx.user.id, "suggestion_accepted", {
+            actionType: input.actionType,
+            suggestionId: input.actionId,
+            conversationId: input.conversationId,
+            timeToAction: Date.now() - actionStartTime,
+          });
+
+          // Create system message with action result
+          const resultMessage = await createMessage({
+            conversationId: input.conversationId,
+            role: "system",
+            content: `[Action Executed] ${actionResult.success ? "Success" : "Failed"}: ${actionResult.message}${actionResult.data ? "\nData: " + JSON.stringify(actionResult.data, null, 2) : ""}${actionResult.error ? "\nError: " + actionResult.error : ""}`,
+          });
+
+          // Get AI response acknowledging the action
+          const messages = await getConversationMessages(input.conversationId);
+          const aiMessages = messages.map(m => ({
+            role: m.role as "user" | "assistant" | "system",
+            content: m.content,
+          }));
+          const aiResponse = await routeAI({
+            messages: aiMessages,
+            taskType: "chat",
+            userId: ctx.user.id,
+            requireApproval: false,
+          });
+
+          const assistantMessage = await createMessage({
+            conversationId: input.conversationId,
+            role: "assistant",
+            content: aiResponse.content,
+            model: aiResponse.model,
+          });
+
+          return { actionResult, assistantMessage };
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          await logActionFailed(
+            input.actionType,
+            input.actionId,
+            ctx.user.id,
+            correlationId,
+            errorMessage,
+            input.conversationId,
+            idempotencyKey
+          );
+
+          // Track failure metrics
+          trackMetric(ctx.user.id, "action_failed", {
+            actionType: input.actionType,
+            suggestionId: input.actionId,
+            conversationId: input.conversationId,
+            errorMessage,
+          });
+          logRolloutMetric(ctx.user.id, "action_execution", "error");
+
+          throw error;
+        }
+      }),
+
+    // NEW: Dry-run endpoint for action preview
+    dryRunAction: protectedProcedure
+      .input(
+        z.object({
+          conversationId: z.number(),
+          actionId: z.string(),
+          actionType: z.string(),
+          actionParams: z.record(z.string(), z.any()),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const { isActionAllowed, validateActionParams, getActionCatalogEntry } =
+          await import("./action-catalog");
+        const { logActionDryRun, generateCorrelationId } = await import(
+          "./action-audit"
+        );
+
+        // Validate action type
+        if (!isActionAllowed(input.actionType)) {
+          return {
+            success: false,
+            message: `Action type not allowed: ${input.actionType}`,
+          };
+        }
+
+        // Validate params
+        const validation = validateActionParams(
+          input.actionType,
+          input.actionParams
+        );
+        if (!validation.success) {
+          return {
+            success: false,
+            message: validation.error,
+          };
+        }
+
+        const correlationId = generateCorrelationId();
+        const entry = getActionCatalogEntry(input.actionType);
+
+        try {
+          // Dry run: just validate and preview, don't execute
+          const preview = {
+            actionType: input.actionType,
+            label: entry?.label || input.actionType,
+            riskLevel: entry?.riskLevel || "medium",
+            params: validation.data,
+            estimatedImpact: entry?.description || "Action will be executed",
+            willExecute: true,
+          };
+
+          await logActionDryRun(
+            input.actionType,
+            input.actionId,
+            ctx.user.id,
+            correlationId,
+            true,
+            preview,
+            undefined,
+            input.conversationId
+          );
+
+          return {
+            success: true,
+            message: "Dry run successful - action can be executed safely",
+            preview,
+          };
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          await logActionDryRun(
+            input.actionType,
+            input.actionId,
+            ctx.user.id,
+            correlationId,
+            false,
+            undefined,
+            errorMessage,
+            input.conversationId
+          );
+
+          return {
+            success: false,
+            message: `Dry run failed: ${errorMessage}`,
+          };
+        }
+      }),
+
+    // NEW: Get AI-powered action suggestions based on conversation context
+    getSuggestions: protectedProcedure
+      .input(
+        z.object({
+          conversationId: z.number(),
+          maxSuggestions: z.number().min(1).max(5).default(3),
+        })
+      )
+      .query(async ({ ctx, input }) => {
+        const { rateLimiter, RATE_LIMITS, createRateLimitKey } = await import(
+          "./rate-limiter"
+        );
+        const { getActionCatalogEntry } = await import("./action-catalog");
+        const { logActionShown, generateCorrelationId } = await import(
+          "./action-audit"
+        );
+        const { routeAI } = await import("./ai-router");
+        const { isFeatureAvailable, logRolloutMetric } = await import(
+          "./feature-rollout"
+        );
+
+        // Feature rollout check
+        if (!isFeatureAvailable(ctx.user.id, "ai_suggestions")) {
+          logRolloutMetric(ctx.user.id, "ai_suggestions", "check");
+          return { suggestions: [] }; // Silently return empty for users not in rollout
+        }
+
+        // Rate limiting check
+        const rateLimitKey = createRateLimitKey(ctx.user.id, "getSuggestions");
+        if (rateLimiter.isRateLimited(rateLimitKey, RATE_LIMITS.AI_SUGGESTIONS)) {
+          const resetTime = rateLimiter.getResetTime(rateLimitKey);
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: `Rate limit exceeded. Try again in ${Math.ceil((resetTime || 0) / 1000)} seconds.`,
+          });
+        }
+
+        logRolloutMetric(ctx.user.id, "ai_suggestions", "use");
+
+        try {
+          // Get conversation messages for context
+          const messages = await getConversationMessages(input.conversationId);
+          if (messages.length === 0) {
+            return { suggestions: [] };
+          }
+
+          // Build prompt for Gemini to analyze conversation and suggest actions
+          const conversationContext = messages
+            .slice(-5) // Last 5 messages for context
+            .map(m => `${m.role}: ${m.content}`)
+            .join("\n\n");
+
+          const systemPrompt = `Du er en intelligent assistent der analyserer samtaler og foreslår relevante handlinger.
+
+Tilgængelige handlinger:
+- create_lead: Opret et nyt lead/kundeemne
+- create_task: Opret en opgave
+- book_meeting: Book et møde
+- create_invoice: Opret en faktura
+- search_gmail: Søg i Gmail
+- request_flytter_photos: Anmod om flyttebilleder
+- job_completion: Marker job som færdigt
+- search_email: Søg i emails
+- list_tasks: Vis opgaver
+- list_leads: Vis leads
+- check_calendar: Tjek kalender
+
+Analyser følgende samtale og foreslå 1-${input.maxSuggestions} relevante handlinger.
+
+Samtale:
+${conversationContext}
+
+Besvar i JSON format:
+{
+  "suggestions": [
+    {
+      "actionType": "create_task",
+      "priority": "high|medium|low",
+      "reasoning": "kort forklaring",
+      "params": { "title": "...", "dueInDays": 2 }
+    }
+  ]
+}
+
+Kun foreslå handlinger der giver mening baseret på samtalen. Hvis ingen handlinger er relevante, returner tom liste.`;
+
+          // Call Gemini to generate suggestions
+          const aiResponse = await routeAI({
+            messages: [
+              { role: "system", content: systemPrompt },
+              {
+                role: "user",
+                content: "Analyser samtalen og foreslå handlinger.",
+              },
+            ],
+            taskType: "chat",
+            userId: ctx.user.id,
+            requireApproval: false,
+          });
+
+          // Parse AI response
+          let parsedSuggestions: any[] = [];
+          try {
+            const jsonMatch = aiResponse.content.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              const parsed = JSON.parse(jsonMatch[0]);
+              parsedSuggestions = parsed.suggestions || [];
+            }
+          } catch (parseError) {
+            console.warn("[Chat] Failed to parse AI suggestions:", parseError);
+            // Fallback to safe defaults if parsing fails
+            parsedSuggestions = [];
+          }
+
+          // Transform to frontend format and validate
+          const { trackMetric } = await import("./metrics");
+          
+          const suggestions = parsedSuggestions
+            .slice(0, input.maxSuggestions)
+            .map((s: any, idx: number) => {
+              const entry = getActionCatalogEntry(s.actionType);
+              if (!entry) return null;
+
+              const suggestionId = `suggestion_${input.conversationId}_${Date.now()}_${idx}`;
+              const correlationId = generateCorrelationId();
+
+              // Log that suggestion was shown
+              logActionShown(
+                s.actionType,
+                suggestionId,
+                ctx.user.id,
+                correlationId,
+                s.params || {},
+                input.conversationId
+              ).catch(err =>
+                console.error("[Chat] Failed to log action shown:", err)
+              );
+
+              // Track metrics
+              trackMetric(ctx.user.id, "suggestion_shown", {
+                actionType: s.actionType,
+                suggestionId,
+                conversationId: input.conversationId,
+                metadata: { priority: s.priority },
+              });
+
+              return {
+                id: suggestionId,
+                type: s.actionType,
+                params: s.params || {},
+                impact: s.reasoning || entry.description,
+                preview: `${entry.label}\n${JSON.stringify(s.params, null, 2)}`,
+                riskLevel: entry.riskLevel,
+              };
+            })
+            .filter((s: any) => s !== null);
+
+          return { suggestions };
+        } catch (error) {
+          console.error("[Chat] getSuggestions error:", error);
+          // Return empty suggestions on error rather than failing
+          return { suggestions: [] };
+        }
       }),
   }),
 
@@ -398,22 +800,32 @@ export const appRouter = router({
               if (emailRecords.length > 0) {
                 // Return from database - DATA IS HERE!
                 return emailRecords.map(email => ({
-                  id: (email.emailThreadId ? String(email.emailThreadId) : (email.threadKey || email.providerId)),
+                  id: email.emailThreadId
+                    ? String(email.emailThreadId)
+                    : email.threadKey || email.providerId,
                   snippet: email.text?.substring(0, 200) || email.subject || "",
                   subject: email.subject,
                   from: email.fromEmail,
-                  date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
+                  date:
+                    typeof email.receivedAt === "string"
+                      ? email.receivedAt
+                      : new Date(email.receivedAt as any).toISOString(),
                   labels: [],
                   unread: true,
                   messages: [
                     {
                       id: email.providerId,
-                      threadId: (email.emailThreadId ? String(email.emailThreadId) : (email.threadKey || email.providerId)),
+                      threadId: email.emailThreadId
+                        ? String(email.emailThreadId)
+                        : email.threadKey || email.providerId,
                       from: email.fromEmail,
                       to: email.toEmail,
                       subject: email.subject || "",
                       body: email.text || email.html || "",
-                      date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
+                      date:
+                        typeof email.receivedAt === "string"
+                          ? email.receivedAt
+                          : new Date(email.receivedAt as any).toISOString(),
                     },
                   ],
                 }));
@@ -725,22 +1137,32 @@ export const appRouter = router({
 
           // Transform to GmailThread-like format for compatibility
           return emailRecords.map(email => ({
-            id: (email.emailThreadId ? String(email.emailThreadId) : (email.threadKey || email.providerId)),
+            id: email.emailThreadId
+              ? String(email.emailThreadId)
+              : email.threadKey || email.providerId,
             snippet: email.text?.substring(0, 200) || email.subject || "",
             subject: email.subject,
             from: email.fromEmail,
-            date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
+            date:
+              typeof email.receivedAt === "string"
+                ? email.receivedAt
+                : new Date(email.receivedAt as any).toISOString(),
             labels: [],
             unread: true,
             messages: [
               {
                 id: email.providerId,
-                threadId: (email.emailThreadId ? String(email.emailThreadId) : (email.threadKey || email.providerId)),
+                threadId: email.emailThreadId
+                  ? String(email.emailThreadId)
+                  : email.threadKey || email.providerId,
                 from: email.fromEmail,
                 to: email.toEmail,
                 subject: email.subject || "",
                 body: email.text || email.html || "",
-                date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
+                date:
+                  typeof email.receivedAt === "string"
+                    ? email.receivedAt
+                    : new Date(email.receivedAt as any).toISOString(),
               },
             ],
           }));
@@ -838,7 +1260,10 @@ export const appRouter = router({
               to: email.toEmail,
               subject: email.subject || "",
               body: email.text || email.html || "",
-              date: (typeof email.receivedAt === 'string' ? email.receivedAt : new Date(email.receivedAt as any).toISOString()),
+              date:
+                typeof email.receivedAt === "string"
+                  ? email.receivedAt
+                  : new Date(email.receivedAt as any).toISOString(),
               attachments: allAttachments.filter(a => a.emailId === email.id),
             })),
             labels: (thread.labels as string[]) || [],
@@ -1106,7 +1531,8 @@ export const appRouter = router({
               error.message?.includes("429") ||
               error.message?.includes("too many requests")
             ) {
-              const retryAfter = error.message.match(/retry after ([^,]+)/i)?.[1];
+              const retryAfter =
+                error.message.match(/retry after ([^,]+)/i)?.[1];
               throw new Error(
                 `Rate limit exceeded. Retry after ${retryAfter || "later"}`
               );
@@ -1130,7 +1556,8 @@ export const appRouter = router({
               error.message?.includes("429") ||
               error.message?.includes("too many requests")
             ) {
-              const retryAfter = error.message.match(/retry after ([^,]+)/i)?.[1];
+              const retryAfter =
+                error.message.match(/retry after ([^,]+)/i)?.[1];
               throw new Error(
                 `Rate limit exceeded. Retry after ${retryAfter || "later"}`
               );
@@ -1173,9 +1600,7 @@ export const appRouter = router({
             limit: z.number().optional(),
           })
         )
-        .query(async ({ ctx, input }) =>
-          getUserLeads(ctx.user.id, input)
-        ),
+        .query(async ({ ctx, input }) => getUserLeads(ctx.user.id, input)),
       create: protectedProcedure
         .input(
           z.object({
@@ -1432,6 +1857,28 @@ export const appRouter = router({
     searchCustomer: protectedProcedure
       .input(z.object({ email: z.string() }))
       .query(async ({ input }) => searchCustomerByEmail(input.email)),
+  }),
+
+  // Metrics & Analytics (for admin/monitoring)
+  metrics: router({
+    getMetricsSummary: protectedProcedure.query(async () => {
+      const { getMetricsSummary } = await import("./metrics");
+      return getMetricsSummary();
+    }),
+    getUserAcceptanceRate: protectedProcedure
+      .input(z.object({ userId: z.number().optional() }))
+      .query(async ({ ctx, input }) => {
+        const { getSuggestionAcceptanceRate } = await import("./metrics");
+        return getSuggestionAcceptanceRate(input.userId || ctx.user.id);
+      }),
+    getRolloutStats: protectedProcedure.query(async () => {
+      const { getRolloutStats } = await import("./feature-rollout");
+      return getRolloutStats();
+    }),
+    getUserFeatures: protectedProcedure.query(async ({ ctx }) => {
+      const { getUserFeatures } = await import("./feature-rollout");
+      return getUserFeatures(ctx.user.id);
+    }),
   }),
 });
 

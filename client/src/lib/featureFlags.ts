@@ -1,9 +1,11 @@
-export type FeatureFlag =
-  | "FRIDAY_ACTION_SUGGESTIONS";
+export type FeatureFlag = "FRIDAY_ACTION_SUGGESTIONS";
 
 const FLAG_PREFIX = "flag:";
 
-export function isFeatureEnabled(flag: FeatureFlag, defaultValue = false): boolean {
+export function isFeatureEnabled(
+  flag: FeatureFlag,
+  defaultValue = false
+): boolean {
   try {
     // URL toggle e.g. ?ff=FRIDAY_ACTION_SUGGESTIONS
     const params = new URLSearchParams(window.location.search);
@@ -36,4 +38,3 @@ export function setFeatureEnabled(flag: FeatureFlag, enabled: boolean) {
 }
 export const FEATURE_FRIDAY_ACTION_SUGGESTIONS =
   import.meta.env.VITE_FEATURE_FRIDAY_ACTION_SUGGESTIONS === "true";
-

@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import { isFeatureEnabled } from "@/lib/featureFlags";
 import type { PendingAction } from "@/components/ActionApprovalModal";
+import { isFeatureEnabled } from "@/lib/featureFlags";
+import { trpc } from "@/lib/trpc";
+import { useState } from "react";
 
 export type ActionSuggestion = PendingAction;
 
@@ -12,64 +13,43 @@ interface UseActionSuggestionsResult {
 }
 
 /**
- * Minimal, client-only suggestions.
- * MVP behavior:
+ * Context-aware action suggestions powered by Gemini.
+ * Behavior:
  * - Disabled unless FRIDAY_ACTION_SUGGESTIONS flag is enabled.
- * - Returns 0–2 safe suggestions with static preview/impact.
- * - Can be replaced later to call server endpoints.
+ * - Calls server endpoint to analyze conversation and generate relevant suggestions.
+ * - Returns 0-3 AI-generated suggestions based on conversation context.
  */
 export function useActionSuggestions(context: {
   conversationId?: number | null;
 }): UseActionSuggestionsResult {
   const enabled = isFeatureEnabled("FRIDAY_ACTION_SUGGESTIONS", false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  // Generate deterministic suggestions for MVP
-  const suggestions = useMemo<ActionSuggestion[]>(() => {
-    if (!enabled) return [];
-
-    const base: ActionSuggestion[] = [
-      {
-        id: "draft_reply",
-        type: "create_task",
-        params: { title: "Følg op på kunde", dueInDays: 2 },
-        impact: "Opretter en opgave til opfølgning inden 2 dage",
-        preview: "Titel: Følg op på kunde\nDeadline: +2 dage",
-        riskLevel: "low",
-      },
-      {
-        id: "book_meeting",
-        type: "book_meeting",
-        params: { title: "Tilbud – rengøring", durationMin: 30 },
-        impact: "Opretter en kalenderaftale (30 min) som kladde",
-        preview: "Titel: Tilbud – rengøring\nVarighed: 30 min",
-        riskLevel: "medium",
-      },
-    ];
-
-    // If no conversation selected, offer fewer
-    if (!context.conversationId) {
-      return base.slice(0, 1);
+  // Call TRPC endpoint to get AI-powered suggestions
+  const {
+    data,
+    isLoading,
+    error: queryError,
+  } = trpc.chat.getSuggestions.useQuery(
+    {
+      conversationId: context.conversationId || 0,
+      maxSuggestions: 3,
+    },
+    {
+      enabled: enabled && !!context.conversationId,
+      refetchOnWindowFocus: false,
+      staleTime: 30000, // Cache for 30 seconds
+      retry: 1,
     }
-    return base;
-  }, [enabled, context.conversationId, tick]);
-
-  useEffect(() => {
-    if (!enabled) return;
-    setLoading(true);
-    const t = setTimeout(() => {
-      setLoading(false);
-    }, 150);
-    return () => clearTimeout(t);
-  }, [enabled, tick]);
+  );
 
   return {
-    suggestions,
-    loading,
-    error,
-    refresh: () => setTick(t => t + 1),
+    suggestions:
+      enabled && data?.suggestions
+        ? data.suggestions.filter((s): s is PendingAction => s !== null)
+        : [],
+    loading: isLoading,
+    error: queryError ? String(queryError) : null,
+    refresh: () => setRefreshKey(k => k + 1),
   };
 }
-

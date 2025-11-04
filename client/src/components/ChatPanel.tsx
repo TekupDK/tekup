@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEmailContext } from "@/contexts/EmailContext";
+import { useActionSuggestions } from "@/hooks/useActionSuggestions";
 import { trpc } from "@/lib/trpc";
 import { Bot, Mic, Paperclip, Plus, Send } from "lucide-react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -16,9 +17,12 @@ import { toast } from "sonner";
 import { ActionApprovalModal, type PendingAction } from "./ActionApprovalModal";
 import { SafeStreamdown } from "./SafeStreamdown";
 import { SuggestionsBar } from "./SuggestionsBar";
-import { useActionSuggestions } from "@/hooks/useActionSuggestions";
 
-type ChatModel = "gemini-2.5-flash" | "claude-3-5-sonnet" | "gpt-4o" | "manus-ai";
+type ChatModel =
+  | "gemini-2.5-flash"
+  | "claude-3-5-sonnet"
+  | "gpt-4o"
+  | "manus-ai";
 
 interface Message {
   id: number;
@@ -33,7 +37,8 @@ function ChatPanel() {
   >(null);
   const [inputMessage, setInputMessage] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<ChatModel>("gemini-2.5-flash");
+  const [selectedModel, setSelectedModel] =
+    useState<ChatModel>("gemini-2.5-flash");
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(
     null
   );
@@ -55,17 +60,15 @@ function ChatPanel() {
     }
   }, [conversations, selectedConversationId]);
   const conversationId = selectedConversationId ?? 0;
-  const {
-    data: conversationData,
-    refetch: refetchMessages,
-  } = trpc.chat.get.useQuery(
-    { conversationId },
-    {
-      enabled: selectedConversationId !== null,
-      staleTime: 10000, // Cache for 10 seconds
-      refetchOnWindowFocus: false,
-    }
-  );
+  const { data: conversationData, refetch: refetchMessages } =
+    trpc.chat.get.useQuery(
+      { conversationId },
+      {
+        enabled: selectedConversationId !== null,
+        staleTime: 10000, // Cache for 10 seconds
+        refetchOnWindowFocus: false,
+      }
+    );
 
   // Poll for title updates when conversation has no title
   useEffect(() => {
@@ -103,7 +106,12 @@ function ChatPanel() {
     return () => {
       clearInterval(interval);
     };
-  }, [conversationData?.conversation, selectedConversationId, refetchMessages, refetchConversations]);
+  }, [
+    conversationData?.conversation,
+    selectedConversationId,
+    refetchMessages,
+    refetchConversations,
+  ]);
 
   const createConversation = trpc.chat.create.useMutation({
     onSuccess: data => {
@@ -250,7 +258,10 @@ function ChatPanel() {
         try {
           localStorage.setItem(`auto-approve-${pendingAction.type}`, "true");
         } catch (error) {
-          console.warn("[ChatPanel] Failed to store auto-approve preference:", error);
+          console.warn(
+            "[ChatPanel] Failed to store auto-approve preference:",
+            error
+          );
         }
       }
 
@@ -298,7 +309,11 @@ function ChatPanel() {
   }, []);
 
   // Lightweight client-only suggestions (gated by feature flag)
-  const { suggestions } = useActionSuggestions({
+  const {
+    suggestions,
+    loading: isSuggestionsLoading,
+    refresh: refreshSuggestions,
+  } = useActionSuggestions({
     conversationId: selectedConversationId,
   });
 
@@ -328,34 +343,34 @@ function ChatPanel() {
                     conv.title && conv.title !== "New Conversation"
                       ? conv.title
                       : `Ny samtale ${new Date(conv.createdAt).toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" })}`;
-                const formattedDate = new Date(
-                  conv.updatedAt
-                ).toLocaleDateString("da-DK", {
-                  day: "2-digit",
-                  month: "short",
-                });
+                  const formattedDate = new Date(
+                    conv.updatedAt
+                  ).toLocaleDateString("da-DK", {
+                    day: "2-digit",
+                    month: "short",
+                  });
 
-                return (
-                  <button
-                    key={conv.id}
-                    onClick={() => setSelectedConversationId(conv.id)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
-                      isSelected
-                        ? "bg-primary text-primary-foreground shadow-sm"
-                        : "hover:bg-accent/50 hover:shadow-sm"
-                    }`}
-                  >
-                    <div className="font-medium truncate">
-                      {conv.title && conv.title !== "New Conversation" ? (
-                        conv.title
-                      ) : (
-                        <span className="text-muted-foreground italic">
-                          {formattedTitle}
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-xs opacity-70">{formattedDate}</div>
-                  </button>
+                  return (
+                    <button
+                      key={conv.id}
+                      onClick={() => setSelectedConversationId(conv.id)}
+                      className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                        isSelected
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "hover:bg-accent/50 hover:shadow-sm"
+                      }`}
+                    >
+                      <div className="font-medium truncate">
+                        {conv.title && conv.title !== "New Conversation" ? (
+                          conv.title
+                        ) : (
+                          <span className="text-muted-foreground italic">
+                            {formattedTitle}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs opacity-70">{formattedDate}</div>
+                    </button>
                   );
                 })
               ) : (
@@ -428,6 +443,8 @@ function ChatPanel() {
               <div className="px-3 sm:px-6">
                 <SuggestionsBar
                   suggestions={suggestions}
+                  isLoading={isSuggestionsLoading}
+                  onRefresh={refreshSuggestions}
                   onApprove={s => {
                     setPendingAction(s);
                     setShowApprovalModal(true);
@@ -442,7 +459,9 @@ function ChatPanel() {
                     <Bot className="w-4 h-4" />
                     <Select
                       value={selectedModel}
-                      onValueChange={(value: ChatModel) => setSelectedModel(value)}
+                      onValueChange={(value: ChatModel) =>
+                        setSelectedModel(value)
+                      }
                     >
                       <SelectTrigger className="w-[200px] h-8">
                         <SelectValue />
