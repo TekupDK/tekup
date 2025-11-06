@@ -1,0 +1,231 @@
+{
+  "analysisMetadata": {
+    "generatedAt": "2025-11-06T22:00:00Z",
+    "repository": "TekupDK/tekup",
+    "branch": "copilot/analyse-hele-kodebase",
+    "analysisDuration": "180 seconds",
+    "healthScore": 7.8
+  },
+  "metrics": {
+    "files": {
+      "typescriptFiles": 741,
+      "javascriptFiles": 50,
+      "testFiles": 42,
+      "specFiles": 513,
+      "markdownFiles": 902,
+      "totalLinesOfCode": 128321
+    },
+    "workspace": {
+      "activePackages": 20,
+      "tsconfigFiles": 37,
+      "eslintConfigs": 138,
+      "prettierConfigs": 5,
+      "dockerfiles": 24,
+      "dockerComposeFiles": 34
+    },
+    "languageDistribution": {
+      "typescript": 91.5,
+      "javascript": 6.2,
+      "other": 2.3
+    }
+  },
+  "codeQuality": {
+    "eslint": {
+      "totalIssues": 57,
+      "errors": 9,
+      "warnings": 48,
+      "primaryIssues": [
+        {
+          "type": "typescript-any-usage",
+          "count": 24,
+          "location": "tekup-mcp-servers/packages/google-mcp",
+          "severity": "warning"
+        },
+        {
+          "type": "build-failures",
+          "count": 6,
+          "location": "services/tekup-ai",
+          "severity": "error"
+        }
+      ]
+    },
+    "typescript": {
+      "coverage": 91.5,
+      "compilationErrors": [
+        {
+          "package": "services/tekup-ai/packages/ai-llm",
+          "missingDependencies": [
+            "@google/generative-ai",
+            "openai"
+          ],
+          "affectedFiles": [
+            "src/providers/geminiProvider.ts",
+            "src/providers/llmProvider.ts",
+            "src/providers/ollamaProvider.ts"
+          ]
+        }
+      ]
+    },
+    "markdownLint": {
+      "filesAnalyzed": 1088,
+      "totalErrors": 20612,
+      "errorRate": 18.94,
+      "topIssues": [
+        {
+          "rule": "MD029",
+          "description": "Ordered list prefix inconsistencies",
+          "count": "~8000"
+        },
+        {
+          "rule": "MD040",
+          "description": "Missing code block language specifiers",
+          "count": "~5000"
+        },
+        {
+          "rule": "MD025",
+          "description": "Multiple H1 headings",
+          "count": "~3000"
+        },
+        {
+          "rule": "MD033",
+          "description": "Inline HTML elements",
+          "count": "~2000"
+        }
+      ]
+    }
+  },
+  "security": {
+    "vulnerabilities": {
+      "total": 0,
+      "critical": 0,
+      "high": 0,
+      "moderate": 0,
+      "low": 0
+    },
+    "status": "excellent",
+    "lastAudit": "2025-11-06T22:00:00Z"
+  },
+  "testing": {
+    "testFiles": 42,
+    "specFiles": 513,
+    "frameworks": ["Jest", "Vitest", "Custom"],
+    "coverageTracking": false,
+    "status": "needs-improvement"
+  },
+  "docker": {
+    "dockerfiles": 24,
+    "composeFiles": 34,
+    "multiStageBulds": true,
+    "status": "excellent"
+  },
+  "criticalIssues": [
+    {
+      "priority": "high",
+      "id": "ISSUE-001",
+      "title": "TypeScript Compilation Failures in ai-llm",
+      "package": "services/tekup-ai/packages/ai-llm",
+      "description": "Missing dependencies preventing builds",
+      "impact": "Prevents builds and tests",
+      "fix": "Install @google/generative-ai and openai packages"
+    },
+    {
+      "priority": "high",
+      "id": "ISSUE-002",
+      "title": "Missing Workspace Package",
+      "package": "packages/inbox-orchestrator",
+      "description": "Referenced but not in lockfile",
+      "impact": "Build warnings and potential runtime errors",
+      "fix": "Remove references or add package to workspace"
+    },
+    {
+      "priority": "high",
+      "id": "ISSUE-003",
+      "title": "pnpm Tool Conflicts",
+      "description": "ENOTEMPTY errors during operations",
+      "impact": "Build instability",
+      "fix": "Clean pnpm cache and standardize versions"
+    },
+    {
+      "priority": "medium",
+      "id": "ISSUE-004",
+      "title": "Markdown Documentation Quality",
+      "description": "20,612 linting errors across 1,088 files",
+      "impact": "Poor documentation readability",
+      "fix": "Run pnpm markdown:fix"
+    },
+    {
+      "priority": "medium",
+      "id": "ISSUE-005",
+      "title": "TypeScript any Usage",
+      "package": "tekup-mcp-servers/packages/google-mcp",
+      "description": "24 instances of any type",
+      "impact": "Reduced type safety",
+      "fix": "Replace with proper TypeScript types"
+    },
+    {
+      "priority": "medium",
+      "id": "ISSUE-006",
+      "title": "Missing Test Coverage Tracking",
+      "description": "No centralized coverage reporting",
+      "impact": "Unknown code coverage metrics",
+      "fix": "Set up Jest/Vitest coverage tracking"
+    }
+  ],
+  "recommendations": {
+    "immediate": [
+      "Fix TypeScript dependencies in ai-llm package",
+      "Run markdown:fix to clean documentation",
+      "Approve pnpm build scripts",
+      "Resolve missing inbox-orchestrator package"
+    ],
+    "shortTerm": [
+      "Improve type safety by replacing any types",
+      "Centralize TypeScript configuration",
+      "Add test coverage tracking",
+      "Set up CI/CD pipeline"
+    ],
+    "longTerm": [
+      "Create architecture decision records",
+      "Implement comprehensive API documentation",
+      "Add performance monitoring",
+      "Create technical debt register"
+    ]
+  },
+  "successMetrics": {
+    "current": {
+      "typescriptCoverage": 91,
+      "testCoverage": null,
+      "documentationErrorRate": 19,
+      "securityVulnerabilities": 0,
+      "eslintErrors": 9,
+      "eslintWarnings": 48,
+      "buildSuccessRate": 85
+    },
+    "targets": {
+      "typescriptCoverage": 95,
+      "testCoverage": 70,
+      "documentationErrorRate": 2,
+      "securityVulnerabilities": 0,
+      "eslintErrors": 0,
+      "eslintWarnings": 10,
+      "buildSuccessRate": 100
+    }
+  },
+  "comparisonWithPrevious": {
+    "previousAnalysisDate": "2025-10-29T07:45:00Z",
+    "improvements": [
+      "ESLint configuration added at root level",
+      "Markdown linting tools configured",
+      "More comprehensive Docker setup (24 vs 14 Dockerfiles)"
+    ],
+    "regressions": [
+      "TypeScript compilation issues introduced",
+      "Documentation quality metrics slightly worse"
+    ],
+    "unchanged": [
+      "Security remains excellent (0 vulnerabilities)",
+      "Testing infrastructure still needs improvement",
+      "Type safety issues with any usage persist"
+    ]
+  }
+}
