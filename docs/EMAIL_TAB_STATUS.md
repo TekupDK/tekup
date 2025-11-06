@@ -98,4 +98,3 @@
 ---
 
 **Last Updated:** 2. november 2025, 20:30
-

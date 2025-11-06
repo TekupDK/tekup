@@ -85,4 +85,3 @@ const { data: labels, isLoading: labelsLoading } =
 
 **Status:** ✅ Labels caching implementeret
 **Next:** Test efter rate limit reset (~20:48 CEST)
-

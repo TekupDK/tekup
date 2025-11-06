@@ -74,9 +74,7 @@ export function trackMetric(
 /**
  * Calculate suggestion acceptance rate for a user or globally
  */
-export function getSuggestionAcceptanceRate(
-  userId?: number
-): {
+export function getSuggestionAcceptanceRate(userId?: number): {
   shown: number;
   accepted: number;
   rejected: number;
@@ -84,19 +82,19 @@ export function getSuggestionAcceptanceRate(
   acceptanceRate: number;
 } {
   const metrics = userId
-    ? metricsStore.filter((m) => m.userId === userId)
+    ? metricsStore.filter(m => m.userId === userId)
     : metricsStore;
 
-  const shown = metrics.filter((m) => m.event === "suggestion_shown").length;
-  const accepted = metrics.filter((m) => m.event === "suggestion_accepted")
-    .length;
-  const rejected = metrics.filter((m) => m.event === "suggestion_rejected")
-    .length;
-  const ignored = metrics.filter((m) => m.event === "suggestion_ignored")
-    .length;
+  const shown = metrics.filter(m => m.event === "suggestion_shown").length;
+  const accepted = metrics.filter(
+    m => m.event === "suggestion_accepted"
+  ).length;
+  const rejected = metrics.filter(
+    m => m.event === "suggestion_rejected"
+  ).length;
+  const ignored = metrics.filter(m => m.event === "suggestion_ignored").length;
 
-  const acceptanceRate =
-    shown > 0 ? Math.round((accepted / shown) * 100) : 0;
+  const acceptanceRate = shown > 0 ? Math.round((accepted / shown) * 100) : 0;
 
   return {
     shown,
@@ -112,11 +110,11 @@ export function getSuggestionAcceptanceRate(
  */
 export function getAverageTimeToAction(userId?: number): number {
   const metrics = userId
-    ? metricsStore.filter((m) => m.userId === userId)
+    ? metricsStore.filter(m => m.userId === userId)
     : metricsStore;
 
   const acceptedMetrics = metrics.filter(
-    (m) => m.event === "suggestion_accepted" && m.timeToAction
+    m => m.event === "suggestion_accepted" && m.timeToAction
   );
 
   if (acceptedMetrics.length === 0) return 0;
@@ -132,9 +130,7 @@ export function getAverageTimeToAction(userId?: number): number {
 /**
  * Get error rate for action execution
  */
-export function getActionErrorRate(
-  actionType?: string
-): {
+export function getActionErrorRate(actionType?: string): {
   executed: number;
   failed: number;
   errorRate: number;
@@ -142,11 +138,11 @@ export function getActionErrorRate(
   let metrics = metricsStore;
 
   if (actionType) {
-    metrics = metrics.filter((m) => m.actionType === actionType);
+    metrics = metrics.filter(m => m.actionType === actionType);
   }
 
-  const executed = metrics.filter((m) => m.event === "action_executed").length;
-  const failed = metrics.filter((m) => m.event === "action_failed").length;
+  const executed = metrics.filter(m => m.event === "action_executed").length;
+  const failed = metrics.filter(m => m.event === "action_failed").length;
 
   const errorRate =
     executed + failed > 0
@@ -169,12 +165,9 @@ export function getTopActions(limit: number = 5): Array<{
   accepted: number;
   acceptanceRate: number;
 }> {
-  const actionStats = new Map<
-    string,
-    { shown: number; accepted: number }
-  >();
+  const actionStats = new Map<string, { shown: number; accepted: number }>();
 
-  metricsStore.forEach((m) => {
+  metricsStore.forEach(m => {
     if (!m.actionType) return;
 
     if (!actionStats.has(m.actionType)) {
@@ -214,7 +207,7 @@ export function getMetricsSummary(): {
   errorRate: number;
   topActions: ReturnType<typeof getTopActions>;
 } {
-  const uniqueUsers = new Set(metricsStore.map((m) => m.userId)).size;
+  const uniqueUsers = new Set(metricsStore.map(m => m.userId)).size;
   const suggestionStats = getSuggestionAcceptanceRate();
   const actionStats = getActionErrorRate();
 
@@ -238,15 +231,15 @@ export function clearOldMetrics(olderThanHours: number = 24): number {
   ).toISOString();
 
   const initialLength = metricsStore.length;
-  const recentMetrics = metricsStore.filter(
-    (m) => m.timestamp > cutoffTime
-  );
+  const recentMetrics = metricsStore.filter(m => m.timestamp > cutoffTime);
 
   metricsStore.length = 0;
   metricsStore.push(...recentMetrics);
 
   const removed = initialLength - metricsStore.length;
-  console.log(`[METRICS] Cleared ${removed} metrics older than ${olderThanHours}h`);
+  console.log(
+    `[METRICS] Cleared ${removed} metrics older than ${olderThanHours}h`
+  );
 
   return removed;
 }

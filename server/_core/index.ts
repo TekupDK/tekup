@@ -6,10 +6,10 @@ import rateLimit from "express-rate-limit";
 import { createServer } from "http";
 import net from "net";
 import * as db from "../db";
-import { logger } from "./logger";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { ENV } from "./env";
+import { logger } from "./logger";
 import { registerOAuthRoutes } from "./oauth";
 import { serveStatic, setupVite } from "./vite";
 
@@ -60,7 +60,10 @@ async function runAutoImportIfNeeded() {
         .forEach(error => logger.warn({ err: error }, `[Auto-Import] Error`));
     }
   } catch (error) {
-  logger.error({ err: error }, "[Auto-Import] ❌ Error during automatic import");
+    logger.error(
+      { err: error },
+      "[Auto-Import] ❌ Error during automatic import"
+    );
     // Don't throw - server should still start even if import fails
   }
 }
@@ -137,16 +140,25 @@ async function startServer() {
   const port = await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {
-    logger.warn({ preferredPort, port }, `Port ${preferredPort} is busy, using port ${port} instead`);
+    logger.warn(
+      { preferredPort, port },
+      `Port ${preferredPort} is busy, using port ${port} instead`
+    );
   }
 
   server.listen(port, async () => {
-    logger.info({ port, env: process.env.NODE_ENV }, `Server running on http://localhost:${port}/`);
+    logger.info(
+      { port, env: process.env.NODE_ENV },
+      `Server running on http://localhost:${port}/`
+    );
 
     // Run automatic historical data import if needed (non-blocking)
     // This only runs if no leads exist in the database
     runAutoImportIfNeeded().catch(error => {
-      logger.error({ err: error }, "[Auto-Import] Failed to run automatic import");
+      logger.error(
+        { err: error },
+        "[Auto-Import] Failed to run automatic import"
+      );
     });
   });
 }

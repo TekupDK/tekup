@@ -65,7 +65,9 @@ export default function EmailPreviewModal({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-2xl max-h-[85vh]">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold">Henter email...</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">
+              Henter email...
+            </DialogTitle>
           </DialogHeader>
           <div className="flex items-center justify-center py-8">
             <Clock className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -80,7 +82,9 @@ export default function EmailPreviewModal({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-2xl max-h-[85vh]">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold">Email ikke fundet</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">
+              Email ikke fundet
+            </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
               Kunne ikke indlæse email. Prøv igen.
             </DialogDescription>
@@ -95,7 +99,7 @@ export default function EmailPreviewModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+      <DialogContent className="sm:max-w-[80vw] max-h-[85vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="truncate text-lg font-semibold">
             {latestMessage.subject || thread.subject || "Ingen emne"}
@@ -220,4 +224,3 @@ export default function EmailPreviewModal({
     </Dialog>
   );
 }
-

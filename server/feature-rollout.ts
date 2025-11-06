@@ -1,7 +1,7 @@
 /**
  * Feature Rollout Management
  * Enables gradual rollout of features to percentage of users
- * 
+ *
  * Strategy: 10% → 50% → 100%
  */
 
@@ -59,10 +59,7 @@ const ROLLOUT_CONFIG: Record<FeatureFlag, RolloutConfig> = {
  * Determine if a user is in the rollout group for a feature
  * Uses consistent hashing so same user always gets same result
  */
-export function isUserInRollout(
-  userId: number,
-  feature: FeatureFlag
-): boolean {
+export function isUserInRollout(userId: number, feature: FeatureFlag): boolean {
   const config = ROLLOUT_CONFIG[feature];
 
   // If feature disabled globally, no one gets it
@@ -115,7 +112,7 @@ export function isFeatureAvailable(
 export function getUserFeatures(userId: number): Record<FeatureFlag, boolean> {
   const features: Record<string, boolean> = {};
 
-  Object.keys(ROLLOUT_CONFIG).forEach((featureKey) => {
+  Object.keys(ROLLOUT_CONFIG).forEach(featureKey => {
     const feature = featureKey as FeatureFlag;
     features[feature] = isFeatureAvailable(userId, feature);
   });

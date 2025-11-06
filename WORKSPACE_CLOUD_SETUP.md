@@ -27,11 +27,13 @@ Denne workspace fil inkluderer kun `tekup-ai-v2` projektet, hvilket gør det mul
 ### 1. Åbn Single-Root Workspace
 
 **Option A: Fra Cursor/VS Code**
+
 - `File` → `Open Workspace from File...`
 - Naviger til: `C:\Users\empir\Tekup\services\tekup-ai-v2\`
 - Vælg: `tekup-ai-v2.code-workspace`
 
 **Option B: Direkte fra File Explorer**
+
 - Dobbeltklik på `tekup-ai-v2.code-workspace`
 - Workspace åbnes automatisk i Cursor/VS Code
 
@@ -55,23 +57,29 @@ Denne workspace fil inkluderer kun `tekup-ai-v2` projektet, hvilket gør det mul
 ## 🔄 Skift Mellem Workspaces
 
 ### Multi-Root Workspace (Helt Portfolio)
+
 **Når du skal arbejde på:**
+
 - Flere projekter samtidigt
 - Cross-project integrationer
 - Portfolio overview
 
 **Åbn:**
+
 - `Tekup-Portfolio.code-workspace` (eller din primære multi-root workspace)
 
 **Limitation:** Cloud agents er **disabled** i denne workspace type.
 
 ### Single-Root Workspace (kun tekup-ai-v2)
+
 **Når du skal:**
+
 - Arbejde specifikt på `tekup-ai-v2`
 - Aktivere cloud agents for bedre AI performance
 - Køre intensive AI-assisted tasks
 
 **Åbn:**
+
 - `C:\Users\empir\Tekup\services\tekup-ai-v2\tekup-ai-v2.code-workspace`
 
 **Fordel:** Cloud agents er **aktiveret** ✅
@@ -81,15 +89,18 @@ Denne workspace fil inkluderer kun `tekup-ai-v2` projektet, hvilket gør det mul
 ## 📋 Workspace Indhold
 
 ### Inkluderede Filer
+
 - ✅ `client/` - Frontend React applikation
 - ✅ `server/` - Backend Express server
 - ✅ `shared/` - Shared types og utilities
 - ✅ `drizzle/` - Database migrations og schema
 
 ### Ekskluderede Mapper
+
 - ❌ `node_modules/` - Automa
 
 tisk skjult
+
 - ❌ `dist/` - Build output
 - ❌ `.git/` - Git metadata
 
@@ -109,19 +120,25 @@ Workspace filen inkluderer optimerede settings for:
 ## 🔍 Troubleshooting
 
 ### Problem: Cloud agents stadig disabled
+
 **Løsning:**
+
 1. Verificer at du har åbnet `.code-workspace` filen (ikke bare mappen)
 2. Tjek at workspace kun har én folder (single-root)
 3. Genstart Cursor/VS Code
 4. Verificer din Cursor Pro+ subscription status
 
 ### Problem: TypeScript errors
+
 **Løsning:**
+
 1. Kør `pnpm install` i projektet
 2. Genstart TypeScript server: `Ctrl+Shift+P` → "TypeScript: Restart TS Server"
 
 ### Problem: Manglende dependencies
+
 **Løsning:**
+
 1. Naviger til projektet: `cd C:\Users\empir\Tekup\services\tekup-ai-v2`
 2. Installer: `pnpm install`
 
@@ -130,11 +147,13 @@ Workspace filen inkluderer optimerede settings for:
 ## 📚 Relateret Dokumentation
 
 ### Core Documentation
+
 - **Project README:** `README.md` - Project overview og features
 - **Start Guide:** `START_GUIDE.md` - Quick start instruktioner
 - **Login Debug:** `LOGIN_DEBUG_GUIDE.md` - Authentication troubleshooting
 
 ### AI Development Context (Vigtigt for Cursor AI)
+
 - **`.cursorrules`** - ✅ Cursor AI rules og coding guidelines (læses automatisk)
 - **`docs/CURSOR_RULES.md`** - Detaljerede Cursor AI development rules
 - **`docs/ARCHITECTURE.md`** - System arkitektur og struktur
@@ -142,6 +161,7 @@ Workspace filen inkluderer optimerede settings for:
 - **`docs/API_REFERENCE.md`** - API dokumentation
 
 ### Feature Documentation (i `docs/` mappen)
+
 - **Email Features:** `docs/EMAIL_TAB_*.md` - Email tab implementation
 - **API Optimization:** `docs/API_OPTIMIZATION_*.md` - Performance optimering
 - **Shortwave:** `docs/SHORTWAVE_*.md` - Shortwave workflow integration
@@ -149,6 +169,7 @@ Workspace filen inkluderer optimerede settings for:
 - **Database:** `docs/DATABASE_MIGRATION_SUPABASE.md` - Database migration guides
 
 ### VS Code Configuration
+
 - **`.vscode/tasks.json`** - Development tasks (Ctrl+Shift+B for build)
 - **`.vscode/launch.json`** - Debug configurations (F5 for debugging)
 - **`.vscode/settings.json`** - Workspace-specifikke settings
@@ -172,4 +193,3 @@ code tekup-ai-v2.code-workspace
 
 **Status:** ✅ Ready for cloud agents
 **Næste skridt:** Åbn workspace og verificer cloud agent activation
-

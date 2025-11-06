@@ -14,16 +14,19 @@ Shortwave-style context tracking gør at AI'en ved hvad brugeren kigger på og h
 ## ✅ Implementation
 
 ### 1. EmailContext Provider (`EmailContext.tsx`)
+
 - ✅ Tracks: selected threads, open thread, folder, view mode, labels, search, drafts
 - ✅ `getContextForAI()` genererer formateret context string
 - ✅ Automatisk syncing fra EmailTab state
 
 ### 2. Backend Context Support
+
 - ✅ `routers.ts` - `sendMessage` accepterer `context` parameter
 - ✅ `ai-router.ts` - Modtager context og tilføjer til system prompt
 - ✅ Context formateret som `<system-reminder>` tag
 
 ### 3. Frontend Integration
+
 - ✅ `App.tsx` - Wrapped med `EmailContextProvider`
 - ✅ `EmailTab.tsx` - Syncer state til EmailContext automatisk
 - ✅ `ChatPanel.tsx` - Henter context og sender med hver AI besked
@@ -71,22 +74,23 @@ Shortwave-style context tracking gør at AI'en ved hvad brugeren kigger på og h
 
 ## 📊 Context Data Tracked
 
-| Data Point | Description | Example |
-|------------|-------------|----------|
-| `selectedThreads` | Array of thread IDs user has selected | `["19a469...", "19a45a..."]` |
-| `openThreadId` | Currently viewing thread | `"19a469eaff6e9693"` |
-| `folder` | Current folder (inbox/sent/archive/starred) | `"inbox"` |
-| `viewMode` | View mode (list/pipeline/dashboard) | `"pipeline"` |
-| `selectedLabels` | Filter labels | `["Leads", "Needs Action"]` |
-| `searchQuery` | Current search query | `"rengøring"` |
-| `openDrafts` | Number of open drafts | `1` |
-| `previewThreadId` | Thread in preview modal | `"19a469eaff6e9693"` |
+| Data Point        | Description                                 | Example                      |
+| ----------------- | ------------------------------------------- | ---------------------------- |
+| `selectedThreads` | Array of thread IDs user has selected       | `["19a469...", "19a45a..."]` |
+| `openThreadId`    | Currently viewing thread                    | `"19a469eaff6e9693"`         |
+| `folder`          | Current folder (inbox/sent/archive/starred) | `"inbox"`                    |
+| `viewMode`        | View mode (list/pipeline/dashboard)         | `"pipeline"`                 |
+| `selectedLabels`  | Filter labels                               | `["Leads", "Needs Action"]`  |
+| `searchQuery`     | Current search query                        | `"rengøring"`                |
+| `openDrafts`      | Number of open drafts                       | `1`                          |
+| `previewThreadId` | Thread in preview modal                     | `"19a469eaff6e9693"`         |
 
 ---
 
 ## 🎯 Example Use Cases
 
 ### Use Case 1: "Slet dem her"
+
 ```
 Context: User has 50 threads selected
 User: "slet dem her"
@@ -95,6 +99,7 @@ AI: "Skal jeg slette alle 50 valgte emails?"
 ```
 
 ### Use Case 2: "Hvad synes du om denne email?"
+
 ```
 Context: openThreadId = "19a469eaff6e9693"
 User: "hvad synes du om denne email?"
@@ -103,6 +108,7 @@ AI: Fetcher thread data og analyserer den specifikke email
 ```
 
 ### Use Case 3: "Send tilbud til dem alle"
+
 ```
 Context: selectedThreads = [5 thread IDs]
 User: "send tilbud til dem alle"
@@ -115,6 +121,7 @@ AI: Opretter tilbud for hver thread
 ## 🔧 Technical Details
 
 ### Frontend (`EmailContext.tsx`)
+
 ```typescript
 const emailContext = useEmailContext();
 
@@ -130,6 +137,7 @@ useEffect(() => {
 ```
 
 ### Backend (`ai-router.ts`)
+
 ```typescript
 // Context tilføjes til system prompt
 const contextString = `
@@ -166,4 +174,3 @@ they are referring to the above context.
 ---
 
 **Last Updated:** 3. november 2025, 01:30
-

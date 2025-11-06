@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Calendar, DollarSign, Mail, Send, CheckCircle2 } from "lucide-react";
+import { Calendar, CheckCircle2, DollarSign, Mail, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import EmailPreviewModal from "./EmailPreviewModal";
@@ -91,6 +91,7 @@ interface PipelineEmailCardProps {
   stage: PipelineStage;
   onQuickAction: (action: string, emailId: string) => void;
   onClick: () => void;
+  onHover?: () => void;
 }
 
 function PipelineEmailCard({
@@ -98,6 +99,7 @@ function PipelineEmailCard({
   stage,
   onQuickAction,
   onClick,
+  onHover,
 }: PipelineEmailCardProps) {
   const {
     attributes,
@@ -153,6 +155,7 @@ function PipelineEmailCard({
         isDragging ? "ring-2 ring-primary" : ""
       }`}
       onClick={onClick}
+      onMouseEnter={onHover}
     >
       <div className="space-y-2">
         {/* Header */}
@@ -225,6 +228,7 @@ interface PipelineColumnProps {
   emails: EmailMessage[];
   onQuickAction: (action: string, emailId: string) => void;
   onEmailClick: (email: EmailMessage) => void;
+  onEmailHover?: (email: EmailMessage) => void;
 }
 
 function PipelineColumnComponent({
@@ -232,6 +236,7 @@ function PipelineColumnComponent({
   emails,
   onQuickAction,
   onEmailClick,
+  onEmailHover,
 }: PipelineColumnProps) {
   const { setNodeRef: setDroppableRef, isOver } = useDroppable({
     id: column.id,
@@ -274,6 +279,7 @@ function PipelineColumnComponent({
                 stage={column.id}
                 onQuickAction={onQuickAction}
                 onClick={() => onEmailClick(email)}
+                onHover={onEmailHover ? () => onEmailHover(email) : undefined}
               />
             ))
           )}
@@ -286,11 +292,13 @@ function PipelineColumnComponent({
 interface EmailPipelineViewProps {
   emails: EmailMessage[];
   onEmailClick: (email: EmailMessage) => void;
+  onEmailHover?: (email: EmailMessage) => void;
 }
 
 export default function EmailPipelineView({
   emails,
   onEmailClick,
+  onEmailHover,
 }: EmailPipelineViewProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [pipelineState, setPipelineState] = useState<
@@ -300,7 +308,9 @@ export default function EmailPipelineView({
   const [previewThreadId, setPreviewThreadId] = useState<string | null>(null);
 
   const utils = trpc.useUtils();
-  const { data: pipelineStates } = trpc.inbox.email.getPipelineStates.useQuery({});
+  const { data: pipelineStates } = trpc.inbox.email.getPipelineStates.useQuery(
+    {}
+  );
 
   const inferStageFromEmail = (email: EmailMessage): PipelineStage => {
     if (email.labels?.includes("Venter på svar")) {
@@ -433,7 +443,8 @@ export default function EmailPipelineView({
   const emailsByStage = columns.reduce(
     (acc, column) => {
       acc[column.id] = emails.filter(email => {
-        const stage = pipelineState[email.threadId] ?? inferStageFromEmail(email);
+        const stage =
+          pipelineState[email.threadId] ?? inferStageFromEmail(email);
         return stage === column.id;
       });
       return acc;
@@ -464,6 +475,7 @@ export default function EmailPipelineView({
                 setPreviewModalOpen(true);
                 onEmailClick(email);
               }}
+              onEmailHover={onEmailHover}
             />
           ))}
         </div>

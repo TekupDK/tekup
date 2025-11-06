@@ -4,9 +4,13 @@
  * This replaces tool calling which doesn't work with Gemini via Forge API
  */
 
-import { createLead, createTask, getUserLeads, getUserTasks } from "./db";
-import { searchGmailThreads, createCalendarEvent, listCalendarEvents, checkCalendarAvailability } from "./mcp";
 import { createInvoice, getCustomers } from "./billy";
+import { createLead, createTask, getUserLeads, getUserTasks } from "./db";
+import {
+  createCalendarEvent,
+  listCalendarEvents,
+  searchGmailThreads,
+} from "./mcp";
 
 export type Intent =
   | "create_lead"
@@ -19,6 +23,8 @@ export type Intent =
   | "check_calendar"
   | "request_flytter_photos"
   | "job_completion"
+  | "ai_generate_summaries"
+  | "ai_suggest_labels"
   | "unknown";
 
 export interface ParsedIntent {
@@ -41,7 +47,10 @@ export function parseIntent(message: string): ParsedIntent {
   const lowerMessage = message.toLowerCase();
 
   // Create Lead Intent
-  if (lowerMessage.includes("opret") && (lowerMessage.includes("lead") || lowerMessage.includes("kunde"))) {
+  if (
+    lowerMessage.includes("opret") &&
+    (lowerMessage.includes("lead") || lowerMessage.includes("kunde"))
+  ) {
     const params: Record<string, any> = {};
 
     // Extract name
@@ -77,7 +86,8 @@ export function parseIntent(message: string): ParsedIntent {
 
     // Extract amount
     const amountMatch = message.match(/(\d+(?:[.,]\d+)?)\s*kr/i);
-    if (amountMatch) params.amount = parseFloat(amountMatch[1].replace(",", "."));
+    if (amountMatch)
+      params.amount = parseFloat(amountMatch[1].replace(",", "."));
 
     // Extract description
     const descMatch = message.match(/(?:for|beskrivelse):?\s*([^,\n]+)/i);
@@ -91,7 +101,10 @@ export function parseIntent(message: string): ParsedIntent {
   }
 
   // Create Task Intent
-  if (lowerMessage.includes("opret") && (lowerMessage.includes("opgave") || lowerMessage.includes("task"))) {
+  if (
+    lowerMessage.includes("opret") &&
+    (lowerMessage.includes("opgave") || lowerMessage.includes("task"))
+  ) {
     const params: Record<string, any> = {};
 
     // Extract title (everything after "opret opgave:" or similar)
@@ -99,7 +112,10 @@ export function parseIntent(message: string): ParsedIntent {
     if (titleMatch) params.title = titleMatch[1].trim();
 
     // Extract priority
-    if (lowerMessage.includes("høj prioritet") || lowerMessage.includes("vigtig")) {
+    if (
+      lowerMessage.includes("høj prioritet") ||
+      lowerMessage.includes("vigtig")
+    ) {
       params.priority = "high";
     } else if (lowerMessage.includes("lav prioritet")) {
       params.priority = "low";
@@ -120,7 +136,10 @@ export function parseIntent(message: string): ParsedIntent {
     const timeMatch = message.match(/kl\.?\s*(\d{1,2})(?::(\d{2}))?/i);
     if (timeMatch && params.dueDate) {
       const date = new Date(params.dueDate);
-      date.setHours(parseInt(timeMatch[1]), timeMatch[2] ? parseInt(timeMatch[2]) : 0);
+      date.setHours(
+        parseInt(timeMatch[1]),
+        timeMatch[2] ? parseInt(timeMatch[2]) : 0
+      );
       params.dueDate = date.toISOString();
     }
 
@@ -132,19 +151,22 @@ export function parseIntent(message: string): ParsedIntent {
   }
 
   // Book Meeting Intent - Enhanced to recognize "Book X til rengøring" format
-  if ((lowerMessage.includes("book") || lowerMessage.includes("opret")) &&
-      (lowerMessage.includes("møde") ||
-       lowerMessage.includes("aftale") ||
-       lowerMessage.includes("tid") ||
-       lowerMessage.includes("rengøring") ||
-       lowerMessage.includes("hovedrengøring") ||
-       lowerMessage.includes("flytterengøring"))) {
+  if (
+    (lowerMessage.includes("book") || lowerMessage.includes("opret")) &&
+    (lowerMessage.includes("møde") ||
+      lowerMessage.includes("aftale") ||
+      lowerMessage.includes("tid") ||
+      lowerMessage.includes("rengøring") ||
+      lowerMessage.includes("hovedrengøring") ||
+      lowerMessage.includes("flytterengøring"))
+  ) {
     const params: Record<string, any> = {};
 
     // Extract participant/customer name
     // Pattern: "Book [Name] til..." or "med [Name]"
-    const participantMatch = message.match(/book\s+(.+?)\s+til/i) ||
-                           message.match(/(?:med|hos)\s+([^,\npå]+)/i);
+    const participantMatch =
+      message.match(/book\s+(.+?)\s+til/i) ||
+      message.match(/(?:med|hos)\s+([^,\npå]+)/i);
     if (participantMatch) params.participant = participantMatch[1].trim();
 
     // Extract job type
@@ -159,11 +181,15 @@ export function parseIntent(message: string): ParsedIntent {
     }
 
     // Extract date/time
-    const dateMatch = message.match(/(mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag|i\s+dag|i\s+morgen|på\s+mandag|på\s+tirsdag|på\s+onsdag|på\s+torsdag|på\s+fredag)/i);
+    const dateMatch = message.match(
+      /(mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag|i\s+dag|i\s+morgen|på\s+mandag|på\s+tirsdag|på\s+onsdag|på\s+torsdag|på\s+fredag)/i
+    );
     if (dateMatch) params.dateHint = dateMatch[1].trim().replace("på ", "");
 
     // Extract time range (e.g., "kl 10-13" or "kl 10:00-13:00")
-    const timeRangeMatch = message.match(/kl\.?\s*(\d{1,2})(?::(\d{2}))?\s*-\s*(\d{1,2})(?::(\d{2}))?/i);
+    const timeRangeMatch = message.match(
+      /kl\.?\s*(\d{1,2})(?::(\d{2}))?\s*-\s*(\d{1,2})(?::(\d{2}))?/i
+    );
     if (timeRangeMatch) {
       params.startHour = parseInt(timeRangeMatch[1]);
       params.startMinute = timeRangeMatch[2] ? parseInt(timeRangeMatch[2]) : 0;
@@ -186,8 +212,12 @@ export function parseIntent(message: string): ParsedIntent {
   }
 
   // Search Email Intent
-  if ((lowerMessage.includes("søg") || lowerMessage.includes("find")) &&
-      (lowerMessage.includes("email") || lowerMessage.includes("mail") || lowerMessage.includes("besked"))) {
+  if (
+    (lowerMessage.includes("søg") || lowerMessage.includes("find")) &&
+    (lowerMessage.includes("email") ||
+      lowerMessage.includes("mail") ||
+      lowerMessage.includes("besked"))
+  ) {
     const params: Record<string, any> = {};
 
     // Extract search query
@@ -198,9 +228,15 @@ export function parseIntent(message: string): ParsedIntent {
     if (aboutMatch) params.subject = aboutMatch[1].trim();
 
     // Time range
-    if (lowerMessage.includes("sidste uge") || lowerMessage.includes("seneste uge")) {
+    if (
+      lowerMessage.includes("sidste uge") ||
+      lowerMessage.includes("seneste uge")
+    ) {
       params.timeRange = "last_week";
-    } else if (lowerMessage.includes("sidste 7 dage") || lowerMessage.includes("seneste 7 dage")) {
+    } else if (
+      lowerMessage.includes("sidste 7 dage") ||
+      lowerMessage.includes("seneste 7 dage")
+    ) {
       params.timeRange = "last_7_days";
     }
 
@@ -212,8 +248,12 @@ export function parseIntent(message: string): ParsedIntent {
   }
 
   // List Tasks Intent
-  if ((lowerMessage.includes("vis") || lowerMessage.includes("list")) &&
-      (lowerMessage.includes("opgave") || lowerMessage.includes("task") || lowerMessage.includes("todo"))) {
+  if (
+    (lowerMessage.includes("vis") || lowerMessage.includes("list")) &&
+    (lowerMessage.includes("opgave") ||
+      lowerMessage.includes("task") ||
+      lowerMessage.includes("todo"))
+  ) {
     return {
       intent: "list_tasks",
       params: {},
@@ -222,8 +262,12 @@ export function parseIntent(message: string): ParsedIntent {
   }
 
   // List Leads Intent
-  if ((lowerMessage.includes("vis") || lowerMessage.includes("find") || lowerMessage.includes("list")) &&
-      lowerMessage.includes("lead")) {
+  if (
+    (lowerMessage.includes("vis") ||
+      lowerMessage.includes("find") ||
+      lowerMessage.includes("list")) &&
+    lowerMessage.includes("lead")
+  ) {
     const params: Record<string, any> = {};
 
     if (lowerMessage.includes("nye") || lowerMessage.includes("seneste")) {
@@ -238,8 +282,10 @@ export function parseIntent(message: string): ParsedIntent {
   }
 
   // Check Calendar Intent
-  if ((lowerMessage.includes("tjek") || lowerMessage.includes("se")) &&
-      (lowerMessage.includes("kalender") || lowerMessage.includes("aftale"))) {
+  if (
+    (lowerMessage.includes("tjek") || lowerMessage.includes("se")) &&
+    (lowerMessage.includes("kalender") || lowerMessage.includes("aftale"))
+  ) {
     return {
       intent: "check_calendar",
       params: {},
@@ -248,8 +294,13 @@ export function parseIntent(message: string): ParsedIntent {
   }
 
   // Request Flytterengøring Photos Intent (MEMORY_16)
-  if ((lowerMessage.includes("nyt lead") || lowerMessage.includes("lead") || lowerMessage.includes("kunde")) &&
-      (lowerMessage.includes("flytterengøring") || lowerMessage.includes("flytte"))) {
+  if (
+    (lowerMessage.includes("nyt lead") ||
+      lowerMessage.includes("lead") ||
+      lowerMessage.includes("kunde")) &&
+    (lowerMessage.includes("flytterengøring") ||
+      lowerMessage.includes("flytte"))
+  ) {
     const params: Record<string, any> = {};
 
     // Extract customer name
@@ -268,12 +319,20 @@ export function parseIntent(message: string): ParsedIntent {
   }
 
   // Job Completion Intent (MEMORY_24)
-  if ((lowerMessage.includes("færdig") || lowerMessage.includes("afslut") || lowerMessage.includes("done")) &&
-      (lowerMessage.includes("rengøring") || lowerMessage.includes("job") || lowerMessage.includes("opgave"))) {
+  if (
+    (lowerMessage.includes("færdig") ||
+      lowerMessage.includes("afslut") ||
+      lowerMessage.includes("done")) &&
+    (lowerMessage.includes("rengøring") ||
+      lowerMessage.includes("job") ||
+      lowerMessage.includes("opgave"))
+  ) {
     const params: Record<string, any> = {};
 
     // Extract customer name
-    const nameMatch = message.match(/([A-ZÆØÅ][a-zæøå]+(?:\s+[A-ZÆØÅ][a-zæøå]+)?)/i);
+    const nameMatch = message.match(
+      /([A-ZÆØÅ][a-zæøå]+(?:\s+[A-ZÆØÅ][a-zæøå]+)?)/i
+    );
     if (nameMatch) params.customerName = nameMatch[1].trim();
 
     return {
@@ -329,6 +388,12 @@ export async function executeAction(
       case "job_completion":
         return await executeJobCompletion(intent.params, userId);
 
+      case "ai_generate_summaries":
+        return await executeAIGenerateSummaries(intent.params, userId);
+
+      case "ai_suggest_labels":
+        return await executeAISuggestLabels(intent.params, userId);
+
       default:
         return {
           success: false,
@@ -345,13 +410,101 @@ export async function executeAction(
   }
 }
 
-async function executeCreateLead(params: Record<string, any>, userId: number): Promise<ActionResult> {
+// --- Inbox AI helpers ---
+import { desc, eq } from "drizzle-orm";
+import { emailsInFridayAi } from "../drizzle/schema";
+import { batchGenerateSummaries } from "./ai-email-summary";
+import { batchGenerateLabelSuggestions } from "./ai-label-suggestions";
+import { getDb } from "./db";
+
+async function getDefaultInboxEmailIds(userId: number, limit = 25) {
+  const db = await getDb();
+  if (!db) return [] as number[];
+  const rows = await db
+    .select({ id: emailsInFridayAi.id })
+    .from(emailsInFridayAi)
+    .where(eq(emailsInFridayAi.userId, userId))
+    .orderBy(desc(emailsInFridayAi.receivedAt))
+    .limit(limit)
+    .execute();
+  return rows.map(r => r.id as unknown as number);
+}
+
+async function executeAIGenerateSummaries(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
+  const emailIds: number[] = Array.isArray(params?.emailIds)
+    ? params.emailIds
+    : await getDefaultInboxEmailIds(userId);
+
+  if (emailIds.length === 0) {
+    return {
+      success: false,
+      message:
+        "Ingen emails fundet at generere resuméer for. Vælg emails i indbakken eller angiv emailIds.",
+    };
+  }
+
+  const maxConcurrent = params?.maxConcurrent ?? 5;
+  const skipCached = params?.skipCached ?? true;
+
+  const result = await batchGenerateSummaries(emailIds, userId, {
+    maxConcurrent,
+    skipCached,
+  });
+
+  return {
+    success: true,
+    message: `✅ Genererede resuméer for ${result.processed}/${emailIds.length} emails${result.skipped ? ` (${result.skipped} fra cache)` : ""}${result.errors ? `, fejl: ${result.errors}` : ""}.`,
+    data: result,
+  };
+}
+
+async function executeAISuggestLabels(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
+  const emailIds: number[] = Array.isArray(params?.emailIds)
+    ? params.emailIds
+    : await getDefaultInboxEmailIds(userId);
+
+  if (emailIds.length === 0) {
+    return {
+      success: false,
+      message:
+        "Ingen emails fundet at foreslå labels for. Vælg emails i indbakken eller angiv emailIds.",
+    };
+  }
+
+  const maxConcurrent = params?.maxConcurrent ?? 5;
+  const skipCached = params?.skipCached ?? true;
+  const autoApply = params?.autoApply ?? false;
+
+  const result = await batchGenerateLabelSuggestions(emailIds, userId, {
+    maxConcurrent,
+    skipCached,
+    autoApply,
+  });
+
+  return {
+    success: true,
+    message: `✅ Foreslog labels for ${result.summary.successful}/${result.summary.total} emails${result.summary.cached ? ` (${result.summary.cached} fra cache)` : ""}${autoApply ? `, auto-applied: ${result.summary.autoApplied}` : ""}.`,
+    data: result.summary,
+  };
+}
+
+async function executeCreateLead(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
   const { name, email, phone, source } = params;
 
   if (!name || !email) {
     return {
       success: false,
-      message: "Jeg mangler navn og email for at oprette et lead. Prøv igen med: Navn: X, Email: Y",
+      message:
+        "Jeg mangler navn og email for at oprette et lead. Prøv igen med: Navn: X, Email: Y",
     };
   }
 
@@ -372,7 +525,10 @@ async function executeCreateLead(params: Record<string, any>, userId: number): P
   };
 }
 
-async function executeCreateTask(params: Record<string, any>, userId: number): Promise<ActionResult> {
+async function executeCreateTask(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
   const { title, priority, dueDate } = params;
 
   if (!title) {
@@ -386,10 +542,9 @@ async function executeCreateTask(params: Record<string, any>, userId: number): P
     userId,
     title,
     description: null,
-    dueDate: dueDate ? new Date(dueDate) : undefined,
+    dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
     priority: priority || "medium",
     status: "todo",
-    relatedTo: null,
   });
 
   return {
@@ -399,14 +554,18 @@ async function executeCreateTask(params: Record<string, any>, userId: number): P
   };
 }
 
-async function executeCreateInvoice(params: Record<string, any>, userId: number): Promise<ActionResult> {
+async function executeCreateInvoice(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
   const { customerName, amount, description } = params;
 
   // CRITICAL RULE: Validate required parameters
   if (!customerName) {
     return {
       success: false,
-      message: "Jeg mangler kundenavn. Prøv: Opret faktura til [Kundenavn] for [antal] arbejdstimer",
+      message:
+        "Jeg mangler kundenavn. Prøv: Opret faktura til [Kundenavn] for [antal] arbejdstimer",
     };
   }
 
@@ -427,7 +586,8 @@ async function executeCreateInvoice(params: Record<string, any>, userId: number)
   if (workHours === 0) {
     return {
       success: false,
-      message: "Jeg mangler antal arbejdstimer. Prøv: Opret faktura til [Kundenavn] for [antal] arbejdstimer [type rengøring]",
+      message:
+        "Jeg mangler antal arbejdstimer. Prøv: Opret faktura til [Kundenavn] for [antal] arbejdstimer [type rengøring]",
     };
   }
 
@@ -437,7 +597,10 @@ async function executeCreateInvoice(params: Record<string, any>, userId: number)
     if (lowerDesc.includes("flytterengøring") || lowerDesc.includes("flytte")) {
       jobType = "REN-003";
       jobDescription = "Flytterengøring";
-    } else if (lowerDesc.includes("hovedrengøring") || lowerDesc.includes("hoved")) {
+    } else if (
+      lowerDesc.includes("hovedrengøring") ||
+      lowerDesc.includes("hoved")
+    ) {
       jobType = "REN-002";
       jobDescription = "Hovedrengøring";
     } else if (lowerDesc.includes("erhverv")) {
@@ -507,7 +670,8 @@ async function executeCreateInvoice(params: Record<string, any>, userId: number)
   } catch (error) {
     return {
       success: false,
-      message: "Kunne ikke oprette faktura i Billy. Tjek Billy API forbindelse.",
+      message:
+        "Kunne ikke oprette faktura i Billy. Tjek Billy API forbindelse.",
       error: error instanceof Error ? error.message : String(error),
     };
   }
@@ -520,21 +684,34 @@ async function executeCreateInvoice(params: Record<string, any>, userId: number)
   };
 }
 
-async function executeBookMeeting(params: Record<string, any>, userId: number): Promise<ActionResult> {
-  const { participant, jobType, dateHint, startHour, startMinute, endHour, endMinute } = params;
+async function executeBookMeeting(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
+  const {
+    participant,
+    jobType,
+    dateHint,
+    startHour,
+    startMinute,
+    endHour,
+    endMinute,
+  } = params;
 
   // CRITICAL RULE: Validate required parameters
   if (!participant) {
     return {
       success: false,
-      message: "Jeg mangler kundens navn. Prøv: Book [Navn] til rengøring på [dag] kl [tid]",
+      message:
+        "Jeg mangler kundens navn. Prøv: Book [Navn] til rengøring på [dag] kl [tid]",
     };
   }
 
   if (startHour === undefined) {
     return {
       success: false,
-      message: "Jeg mangler tidspunkt. Prøv: Book [Navn] til rengøring på [dag] kl [tid]",
+      message:
+        "Jeg mangler tidspunkt. Prøv: Book [Navn] til rengøring på [dag] kl [tid]",
     };
   }
 
@@ -544,8 +721,13 @@ async function executeBookMeeting(params: Record<string, any>, userId: number): 
 
   // Map Danish weekdays
   const weekdayMap: Record<string, number> = {
-    "mandag": 1, "tirsdag": 2, "onsdag": 3, "torsdag": 4,
-    "fredag": 5, "lørdag": 6, "søndag": 0,
+    mandag: 1,
+    tirsdag: 2,
+    onsdag: 3,
+    torsdag: 4,
+    fredag: 5,
+    lørdag: 6,
+    søndag: 0,
   };
 
   if (dateHint) {
@@ -564,7 +746,8 @@ async function executeBookMeeting(params: Record<string, any>, userId: number): 
   } else {
     return {
       success: false,
-      message: "Jeg mangler dato. Prøv: Book [Navn] til rengøring på [mandag/tirsdag/etc] kl [tid]",
+      message:
+        "Jeg mangler dato. Prøv: Book [Navn] til rengøring på [mandag/tirsdag/etc] kl [tid]",
     };
   }
 
@@ -630,12 +813,15 @@ async function executeBookMeeting(params: Record<string, any>, userId: number): 
 
   return {
     success: true,
-    message: `✅ Booking oprettet: **${participant}** - ${jobType || "Rengøring"}\n\n📅 **Dato:** ${targetDate.toLocaleDateString("da-DK", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}\n⏰ **Tid:** ${startHour}:${finalStartMinute.toString().padStart(2, "0")} - ${endHour || (startHour + 3)}:${finalEndMinute.toString().padStart(2, "0")} (${durationHours}t)\n\n✅ **VERIFICERET:** Ingen attendees tilføjet (ingen automatiske invites sendt)\n✅ **VERIFICERET:** Runde timer anvendt\n\nBookingen er nu synlig i Calendar-fanen.`,
+    message: `✅ Booking oprettet: **${participant}** - ${jobType || "Rengøring"}\n\n📅 **Dato:** ${targetDate.toLocaleDateString("da-DK", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}\n⏰ **Tid:** ${startHour}:${finalStartMinute.toString().padStart(2, "0")} - ${endHour || startHour + 3}:${finalEndMinute.toString().padStart(2, "0")} (${durationHours}t)\n\n✅ **VERIFICERET:** Ingen attendees tilføjet (ingen automatiske invites sendt)\n✅ **VERIFICERET:** Runde timer anvendt\n\nBookingen er nu synlig i Calendar-fanen.`,
     data: event,
   };
 }
 
-async function executeSearchEmail(params: Record<string, any>, userId: number): Promise<ActionResult> {
+async function executeSearchEmail(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
   const { from, subject, timeRange } = params;
 
   let query = "";
@@ -649,7 +835,7 @@ async function executeSearchEmail(params: Record<string, any>, userId: number): 
     query += `after:${weekAgo.toISOString().split("T")[0]}`;
   }
 
-  const results = await searchGmailThreads({ query: query.trim() || "in:inbox", maxResults: 20 });
+  const results = await searchGmailThreads(query.trim() || "in:inbox", 20);
 
   return {
     success: true,
@@ -664,7 +850,8 @@ async function executeListTasks(userId: number): Promise<ActionResult> {
   if (tasks.length === 0) {
     return {
       success: true,
-      message: "📝 Du har ingen opgaver endnu. Vil du have mig til at oprette en?",
+      message:
+        "📝 Du har ingen opgaver endnu. Vil du have mig til at oprette en?",
       data: [],
     };
   }
@@ -678,13 +865,17 @@ async function executeListTasks(userId: number): Promise<ActionResult> {
   };
 }
 
-async function executeListLeads(params: Record<string, any>, userId: number): Promise<ActionResult> {
+async function executeListLeads(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
   const leads = await getUserLeads(userId);
 
   if (leads.length === 0) {
     return {
       success: true,
-      message: "👥 Du har ingen leads endnu. Vil du have mig til at søge efter nye leads i dine emails?",
+      message:
+        "👥 Du har ingen leads endnu. Vil du have mig til at søge efter nye leads i dine emails?",
       data: [],
     };
   }
@@ -710,7 +901,10 @@ async function executeCheckCalendar(userId: number): Promise<ActionResult> {
   const endOfWeek = new Date(now);
   endOfWeek.setDate(now.getDate() + 7);
 
-  const events = await listCalendarEvents({ timeMin: now.toISOString(), timeMax: endOfWeek.toISOString() });
+  const events = await listCalendarEvents({
+    timeMin: now.toISOString(),
+    timeMax: endOfWeek.toISOString(),
+  });
 
   return {
     success: true,
@@ -719,14 +913,18 @@ async function executeCheckCalendar(userId: number): Promise<ActionResult> {
   };
 }
 
-async function executeRequestFlytterPhotos(params: Record<string, any>, userId: number): Promise<ActionResult> {
+async function executeRequestFlytterPhotos(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
   const { customerName, squareMeters } = params;
 
   // CRITICAL RULE: ALWAYS request photos FIRST for flytterengøring (MEMORY_16)
   if (!customerName) {
     return {
       success: false,
-      message: "Jeg mangler kundens navn. Prøv: Nyt lead: [Navn] ønsker flytterengøring, [antal]m²",
+      message:
+        "Jeg mangler kundens navn. Prøv: Nyt lead: [Navn] ønsker flytterengøring, [antal]m²",
     };
   }
 
@@ -773,7 +971,10 @@ Leadet er nu synligt i Leads-fanen.`,
   };
 }
 
-async function executeJobCompletion(params: Record<string, any>, userId: number): Promise<ActionResult> {
+async function executeJobCompletion(
+  params: Record<string, any>,
+  userId: number
+): Promise<ActionResult> {
   const { customerName } = params;
 
   // CRITICAL RULE: Follow completion checklist (MEMORY_24)

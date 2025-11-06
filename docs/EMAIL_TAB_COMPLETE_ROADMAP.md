@@ -11,6 +11,7 @@
 Dette dokument konsoliderer alle email tab features, issues, og implementation plans i én komplet roadmap.
 
 ### Dokumenter:
+
 - `SHORTWAVE_WORKFLOW_ANALYSIS.md` - Workflow analysis og pipeline features
 - `SHORTWAVE_PIPELINE_IMPLEMENTATION.md` - Pipeline implementation guide
 - `GMAIL_RATE_LIMIT_ALTERNATIVES.md` - SMTP alternative til Gmail API
@@ -27,6 +28,7 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 **Solution:** Self-hosted SMTP server via `inbound-email`
 
 #### Tasks:
+
 - [ ] **Setup inbound-email SMTP server**
   - Clone `github.com/sendbetter/inbound-email`
   - Docker setup og deployment
@@ -62,16 +64,19 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 **Goal:** Implementer Shortwave-inspired pipeline workflow
 
 #### 1.1 Pipeline Status View
+
 - Column layout: Needs Action | Venter på svar | I kalender | Finance
 - Drag-and-drop emails mellem stages
 - Visual feedback og status badges
 
 #### 1.2 Smart Label Detection
+
 - Auto-detect lead source (Rengøring.nu, Rengøring Århus, AdHelp)
 - Auto-apply source labels
 - Auto-apply "Needs Action" for nye leads
 
 #### 1.3 Pipeline Quick Actions
+
 - "Send Tilbud" → Remove "Needs Action", Add "Venter på svar"
 - "Bekræft Booking" → Remove "Venter på svar", Add "I kalender"
 - "Send Faktura" → Remove "I kalender", Add "Finance"
@@ -86,17 +91,20 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 ### Phase 2: Workflow Automation (6-8 timer)
 
 #### 2.1 Critical Rules Implementation
+
 - **Rengøring.nu:** ALDRIG reply direkte – opret ny email til kundens adresse
 - **AdHelp:** Send ALTID tilbud til kundens email (IKKE til mw@/sp@adhelp.dk)
 - **Rengøring Aarhus:** Kan svares direkte normalt
 
 #### 2.2 Auto-Calendar Integration
+
 - Auto-create calendar events når "I kalender" label tilføjes
 - Extract dato/tid fra email
 - Link email thread til calendar event
 - NEVER add attendees (MEMORY_19)
 
 #### 2.3 Auto-Invoice Integration
+
 - Auto-create Billy invoice når "Finance" label tilføjes
 - Extract opgavetype og timer fra email/thread
 - Calculate price (349 kr/t incl. moms)
@@ -112,18 +120,21 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 ### Phase 3: Advanced Features (8-10 timer)
 
 #### 3.1 Pipeline Dashboard
+
 - Metrics: Leads per stage, conversion rates
 - Charts: Pipeline funnel
 - Quick filters per stage
 - Recent activity feed
 
 #### 3.2 Bulk Operations
+
 - Select multiple emails
 - Bulk apply labels
 - Bulk pipeline transitions
 - Progress indicator
 
 #### 3.3 Email Templates System
+
 - Templates for: Lead Response, Quote Follow-up, Payment Reminder, Booking Confirmation
 - Variables: {{customerName}}, {{serviceType}}, {{date}}
 - Auto-fill from context
@@ -137,6 +148,7 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 ## 📁 Completed Features
 
 ### ✅ Basic Email Tab (Færdig)
+
 - [x] Email list med filtering
 - [x] Email thread view
 - [x] Basic actions (Reply, Forward, Archive, Delete)
@@ -147,6 +159,7 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 - [x] Invoice lookup (placeholder)
 
 ### ✅ Modals & Dialogs (Færdig)
+
 - [x] EmailConfirmationDialog - Destructive actions
 - [x] EmailPreviewModal - Quick email preview
 - [x] EmailComposer - Compose, reply, forward
@@ -159,6 +172,7 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 ## 🔧 Technical Stack
 
 ### Backend:
+
 - **Email Ingestion:** `inbound-email` (SMTP → Webhook)
 - **Email Parsing:** `mailparser` (MIME parsing)
 - **API:** tRPC (type-safe endpoints)
@@ -166,12 +180,14 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 - **Email Actions:** Gmail API (kun sending/modifications, ikke reading)
 
 ### Frontend:
+
 - **Framework:** React + Next.js
 - **UI:** Tailwind CSS + Radix UI
 - **State:** React Query (tRPC)
 - **Components:** Custom email components
 
 ### Integrations:
+
 - **Billy:** Customer data, invoices
 - **Google Calendar:** Event creation, availability
 - **Supabase:** Email storage, caching
@@ -181,6 +197,7 @@ Dette dokument konsoliderer alle email tab features, issues, og implementation p
 ## 📋 Database Schema
 
 ### Email Tables:
+
 ```sql
 -- Emails (from SMTP webhook)
 CREATE TABLE emails (
@@ -262,6 +279,7 @@ CREATE TABLE email_label_rules (
 ## 🚀 Quick Start Implementation
 
 ### 1. Setup SMTP Server (Phase 0)
+
 ```bash
 # Clone inbound-email
 git clone https://github.com/sendbetter/inbound-email.git
@@ -279,6 +297,7 @@ docker run -d -p 25:25 inbound-email
 ```
 
 ### 2. Create Webhook Endpoint
+
 ```typescript
 // server/api/inbound-email.ts
 export async function POST(req: Request) {
@@ -288,6 +307,7 @@ export async function POST(req: Request) {
 ```
 
 ### 3. Implement Pipeline View
+
 ```typescript
 // client/src/components/inbox/EmailPipelineView.tsx
 // Column-based pipeline view med drag-and-drop
@@ -298,6 +318,7 @@ export async function POST(req: Request) {
 ## 📊 Progress Tracking
 
 ### Completed:
+
 - ✅ Basic email tab UI
 - ✅ Modals (Confirmation, Preview)
 - ✅ Email actions (Reply, Forward, Archive, Delete)
@@ -305,10 +326,12 @@ export async function POST(req: Request) {
 - ✅ Search functionality
 
 ### In Progress:
+
 - 🔄 Rate limit fix (SMTP alternative)
 - 🔄 Pipeline status view
 
 ### Pending:
+
 - ⏳ Smart label detection
 - ⏳ Pipeline quick actions
 - ⏳ Critical rules implementation
@@ -329,4 +352,3 @@ export async function POST(req: Request) {
 
 **Status:** 🟡 Active Development
 **Next Milestone:** Phase 0 completion (SMTP infrastructure)
-

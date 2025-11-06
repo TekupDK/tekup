@@ -6,6 +6,7 @@
 ## Overview
 
 Phase 4 implements production-ready rollout infrastructure with:
+
 - **Rate Limiting** to prevent API abuse
 - **Role-Based Access Control (RBAC)** to secure sensitive actions
 - **Feature Rollout** for gradual deployment (10% → 50% → 100%)
@@ -18,12 +19,14 @@ Phase 4 implements production-ready rollout infrastructure with:
 **Purpose:** Protect endpoints from abuse and prevent overload
 
 **Implementation:**
+
 - In-memory Map-based rate limiter
 - Configurable time windows and request limits
 - Automatic cleanup every 60 seconds
 - Per-user, per-endpoint tracking
 
 **Rate Limits:**
+
 ```typescript
 AI_SUGGESTIONS:     20 requests/minute per user
 ACTION_EXECUTION:   10 requests/minute per user
@@ -32,6 +35,7 @@ CHAT_MESSAGES:      50 requests/minute per user
 ```
 
 **Error Response:**
+
 ```json
 {
   "code": "TOO_MANY_REQUESTS",
@@ -40,6 +44,7 @@ CHAT_MESSAGES:      50 requests/minute per user
 ```
 
 **Integration:**
+
 - `getSuggestions` endpoint: Lines 587-595 in routers.ts
 - `executeAction` endpoint: Lines 354-362 in routers.ts
 
@@ -50,6 +55,7 @@ CHAT_MESSAGES:      50 requests/minute per user
 **Purpose:** Restrict sensitive actions to authorized users
 
 **Role Hierarchy:**
+
 ```
 Owner (level 3)    → All actions including create_invoice
   ↑
@@ -61,21 +67,23 @@ Guest (level 0)    → Very limited
 ```
 
 **Action Permissions:**
+
 ```typescript
 // Low-risk (all users)
-create_task, snooze_email, mark_email_done, archive_email, search_gmail
+(create_task, snooze_email, mark_email_done, archive_email, search_gmail);
 
 // Medium-risk (users)
-create_lead, send_email, request_flytter_photos, job_completion
+(create_lead, send_email, request_flytter_photos, job_completion);
 
 // High-risk (admin)
-book_meeting, delete_email
+(book_meeting, delete_email);
 
 // Critical (owner only)
-create_invoice
+create_invoice;
 ```
 
 **Error Response:**
+
 ```json
 {
   "code": "FORBIDDEN",
@@ -84,6 +92,7 @@ create_invoice
 ```
 
 **Integration:**
+
 - `executeAction` endpoint: Lines 371-378 in routers.ts
 - User role determined by `getUserRole(userId)` in rbac.ts
 
@@ -94,6 +103,7 @@ create_invoice
 **Purpose:** Enable gradual deployment to minimize risk
 
 **Features & Rollout Status:**
+
 ```typescript
 ai_suggestions:      100% (fully deployed)
 action_execution:    100% (fully deployed)
@@ -103,25 +113,28 @@ invoice_creation:     10% (beta testing)
 ```
 
 **How It Works:**
+
 1. Hash user ID + feature name with MD5
 2. Map hash to bucket (0-100)
 3. User included if bucket < rollout percentage
 4. Same user always gets same result (consistent)
 
 **Example:**
+
 ```typescript
 // User 123 checking invoice_creation (10% rollout)
-const hash = md5("123-invoice_creation") // "a3f7b2..."
-const bucket = parseInt("a3f7b2...", 16) % 100 // 42
-const included = bucket < 10 // false (not in 10%)
+const hash = md5("123-invoice_creation"); // "a3f7b2..."
+const bucket = parseInt("a3f7b2...", 16) % 100; // 42
+const included = bucket < 10; // false (not in 10%)
 
 // User 456 checking same feature
-const hash = md5("456-invoice_creation") // "2e9d1c..."
-const bucket = parseInt("2e9d1c...", 16) % 100 // 7
-const included = bucket < 10 // true (in 10%)
+const hash = md5("456-invoice_creation"); // "2e9d1c..."
+const bucket = parseInt("2e9d1c...", 16) % 100; // 7
+const included = bucket < 10; // true (in 10%)
 ```
 
 **Integration:**
+
 - `getSuggestions`: Lines 583-586 in routers.ts
 - `executeAction`: Lines 346-353 in routers.ts
 - Logs rollout metrics for monitoring
@@ -133,24 +146,27 @@ const included = bucket < 10 // true (in 10%)
 **Purpose:** Track user behavior and feature performance
 
 **Tracked Events:**
+
 ```typescript
-suggestion_shown      // AI suggests an action
-suggestion_accepted   // User executes suggestion
-suggestion_rejected   // User dismisses suggestion
-suggestion_ignored    // User ignores suggestion
-action_executed       // Action completes successfully
-action_failed         // Action execution fails
-dry_run_performed     // User previews action
-rollout_check         // Feature rollout check
+suggestion_shown; // AI suggests an action
+suggestion_accepted; // User executes suggestion
+suggestion_rejected; // User dismisses suggestion
+suggestion_ignored; // User ignores suggestion
+action_executed; // Action completes successfully
+action_failed; // Action execution fails
+dry_run_performed; // User previews action
+rollout_check; // Feature rollout check
 ```
 
 **Calculated Metrics:**
+
 - **Acceptance Rate:** `(accepted / shown) * 100`
 - **Average Time-to-Action:** Time from suggestion shown → accepted (ms)
 - **Error Rate:** `(failed / (executed + failed)) * 100`
 - **Top Actions:** Most accepted action types
 
 **API Endpoints:**
+
 ```typescript
 GET /api/trpc/metrics.getMetricsSummary
   → Global stats: users, suggestions, acceptance rate, top actions
@@ -166,11 +182,13 @@ GET /api/trpc/metrics.getUserFeatures
 ```
 
 **Storage:**
+
 - In-memory array (max 10,000 metrics)
 - Auto-cleanup every 6 hours (24h retention)
 - TODO: Send to external analytics (Mixpanel, Amplitude)
 
 **Integration:**
+
 - `getSuggestions`: Tracks suggestion_shown (line 705 in routers.ts)
 - `executeAction`: Tracks suggestion_accepted, action_executed, action_failed (lines 454-465, 489-495 in routers.ts)
 
@@ -179,11 +197,13 @@ GET /api/trpc/metrics.getUserFeatures
 ## Testing
 
 Run comprehensive test suite:
+
 ```powershell
 .\test-phase-4.ps1
 ```
 
 **Manual Tests:**
+
 1. **Rate Limiting:** Send 25 rapid requests, verify 21-25 are blocked
 2. **RBAC:** Try executing create_invoice as non-owner, verify blocked
 3. **Rollout:** Check getUserFeatures for different users, verify 10% get invoice_creation
@@ -222,6 +242,7 @@ tasks/chat/PLAN.md           # Updated with Phase 4 details
 ## Monitoring
 
 **Console Logs:**
+
 ```bash
 [RATE_LIMIT] Cleanup removed 42 expired entries
 [RBAC] Unknown action type: invalid_action
@@ -233,6 +254,7 @@ tasks/chat/PLAN.md           # Updated with Phase 4 details
 ```
 
 **Health Checks:**
+
 - Monitor rate limit cleanup logs
 - Track rollout metrics for feature adoption
 - Watch error rates in metrics summary
@@ -243,6 +265,7 @@ tasks/chat/PLAN.md           # Updated with Phase 4 details
 ## Rollout Strategy
 
 **Recommended Deployment:**
+
 1. Deploy with current settings (invoice_creation at 10%)
 2. Monitor metrics for 24-48 hours
 3. If stable, increase to 50%
@@ -250,6 +273,7 @@ tasks/chat/PLAN.md           # Updated with Phase 4 details
 5. If stable, increase to 100%
 
 **Rollback Plan:**
+
 ```typescript
 // In server/feature-rollout.ts, adjust percentages:
 invoice_creation: { percentage: 0, enabled: false } // Emergency stop
@@ -284,6 +308,7 @@ invoice_creation: { percentage: 0, enabled: false } // Emergency stop
 ## Summary
 
 Phase 4 implements production-ready rollout infrastructure that:
+
 - **Protects** the system from abuse (rate limiting)
 - **Secures** sensitive actions (RBAC)
 - **Enables** safe gradual deployment (feature rollout)

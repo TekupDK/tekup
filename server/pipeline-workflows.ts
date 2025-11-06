@@ -83,12 +83,7 @@ async function handleCalendarStage(
       const [email] = await db
         .select()
         .from(emails)
-        .where(
-          and(
-            eq(emails.threadKey, threadId),
-            eq(emails.userId, userId)
-          )
-        )
+        .where(and(eq(emails.threadKey, threadId), eq(emails.userId, userId)))
         .limit(1)
         .execute();
 
@@ -139,10 +134,12 @@ async function handleCalendarStage(
 
       // Extract customer name from email
       const customerName = email.fromEmail
-        .split("@")[0]
-        .split(/[._-]/)
-        .map((part: string) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(" ");
+        ? email.fromEmail
+            .split("@")[0]
+            .split(/[._-]/)
+            .map((part: string) => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(" ")
+        : "Unknown";
 
       // Create calendar event
       const eventSummary = `${emoji} ${taskType.replace(/_/g, " ")} #${pipelineState.leadId || "?"} - ${customerName}`;
@@ -216,6 +213,12 @@ async function handleFinanceStage(
 
     // Get customer from Billy API
     const { searchCustomerByEmail } = await import("./billy");
+
+    if (!email.fromEmail) {
+      console.warn(`[PipelineWorkflow] No fromEmail for thread ${threadId}`);
+      return;
+    }
+
     const customer = await searchCustomerByEmail(email.fromEmail);
 
     if (!customer || !customer.id) {

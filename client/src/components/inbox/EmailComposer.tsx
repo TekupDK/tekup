@@ -18,7 +18,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { FileText, Send } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface EmailComposerProps {
@@ -67,7 +67,41 @@ export default function EmailComposer({
         : ""
   );
   const [showCcBcc, setShowCcBcc] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("none");
+
+  // Initialize fields on open with current mode/payload, but avoid clobbering while editing
+  const prevOpenRef = useRef<boolean>(open);
+  useEffect(() => {
+    // Run only on transition from closed -> open
+    if (open && !prevOpenRef.current) {
+      if (mode === "reply" && replyTo) {
+        setTo(replyTo.to || "");
+        const subj = replyTo.subject?.startsWith("Re:")
+          ? replyTo.subject
+          : `Re: ${replyTo.subject || ""}`;
+        setSubject(subj);
+        const preview = replyTo.body
+          ? `\n\n---\n${replyTo.body.substring(0, 200)}...`
+          : "";
+        setBody(preview);
+      } else if (mode === "forward" && forwardFrom) {
+        setTo("");
+        const subj = forwardFrom.subject?.startsWith("Fwd:")
+          ? forwardFrom.subject
+          : `Fwd: ${forwardFrom.subject || ""}`;
+        setSubject(subj);
+        setBody(`\n\n--- Original Message ---\n${forwardFrom.body || ""}`);
+      } else {
+        // compose
+        setTo("");
+        setSubject("");
+        setBody("");
+      }
+      // Do not reset Cc/Bcc visibility here to preserve user's last preference during a session
+      setSelectedTemplate("none");
+    }
+    prevOpenRef.current = open;
+  }, [open, mode, replyTo, forwardFrom]);
 
   // Email templates
   const templates = [
@@ -129,6 +163,9 @@ Rendetalje`,
   ];
 
   const applyTemplate = (templateId: string) => {
+    setSelectedTemplate(templateId);
+    if (templateId === "none") return;
+
     const template = templates.find(t => t.id === templateId);
     if (!template) return;
 
@@ -251,7 +288,10 @@ Rendetalje`,
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
+      <DialogContent
+        className="max-w-[75vw] max-h-[85vh] overflow-hidden flex flex-col p-4"
+        data-testid="email-composer"
+      >
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             {mode === "reply"
@@ -289,7 +329,10 @@ Rendetalje`,
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setShowCcBcc(!showCcBcc)}
+              onClick={e => {
+                e.stopPropagation();
+                setShowCcBcc(!showCcBcc);
+              }}
             >
               {showCcBcc ? "Skjul" : "Vis"} Cc/Bcc
             </Button>
@@ -336,7 +379,7 @@ Rendetalje`,
                   <SelectValue placeholder="Vælg template (valgfrit)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Ingen template</SelectItem>
+                  <SelectItem value="none">Ingen template</SelectItem>
                   {templates.map(template => (
                     <SelectItem key={template.id} value={template.id}>
                       <div className="flex items-center gap-2">

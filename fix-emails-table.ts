@@ -132,4 +132,3 @@ async function fixEmailsTable() {
 }
 
 fixEmailsTable();
-

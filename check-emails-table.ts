@@ -81,7 +81,11 @@ async function checkEmailsTable() {
         ORDER BY "receivedAt" DESC
         LIMIT 50
       `);
-      console.log("✅ Query SUCCESS! Found", testQuery.length, "emails for userId=1");
+      console.log(
+        "✅ Query SUCCESS! Found",
+        testQuery.length,
+        "emails for userId=1"
+      );
       console.log("");
 
       if (testQuery.length > 0) {
@@ -108,4 +112,3 @@ async function checkEmailsTable() {
 }
 
 checkEmailsTable();
-

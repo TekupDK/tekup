@@ -1,28 +1,28 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { useEmailContext } from "@/contexts/EmailContext";
 import { useActionSuggestions } from "@/hooks/useActionSuggestions";
 import { trpc } from "@/lib/trpc";
-import { Bot, Mic, Paperclip, Plus, Send } from "lucide-react";
+import { Bot, Cog, Info, Mic, Paperclip, Plus, Send } from "lucide-react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ActionApprovalModal, type PendingAction } from "./ActionApprovalModal";
 import { SafeStreamdown } from "./SafeStreamdown";
 import { SuggestionsBar } from "./SuggestionsBar";
 
-type ChatModel =
-  | "gemini-2.5-flash"
-  | "claude-3-5-sonnet"
-  | "gpt-4o"
-  | "manus-ai";
+type ChatModel = "gemma-3-27b-free";
 
 interface Message {
   id: number;
@@ -38,12 +38,17 @@ function ChatPanel() {
   const [inputMessage, setInputMessage] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [selectedModel, setSelectedModel] =
-    useState<ChatModel>("gemini-2.5-flash");
+    useState<ChatModel>("gemma-3-27b-free");
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(
     null
   );
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [autoApproveLowRisk, setAutoApproveLowRisk] = useState<boolean>(() =>
+    typeof window !== "undefined"
+      ? localStorage.getItem("auto-approve-low-risk") === "true"
+      : false
+  );
 
   // Get email context for Shortwave-style tracking
   const emailContext = useEmailContext();
@@ -120,12 +125,32 @@ function ChatPanel() {
     },
   });
 
+  // TRPC utils for imperative queries
+  const utils = trpc.useUtils();
+
+  // Helper: resolve selected Gmail thread IDs to internal email IDs
+  const resolveSelectedEmailIds = useCallback(async () => {
+    try {
+      const selectedThreads = Array.from(emailContext.state.selectedThreads);
+      if (!selectedThreads || selectedThreads.length === 0)
+        return [] as number[];
+      const ids = await utils.inbox.email.mapThreadsToEmailIds.fetch({
+        threadIds: selectedThreads,
+      });
+      return Array.isArray(ids) ? (ids as number[]) : [];
+    } catch (err) {
+      console.warn("[ChatPanel] Failed to resolve selected email IDs:", err);
+      return [] as number[];
+    }
+  }, [emailContext.state.selectedThreads]);
+
   const executeAction = trpc.chat.executeAction.useMutation({
-    onSuccess: () => {
+    onSuccess: data => {
       refetchMessages();
       setPendingAction(null);
       setShowApprovalModal(false);
-      toast.success("Handling udført!");
+      const message = (data as any)?.actionResult?.message;
+      toast.success(message || "Handling udført!");
     },
     onError: error => {
       toast.error("Kunne ikke udføre handling: " + error.message);
@@ -133,7 +158,7 @@ function ChatPanel() {
   });
 
   const sendMessage = trpc.chat.sendMessage.useMutation({
-    onSuccess: data => {
+    onSuccess: async data => {
       // Refetch messages to get updated conversation
       refetchMessages().catch(err => {
         console.error("[ChatPanel] Error refetching messages:", err);
@@ -144,20 +169,47 @@ function ChatPanel() {
       if (data.pendingAction) {
         // Check if user has auto-approve enabled for this action type
         const autoApproveKey = `auto-approve-${data.pendingAction.type}`;
+        const perActionEnabled =
+          localStorage.getItem(autoApproveKey) === "true";
         const shouldAutoApprove =
           data.pendingAction.riskLevel === "low" &&
-          localStorage.getItem(autoApproveKey) === "true";
+          (autoApproveLowRisk || perActionEnabled);
 
         if (shouldAutoApprove && selectedConversationId) {
           // Auto-approve if enabled
           console.log(
             `[ChatPanel] Auto-approving action: ${data.pendingAction.type}`
           );
+          let actionParams = data.pendingAction.params || {};
+          // Inject selected email IDs for inbox AI actions when not provided
+          if (
+            (data.pendingAction.type === "ai_generate_summaries" ||
+              data.pendingAction.type === "ai_suggest_labels") &&
+            (!actionParams.emailIds || actionParams.emailIds.length === 0)
+          ) {
+            const emailIds = await resolveSelectedEmailIds();
+            const selectedCount = emailContext.state.selectedThreads.size;
+            if (selectedCount > 0) {
+              if (emailIds.length > 0) {
+                toast.info(`Bruger dine ${emailIds.length} valgte mails`);
+              } else {
+                toast.info(
+                  `Kunne ikke matche de valgte (${selectedCount}); bruger seneste 25`
+                );
+              }
+            } else {
+              toast.info("Ingen mails valgt; bruger seneste 25");
+            }
+            if (emailIds.length > 0) {
+              actionParams = { ...actionParams, emailIds };
+            }
+          }
+
           executeAction.mutate({
             conversationId: selectedConversationId,
             actionId: data.pendingAction.id,
             actionType: data.pendingAction.type,
-            actionParams: data.pendingAction.params,
+            actionParams,
           });
         } else {
           // Show approval modal
@@ -167,8 +219,8 @@ function ChatPanel() {
       }
     },
     onError: error => {
-      const errorMessage = error.message || "Unknown error occurred";
-      toast.error("Failed to send message: " + errorMessage);
+      const errorMessage = error.message || "Ukendt fejl opstod";
+      toast.error("Friday kunne ikke sende besked: " + errorMessage);
       console.error("[ChatPanel] Send message error:", error);
     },
   });
@@ -224,7 +276,7 @@ function ChatPanel() {
             });
           },
           onError: error => {
-            toast.error("Failed to create conversation: " + error.message);
+            toast.error("Friday kunne ikke oprette samtale: " + error.message);
           },
         }
       );
@@ -246,7 +298,7 @@ function ChatPanel() {
   ]);
 
   const handleApproveAction = useCallback(
-    (alwaysApprove: boolean) => {
+    async (alwaysApprove: boolean) => {
       if (!pendingAction || !selectedConversationId) return;
 
       // Store "always approve" preference if enabled
@@ -265,14 +317,44 @@ function ChatPanel() {
         }
       }
 
+      let actionParams = pendingAction.params || {};
+      // Inject selected email IDs for inbox AI actions when not provided
+      if (
+        (pendingAction.type === "ai_generate_summaries" ||
+          pendingAction.type === "ai_suggest_labels") &&
+        (!actionParams.emailIds || actionParams.emailIds.length === 0)
+      ) {
+        const emailIds = await resolveSelectedEmailIds();
+        const selectedCount = emailContext.state.selectedThreads.size;
+        if (selectedCount > 0) {
+          if (emailIds.length > 0) {
+            toast.info(`Bruger dine ${emailIds.length} valgte mails`);
+          } else {
+            toast.info(
+              `Kunne ikke matche de valgte (${selectedCount}); bruger seneste 25`
+            );
+          }
+        } else {
+          toast.info("Ingen mails valgt; bruger seneste 25");
+        }
+        if (emailIds.length > 0) {
+          actionParams = { ...actionParams, emailIds };
+        }
+      }
+
       executeAction.mutate({
         conversationId: selectedConversationId,
         actionId: pendingAction.id,
         actionType: pendingAction.type,
-        actionParams: pendingAction.params,
+        actionParams,
       });
     },
-    [pendingAction, selectedConversationId, executeAction]
+    [
+      pendingAction,
+      selectedConversationId,
+      executeAction,
+      resolveSelectedEmailIds,
+    ]
   );
 
   const handleRejectAction = useCallback(() => {
@@ -283,7 +365,7 @@ function ChatPanel() {
 
   const handleVoiceInput = useCallback(() => {
     if (!("webkitSpeechRecognition" in window)) {
-      toast.error("Voice input not supported in this browser");
+      toast.error("Friday: Stemmeinput understøttes ikke i denne browser");
       return;
     }
 
@@ -301,7 +383,7 @@ function ChatPanel() {
     };
 
     recognition.onerror = (event: any) => {
-      toast.error("Voice recognition error: " + event.error);
+      toast.error("Friday: Stemmegenkendelse fejl - " + event.error);
       setIsRecording(false);
     };
 
@@ -321,19 +403,31 @@ function ChatPanel() {
     <>
       <div className="h-full flex">
         {/* Conversation List Sidebar - Hidden on mobile */}
-        <div className="hidden sm:flex w-48 md:w-64 border-r border-border flex-col shrink-0">
-          <div className="p-4 border-b border-border">
+        <div className="hidden sm:flex w-48 md:w-64 border-r border-border flex-col shrink-0 bg-muted/10">
+          {/* Sidebar Header */}
+          <div className="p-3 border-b border-border bg-muted/30">
+            <div className="flex items-center gap-2 mb-3">
+              <Bot className="w-5 h-5 text-primary" />
+              <div className="flex-1">
+                <h2 className="text-sm font-semibold">Samtaler</h2>
+                <p className="text-xs text-muted-foreground">
+                  {conversations?.length || 0} samtaler
+                </p>
+              </div>
+            </div>
             <Button
               onClick={() =>
                 createConversation.mutate({ title: "New Conversation" })
               }
-              className="w-full"
+              className="w-full gap-2"
               size="sm"
             >
-              <Plus className="w-4 h-4 mr-2" />
-              New Chat
+              <Plus className="w-4 h-4" />
+              Ny samtale
             </Button>
           </div>
+
+          {/* Conversations List */}
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-1">
               {conversations && conversations.length > 0 ? (
@@ -354,38 +448,134 @@ function ChatPanel() {
                     <button
                       key={conv.id}
                       onClick={() => setSelectedConversationId(conv.id)}
-                      className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                      className={`group w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                         isSelected
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "hover:bg-accent/50 hover:shadow-sm"
+                          ? "bg-primary text-primary-foreground shadow-md"
+                          : "hover:bg-accent/60 hover:shadow-sm"
                       }`}
                     >
-                      <div className="font-medium truncate">
-                        {conv.title && conv.title !== "New Conversation" ? (
-                          conv.title
-                        ) : (
-                          <span className="text-muted-foreground italic">
-                            {formattedTitle}
-                          </span>
-                        )}
+                      <div className="flex items-start gap-2">
+                        <Bot
+                          className={`w-4 h-4 mt-0.5 shrink-0 ${
+                            isSelected
+                              ? "text-primary-foreground"
+                              : "text-muted-foreground group-hover:text-foreground"
+                          }`}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium truncate">
+                            {conv.title && conv.title !== "New Conversation" ? (
+                              conv.title
+                            ) : (
+                              <span
+                                className={
+                                  isSelected
+                                    ? "opacity-90"
+                                    : "text-muted-foreground italic"
+                                }
+                              >
+                                {formattedTitle}
+                              </span>
+                            )}
+                          </div>
+                          <div
+                            className={`text-xs mt-0.5 ${isSelected ? "opacity-80" : "opacity-60"}`}
+                          >
+                            {formattedDate}
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs opacity-70">{formattedDate}</div>
                     </button>
                   );
                 })
               ) : (
-                <div className="text-xs text-muted-foreground px-3 py-4 text-center">
-                  Ingen samtaler endnu. Start en ny chat for at komme i gang.
+                <div className="text-center p-6 space-y-2">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-muted flex items-center justify-center">
+                    <Bot className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Ingen samtaler endnu
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Klik "Ny samtale" for at starte
+                  </p>
                 </div>
               )}
             </div>
           </ScrollArea>
+
+          {/* Sidebar Footer with Model Info */}
+          <div className="p-3 border-t border-border bg-muted/30">
+            <div className="flex items-center gap-2 text-xs">
+              <Bot className="w-4 h-4 text-primary" />
+              <div className="flex-1">
+                <p className="font-medium text-foreground">Friday AI</p>
+                <p className="text-muted-foreground">Powered by Gemma 3 27B</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Chat Messages Area */}
         <div className="flex-1 flex flex-col min-h-0 w-full">
           {selectedConversationId ? (
             <>
+              {/* Chat Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/20">
+                <div className="flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-primary" />
+                  <span className="text-lg font-semibold">Friday</span>
+                  <Badge variant="secondary" className="gap-1.5 ml-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    Aktiv
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="gap-2">
+                        <Cog className="w-4 h-4" />
+                        Indstillinger
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80">
+                      <DropdownMenuLabel>
+                        Friday Indstillinger
+                      </DropdownMenuLabel>
+                      <div className="px-2 py-2">
+                        <div className="flex items-center justify-between p-2 rounded-md border bg-background">
+                          <div>
+                            <p className="text-sm font-medium">
+                              Auto-godkend lave risici
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Godkend automatisk handlinger med lav risiko.
+                            </p>
+                          </div>
+                          <Switch
+                            checked={autoApproveLowRisk}
+                            onCheckedChange={checked => {
+                              setAutoApproveLowRisk(checked);
+                              try {
+                                localStorage.setItem(
+                                  "auto-approve-low-risk",
+                                  checked ? "true" : "false"
+                                );
+                              } catch {}
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem disabled className="opacity-70">
+                        <Info className="w-4 h-4 mr-2" />
+                        Brugeren kan også vælge auto-godkend per handlingstype
+                        via modal.
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
               {/* Messages */}
               <div
                 className="flex-1 overflow-y-auto p-3 sm:p-6"
@@ -455,29 +645,37 @@ function ChatPanel() {
               {/* Input Area */}
               <div className="sticky bottom-0 z-50 bg-background border-t border-border p-3 sm:p-4 backdrop-blur supports-backdrop-filter:backdrop-blur">
                 <div className="max-w-3xl mx-auto space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Bot className="w-4 h-4" />
-                    <Select
-                      value={selectedModel}
-                      onValueChange={(value: ChatModel) =>
-                        setSelectedModel(value)
-                      }
-                    >
-                      <SelectTrigger className="w-[200px] h-8">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="gemini-2.5-flash">
-                          Gemini 2.5 Flash
-                        </SelectItem>
-                        <SelectItem value="claude-3-5-sonnet">
-                          Claude 3.5 Sonnet
-                        </SelectItem>
-                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                        <SelectItem value="manus-ai">Manus AI</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {/* Email Context Badges - Only show if there's context */}
+                  {(emailContext.state.folder ||
+                    emailContext.state.viewMode ||
+                    (emailContext.state.selectedLabels &&
+                      emailContext.state.selectedLabels.length > 0) ||
+                    emailContext.state.selectedThreads.size > 0) && (
+                    <div className="flex items-center flex-wrap gap-2 text-xs text-muted-foreground">
+                      {emailContext.state.folder && (
+                        <Badge variant="secondary">
+                          Mappe: {emailContext.state.folder}
+                        </Badge>
+                      )}
+                      {emailContext.state.viewMode && (
+                        <Badge variant="secondary">
+                          Visning: {emailContext.state.viewMode}
+                        </Badge>
+                      )}
+                      {emailContext.state.selectedLabels &&
+                        emailContext.state.selectedLabels.length > 0 && (
+                          <Badge variant="secondary">
+                            Labels: {emailContext.state.selectedLabels.length}
+                          </Badge>
+                        )}
+                      {emailContext.state.selectedThreads.size > 0 && (
+                        <Badge variant="secondary">
+                          Valgte mails:{" "}
+                          {emailContext.state.selectedThreads.size}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -495,7 +693,7 @@ function ChatPanel() {
                       onKeyDown={e =>
                         e.key === "Enter" && !e.shiftKey && handleSendMessage()
                       }
-                      placeholder="Message Friday..."
+                      placeholder="Skriv til Friday..."
                       className="flex-1"
                     />
                     <Button

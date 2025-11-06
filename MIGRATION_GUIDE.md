@@ -89,15 +89,13 @@ Note: Slack notifications are not enabled in this repository.
 - Supabase SSL: we set `sslmode=no-verify` for tooling to avoid self-signed certificate errors.
 - Cookie security: session cookies use `httpOnly: true` and `secure` in production.
 - For production rollbacks, use the manual `Manual DB Rollback` workflow (`.github/workflows/db-rollback.yml`) with approved secrets and a pre-signed backup URL.
-pnpm install
+  pnpm install
 
-```powershell```
+`powershell`
 
 # 1. Opret .env.dev fra template
 
 Copy-Item .env.dev.template .env.dev### Step 2: Test Schema Generation
-
-
 
 # 2. Udfyld dine credentials```bash
 
@@ -109,11 +107,9 @@ cp .env.supabase .env
 
 pnpm dev```
 
-
-
 # 4. Besøg http://localhost:3000### Step 3: Run PostgreSQL Triggers
 
-````
+`````
 
 Efter schema er pushed, kør trigger SQL:
 
@@ -139,7 +135,7 @@ Efter schema er pushed, kør trigger SQL:
 
 - [x] DATABASE_URL password URL-encodedpnpm dev
 
-````
+`````
 
 ---
 
@@ -203,7 +199,7 @@ docker-compose up --build## 📝 Noter
 
 When running structural migrations in production, always take a backup and have a restore path:
 
-1) Backup (requires pg_dump on your machine)
+1. Backup (requires pg_dump on your machine)
 
 ```powershell
 # Writes timestamped SQL dump to backups/
@@ -211,7 +207,7 @@ $env:DATABASE_URL = (Get-Content .env.prod | Select-String '^DATABASE_URL=' | Fo
 powershell -File scripts/backup-db.ps1 -ConnectionString $env:DATABASE_URL -OutFile backups/db_$(Get-Date -Format yyyyMMdd_HHmmss).sql
 ```
 
-2) Pre/Post checks (row counts, columns, indexes)
+2. Pre/Post checks (row counts, columns, indexes)
 
 ```powershell
 # Dry-run (no changes)
@@ -221,7 +217,7 @@ pnpm migrate:check
 pnpm migrate:apply
 ```
 
-3) Restore (if needed)
+3. Restore (if needed)
 
 ```bash
 # From a machine with psql/pg_restore available

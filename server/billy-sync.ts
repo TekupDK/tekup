@@ -1,5 +1,3 @@
-import { ENV } from "./_core/env";
-
 const BILLY_ORG_ID = process.env.BILLY_ORGANIZATION_ID || "";
 
 /**
@@ -46,7 +44,8 @@ export async function syncBillyInvoicesForCustomer(
     // Filter invoices for this customer
     const customerInvoices = allInvoices.filter((invoice: any) => {
       // Match by email or Billy customer ID
-      const emailMatch = invoice.contact?.email?.toLowerCase() === customerEmail.toLowerCase();
+      const emailMatch =
+        invoice.contact?.email?.toLowerCase() === customerEmail.toLowerCase();
       const idMatch = billyCustomerId && invoice.contactId === billyCustomerId;
       return emailMatch || idMatch;
     });
@@ -91,7 +90,9 @@ function mapBillyState(billyState: string): BillyInvoice["state"] {
 /**
  * Get Billy customer ID by email
  */
-export async function getBillyCustomerIdByEmail(email: string): Promise<string | null> {
+export async function getBillyCustomerIdByEmail(
+  email: string
+): Promise<string | null> {
   try {
     const { execSync } = await import("child_process");
 
@@ -102,7 +103,9 @@ export async function getBillyCustomerIdByEmail(email: string): Promise<string |
     );
 
     const response = JSON.parse(result);
-    const contacts = response.content?.[0]?.text ? JSON.parse(response.content[0].text) : [];
+    const contacts = response.content?.[0]?.text
+      ? JSON.parse(response.content[0].text)
+      : [];
 
     // Find contact by email
     const contact = contacts.find(
@@ -124,7 +127,9 @@ export async function syncAllBillyCustomers(userId: number): Promise<number> {
   try {
     const { execSync } = await import("child_process");
     const { createOrUpdateCustomerProfile } = await import("./customer-db");
-    const { addCustomerInvoice, updateCustomerBalance } = await import("./customer-db");
+    const { addCustomerInvoice, updateCustomerBalance } = await import(
+      "./customer-db"
+    );
 
     // Get all contacts from Billy
     const contactsResult = execSync(
@@ -154,19 +159,25 @@ export async function syncAllBillyCustomers(userId: number): Promise<number> {
       });
 
       // Sync invoices for this customer
-      const invoices = await syncBillyInvoicesForCustomer(contact.email, contact.id);
+      const invoices = await syncBillyInvoicesForCustomer(
+        contact.email,
+        contact.id
+      );
 
       for (const invoice of invoices) {
         await addCustomerInvoice({
+          userId,
           customerId,
           billyInvoiceId: invoice.id,
-          invoiceNo: invoice.invoiceNo,
-          amount: invoice.amount,
-          paidAmount: invoice.paidAmount || 0,
+          invoiceNumber: invoice.invoiceNo,
+          amount: invoice.amount?.toString(),
           status: invoice.state,
-          entryDate: invoice.entryDate ? new Date(invoice.entryDate) : undefined,
-          dueDate: invoice.dueDate ? new Date(invoice.dueDate) : undefined,
-          paidDate: invoice.paidDate ? new Date(invoice.paidDate) : undefined,
+          dueDate: invoice.dueDate
+            ? new Date(invoice.dueDate).toISOString()
+            : undefined,
+          paidAt: invoice.paidDate
+            ? new Date(invoice.paidDate).toISOString()
+            : undefined,
         });
       }
 

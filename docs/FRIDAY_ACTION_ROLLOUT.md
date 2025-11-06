@@ -6,9 +6,9 @@
 
 ## Rul ud i trin
 
-1) Intern dogfood (10%)
-2) Udvid til 50% af brugere
-3) 100% når metrikker er grønne
+1. Intern dogfood (10%)
+2. Udvid til 50% af brugere
+3. 100% når metrikker er grønne
 
 ## Canary & Policy
 
@@ -24,4 +24,3 @@
 
 - Release notes og 30 sek. GIF af flowet
 - Kort “hvordan” i app (tooltip ved første visning)
-

@@ -165,7 +165,9 @@ async function migrateEmailsSchema() {
     console.log("  - to_email (erstattet af toEmail)");
     console.log("  - threadId (erstattet af threadKey)");
     console.log("  - body (erstattet af text/html)");
-    console.log("  - snippet, cc, bcc, labels, isRead, isStarred, hasAttachments, sentAt");
+    console.log(
+      "  - snippet, cc, bcc, labels, isRead, isStarred, hasAttachments, sentAt"
+    );
     console.log("");
 
     await sql.end();
@@ -179,4 +181,3 @@ async function migrateEmailsSchema() {
 }
 
 migrateEmailsSchema();
-

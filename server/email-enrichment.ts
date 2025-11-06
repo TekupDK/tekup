@@ -46,6 +46,11 @@ export async function enrichEmailFromSources(
     // 1. Billy contactPersons lookup
     let customerId: number | null = null;
     try {
+      if (!email.fromEmail) {
+        console.warn("[EmailEnrichment] No fromEmail, skipping Billy lookup");
+        return;
+      }
+
       const customer = await searchCustomerByEmail(email.fromEmail);
       if (customer) {
         // Find or create customer profile
@@ -91,8 +96,8 @@ export async function enrichEmailFromSources(
 
     // 2. Detect lead source
     const source = detectLeadSource({
-      from: email.fromEmail,
-      to: email.toEmail,
+      from: email.fromEmail || "",
+      to: email.toEmail || "",
       subject: email.subject || "",
       body: email.text || email.html || "",
     });
@@ -113,23 +118,18 @@ export async function enrichEmailFromSources(
         .execute();
 
       if (existingState) {
-        // Update existing state with source if not set
-        if (source && !existingState.source) {
-          await database
-            .update(emailPipelineState)
-            .set({ source, leadId: customerId || existingState.leadId })
-            .where(eq(emailPipelineState.threadId, email.threadKey))
-            .execute();
-        }
+        // Pipeline state exists - no need to update (source/leadId not in schema)
+        console.log(
+          `[EmailEnrichment] Pipeline state exists for ${email.threadKey}`
+        );
       } else {
         // Create new pipeline state
         await database
           .insert(emailPipelineState)
           .values({
+            userId: email.userId,
             threadId: email.threadKey,
             stage: isNewLead ? "needs_action" : "needs_action",
-            source: source || null,
-            leadId: customerId || null,
           })
           .execute();
       }

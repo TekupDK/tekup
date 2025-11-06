@@ -8,19 +8,20 @@
 
 ## 📋 Root Causes
 
-| # | Problem | Symptom | Fix |
-|---|---------|---------|-----|
-| 1 | `.env` fil mangler | LOGIN_FAILED + keine detaljer | Kopier `env.template.txt` → `.env` |
-| 2 | `JWT_SECRET` er tom | LOGIN_FAILED + JWT sign fejler | Tilføj værdi i `.env` |
-| 3 | `OWNER_OPEN_ID` er tom | LOGIN_FAILED + bruger-oprettelse fejler | Tilføj værdi i `.env` |
-| 4 | Database forbindelse fejler | LOGIN_FAILED + DB upsert fejler | Tjek `DATABASE_URL` og MySQL køring |
-| 5 | Cookie-indstillinger er forkerte | LOGIN_FAILED + cookie sættes ikke | Tjek `getSessionCookieOptions()` |
+| #   | Problem                          | Symptom                                 | Fix                                 |
+| --- | -------------------------------- | --------------------------------------- | ----------------------------------- |
+| 1   | `.env` fil mangler               | LOGIN_FAILED + keine detaljer           | Kopier `env.template.txt` → `.env`  |
+| 2   | `JWT_SECRET` er tom              | LOGIN_FAILED + JWT sign fejler          | Tilføj værdi i `.env`               |
+| 3   | `OWNER_OPEN_ID` er tom           | LOGIN_FAILED + bruger-oprettelse fejler | Tilføj værdi i `.env`               |
+| 4   | Database forbindelse fejler      | LOGIN_FAILED + DB upsert fejler         | Tjek `DATABASE_URL` og MySQL køring |
+| 5   | Cookie-indstillinger er forkerte | LOGIN_FAILED + cookie sættes ikke       | Tjek `getSessionCookieOptions()`    |
 
 ---
 
 ## 🔧 Løsning - Hvad er ændret?
 
 ### **Before (Dårlig fejlhåndtering):**
+
 ```typescript
 // oauth.ts:72-75 (FØR)
 catch (error) {
@@ -30,6 +31,7 @@ catch (error) {
 ```
 
 ### **After (Forbedret fejlhåndtering):**
+
 ```typescript
 // oauth.ts:72-81 (NU)
 catch (error) {
@@ -44,26 +46,37 @@ catch (error) {
 ```
 
 ### **Tilføjet i oauth.ts (Login-validering):**
+
 ```typescript
 // Validate required environment variables FØR du gør noget
 if (!ENV.cookieSecret) {
   throw new Error("JWT_SECRET is not configured. Set JWT_SECRET in .env file.");
 }
 if (!ENV.appId) {
-  throw new Error("VITE_APP_ID is not configured. Set VITE_APP_ID in .env file.");
+  throw new Error(
+    "VITE_APP_ID is not configured. Set VITE_APP_ID in .env file."
+  );
 }
 ```
 
 ### **Tilføjet i env.ts (Start-validering):**
+
 ```typescript
 // Kører automatisk når modulet loades
 function validateEnv() {
-  const required = ['JWT_SECRET', 'OWNER_OPEN_ID', 'DATABASE_URL', 'VITE_APP_ID'];
+  const required = [
+    "JWT_SECRET",
+    "OWNER_OPEN_ID",
+    "DATABASE_URL",
+    "VITE_APP_ID",
+  ];
   const missing = required.filter(key => !process.env[key]);
 
   if (missing.length > 0) {
-    console.warn(`⚠️ [ENV] Missing required environment variables: ${missing.join(', ')}`);
-    console.warn('📄 Copy env.template.txt to .env and fill in your values');
+    console.warn(
+      `⚠️ [ENV] Missing required environment variables: ${missing.join(", ")}`
+    );
+    console.warn("📄 Copy env.template.txt to .env and fill in your values");
   }
 }
 validateEnv(); // ✅ Kører når serveren starter
@@ -105,6 +118,7 @@ pnpm dev
 ### **Step 4: Tjek logs**
 
 Du skal se:
+
 ```
 ⚠️ [ENV] Missing required environment variables: (INGEN - hvis alt er godt!)
 [AUTH] Dev-login endpoint called, NODE_ENV: development
@@ -116,11 +130,13 @@ Du skal se:
 Åbn browser: `http://localhost:3000/api/auth/login`
 
 **Succesuld (302 redirect):**
+
 ```
 Location: /
 ```
 
 **Fejl (500 med detaljer):**
+
 ```json
 {
   "error": "Login failed",
@@ -135,6 +151,7 @@ Location: /
 ### **Symptom 1: `{"error":"Login failed","details":"JWT_SECRET is not configured..."}`**
 
 **Løsning:**
+
 ```env
 # .env
 JWT_SECRET=my-super-secret-key-her-mindst-32-karakterer!@#$
@@ -143,6 +160,7 @@ JWT_SECRET=my-super-secret-key-her-mindst-32-karakterer!@#$
 ### **Symptom 2: `{"error":"Login failed","details":"VITE_APP_ID is not configured..."}`**
 
 **Løsning:**
+
 ```env
 # .env
 VITE_APP_ID=friday-ai
@@ -153,6 +171,7 @@ VITE_APP_ID=friday-ai
 **Årsag:** Database forbindelse fejler
 
 **Løsning:**
+
 ```bash
 # Tjek MySQL kører
 docker-compose ps
@@ -169,6 +188,7 @@ cat .env | grep DATABASE_URL
 **Årsag:** `.env` indeholder invalid path
 
 **Løsning:**
+
 ```bash
 # Verificer .env er valid
 cat .env
@@ -197,11 +217,13 @@ cat .env
 ## 📞 Hvis problemet fortsætter
 
 1. **Kopier hele log output:**
+
    ```bash
    pnpm dev 2>&1 | tee debug.log
    ```
 
 2. **Check database:**
+
    ```bash
    mysql -u friday_user -p friday_ai -e "SELECT * FROM users LIMIT 1;"
    ```
@@ -218,8 +240,8 @@ cat .env
 ## 🎯 Næste Steps
 
 Når login virker:
+
 1. ✅ Gå til `http://localhost:3000`
 2. ✅ Tjek om du er logged in (brugermenuen øverst)
 3. ✅ Prøv at bruge Jarvis chatbot
 4. ✅ Test Gmail/Calendar integration (hvis keys er sat)
-

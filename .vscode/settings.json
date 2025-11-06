@@ -1,16 +1,102 @@
 {
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
+	
+	// Performance Optimizations
+	"typescript.disableAutomaticTypeAcquisition": true,
+	"typescript.tsserver.maxTsServerMemory": 8192,
+	"typescript.tsserver.watchOptions": {
+		"watchFile": "useFsEventsOnParentDirectory",
+		"watchDirectory": "useFsEventsOnParentDirectory",
+		"fallbackPolling": "dynamicPriority"
+	},
+	
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit",
 		"source.organizeImports": "explicit"
 	},
-	"files.exclude": {"**/node_modules": true, "**/dist": true, "**/.git": true},
-	"search.exclude": {"**/node_modules": true, "**/dist": true},
+	
+	// Enhanced exclusions for better performance
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/dist": true,
+		"**/.git": true,
+		"**/.next": true,
+		"**/.turbo": true,
+		"**/coverage": true
+	},
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/dist": true,
+		"**/.next": true,
+		"**/.turbo": true,
+		"**/coverage": true,
+		"**/pnpm-lock.yaml": true
+	},
+	"files.watcherExclude": {
+		"**/node_modules/**": true,
+		"**/dist/**": true,
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/pnpm-lock.yaml": true
+	},
 	"[typescript]": {"editor.defaultFormatter": "esbenp.prettier-vscode"},
 	"[typescriptreact]": {"editor.defaultFormatter": "esbenp.prettier-vscode"},
 	"tailwindCSS.includeLanguages": {"typescript": "javascript", "typescriptreact": "javascript"},
-	"git.ignoreLimitWarning": true
+	"git.ignoreLimitWarning": true,
+	
+	// Suppress Tailwind CSS v4 at-rule warnings (valid syntax but VS Code doesn't recognize)
+	"css.lint.unknownAtRules": "ignore",
+
+	// === MCP Server Configuration for Tekup AI v2 ===
+	// NOTE: PostgreSQL MCP requires DATABASE_URL to be set in your system/user environment
+	// To set: $env:DATABASE_URL = "postgresql://..." in PowerShell profile
+	// Or use Windows Environment Variables (System Properties → Advanced → Environment Variables)
+	"github.copilot.chat.mcp.servers": {
+		// Browser automation for testing and debugging
+		"playwright": {
+			"command": "npx",
+			"args": ["@playwright/mcp@latest"]
+		},
+		// PostgreSQL database access for queries and schema exploration
+		// REQUIRES: DATABASE_URL environment variable set at system level
+		"postgres": {
+			"command": "npx",
+			"args": ["-y", "@modelcontextprotocol/server-postgres"],
+			"env": {
+				"POSTGRES_URL": "postgresql://postgres:Habibie12345%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require"
+			}
+		},
+		// Secure filesystem operations with workspace scope
+		"filesystem": {
+			"command": "npx",
+			"args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"]
+		},
+		// Web content fetching and conversion
+		"fetch": {
+			"command": "npx",
+			"args": ["-y", "@modelcontextprotocol/server-fetch"]
+		}
+	},
+
+	// === Enhanced Copilot Settings ===
+	"github.copilot.enable": {
+		"*": true,
+		"yaml": true,
+		"plaintext": true,
+		"markdown": true,
+		"typescript": true,
+		"javascript": true,
+		"typescriptreact": true,
+		"json": true,
+		"sql": true
+	},
+	"editor.inlineSuggest.enabled": true,
+	"editor.quickSuggestions": {
+		"other": "on",
+		"comments": "on",
+		"strings": "on"
+	}
 }

@@ -215,28 +215,57 @@ const normalizeToolChoice = (
 };
 
 const resolveApiUrl = () => {
-  // Try Gemini first if available, fallback to OpenAI
+  // OpenRouter (Gemma 3 27B FREE) - Primary LLM
+  if (ENV.openRouterApiKey && ENV.openRouterApiKey.trim()) {
+    return "https://openrouter.ai/api/v1/chat/completions";
+  }
+
+  // Fallback: Ollama (local dev)
+  if (ENV.ollamaBaseUrl) {
+    return `${ENV.ollamaBaseUrl}/api/chat`;
+  }
+
+  // Fallback: Gemini
   if (ENV.geminiApiKey && ENV.geminiApiKey.trim()) {
     return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${ENV.geminiApiKey}`;
   }
-  // Use OpenAI API directly
+
+  // Fallback: OpenAI
   return "https://api.openai.com/v1/chat/completions";
 };
 
 const assertApiKey = () => {
+  // OpenRouter (primary)
+  if (ENV.openRouterApiKey && ENV.openRouterApiKey.trim()) {
+    console.log(
+      `[LLM] Using OpenRouter (${ENV.openRouterModel}) - FREE Gemma 3 27B`
+    );
+    return;
+  }
+
+  // Ollama (local fallback)
+  if (ENV.ollamaBaseUrl) {
+    console.log(
+      `[LLM] Using Ollama (${ENV.ollamaModel}) at ${ENV.ollamaBaseUrl}`
+    );
+    return;
+  }
+
   if (!ENV.geminiApiKey && !ENV.openAiApiKey) {
-    throw new Error("Neither GEMINI_API_KEY nor OPENAI_API_KEY is configured");
+    throw new Error(
+      "No LLM configured: Set OPENROUTER_API_KEY, OLLAMA_BASE_URL, GEMINI_API_KEY, or OPENAI_API_KEY"
+    );
   }
 
   if (ENV.geminiApiKey && ENV.geminiApiKey.trim()) {
-    console.log("[LLM] Using Gemini API");
+    console.log("[LLM] Using Gemini API (fallback)");
     return;
   }
 
   if (!ENV.openAiApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured and Gemini is not available");
+    throw new Error("OPENAI_API_KEY is not configured");
   }
-  console.log("[LLM] Using OpenAI API");
+  console.log("[LLM] Using OpenAI API (fallback)");
 };
 
 const normalizeResponseFormat = ({
@@ -298,55 +327,91 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     response_format,
   } = params;
 
-  // Check which API we're using
-  const useGeminiApi = ENV.geminiApiKey && ENV.geminiApiKey.trim();
+  // Check which API we're using (priority: OpenRouter > Ollama > Gemini > OpenAI)
+  const useOpenRouter = ENV.openRouterApiKey && ENV.openRouterApiKey.trim();
+  const useOllamaApi = !useOpenRouter && ENV.ollamaBaseUrl;
+  const useGeminiApi =
+    !useOpenRouter &&
+    !useOllamaApi &&
+    ENV.geminiApiKey &&
+    ENV.geminiApiKey.trim();
 
-  const payload: Record<string, unknown> = useGeminiApi ? {
+  let payload: Record<string, unknown>;
+
+  if (useOpenRouter) {
+    // OpenRouter format (OpenAI-compatible)
+    payload = {
+      model: ENV.openRouterModel,
+      messages: messages.map(normalizeMessage),
+    };
+  } else if (useOllamaApi) {
+    // Ollama format (OpenAI-compatible)
+    payload = {
+      model: ENV.ollamaModel,
+      messages: messages.map(normalizeMessage),
+      stream: false,
+    };
+  } else if (useGeminiApi) {
     // Gemini format
-    contents: messages.map(normalizeMessage).map(msg => ({
-      parts: [{ text: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content) }],
-      role: msg.role === 'assistant' ? 'model' : 'user'
-    }))
-  } : {
-    // OpenAI format
-    model: "gpt-4o-mini",
-    messages: messages.map(normalizeMessage),
-  };
-
-  if (tools && tools.length > 0) {
-    payload.tools = tools;
+    payload = {
+      contents: messages.map(normalizeMessage).map(msg => ({
+        parts: [
+          {
+            text:
+              typeof msg.content === "string"
+                ? msg.content
+                : JSON.stringify(msg.content),
+          },
+        ],
+        role: msg.role === "assistant" ? "model" : "user",
+      })),
+    };
+  } else {
+    // OpenAI format (fallback)
+    payload = {
+      model: "gpt-4o-mini",
+      messages: messages.map(normalizeMessage),
+    };
   }
 
-  const normalizedToolChoice = normalizeToolChoice(
-    toolChoice || tool_choice,
-    tools
-  );
-  if (normalizedToolChoice) {
-    payload.tool_choice = normalizedToolChoice;
-  }
+  // Add OpenAI/Ollama-specific fields
+  if (!useGeminiApi) {
+    if (tools && tools.length > 0) {
+      payload.tools = tools;
+    }
 
-  payload.max_tokens = 32768;
-  payload.thinking = {
-    budget_tokens: 128,
-  };
+    const normalizedToolChoice = normalizeToolChoice(
+      toolChoice || tool_choice,
+      tools
+    );
+    if (normalizedToolChoice) {
+      payload.tool_choice = normalizedToolChoice;
+    }
 
-  const normalizedResponseFormat = normalizeResponseFormat({
-    responseFormat,
-    response_format,
-    outputSchema,
-    output_schema,
-  });
+    payload.max_tokens = 32768;
 
-  if (normalizedResponseFormat) {
-    payload.response_format = normalizedResponseFormat;
+    const normalizedResponseFormat = normalizeResponseFormat({
+      responseFormat,
+      response_format,
+      outputSchema,
+      output_schema,
+    });
+
+    if (normalizedResponseFormat) {
+      payload.response_format = normalizedResponseFormat;
+    }
   }
 
   const headers: Record<string, string> = {
     "content-type": "application/json",
   };
 
-  // Only add authorization header for OpenAI (Gemini uses key in URL)
-  if (!useGeminiApi) {
+  // Add authorization header
+  if (useOpenRouter) {
+    headers.authorization = `Bearer ${ENV.openRouterApiKey}`;
+    headers["HTTP-Referer"] = "https://tekup.dk"; // Optional: For rankings
+    headers["X-Title"] = "Friday AI"; // Optional: For rankings
+  } else if (!useOllamaApi && !useGeminiApi) {
     headers.authorization = `Bearer ${ENV.openAiApiKey}`;
   }
 

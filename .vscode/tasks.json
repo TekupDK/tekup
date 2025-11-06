@@ -22,16 +22,152 @@
 					"endsPattern": "^.*Server running.*$"
 				}
 			},
-			"group": {"kind": "build", "isDefault": true},
-			"presentation": {"reveal": "always", "panel": "dedicated"}
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
 		},
-		{"label": "Build Production", "type": "npm", "script": "build", "group": "build"},
-		{"label": "TypeScript Check", "type": "npm", "script": "check", "group": "test"},
-		{"label": "Format Code", "type": "npm", "script": "format"},
-		{"label": "Run Tests", "type": "npm", "script": "test", "group": "test"},
-		{"label": "Database Push", "type": "npm", "script": "db:push"},
-		{"label": "Database Migrate", "type": "npm", "script": "db:migrate"},
-		{"label": "Migrate Emails", "type": "npm", "script": "migrate:emails"},
-		{"label": "Install Dependencies", "type": "shell", "command": "pnpm install", "group": "build"}
+		{
+			"label": "Start Dev Server + Tunnel",
+			"type": "npm",
+			"script": "dev:tunnel",
+			"isBackground": true,
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
+			"label": "Build Production",
+			"type": "npm",
+			"script": "build",
+			"group": "build"
+		},
+		{
+			"label": "TypeScript Check",
+			"type": "npm",
+			"script": "check",
+			"group": "test"
+		},
+		{
+			"label": "Format Code",
+			"type": "npm",
+			"script": "format"
+		},
+		{
+			"label": "Run Tests",
+			"type": "npm",
+			"script": "test",
+			"group": "test"
+		},
+		{
+			"label": "Database Push",
+			"type": "npm",
+			"script": "db:push"
+		},
+		{
+			"label": "Database Migrate",
+			"type": "npm",
+			"script": "db:migrate"
+		},
+		{
+			"label": "Migrate Emails",
+			"type": "npm",
+			"script": "migrate:emails"
+		},
+		{
+			"label": "Install Dependencies",
+			"type": "shell",
+			"command": "pnpm install",
+			"group": "build"
+		},
+		{
+			"label": "Install Dependencies",
+			"type": "shell",
+			"command": "pnpm install",
+			"group": "build"
+		},
+		{
+			"label": "Analyze Emil Customer",
+			"type": "shell",
+			"command": "pnpm analyze:customer \"Emil Lærke\" \"emil.laerke@example.com\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run Emil Case Analysis",
+			"type": "shell",
+			"command": "pnpm analyze:customer emil-laerke",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Open App in Browser",
+			"type": "shell",
+			"command": "Start-Process http://localhost:3000",
+			"presentation": {
+				"reveal": "never"
+			}
+		},
+		{
+			"label": "Open Dev Login in Browser",
+			"type": "shell",
+			"command": "Start-Process http://localhost:3000/api/auth/login",
+			"presentation": {
+				"reveal": "never"
+			}
+		},
+		{
+			"label": "Open Adminer in Browser",
+			"type": "shell",
+			"command": "Start-Process http://localhost:8080",
+			"presentation": {
+				"reveal": "never"
+			}
+		},
+		{
+			"label": "TypeScript Check (verify UI actions integration)",
+			"type": "shell",
+			"command": "npm run check"
+		},
+		{
+			"label": "TypeScript Check (AI progress + undo)",
+			"type": "shell",
+			"command": "npm run check"
+		},
+		{
+			"label": "TypeScript Check (AI config + telemetry)",
+			"type": "shell",
+			"command": "npm run check",
+			"group": "test"
+		},
+		{
+			"label": "TypeScript Check (clean UI)",
+			"type": "shell",
+			"command": "npm run check",
+			"group": "test"
+		},
+		{
+			"label": "TypeScript Check (AI dropdown)",
+			"type": "shell",
+			"command": "npm run check",
+			"group": "test"
+		},
+		{
+			"label": "TypeScript Check (Friday AI branding)",
+			"type": "shell",
+			"command": "npm run check",
+			"group": "test"
+		}
 	]
 }

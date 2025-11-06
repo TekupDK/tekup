@@ -392,7 +392,9 @@ async function createAllTables() {
     for (const tableSql of tables) {
       try {
         await sql.unsafe(tableSql);
-        const tableName = tableSql.match(/CREATE TABLE IF NOT EXISTS \w+\.(\w+)/)?.[1];
+        const tableName = tableSql.match(
+          /CREATE TABLE IF NOT EXISTS \w+\.(\w+)/
+        )?.[1];
         console.log(`✅ ${tableName}`);
         created++;
       } catch (err: any) {
@@ -484,4 +486,3 @@ async function createAllTables() {
 }
 
 createAllTables();
-

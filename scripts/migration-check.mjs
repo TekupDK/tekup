@@ -1,21 +1,23 @@
 #!/usr/bin/env node
-import pg from 'pg';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
+import pg from "pg";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const args = process.argv.slice(2);
-const DRY_RUN = args.includes('--dry-run');
-const APPLY = args.includes('--apply');
+const DRY_RUN = args.includes("--dry-run");
+const APPLY = args.includes("--apply");
 
-dotenv.config({ path: path.join(__dirname, '..', '.env.prod') });
+dotenv.config({ path: path.join(__dirname, "..", ".env.prod") });
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
-  console.error('❌ DATABASE_URL not found. Ensure .env.prod exists and has DATABASE_URL');
+  console.error(
+    "❌ DATABASE_URL not found. Ensure .env.prod exists and has DATABASE_URL"
+  );
   process.exit(1);
 }
 
@@ -25,17 +27,19 @@ const client = new pg.Client({
   port: parseInt(url.port) || 5432,
   user: url.username,
   password: decodeURIComponent(url.password),
-  database: url.pathname.split('/')[1],
+  database: url.pathname.split("/")[1],
   ssl: { rejectUnauthorized: false },
 });
 
-const outDir = path.join(__dirname, '..', 'migration-check');
+const outDir = path.join(__dirname, "..", "migration-check");
 fs.mkdirSync(outDir, { recursive: true });
-const BEFORE_PATH = path.join(outDir, 'before.json');
-const AFTER_PATH = path.join(outDir, 'after.json');
+const BEFORE_PATH = path.join(outDir, "before.json");
+const AFTER_PATH = path.join(outDir, "after.json");
 
 async function countRows(client, schema, table) {
-  const res = await client.query(`SELECT COUNT(*)::int AS c FROM ${schema}.${table}`);
+  const res = await client.query(
+    `SELECT COUNT(*)::int AS c FROM ${schema}.${table}`
+  );
   return res.rows[0]?.c ?? 0;
 }
 
@@ -73,11 +77,15 @@ async function tableExists(client, schema, table) {
 }
 
 async function run() {
-  console.log('🔎 Migration pre/post checks');
+  console.log("🔎 Migration pre/post checks");
   await client.connect();
 
-  const schema = 'friday_ai';
-  const tables = ['email_threads', 'email_pipeline_state', 'email_pipeline_transitions'];
+  const schema = "friday_ai";
+  const tables = [
+    "email_threads",
+    "email_pipeline_state",
+    "email_pipeline_transitions",
+  ];
 
   // Pre-check: presence and counts (missing tables recorded as 0)
   const before = { when: new Date().toISOString(), schema, stats: {} };
@@ -94,23 +102,29 @@ async function run() {
   console.log(`✅ Pre-check saved: ${BEFORE_PATH}`);
 
   if (DRY_RUN) {
-    console.log('ℹ️ Dry-run: not applying migration.');
+    console.log("ℹ️ Dry-run: not applying migration.");
   } else if (APPLY) {
     // Apply migration file
-    const migrationPath = path.join(__dirname, '..', 'drizzle', 'migrations', '20251103_add_user_id_to_email_pipeline.sql');
+    const migrationPath = path.join(
+      __dirname,
+      "..",
+      "drizzle",
+      "migrations",
+      "20251103_add_user_id_to_email_pipeline.sql"
+    );
     if (!fs.existsSync(migrationPath)) {
       console.error(`❌ Migration file not found: ${migrationPath}`);
       process.exit(1);
     }
-    const sql = fs.readFileSync(migrationPath, 'utf8');
+    const sql = fs.readFileSync(migrationPath, "utf8");
     try {
-      await client.query('BEGIN');
+      await client.query("BEGIN");
       await client.query(sql);
-      await client.query('COMMIT');
-      console.log('✅ Migration applied');
+      await client.query("COMMIT");
+      console.log("✅ Migration applied");
     } catch (e) {
-      await client.query('ROLLBACK');
-      console.error('❌ Migration failed and was rolled back:', e.message);
+      await client.query("ROLLBACK");
+      console.error("❌ Migration failed and was rolled back:", e.message);
       process.exit(1);
     }
   }
@@ -142,27 +156,33 @@ async function run() {
   }
 
   // Assert columns on pipeline tables
-  if (after.stats['email_pipeline_state'].exists) {
-    const cols = after.stats['email_pipeline_state'].columns.map(c => c.column_name);
-    if (!cols.includes('userId')) {
-      console.warn('⚠️ email_pipeline_state.userId missing after migration');
+  if (after.stats["email_pipeline_state"].exists) {
+    const cols = after.stats["email_pipeline_state"].columns.map(
+      c => c.column_name
+    );
+    if (!cols.includes("userId")) {
+      console.warn("⚠️ email_pipeline_state.userId missing after migration");
       process.exitCode = 2;
     }
   }
 
-  if (after.stats['email_pipeline_transitions'].exists) {
-    const cols = after.stats['email_pipeline_transitions'].columns.map(c => c.column_name);
-    if (!cols.includes('userId')) {
-      console.warn('⚠️ email_pipeline_transitions.userId missing after migration');
+  if (after.stats["email_pipeline_transitions"].exists) {
+    const cols = after.stats["email_pipeline_transitions"].columns.map(
+      c => c.column_name
+    );
+    if (!cols.includes("userId")) {
+      console.warn(
+        "⚠️ email_pipeline_transitions.userId missing after migration"
+      );
       process.exitCode = 2;
     }
   }
 
   await client.end();
-  console.log('🏁 Check complete');
+  console.log("🏁 Check complete");
 }
 
 run().catch(err => {
-  console.error('❌ Check failed:', err);
+  console.error("❌ Check failed:", err);
   process.exit(1);
 });

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { invokeLLM } from "./_core/llm";
 import { protectedProcedure, router } from "./_core/trpc";
+import { analyzeCasePattern } from "./analysis/case-analyzer";
 import { syncBillyInvoicesForCustomer } from "./billy-sync";
 import {
   addCustomerEmail,
@@ -19,6 +20,8 @@ import {
   updateCustomerEmailCount,
 } from "./customer-db";
 import { createConversation, getUserLeads } from "./db";
+import { searchGmailThreadsByEmail } from "./mcp";
+import type { CustomerCaseAnalysis } from "./types/case-analysis";
 
 /**
  * Customer Profile Router
@@ -26,6 +29,60 @@ import { createConversation, getUserLeads } from "./db";
  */
 
 export const customerRouter = router({
+  /**
+   * Get customer profile with case analysis (by email)
+   * Returns DB customer, live email threads from MCP/Google, matched calendar events, and analyzed case
+   */
+  getProfileWithCase: protectedProcedure
+    .input(z.object({ email: z.string().email() }))
+    .query(async ({ ctx, input }) => {
+      const profile = await getCustomerProfileByEmail(input.email, ctx.user.id);
+      if (!profile) {
+        throw new Error("Customer not found");
+      }
+
+      // Fetch recent Gmail threads for this email (via MCP/Google)
+      const emailThreads = await searchGmailThreadsByEmail(input.email);
+
+      // Fetch matched calendar events (DB-first, matched by name/email)
+      const calendarEvents = await getCustomerCalendarEvents(
+        profile.id,
+        ctx.user.id
+      );
+
+      // Build a minimal customer shape for analyzer
+      const minimalCustomer = {
+        id: profile.id,
+        name: profile.name || null,
+        email: profile.email,
+        phone: profile.phone || null,
+        address: (profile as any).address || null,
+        lead_source: (profile as any).source || null,
+      };
+
+      const caseAnalysis: CustomerCaseAnalysis = analyzeCasePattern(
+        minimalCustomer,
+        emailThreads.map(t => ({
+          id: t.id,
+          subject: (t as any).subject,
+          snippet: t.snippet,
+          date: (t as any).date,
+        })),
+        calendarEvents.map(e => ({
+          id: e.id,
+          title: (e as any).title,
+          description: (e as any).description,
+          startTime: (e as any).startTime,
+        }))
+      );
+
+      return {
+        customer: profile,
+        emailThreads,
+        calendarEvents,
+        caseAnalysis,
+      };
+    }),
   /**
    * Get customer profile by lead ID
    */
@@ -163,17 +220,18 @@ export const customerRouter = router({
       // Add/update invoices in database
       for (const invoice of invoices) {
         await addCustomerInvoice({
+          userId: ctx.user.id,
           customerId: input.customerId,
           billyInvoiceId: invoice.id,
-          invoiceNo: invoice.invoiceNo,
-          amount: invoice.amount,
-          paidAmount: invoice.paidAmount || 0,
+          invoiceNumber: invoice.invoiceNo,
+          amount: invoice.amount?.toString(),
           status: invoice.state as any,
-          entryDate: invoice.entryDate
-            ? new Date(invoice.entryDate)
+          dueDate: invoice.dueDate
+            ? new Date(invoice.dueDate).toISOString()
             : undefined,
-          dueDate: invoice.dueDate ? new Date(invoice.dueDate) : undefined,
-          paidDate: invoice.paidDate ? new Date(invoice.paidDate) : undefined,
+          paidAt: invoice.paidDate
+            ? new Date(invoice.paidDate).toISOString()
+            : undefined,
         });
       }
 
@@ -188,7 +246,7 @@ export const customerRouter = router({
         const { eq } = await import("drizzle-orm");
         await db
           .update(customerProfiles)
-          .set({ lastSyncDate: new Date() })
+          .set({ lastSyncDate: new Date().toISOString() })
           .where(eq(customerProfiles.id, input.customerId));
       }
 
@@ -223,7 +281,7 @@ export const customerRouter = router({
           gmailThreadId: thread.id,
           subject: (thread as any).subject || thread.snippet || "",
           snippet: thread.snippet || "",
-          lastMessageDate: new Date(),
+          lastMessageDate: new Date().toISOString(),
           isRead: !(thread as any).unread,
         });
       }
@@ -259,14 +317,14 @@ export const customerRouter = router({
       const invoiceSummary = invoices
         .map(
           inv =>
-            `Invoice ${inv.invoiceNo}: ${inv.amount / 100} DKK, status: ${inv.status}, due: ${inv.dueDate?.toISOString().split("T")[0]}`
+            `Invoice ${inv.invoiceNumber || "N/A"}: ${inv.amount ? (parseFloat(inv.amount) / 100).toFixed(2) : "0.00"} DKK, status: ${inv.status}, due: ${inv.dueDate ? new Date(inv.dueDate).toISOString().split("T")[0] : "N/A"}`
         )
         .join("\n");
 
       const emailSummary = emails
         .map(
           email =>
-            `Email: ${email.subject} (${email.lastMessageDate?.toISOString().split("T")[0]})`
+            `Email: ${email.subject} (${email.lastMessageDate ? new Date(email.lastMessageDate).toISOString().split("T")[0] : "N/A"})`
         )
         .join("\n");
 
@@ -281,7 +339,7 @@ Customer Information:
 - Outstanding Balance: ${customer.balance / 100} DKK
 - Number of Invoices: ${customer.invoiceCount}
 - Number of Email Threads: ${customer.emailCount}
-- Last Contact: ${customer.lastContactDate?.toISOString().split("T")[0] || "N/A"}
+- Last Contact: ${customer.lastContactDate ? new Date(customer.lastContactDate).toISOString().split("T")[0] : "N/A"}
 
 Recent Invoices:
 ${invoiceSummary || "No invoices"}
@@ -323,7 +381,7 @@ Format as clear, concise bullet points in Danish.`;
         const { eq } = await import("drizzle-orm");
         await db
           .update(customerProfiles)
-          .set({ aiResume, updatedAt: new Date() })
+          .set({ aiResume, updatedAt: new Date().toISOString() })
           .where(eq(customerProfiles.id, input.customerId));
       }
 

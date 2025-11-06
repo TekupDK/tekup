@@ -23,16 +23,19 @@ Formål: Friday følger brugerens kontekst og handlinger, foreslår næste skrid
 
 ## Forslag – Første bølge af handlinger (MVP)
 
-1) Email
+1. Email
+
 - “Svar med tilbud” (draft m. timer/pris/ledige tider)
 - “Følg op om X dage” (skabelon)
 - “Sæt label” (Needs Reply/Finance) / “Markér som læst” / “Arkivér”
 
-2) Pipeline/Leads
+2. Pipeline/Leads
+
 - “Flyt stage” (needs_action → venter_pa_svar → i_kalender → finance → afsluttet)
 - “Opret lead fra mail”
 
-3) Kalender/Økonomi
+3. Kalender/Økonomi
+
 - “Opret bekræftelses‑event i kalender”
 - “Opret faktura i Billy” (ved Gennemført)
 
@@ -57,4 +60,3 @@ Formål: Friday følger brugerens kontekst og handlinger, foreslår næste skrid
 ## Næste skridt
 
 - Se `docs/ACTION_CATALOG.md`, `docs/SUGGESTIONS_SERVICE_DESIGN.md`, `docs/CHAT_APPROVALS_SPEC.md` for detaljeret design.
-

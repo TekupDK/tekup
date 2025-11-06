@@ -103,6 +103,7 @@ interface AdvancedEmailSearchProps {
   onSearch: () => void;
   placeholder?: string;
   className?: string;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
 export default function AdvancedEmailSearch({
@@ -111,13 +112,15 @@ export default function AdvancedEmailSearch({
   onSearch,
   placeholder = "Søg emails, kontakter, labels...",
   className,
+  inputRef: externalInputRef,
 }: AdvancedEmailSearchProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeOperator, setActiveOperator] = useState<SearchOperator | null>(
     null
   );
   const [operatorValue, setOperatorValue] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const internalInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = externalInputRef || internalInputRef;
   const [cursorPosition, setCursorPosition] = useState(0);
 
   // Detect if user is typing an operator

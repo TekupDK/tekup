@@ -965,7 +965,8 @@ export default function TasksTab() {
                     if (item.type === "header") {
                       const { label, count, color } = item.data;
                       // Check if this header should be sticky (first item in viewport or at top)
-                      const isSticky = virtualItem.start <= 0 || virtualItem.index === 0;
+                      const isSticky =
+                        virtualItem.start <= 0 || virtualItem.index === 0;
                       return (
                         <div
                           key={`header-${item.group}`}
@@ -977,7 +978,9 @@ export default function TasksTab() {
                             left: 0,
                             width: "100%",
                             height: `${virtualItem.size}px`,
-                            transform: isSticky ? undefined : `translateY(${virtualItem.start}px)`,
+                            transform: isSticky
+                              ? undefined
+                              : `translateY(${virtualItem.start}px)`,
                             zIndex: 20,
                           }}
                           className="px-4 py-2 bg-background border-b flex items-center"

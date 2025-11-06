@@ -1,0 +1,63 @@
+{
+  "project": {
+    "name": "Tekup AI v2",
+    "description": "Customer relationship management system with AI-powered analysis and email handling",
+    "stack": {
+      "frontend": "React 19 + TypeScript + Tailwind CSS",
+      "backend": "Express + tRPC + TypeScript",
+      "database": "PostgreSQL + Drizzle ORM",
+      "integrations": ["Gmail API", "AWS S3", "Anthropic Claude"]
+    },
+    "architecture": {
+      "client": "client/src - React SPA with component-based architecture",
+      "server": "server/ - Express backend with tRPC API routers",
+      "database": "drizzle/ - Schema definitions and migrations",
+      "scripts": "server/scripts/ - Customer analysis and data migration tools"
+    }
+  },
+  "key_features": {
+    "customer_profiles": {
+      "path": "client/src/components/CustomerProfile.tsx",
+      "description": "Customer profile management with case history and analysis"
+    },
+    "email_management": {
+      "path": "client/src/components/inbox/EmailTab.tsx",
+      "description": "Gmail integration for email threading and customer communication"
+    },
+    "case_analysis": {
+      "path": "client/src/components/CaseAnalysisTab.tsx",
+      "description": "AI-powered customer case analysis and conflict resolution"
+    }
+  },
+  "cases": {
+    "EMIL_LAERKE": {
+      "api_endpoint": "/api/trpc/customer.getProfileWithCase?input={\"email\":\"emilovic99@hotmail.com\"}",
+      "analysis_file": "analysis-emil-laerke.json",
+      "training_data": {
+        "conflict_pattern": "quote_ambiguity_team_size",
+        "resolution": "compromise_with_clarity",
+        "prevention": ["clarify_team_size", "show_calculation", "pre_confirm"]
+      }
+    }
+  },
+  "development": {
+    "commands": {
+      "dev": "pnpm dev - Start development server with hot reload",
+      "build": "pnpm build - Build for production",
+      "check": "pnpm check - Type checking without emit",
+      "db:push:dev": "pnpm db:push:dev - Push schema changes to dev database",
+      "analyze:customer": "pnpm analyze:customer - Run customer case analysis"
+    },
+    "env_files": {
+      "dev": ".env.dev - Development environment variables",
+      "prod": ".env.prod - Production environment variables",
+      "template": ".env.dev.template - Environment template"
+    }
+  },
+  "copilot_instructions": {
+    "code_style": "Use TypeScript strict mode, functional components with hooks, and Tailwind utility classes",
+    "database": "Use Drizzle ORM queries, prefer transactions for multi-step operations",
+    "api": "Use tRPC routers for type-safe API endpoints, validate with Zod schemas",
+    "testing": "When making changes, consider running 'pnpm check' to verify types"
+  }
+}

@@ -1,6 +1,6 @@
 /**
  * Safe Streamdown Wrapper
- * 
+ *
  * Wraps Streamdown component with XSS protection using DOMPurify
  * Sanitizes markdown content before it's rendered to DOM
  */
@@ -14,7 +14,7 @@ interface SafeStreamdownProps {
 
 /**
  * Safe wrapper for Streamdown that sanitizes content before rendering
- * 
+ *
  * Note: Streamdown internally renders markdown to HTML.
  * We sanitize the input text to prevent XSS in the markdown source.
  * Streamdown will then safely convert it to HTML.
@@ -26,4 +26,3 @@ export function SafeStreamdown({ content }: SafeStreamdownProps) {
 
   return <Streamdown>{sanitizedContent}</Streamdown>;
 }
-

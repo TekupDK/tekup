@@ -18,7 +18,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { getLanguage, setLanguage, useI18n, type Language } from "@/lib/i18n";
 import { trpc } from "@/lib/trpc";
 import { Bell, Globe, Moon, Palette, Sun } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface SettingsDialogProps {
@@ -41,26 +41,36 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     undefined,
     {
       enabled: open,
-      onSuccess: data => {
-        if (data) {
-          setCurrentTheme(data.theme || "dark");
-          setCurrentLanguage((data.language as Language) || "da");
-          setEmailNotifications(data.emailNotifications ?? true);
-          setPushNotifications(data.pushNotifications ?? false);
-
-          // Sync theme with ThemeContext
-          if (data.theme && data.theme !== theme && setThemeDirect) {
-            setThemeDirect(data.theme);
-          }
-
-          // Sync language
-          if (data.language) {
-            setLanguage(data.language as Language);
-          }
-        }
-      },
     }
   );
+
+  // Sync preferences when data is loaded
+  useEffect(() => {
+    if (preferences) {
+      setCurrentTheme(preferences.theme || "dark");
+      setCurrentLanguage(
+        ("language" in preferences
+          ? (preferences.language as Language)
+          : null) || "da"
+      );
+      setEmailNotifications(preferences.emailNotifications ?? true);
+      setPushNotifications(
+        ("pushNotifications" in preferences
+          ? preferences.pushNotifications
+          : null) ?? false
+      );
+
+      // Sync theme with ThemeContext
+      if (preferences.theme && preferences.theme !== theme && setThemeDirect) {
+        setThemeDirect(preferences.theme);
+      }
+
+      // Sync language
+      if ("language" in preferences && preferences.language) {
+        setLanguage(preferences.language as Language);
+      }
+    }
+  }, [preferences, theme, setThemeDirect]);
 
   const updatePreferencesMutation = trpc.auth.updatePreferences.useMutation({
     onSuccess: () => {

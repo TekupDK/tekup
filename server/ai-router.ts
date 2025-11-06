@@ -12,12 +12,7 @@ import {
   type ActionResult,
 } from "./intent-actions";
 
-export type AIModel =
-  | "gpt-4o"
-  | "gpt-4o-mini"
-  | "claude-3-5-sonnet"
-  | "gemini-2.5-flash"
-  | "manus-ai";
+export type AIModel = "gemma-3-27b-free";
 
 export type TaskType =
   | "chat"
@@ -88,16 +83,16 @@ export interface AIResponse {
  */
 function selectModelForTask(taskType: TaskType): AIModel {
   const modelMap: Record<TaskType, AIModel> = {
-    chat: "gemini-2.5-flash", // Fast and cost-effective for general chat
-    "email-draft": "gemini-2.5-flash", // Good at professional writing
-    "invoice-create": "gemini-2.5-flash", // Structured data generation
-    "calendar-check": "gemini-2.5-flash", // Simple logic
-    "lead-analysis": "gemini-2.5-flash", // Complex analysis
-    "data-analysis": "gemini-2.5-flash", // Data processing
-    "code-generation": "gemini-2.5-flash", // Code quality
+    chat: "gemma-3-27b-free", // FREE + Claude-quality for general chat
+    "email-draft": "gemma-3-27b-free", // Good at professional writing
+    "invoice-create": "gemma-3-27b-free", // Structured data generation
+    "calendar-check": "gemma-3-27b-free", // Simple logic
+    "lead-analysis": "gemma-3-27b-free", // Complex analysis
+    "data-analysis": "gemma-3-27b-free", // Data processing
+    "code-generation": "gemma-3-27b-free", // Code quality
   };
 
-  return modelMap[taskType] || "gemini-2.5-flash";
+  return modelMap[taskType] || "gemma-3-27b-free";
 }
 
 /**

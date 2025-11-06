@@ -105,16 +105,20 @@ INBOX → Needs Action → Needs Reply → Venter på svar → I kalender → Fi
 ### Priority 1: Core Pipeline (Kritisk - 2-4 timer)
 
 #### 1.1 Pipeline Status View
+
 **Hvad:** Vis emails grupperet efter pipeline stage
 **Features:**
+
 - Column view: Needs Action | Venter på svar | I kalender | Finance
 - Drag-and-drop til pipeline transitions
 - Quick action buttons per stage
 - Status badges
 
 #### 1.2 Smart Label Detection
+
 **Hvad:** Auto-detect lead source fra email content/from
 **Features:**
+
 - Detect `Rengøring.nu` (fra Leadmail.no/Nettbureau)
 - Detect `Rengøring Århus` (fra Leadpoint.dk)
 - Detect `AdHelp` (fra adhelp.dk)
@@ -122,8 +126,10 @@ INBOX → Needs Action → Needs Reply → Venter på svar → I kalender → Fi
 - Auto-apply "Needs Action" for nye leads
 
 #### 1.3 Pipeline Quick Actions
+
 **Hvad:** Quick actions til pipeline transitions
 **Features:**
+
 - "Send Tilbud" → Remove "Needs Action", Add "Venter på svar"
 - "Bekræft Booking" → Remove "Venter på svar", Add "I kalender" + Create Calendar Event
 - "Send Faktura" → Remove "I kalender", Add "Finance" + Create Invoice
@@ -132,23 +138,29 @@ INBOX → Needs Action → Needs Reply → Venter på svar → I kalender → Fi
 ### Priority 2: Workflow Automation (Vigtigt - 4-6 timer)
 
 #### 2.1 Critical Rules Implementation
+
 **Hvad:** Implementer de kritiske regler fra analysis
 **Features:**
+
 - **Rengøring.nu:** ALDRIG reply direkte – opret ny email til kundens adresse
 - **AdHelp:** Send ALTID tilbud til kundens email (IKKE til mw@/sp@adhelp.dk)
 - **Rengøring Aarhus:** Kan svares direkte normalt
 
 #### 2.2 Auto-Calendar Integration
+
 **Hvad:** Auto-create calendar events når "I kalender" label tilføjes
 **Features:**
+
 - Extract dato/tid fra email
 - Create calendar event med korrekt format
 - Link email thread til calendar event
 - NEVER add attendees (MEMORY_19)
 
 #### 2.3 Auto-Invoice Integration
+
 **Hvad:** Auto-create Billy invoice når "Finance" label tilføjes
 **Features:**
+
 - Extract opgavetype og timer fra email/thread
 - Calculate price (349 kr/t incl. moms)
 - Select correct product (REN-001 til REN-005)
@@ -158,24 +170,30 @@ INBOX → Needs Action → Needs Reply → Venter på svar → I kalender → Fi
 ### Priority 3: Advanced Features (Nice-to-Have - 6-8 timer)
 
 #### 3.1 Pipeline Dashboard
+
 **Hvad:** Overview af pipeline status
 **Features:**
+
 - Metrics: Leads per stage, conversion rates
 - Charts: Pipeline funnel
 - Quick filters per stage
 - Recent activity feed
 
 #### 3.2 Bulk Operations
+
 **Hvad:** Bulk pipeline transitions
 **Features:**
+
 - Select multiple emails
 - Bulk apply labels
 - Bulk pipeline transitions
 - Progress indicator
 
 #### 3.3 Email Templates System
+
 **Hvad:** Templates for standard svar
 **Features:**
+
 - Templates for: Lead Response, Quote Follow-up, Payment Reminder, Booking Confirmation
 - Variables: {{customerName}}, {{serviceType}}, {{date}}
 - Auto-fill from context
@@ -259,11 +277,11 @@ inbox.email: {
 
 ```typescript
 // New components
-- EmailPipelineView.tsx // Column-based pipeline view
-- PipelineQuickActions.tsx // Quick action buttons
-- PipelineStats.tsx // Dashboard statistics
-- SmartLabelSuggestions.tsx // AI-powered label suggestions
-- EmailSourceDetector.tsx // Auto-detect lead source
+-EmailPipelineView.tsx - // Column-based pipeline view
+  PipelineQuickActions.tsx - // Quick action buttons
+  PipelineStats.tsx - // Dashboard statistics
+  SmartLabelSuggestions.tsx - // AI-powered label suggestions
+  EmailSourceDetector.tsx; // Auto-detect lead source
 ```
 
 ---
@@ -271,24 +289,28 @@ inbox.email: {
 ## 🚀 Implementation Roadmap
 
 ### Phase 1: Core Pipeline (Uge 1)
+
 - [ ] Pipeline Status View component
 - [ ] Pipeline state tracking (database + API)
 - [ ] Pipeline quick actions
 - [ ] Basic transitions
 
 ### Phase 2: Smart Labeling (Uge 2)
+
 - [ ] Lead source detection
 - [ ] Auto-labeling rules
 - [ ] Label rules engine
 - [ ] Testing med faktiske emails
 
 ### Phase 3: Workflow Automation (Uge 3)
+
 - [ ] Critical rules implementation
 - [ ] Auto-calendar integration
 - [ ] Auto-invoice integration
 - [ ] Thread → Lead → Calendar → Invoice tracking
 
 ### Phase 4: Advanced Features (Uge 4)
+
 - [ ] Pipeline dashboard
 - [ ] Bulk operations
 - [ ] Email templates
@@ -309,30 +331,31 @@ inbox.email: {
 ## 🎯 Immediate Next Steps
 
 **Start med Priority 1:**
+
 1. Implementer Pipeline Status View
 2. Implementer Smart Label Detection
 3. Implementer Pipeline Quick Actions
 
-**Derefter Priority 2:**
-4. Implementer Critical Rules
-5. Implementer Auto-Calendar Integration
-6. Implementer Auto-Invoice Integration
+**Derefter Priority 2:** 4. Implementer Critical Rules 5. Implementer Auto-Calendar Integration 6. Implementer Auto-Invoice Integration
 
 ---
 
 ## 🚨 Critical Issue: Gmail Rate Limits
 
 ### Problem:
+
 - **Gmail API Rate Limits:** 429 (RESOURCE_EXHAUSTED) fejl ved for mange API-kald
 - **Impact:** Rapporter, enrichment, og sync jobs fejler
 - **Root Cause:** Gmail API har lave per-user burst-tolerancer (~1 kald/sek)
 
 ### Solution: Self-Hosted SMTP Email Server
+
 - **Alternative til Gmail API:** Implementer `inbound-email` (Node.js SMTP → Webhook)
 - **Benefits:** Zero rate limits, real-time delivery, fuld kontrol
 - **Status:** Analysis complete - Se `GMAIL_RATE_LIMIT_ALTERNATIVES.md`
 
 ### Implementation Priority:
+
 **Priority 0 (Before Pipeline):** Setup SMTP infrastructure
 **Why:** Pipeline features kræver stabil email ingestion uden rate limits
 
@@ -340,7 +363,6 @@ inbox.email: {
 
 **Status:** ✅ Analysis Complete
 **Next:**
+
 1. **Priority 0:** Setup SMTP email server (inbound-email)
 2. **Priority 1:** Implementer Pipeline features
-
-

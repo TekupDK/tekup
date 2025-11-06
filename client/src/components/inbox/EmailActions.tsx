@@ -55,92 +55,147 @@ export default function EmailActions({
   const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
 
   const archiveMutation = trpc.inbox.email.archive.useMutation({
-    onSuccess: () => {
-      toast.success("Email arkiveret!");
-      utils.inbox.email.list.invalidate();
+    onMutate: () => {
+      toast.loading("Arkiverer email...", { id: "archive" });
+    },
+    onSuccess: async () => {
+      toast.success("Email arkiveret!", { id: "archive" });
+      setShowArchiveConfirm(false);
+      // Close thread first
       onArchive?.();
+
+      // Force immediate refetch - now fetches from Gmail API directly (not database cache)
+      // since query includes "in:inbox" filter
+      await utils.inbox.email.list.refetch();
     },
     onError: error => {
-      toast.error(`Fejl ved arkivering: ${error.message}`);
+      toast.error(`Fejl ved arkivering: ${error.message}`, { id: "archive" });
     },
   });
 
   const deleteMutation = trpc.inbox.email.delete.useMutation({
-    onSuccess: () => {
-      toast.success("Email slettet!");
-      utils.inbox.email.list.invalidate();
+    onMutate: () => {
+      toast.loading("Sletter email...", { id: "delete" });
+    },
+    onSuccess: async () => {
+      toast.success("Email slettet!", { id: "delete" });
+      setShowDeleteConfirm(false);
+      // Close thread first
       onDelete?.();
+
+      // Force immediate refetch - now fetches from Gmail API directly
+      await utils.inbox.email.list.refetch();
     },
     onError: error => {
-      toast.error(`Fejl ved sletning: ${error.message}`);
+      toast.error(`Fejl ved sletning: ${error.message}`, { id: "delete" });
     },
   });
 
   const addLabelMutation = trpc.inbox.email.addLabel.useMutation({
-    onSuccess: () => {
-      toast.success("Label tilføjet!");
-      utils.inbox.email.getThread.invalidate({ threadId });
-      utils.inbox.email.list.invalidate();
+    onMutate: () => {
+      toast.loading("Tilføjer label...", { id: "add-label" });
+    },
+    onSuccess: async () => {
+      toast.success("Label tilføjet!", { id: "add-label" });
       onLabelChange?.();
+      // Force immediate refetch to update list and thread
+      await Promise.all([
+        utils.inbox.email.getThread.refetch({ threadId }),
+        utils.inbox.email.list.refetch(),
+      ]);
     },
     onError: error => {
-      toast.error(`Fejl ved tilføjelse af label: ${error.message}`);
+      toast.error(`Fejl ved tilføjelse af label: ${error.message}`, {
+        id: "add-label",
+      });
     },
   });
 
   const removeLabelMutation = trpc.inbox.email.removeLabel.useMutation({
-    onSuccess: () => {
-      toast.success("Label fjernet!");
-      utils.inbox.email.getThread.invalidate({ threadId });
-      utils.inbox.email.list.invalidate();
+    onMutate: () => {
+      toast.loading("Fjerner label...", { id: "remove-label" });
+    },
+    onSuccess: async () => {
+      toast.success("Label fjernet!", { id: "remove-label" });
       onLabelChange?.();
+      // Force immediate refetch to update list and thread
+      await Promise.all([
+        utils.inbox.email.getThread.refetch({ threadId }),
+        utils.inbox.email.list.refetch(),
+      ]);
     },
     onError: error => {
-      toast.error(`Fejl ved fjernelse af label: ${error.message}`);
+      toast.error(`Fejl ved fjernelse af label: ${error.message}`, {
+        id: "remove-label",
+      });
     },
   });
 
   const starMutation = trpc.inbox.email.star.useMutation({
-    onSuccess: () => {
-      toast.success("Email markeret med stjerne!");
-      utils.inbox.email.getThread.invalidate({ threadId });
-      utils.inbox.email.list.invalidate();
+    onMutate: () => {
+      toast.loading("Tilføjer stjerne...", { id: "star" });
+    },
+    onSuccess: async () => {
+      toast.success("Email markeret med stjerne!", { id: "star" });
+      // Force immediate refetch to update list and thread
+      await Promise.all([
+        utils.inbox.email.getThread.refetch({ threadId }),
+        utils.inbox.email.list.refetch(),
+      ]);
     },
     onError: error => {
-      toast.error(`Fejl: ${error.message}`);
+      toast.error(`Fejl: ${error.message}`, { id: "star" });
     },
   });
 
   const unstarMutation = trpc.inbox.email.unstar.useMutation({
-    onSuccess: () => {
-      toast.success("Stjerne fjernet!");
-      utils.inbox.email.getThread.invalidate({ threadId });
-      utils.inbox.email.list.invalidate();
+    onMutate: () => {
+      toast.loading("Fjerner stjerne...", { id: "unstar" });
+    },
+    onSuccess: async () => {
+      toast.success("Stjerne fjernet!", { id: "unstar" });
+      // Force immediate refetch to update list and thread
+      await Promise.all([
+        utils.inbox.email.getThread.refetch({ threadId }),
+        utils.inbox.email.list.refetch(),
+      ]);
     },
     onError: error => {
-      toast.error(`Fejl: ${error.message}`);
+      toast.error(`Fejl: ${error.message}`, { id: "unstar" });
     },
   });
 
   const markAsReadMutation = trpc.inbox.email.markAsRead.useMutation({
-    onSuccess: () => {
-      toast.success("Markeret som læst!");
-      utils.inbox.email.getThread.invalidate({ threadId });
-      utils.inbox.email.list.invalidate();
+    onMutate: () => {
+      toast.loading("Markerer som læst...", { id: "mark-read" });
+    },
+    onSuccess: async () => {
+      toast.success("Markeret som læst!", { id: "mark-read" });
+      // Force immediate refetch to update list and thread
+      await Promise.all([
+        utils.inbox.email.getThread.refetch({ threadId }),
+        utils.inbox.email.list.refetch(),
+      ]);
     },
     onError: error => {
-      toast.error(`Fejl: ${error.message}`);
+      toast.error(`Fejl: ${error.message}`, { id: "mark-read" });
     },
   });
 
   const markAsUnreadMutation = trpc.inbox.email.markAsUnread.useMutation({
-    onSuccess: () => {
-      toast.success("Markeret som ulæst!");
-      utils.inbox.email.getThread.invalidate({ threadId });
-      utils.inbox.email.list.invalidate();
+    onMutate: () => {
+      toast.loading("Markerer som ulæst...", { id: "mark-unread" });
+    },
+    onSuccess: async () => {
+      toast.success("Markeret som ulæst!", { id: "mark-unread" });
+      // Force immediate refetch to update list and thread
+      await Promise.all([
+        utils.inbox.email.getThread.refetch({ threadId }),
+        utils.inbox.email.list.refetch(),
+      ]);
     },
     onError: error => {
-      toast.error(`Fejl: ${error.message}`);
+      toast.error(`Fejl: ${error.message}`, { id: "mark-unread" });
     },
   });
 
@@ -164,13 +219,27 @@ export default function EmailActions({
       ].includes(label.name)
     ) || [];
 
+  const isAnyMutationLoading =
+    archiveMutation.isPending ||
+    deleteMutation.isPending ||
+    addLabelMutation.isPending ||
+    removeLabelMutation.isPending ||
+    starMutation.isPending ||
+    unstarMutation.isPending ||
+    markAsReadMutation.isPending ||
+    markAsUnreadMutation.isPending;
+
   return (
     <div className="flex items-center gap-1">
       {/* Quick Actions */}
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => onReply?.(message)}
+        onClick={() => {
+          onReply?.(message);
+          toast.info("Åbner svar...");
+        }}
+        disabled={isAnyMutationLoading}
         title="Svar"
       >
         <Reply className="w-4 h-4" />
@@ -178,7 +247,11 @@ export default function EmailActions({
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => onForward?.(message)}
+        onClick={() => {
+          onForward?.(message);
+          toast.info("Åbner videresendelse...");
+        }}
+        disabled={isAnyMutationLoading}
         title="Videresend"
       >
         <Forward className="w-4 h-4" />
@@ -187,6 +260,7 @@ export default function EmailActions({
         variant="ghost"
         size="icon"
         onClick={() => setShowArchiveConfirm(true)}
+        disabled={isAnyMutationLoading}
         title="Arkivér"
       >
         <Archive className="w-4 h-4" />
@@ -195,6 +269,7 @@ export default function EmailActions({
         variant="ghost"
         size="icon"
         onClick={() => setShowDeleteConfirm(true)}
+        disabled={isAnyMutationLoading}
         title="Slet"
       >
         <Trash2 className="w-4 h-4" />
@@ -203,7 +278,12 @@ export default function EmailActions({
       {/* More Actions Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" title="Flere handlinger">
+          <Button
+            variant="ghost"
+            size="icon"
+            title="Flere handlinger"
+            disabled={isAnyMutationLoading}
+          >
             <MoreVertical className="w-4 h-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -217,9 +297,10 @@ export default function EmailActions({
               // Toggle star - for simplicity, always star (you'd need to check current state)
               starMutation.mutate({ messageId: message.id });
             }}
+            disabled={isAnyMutationLoading}
           >
             <Star className="w-4 h-4 mr-2" />
-            Marker med stjerne
+            {starMutation.isPending ? "Markerer..." : "Marker med stjerne"}
           </DropdownMenuItem>
 
           {/* Mark as Read/Unread */}
@@ -227,27 +308,34 @@ export default function EmailActions({
             onClick={() => {
               markAsReadMutation.mutate({ messageId: message.id });
             }}
+            disabled={isAnyMutationLoading}
           >
             <CheckCircle2 className="w-4 h-4 mr-2" />
-            Marker som læst
+            {markAsReadMutation.isPending ? "Markerer..." : "Marker som læst"}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               markAsUnreadMutation.mutate({ messageId: message.id });
             }}
+            disabled={isAnyMutationLoading}
           >
             <Circle className="w-4 h-4 mr-2" />
-            Marker som ulæst
+            {markAsUnreadMutation.isPending
+              ? "Markerer..."
+              : "Marker som ulæst"}
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
           {/* Labels */}
-          <DropdownMenuLabel>Labels</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            {addLabelMutation.isPending ? "Tilføjer label..." : "Labels"}
+          </DropdownMenuLabel>
           {standardLabels.map(label => (
             <DropdownMenuItem
               key={label.id}
               onClick={() => handleAddLabel(label.name)}
+              disabled={isAnyMutationLoading}
             >
               <Tag className="w-4 h-4 mr-2" />
               Tilføj "{label.name}"

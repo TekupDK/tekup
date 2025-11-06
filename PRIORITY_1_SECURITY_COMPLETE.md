@@ -12,12 +12,14 @@
 **Fil:** `server/api/inbound-email.ts`
 
 **Implementering:**
+
 - Tilføjet HMAC-SHA256 signature verification
 - Bruger `crypto.createHmac()` og `timingSafeEqual()` for timing-safe comparison
 - Tjekker `X-Webhook-Signature` header
 - Fallback til development mode hvis `WEBHOOK_SECRET` ikke er konfigureret
 
 **Kode:**
+
 ```typescript
 function verifyWebhookSignature(req: Request): boolean {
   if (!WEBHOOK_SECRET) {
@@ -34,6 +36,7 @@ function verifyWebhookSignature(req: Request): boolean {
 ```
 
 **Environment Variable:**
+
 - `INBOUND_EMAIL_WEBHOOK_SECRET` (allerede i `env.template.txt`)
 
 ---
@@ -41,6 +44,7 @@ function verifyWebhookSignature(req: Request): boolean {
 ### 2. ✅ XSS Prevention med DOMPurify
 
 **Filer:**
+
 - `client/src/lib/sanitize.ts` (ny utility)
 - `client/src/components/SafeStreamdown.tsx` (wrapper komponent)
 - Opdateret alle Streamdown komponenter:
@@ -52,12 +56,14 @@ function verifyWebhookSignature(req: Request): boolean {
   - `CustomerProfile.tsx`
 
 **Implementering:**
+
 - Installeret `dompurify` og `@types/dompurify`
 - Oprettet `sanitize.ts` utility med `sanitizeHtml()` og `sanitizeText()`
 - Oprettet `SafeStreamdown` wrapper der sanitizer content før rendering
 - Alle markdown rendering er nu XSS-sikret
 
 **Kode:**
+
 ```typescript
 // client/src/lib/sanitize.ts
 export function sanitizeText(text: string): string {
@@ -81,6 +87,7 @@ export function SafeStreamdown({ content }: SafeStreamdownProps) {
 **Fil:** `server/_core/index.ts`
 
 **Implementering:**
+
 - Installeret `express-rate-limit`
 - Tilføjet rate limiting middleware til alle `/api/` routes
 - Configurering:
@@ -88,6 +95,7 @@ export function SafeStreamdown({ content }: SafeStreamdownProps) {
   - **Development:** 1000 requests per 15 minutter (mere lempelig)
 
 **Kode:**
+
 ```typescript
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -118,17 +126,20 @@ app.use("/api/", limiter);
 ## 🧪 Testing Checklist
 
 ### HMAC Verification
+
 - [ ] Test med gyldig signature (skal acceptere)
 - [ ] Test med ugyldig signature (skal afvise)
 - [ ] Test uden header (skal afvise)
 - [ ] Test i development mode uden secret (skal tillade)
 
 ### XSS Prevention
+
 - [ ] Test med `<script>` tags i markdown (skal sanitize)
 - [ ] Test med `onclick` handlers (skal fjernes)
 - [ ] Test med normal markdown (skal render korrekt)
 
 ### Rate Limiting
+
 - [ ] Test med 101 requests i production (skal rate limit)
 - [ ] Test med normal brug (skal virke normalt)
 - [ ] Tjek rate limit headers i response
@@ -137,7 +148,7 @@ app.use("/api/", limiter);
 
 ## 📝 Noter
 
-1. **HMAC Verification:** 
+1. **HMAC Verification:**
    - Kræver at inbound-email serveren sender korrekt `X-Webhook-Signature` header
    - Standard format: `sha256=<hex-signature>`
 
@@ -156,8 +167,8 @@ app.use("/api/", limiter);
 ## ✅ Næste Skridt
 
 Alle Priority 1 items er nu implementeret. Næste step:
+
 - Priority 2: Testing & Quality Assurance
 - Priority 3: Documentation Improvements
 
 **Status:** ✅ **READY FOR TESTING**
-

@@ -1,13 +1,17 @@
-import { defineConfig } from "drizzle-kit";
 import * as dotenv from "dotenv";
+import { defineConfig } from "drizzle-kit";
 import * as fs from "fs";
 import * as path from "path";
 
 // Prefer environment provided by caller (dotenv-cli). Fallback to local files if missing.
 if (!process.env.DATABASE_URL) {
-  const prodPath = path.resolve('.env.prod');
-  const devPath = path.resolve('.env.dev');
-  const chosen = fs.existsSync(prodPath) ? prodPath : (fs.existsSync(devPath) ? devPath : undefined);
+  const prodPath = path.resolve(".env.prod");
+  const devPath = path.resolve(".env.dev");
+  const chosen = fs.existsSync(prodPath)
+    ? prodPath
+    : fs.existsSync(devPath)
+      ? devPath
+      : undefined;
   if (chosen) {
     dotenv.config({ path: chosen });
   }

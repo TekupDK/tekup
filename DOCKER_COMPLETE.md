@@ -8,32 +8,38 @@
 ## ✅ Services i Containere
 
 ### 1. **Friday AI** (Main Application)
+
 - **Container:** `friday-ai-container`
 - **Port:** 3000
 - **URL:** http://localhost:3000
 - **Type:** Fullstack (React + Express + tRPC)
 
 ### 2. **Inbox Orchestrator** (API Service)
+
 - **Container:** `inbox-orchestrator-container`
 - **Port:** 3011
 - **URL:** http://localhost:3011
 - **Type:** Express API Microservice
 
 ### 3. **MySQL** (Friday AI Database)
+
 - **Container:** `friday-ai-db`
 - **Port:** 3306
 - **Database:** `friday_ai`
 
 ### 4. **PostgreSQL** (Metrics Database)
+
 - **Container:** `friday-postgres`
 - **Port:** 5432
 - **Database:** `friday_ai_metrics`
 
 ### 5. **Redis** (Cache - Optional)
+
 - **Container:** `friday-redis`
 - **Port:** 6379
 
 ### 6. **Adminer** (Database Admin UI)
+
 - **Container:** `friday-adminer`
 - **Port:** 8080
 - **URL:** http://localhost:8080
@@ -123,12 +129,12 @@ docker exec -it friday-ai-db mysql -u friday_user -p friday_ai
 
 ## 🌐 Access URLs
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| **Friday AI** | http://localhost:3000 | Main application |
-| **Inbox Orchestrator** | http://localhost:3011 | API service |
-| **Inbox Health** | http://localhost:3011/health | Health check |
-| **Adminer** | http://localhost:8080 | Database admin UI |
+| Service                | URL                          | Description       |
+| ---------------------- | ---------------------------- | ----------------- |
+| **Friday AI**          | http://localhost:3000        | Main application  |
+| **Inbox Orchestrator** | http://localhost:3011        | API service       |
+| **Inbox Health**       | http://localhost:3011/health | Health check      |
+| **Adminer**            | http://localhost:8080        | Database admin UI |
 
 ---
 
@@ -244,6 +250,7 @@ docker-compose ps
 ```
 
 Output viser:
+
 - Container navn
 - Status (Up, Restarting, etc.)
 - Health status
@@ -319,4 +326,3 @@ docker-compose logs -f
 
 **Status:** ✅ **ALL SERVICES CONTAINERIZED**
 **Ready:** ✅ **PRODUCTION READY**
-

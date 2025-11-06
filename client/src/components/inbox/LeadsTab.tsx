@@ -92,9 +92,9 @@ type LeadWithDuplicateCount = {
   phone: string | null;
   company: string | null;
   score: number;
-  status: string;
-  source: string;
-  createdAt: Date | null;
+  status: string | null;
+  source: string | null;
+  createdAt: string;
   duplicateCount: number;
 };
 
@@ -373,7 +373,11 @@ export default function LeadsTab() {
   const [hideBillyImport, setHideBillyImport] = useState(true);
   const [sortBy, setSortBy] = useState<"date" | "score" | "name">("date");
 
-  const { data: leads, isLoading, refetch } = trpc.inbox.leads.list.useQuery({
+  const {
+    data: leads,
+    isLoading,
+    refetch,
+  } = trpc.inbox.leads.list.useQuery({
     status: statusFilter === "all" ? undefined : statusFilter,
     source: sourceFilter === "all" ? undefined : sourceFilter,
     searchQuery: searchQuery || undefined,
@@ -583,11 +587,14 @@ export default function LeadsTab() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alle kilder</SelectItem>
-              {sources.map(source => (
-                <SelectItem key={source} value={source}>
-                  {source}
-                </SelectItem>
-              ))}
+              {sources.map(
+                source =>
+                  source && (
+                    <SelectItem key={source} value={source}>
+                      {source}
+                    </SelectItem>
+                  )
+              )}
             </SelectContent>
           </Select>
           <Select
@@ -760,9 +767,10 @@ export default function LeadsTab() {
                 className="text-xs text-blue-800 dark:text-blue-200 truncate"
               >
                 • {event.title} -{" "}
-                {format(new Date(event.startTime), "dd. MMM HH:mm", {
-                  locale: da,
-                })}
+                {event.startTime &&
+                  format(new Date(event.startTime), "dd. MMM HH:mm", {
+                    locale: da,
+                  })}
               </div>
             ))}
             {calendarEvents.length > 3 && (

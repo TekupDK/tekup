@@ -4,6 +4,7 @@ import InboxPanel from "@/components/InboxPanel";
 import { MobileUserMenuSheet } from "@/components/MobileUserMenuSheet";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { UserProfileDialog } from "@/components/UserProfileDialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/resizable";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { getLoginUrl } from "@/const";
-import { LogOut, Menu, Settings, User } from "lucide-react";
+import { Bot, LogOut, Menu, Settings, User } from "lucide-react";
 import { memo, useCallback, useMemo, useState } from "react";
 
 /**
@@ -66,16 +67,21 @@ function ChatInterface() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="max-w-md w-full p-6 sm:p-8 space-y-6 text-center">
-          <div className="space-y-2">
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
-              Friday
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Your intelligent AI assistant for TekupDK operations
-            </p>
+          <div className="space-y-4">
+            <div className="flex justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Bot className="w-8 h-8 text-primary" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl sm:text-4xl font-bold">Friday</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Din intelligente AI assistent til TekupDK
+              </p>
+            </div>
           </div>
           <Button asChild size="lg" className="w-full">
-            <a href={getLoginUrl()}>Sign in to continue</a>
+            <a href={getLoginUrl()}>Log ind for at fortsætte</a>
           </Button>
         </div>
       </div>
@@ -85,19 +91,21 @@ function ChatInterface() {
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b border-border px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-sm sm:text-base">F</span>
+      <header className="border-b border-border px-4 sm:px-6 py-3 flex items-center justify-between bg-muted/20">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Bot className="w-6 h-6 text-primary" />
+            <div>
+              <h1 className="text-xl font-semibold">Friday</h1>
+              <p className="text-xs text-muted-foreground hidden sm:block">
+                Din AI assistent
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Friday
-            </h1>
-            <p className="text-xs text-muted-foreground hidden sm:block">
-              AI Assistant for TekupDK
-            </p>
-          </div>
+          <Badge variant="secondary" className="gap-1.5 hidden sm:flex">
+            <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            Online
+          </Badge>
         </div>
 
         {/* Desktop User Info */}

@@ -56,18 +56,36 @@ async function setupSchemaAndEnums() {
     const enums = [
       { name: "user_role", values: ["user", "admin"] },
       { name: "message_role", values: ["user", "assistant", "system"] },
-      { name: "invoice_status", values: ["draft", "sent", "paid", "overdue", "cancelled"] },
-      { name: "calendar_status", values: ["confirmed", "tentative", "cancelled"] },
-      { name: "lead_status", values: ["new", "contacted", "qualified", "proposal", "won", "lost"] },
+      {
+        name: "invoice_status",
+        values: ["draft", "sent", "paid", "overdue", "cancelled"],
+      },
+      {
+        name: "calendar_status",
+        values: ["confirmed", "tentative", "cancelled"],
+      },
+      {
+        name: "lead_status",
+        values: ["new", "contacted", "qualified", "proposal", "won", "lost"],
+      },
       {
         name: "customer_invoice_status",
         values: ["draft", "approved", "sent", "paid", "overdue", "voided"],
       },
-      { name: "task_status", values: ["todo", "in_progress", "done", "cancelled"] },
+      {
+        name: "task_status",
+        values: ["todo", "in_progress", "done", "cancelled"],
+      },
       { name: "task_priority", values: ["low", "medium", "high", "urgent"] },
       {
         name: "email_pipeline_stage",
-        values: ["needs_action", "venter_pa_svar", "i_kalender", "finance", "afsluttet"],
+        values: [
+          "needs_action",
+          "venter_pa_svar",
+          "i_kalender",
+          "finance",
+          "afsluttet",
+        ],
       },
       { name: "theme", values: ["light", "dark"] },
     ];
@@ -76,7 +94,7 @@ async function setupSchemaAndEnums() {
     let existing = 0;
 
     for (const enumDef of enums) {
-      const valuesStr = enumDef.values.map((v) => `'${v}'`).join(", ");
+      const valuesStr = enumDef.values.map(v => `'${v}'`).join(", ");
 
       try {
         await sql.unsafe(`
@@ -102,7 +120,9 @@ async function setupSchemaAndEnums() {
     }
 
     console.log("");
-    console.log(`📊 Created: ${created}, Existing: ${existing}, Total: ${enums.length}`);
+    console.log(
+      `📊 Created: ${created}, Existing: ${existing}, Total: ${enums.length}`
+    );
 
     // Verify
     console.log("");
@@ -141,4 +161,3 @@ async function setupSchemaAndEnums() {
 }
 
 setupSchemaAndEnums();
-

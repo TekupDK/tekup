@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       backup_sql_url:
-        description: 'URL to .sql backup file (public or pre-signed)'
+        description: "URL to .sql backup file (public or pre-signed)"
         required: true
         type: string
 

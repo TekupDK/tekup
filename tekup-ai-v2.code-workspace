@@ -1,47 +1,90 @@
 {
-	"folders": [
-		{
-			"name": "tekup-ai-v2",
-			"path": "."
-		}
-	],
-	"settings": {
-		"typescript.tsdk": "node_modules/typescript/lib",
-		"typescript.enablePromptUseWorkspaceTsdk": true,
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.formatOnSave": true,
-		"editor.codeActionsOnSave": {
-			"source.fixAll.eslint": "explicit",
-			"source.organizeImports": "explicit"
-		},
-		"files.exclude": {
-			"**/node_modules": true,
-			"**/dist": true,
-			"**/.git": true
-		},
-		"search.exclude": {
-			"**/node_modules": true,
-			"**/dist": true
-		},
-		"files.watcherExclude": {
-			"**/node_modules/**": true,
-			"**/dist/**": true
-		},
-		"cursor.general.enableCloudAgents": true
-	},
-	"extensions": {
-		"recommendations": [
-			"dbaeumer.vscode-eslint",
-			"esbenp.prettier-vscode",
-			"bradlc.vscode-tailwindcss",
-			"ms-vscode.vscode-typescript-next",
-			"bradlc.vscode-tailwindcss",
-			"usernamehw.errorlens",
-			"ms-vscode.vscode-json"
-		]
-	},
-	"tasks": {
-		"version": "2.0.0"
-	}
-}
+  "folders": [
+    {
+      "name": "tekup-ai-v2",
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit",
+    },
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.git": true,
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+    },
+    "files.watcherExclude": {
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+    },
+    "cursor.general.enableCloudAgents": true,
 
+    // === MCP Server Configuration for Tekup AI v2 ===
+    "github.copilot.chat.mcp.servers": {
+      // Browser automation for testing and debugging
+      "playwright": {
+        "command": "npx",
+        "args": ["@playwright/mcp@latest"],
+      },
+      // PostgreSQL database access for queries and schema exploration
+      // HARDCODED DATABASE_URL since VS Code doesn't load .env files for MCP
+      "postgres": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-postgres"],
+        "env": {
+          "POSTGRES_URL": "postgresql://postgres:Habibie12345%40@db.oaevagdgrasfppbrxbey.supabase.co:5432/postgres?schema=friday_ai&sslmode=require",
+        },
+      },
+      // Secure filesystem operations with workspace scope
+      "filesystem": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "${workspaceFolder}",
+        ],
+      },
+      // Web content fetching and conversion
+      "fetch": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      },
+    },
+
+    // === Enhanced Copilot Settings ===
+    "github.copilot.enable": {
+      "*": true,
+      "yaml": true,
+      "plaintext": true,
+      "markdown": true,
+      "typescript": true,
+      "javascript": true,
+      "json": true,
+      "jsonc": true,
+    },
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "bradlc.vscode-tailwindcss",
+      "ms-vscode.vscode-typescript-next",
+      "bradlc.vscode-tailwindcss",
+      "usernamehw.errorlens",
+      "ms-vscode.vscode-json",
+    ],
+  },
+  "tasks": {
+    "version": "2.0.0",
+  },
+}

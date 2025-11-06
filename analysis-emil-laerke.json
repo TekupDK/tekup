@@ -1,0 +1,56 @@
+{
+  "customer": {
+    "id": "1",
+    "name": "Emil Lærke",
+    "email": "emilovic99@hotmail.com",
+    "phone": null,
+    "address": "Hans Broges Gade 3, 1. Tv, 8000 Aarhus C",
+    "property": {
+      "size": 73,
+      "type": "apartment"
+    },
+    "lead_source": "rengøring_aarhus",
+    "status": "resolved",
+    "satisfaction": "medium"
+  },
+  "conflict": {
+    "type": "price_mismatch",
+    "severity": "high",
+    "root_cause": "ambiguous_quote_format"
+  },
+  "timeline": [
+    {
+      "date": "2025-09-11",
+      "event": "quote_sent",
+      "quote": {
+        "hours_work": "2.5-3",
+        "team_size": null,
+        "price": 1050
+      }
+    },
+    {
+      "date": "2025-09-22",
+      "event": "booking_cancelled",
+      "reason": "time_conflict"
+    },
+    {
+      "date": "2025-09-26",
+      "event": "cancelled_by_us",
+      "reason": "acute_illness",
+      "customer_reaction": "LAST_CHANCE"
+    }
+  ],
+  "lessons": {
+    "root_cause_analysis": [
+      "Quote format tidak specify 'team_size'",
+      "Quote calculate ambiguous: 2.5-3 = per person or total?",
+      "No confirmation email before execution"
+    ],
+    "fix_applied": [
+      "UPDATE QuoteTemplate: add 'team_size' field",
+      "UPDATE calculation_display: '2 persons × 2.5h = 5 work hours'",
+      "ADD pre-execution confirmation workflow"
+    ]
+  },
+  "similar_cases": ["Ken_Gustavsen", "Jørgen_Pagh"]
+}

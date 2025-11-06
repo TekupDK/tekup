@@ -8,16 +8,19 @@
 ## ✅ Hvad Er Gjort
 
 ### 1. Database Migration
+
 - ✅ 21 tables oprettet i Supabase `friday_ai` schema
 - ✅ 10 enums oprettet
 - ✅ Kode migreret fra MySQL til PostgreSQL
 
 ### 2. Container Build
+
 - ✅ `friday-ai` - Rebuilt med ny Supabase kode
 - ✅ `inbound-email` - Fixed Dockerfile og rebuilt
 - ✅ `inbox-orchestrator` - Rebuilt
 
 ### 3. Container Deployment
+
 - ✅ Gamle containere stoppet
 - ✅ Nye containere startet med `docker-compose.supabase.yml`
 - ✅ Server kører på http://localhost:3000
@@ -41,6 +44,7 @@ inbox-orchestrator-container   Up             Port: 8080
 **Docker Compose:** `docker-compose.supabase.yml`
 **Env File:** `.env.supabase`
 **Database:** Supabase PostgreSQL
+
 - Host: `db.oaevagdgrasfppbrxbey.supabase.co`
 - Schema: `friday_ai`
 - Tables: 21
@@ -50,6 +54,7 @@ inbox-orchestrator-container   Up             Port: 8080
 ## 🎯 Verificering
 
 ### Test Endpoints
+
 ```bash
 # Health check
 curl http://localhost:3000
@@ -62,7 +67,9 @@ curl http://localhost:3000/api/trpc
 ```
 
 ### Database Connection
+
 Server logs viser:
+
 ```
 Server running on http://localhost:3000/
 [Auto-Import] No owner user found, skipping import (user needs to login first)
@@ -92,4 +99,3 @@ Server running on http://localhost:3000/
 - Server: Healthy og responsive ✅
 
 **Migration fuldført!** 🎉
-

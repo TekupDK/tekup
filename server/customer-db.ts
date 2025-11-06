@@ -1,7 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import {
   CalendarEvent,
-  calendarEvents,
   customerConversations,
   customerEmails,
   customerInvoices,
@@ -93,7 +92,7 @@ export async function createOrUpdateCustomerProfile(
       .update(customerProfiles)
       .set({
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .where(eq(customerProfiles.id, existing.id));
     return existing.id;
@@ -116,7 +115,8 @@ export async function getCustomerInvoices(customerId: number, userId: number) {
     .select()
     .from(customerInvoices)
     .where(eq(customerInvoices.customerId, customerId))
-    .orderBy(desc(customerInvoices.entryDate));
+    // entryDate does not exist on customer_invoices; use createdAt as default sort
+    .orderBy(desc(customerInvoices.createdAt));
 
   return result;
 }
@@ -131,8 +131,8 @@ export async function addCustomerInvoice(data: InsertCustomerInvoice) {
     .from(customerInvoices)
     .where(
       and(
-        eq(customerInvoices.customerId, data.customerId),
-        eq(customerInvoices.billyInvoiceId, data.billyInvoiceId)
+        eq(customerInvoices.customerId, data.customerId ?? -1),
+        eq(customerInvoices.billyInvoiceId, data.billyInvoiceId ?? "")
       )
     )
     .limit(1);
@@ -143,7 +143,7 @@ export async function addCustomerInvoice(data: InsertCustomerInvoice) {
       .update(customerInvoices)
       .set({
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .where(eq(customerInvoices.id, existing[0].id));
     return existing[0].id;
@@ -249,8 +249,17 @@ export async function updateCustomerBalance(customerId: number) {
     .from(customerInvoices)
     .where(eq(customerInvoices.customerId, customerId));
 
-  const totalInvoiced = invoices.reduce((sum, inv) => sum + inv.amount, 0);
-  const totalPaid = invoices.reduce((sum, inv) => sum + inv.paidAmount, 0);
+  // amount is numeric (string|null) in schema; store profile totals as integer (cents)
+  const toCents = (v: string | null) => Math.round((Number(v ?? 0) || 0) * 100);
+  const totalInvoiced = invoices.reduce(
+    (sum, inv) => sum + toCents(inv.amount as any),
+    0
+  );
+  const totalPaid = invoices.reduce(
+    (sum, inv) =>
+      sum + (inv.status === "paid" ? toCents(inv.amount as any) : 0),
+    0
+  );
   const balance = totalInvoiced - totalPaid;
   const invoiceCount = invoices.length;
 
@@ -262,7 +271,7 @@ export async function updateCustomerBalance(customerId: number) {
       totalPaid,
       balance,
       invoiceCount,
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(customerProfiles.id, customerId));
 
@@ -291,7 +300,7 @@ export async function updateCustomerEmailCount(customerId: number) {
     .set({
       emailCount,
       lastContactDate,
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(customerProfiles.id, customerId));
 
@@ -329,24 +338,72 @@ export async function getCustomerCalendarEvents(
   const customerName = customer.name.toLowerCase();
   const customerEmail = customer.email.toLowerCase();
 
-  // Get all calendar events for the user
-  const allEvents = await db
-    .select()
-    .from(calendarEvents)
-    .where(eq(calendarEvents.userId, userId))
-    .orderBy(desc(calendarEvents.startTime));
+  // Fetch from Google Calendar API for last 6 months (July-now)
+  const { listCalendarEvents } = await import("./google-api");
 
-  // Match events by name or email in title/description
-  return allEvents.filter(event => {
-    const title = (event.title || "").toLowerCase();
-    const description = (event.description || "").toLowerCase();
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - 6); // 6 months back for history
 
-    // Check if customer name or email appears in event title/description
-    return (
-      title.includes(customerName) ||
-      description.includes(customerName) ||
-      title.includes(customerEmail) ||
-      description.includes(customerEmail)
-    );
-  });
+  const endDate = new Date();
+  endDate.setMonth(endDate.getMonth() + 1); // 1 month forward
+
+  try {
+    const googleEvents = await listCalendarEvents({
+      timeMin: startDate.toISOString(),
+      timeMax: endDate.toISOString(),
+      maxResults: 500,
+    });
+
+    // Filter events that match customer name or email (improved precision)
+    const matchedEvents = googleEvents.filter((event: any) => {
+      const summary = (event.summary || "").toLowerCase();
+      const description = (event.description || "").toLowerCase();
+      const location = (event.location || "").toLowerCase();
+
+      // Split summary to get customer name part (format: "Type - Customer - Details")
+      const summaryParts = event.summary?.split("-") || [];
+      const eventCustomerName =
+        summaryParts.length > 1 ? summaryParts[1].trim().toLowerCase() : "";
+
+      // Match by:
+      // 1. Customer name appears in the summary customer section (most precise)
+      // 2. Full customer name in description (word boundary aware)
+      // 3. Email in description (exact match)
+      // 4. Customer name in location
+      return (
+        (eventCustomerName && eventCustomerName.includes(customerName)) || // Name in customer section
+        (customerName && description.includes(customerName)) || // Name in description
+        (customerEmail && description.includes(customerEmail)) || // Email in description
+        (customerName && location.includes(customerName)) // Name in location
+      );
+    });
+
+    // Convert to CalendarEvent format
+    return matchedEvents.map((event: any, index: number) => ({
+      id: index + 1, // Temporary ID for display
+      userId,
+      googleEventId: event.id || null,
+      calendarId: event.organizer?.email || null,
+      title: event.summary || "(No Title)",
+      description: event.description || null,
+      startTime:
+        event.start?.dateTime || event.start?.date || new Date().toISOString(),
+      endTime:
+        event.end?.dateTime || event.end?.date || new Date().toISOString(),
+      location: event.location || null,
+      isAllDay: !!event.start?.date, // All-day if only date (no dateTime)
+      attendees: null,
+      status:
+        event.status === "confirmed" ||
+        event.status === "tentative" ||
+        event.status === "cancelled"
+          ? (event.status as "confirmed" | "tentative" | "cancelled")
+          : "confirmed",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }));
+  } catch (error) {
+    console.error("Error fetching customer calendar events:", error);
+    return [];
+  }
 }

@@ -3,12 +3,14 @@
 ## 📊 Nuværende Situation
 
 ### Database Status
+
 - **Emails i database:** 0 (ingen emails modtaget via webhook endnu)
 - **Status:** Database er klar, men webhook har ikke modtaget emails endnu
 
 ### Hvordan Systemet Virker Nu
 
 **Nuværende Flow (Før Phase 0 er fuldt aktiveret):**
+
 1. Frontend kalder `inbox.email.list` eller `inbox.email.getInboundEmails`
 2. Backend tjekker database først
 3. Hvis database er tom → Fallback til **Gmail API**
@@ -21,6 +23,7 @@
 **Location:** `server/routers.ts:570-632`
 
 **Flow:**
+
 ```typescript
 1. Tjek database connection
 2. Hvis database IKKE tilgængelig → Fallback til Gmail API
@@ -29,6 +32,7 @@
 ```
 
 **Kode:**
+
 ```typescript
 const db = await getDb();
 if (!db) {
@@ -45,6 +49,7 @@ const emailRecords = await db.select().from(emails)...
 **Location:** `server/routers.ts:297-336`
 
 **Flow:**
+
 ```typescript
 1. Tjek database connection
 2. Hvis database tilgængelig → Query fra database
@@ -53,6 +58,7 @@ const emailRecords = await db.select().from(emails)...
 ```
 
 **Kode:**
+
 ```typescript
 const db = await getDb();
 if (db) {
@@ -77,6 +83,7 @@ return mcpSearchGmailThreads(...);
 **Location:** `server/routers.ts:654-705`
 
 **Flow:**
+
 ```typescript
 1. Tjek database først
 2. Hvis thread IKKE fundet i database → Fallback til Gmail API
@@ -86,16 +93,19 @@ return mcpSearchGmailThreads(...);
 ## ⚠️ Problemer med Nuværende Setup
 
 ### Problem 1: Rate Limits
+
 - **Issue:** Gmail API har rate limits (HTTP 429 errors)
 - **Impact:** Når mange emails hentes eller systemet er under belastning
 - **Symptom:** "User-rate limit exceeded. Retry after..."
 
 ### Problem 2: Afhængighed af Gmail API
+
 - **Issue:** Systemet er afhængigt af Gmail API for at vise emails
 - **Impact:** Hvis Gmail API er nede eller rate limited, kan ingen emails vises
 - **Risk:** Single point of failure
 
 ### Problem 3: Database er tom
+
 - **Issue:** Alle emails kommer fra Gmail API lige nu
 - **Impact:** Ingen emails gemmes lokalt, ingen enrichment pipeline kører
 - **Consequence:** Phase 0 features virker ikke endnu
@@ -128,25 +138,30 @@ return mcpSearchGmailThreads(...);
 ## 🎯 Næste Skridt i Analysen
 
 ### Skridt 1: Test Webhook Manuelt ✅ (Ready)
+
 - Test `/api/inbound/email` med Postman
 - Verificer database insertion
 - Check enrichment pipeline
 
 ### Skridt 2: Setup Inbound-Email Service
+
 - Clone `inbound-email` repository
 - Configure environment variables
 - Start Docker service
 
 ### Skridt 3: Configure Google Workspace
+
 - Setup auto-forward eller Dual Delivery
 - Test med real email
 
 ### Skridt 4: Migrér Eksisterende Emails (Optional)
+
 - Script til at hente eksisterende emails fra Gmail API
 - Gem dem i database
 - Kør enrichment pipeline på dem
 
 ### Skridt 5: Monitor og Verify
+
 - Tjek at nye emails kommer ind via webhook
 - Verificer at database bliver primary source
 - Check at Gmail API kun bruges som fallback
@@ -154,11 +169,13 @@ return mcpSearchGmailThreads(...);
 ## 📈 Forventet Resultat Efter Phase 0
 
 ### Før Phase 0:
+
 ```
 Frontend → Backend → Gmail API → Emails (rate limited)
 ```
 
 ### Efter Phase 0:
+
 ```
 Frontend → Backend → Database → Emails ✅
                          ↓ (hvis database fejler)
@@ -166,6 +183,7 @@ Frontend → Backend → Database → Emails ✅
 ```
 
 ### Benefits:
+
 1. ✅ **Ingen rate limits** - SMTP server modtager direkte
 2. ✅ **Realtid emails** - Kommer ind med det samme
 3. ✅ **Enrichment** - Billy lookup, lead detection kører automatisk
@@ -175,14 +193,15 @@ Frontend → Backend → Database → Emails ✅
 ## 🔍 Konklusion
 
 **Nuværende Status:**
+
 - ✅ Fallback mekanisme er implementeret korrekt
 - ✅ Database er klar og migreret
 - ⚠️ Webhook har ikke modtaget emails endnu
 - ⚠️ Systemet bruger stadig Gmail API som primary source
 
 **Næste Actions:**
+
 1. Test webhook manuelt
 2. Setup inbound-email service
 3. Configure Google Workspace
 4. Verify at database bliver primary source
-

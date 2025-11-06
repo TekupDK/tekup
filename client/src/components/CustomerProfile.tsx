@@ -10,6 +10,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -18,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
 import {
+  AlertTriangle,
   Calendar,
   FileText,
   Loader2,
@@ -29,6 +31,7 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
+import { CaseAnalysisTab } from "./CaseAnalysisTab";
 import { SafeStreamdown } from "./SafeStreamdown";
 
 interface CustomerProfileProps {
@@ -43,7 +46,7 @@ export default function CustomerProfile({
   onClose,
 }: CustomerProfileProps) {
   const [activeTab, setActiveTab] = useState<
-    "overview" | "invoices" | "emails" | "calendar" | "chat"
+    "overview" | "invoices" | "emails" | "calendar" | "chat" | "case"
   >("overview");
 
   // Fetch customer profile
@@ -83,6 +86,13 @@ export default function CustomerProfile({
     { enabled: !!profile?.id }
   );
 
+  // Fetch case analysis
+  const { data: caseData, isLoading: caseLoading } =
+    trpc.customer.getProfileWithCase.useQuery(
+      { email: profile?.email || "" },
+      { enabled: !!profile?.email && activeTab === "case" }
+    );
+
   // Sync Billy invoices
   const syncBilly = trpc.customer.syncBillyInvoices.useMutation({
     onSuccess: () => {
@@ -110,8 +120,8 @@ export default function CustomerProfile({
 
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[85vh] p-0 overflow-hidden flex flex-col">
-        <DialogHeader className="px-6 pt-6 pb-4">
+      <DialogContent className="max-w-[500px] max-h-[85vh] p-0 overflow-hidden flex flex-col">
+        <DialogHeader className="px-4 pt-4 pb-3">
           <DialogTitle className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
               <User className="w-5 h-5 text-primary" />
@@ -127,6 +137,9 @@ export default function CustomerProfile({
               )}
             </div>
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Kunde profil med historik, aktiviteter og statistik
+          </DialogDescription>
         </DialogHeader>
 
         {profileLoading ? (
@@ -169,6 +182,10 @@ export default function CustomerProfile({
                 <TabsTrigger value="chat" className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4" />
                   Chat
+                </TabsTrigger>
+                <TabsTrigger value="case" className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4" />
+                  Case Analysis
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -325,7 +342,8 @@ export default function CustomerProfile({
                               <div className="flex items-center gap-2">
                                 <span className="font-medium">
                                   Invoice #
-                                  {invoice.invoiceNo || invoice.billyInvoiceId}
+                                  {invoice.invoiceNumber ||
+                                    invoice.billyInvoiceId}
                                 </span>
                                 <Badge
                                   variant={
@@ -340,20 +358,27 @@ export default function CustomerProfile({
                                 </Badge>
                               </div>
                               <div className="text-sm text-muted-foreground">
-                                {invoice.entryDate &&
-                                  `Date: ${new Date(invoice.entryDate).toLocaleDateString()}`}
+                                {invoice.createdAt &&
+                                  `Date: ${new Date(invoice.createdAt).toLocaleDateString()}`}
                                 {invoice.dueDate &&
                                   ` • Due: ${new Date(invoice.dueDate).toLocaleDateString()}`}
                               </div>
                             </div>
                             <div className="text-right">
                               <div className="text-lg font-semibold">
-                                {(invoice.amount / 100).toFixed(2)} DKK
+                                {invoice.amount
+                                  ? (parseFloat(invoice.amount) / 100).toFixed(
+                                      2
+                                    )
+                                  : "0.00"}{" "}
+                                DKK
                               </div>
-                              {invoice.paidAmount > 0 && (
+                              {invoice.paidAt && (
                                 <div className="text-sm text-green-600">
-                                  Paid: {(invoice.paidAmount / 100).toFixed(2)}{" "}
-                                  DKK
+                                  Paid:{" "}
+                                  {new Date(
+                                    invoice.paidAt
+                                  ).toLocaleDateString()}
                                 </div>
                               )}
                             </div>
@@ -472,56 +497,124 @@ export default function CustomerProfile({
                   </div>
                 ) : calendarEvents && calendarEvents.length > 0 ? (
                   <div className="space-y-3">
-                    {calendarEvents.map(event => (
-                      <Card key={event.id}>
-                        <CardContent className="p-4">
-                          <div className="space-y-2">
-                            <div className="flex items-start justify-between">
-                              <div className="font-medium">
-                                {event.title || "(No Title)"}
-                              </div>
-                              <Badge variant="secondary">
-                                {new Date(event.startTime).toLocaleDateString()}
-                              </Badge>
-                            </div>
-                            {event.description && (
-                              <div className="text-sm text-muted-foreground line-clamp-2">
-                                {event.description}
-                              </div>
-                            )}
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              {event.startTime && (
-                                <div className="flex items-center gap-1.5">
-                                  <Calendar className="w-4 h-4" />
-                                  <span>
-                                    {new Date(
-                                      event.startTime
-                                    ).toLocaleTimeString([], {
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                    })}
-                                    {event.endTime &&
-                                      ` - ${new Date(
-                                        event.endTime
-                                      ).toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                      })}`}
-                                  </span>
+                    {calendarEvents
+                      .sort(
+                        (a, b) =>
+                          new Date(b.startTime || 0).getTime() -
+                          new Date(a.startTime || 0).getTime()
+                      )
+                      .map(event => {
+                        // Parse event type from title
+                        const title = event.title || "";
+                        let eventType = "Andet";
+                        let eventColor = "bg-gray-500";
+
+                        if (title.match(/almindelig/i)) {
+                          eventType = "Almindelig";
+                          eventColor = "bg-blue-500";
+                        } else if (
+                          title.match(/flyt.*rengøring|flytterengøring/i)
+                        ) {
+                          eventType = "Flytning";
+                          eventColor = "bg-green-500";
+                        } else if (title.match(/vindue/i)) {
+                          eventType = "Vinduer";
+                          eventColor = "bg-purple-500";
+                        } else if (title.match(/erhverv/i)) {
+                          eventType = "Erhverv";
+                          eventColor = "bg-orange-500";
+                        }
+
+                        // Parse estimate (hours, price, size, team)
+                        const description = event.description || "";
+                        const estimatMatch = description.match(
+                          /Estimat[:\s]*(.*?)(?:\n|$)/i
+                        );
+                        let estimate: any = null;
+                        if (estimatMatch) {
+                          const estimatText = estimatMatch[1];
+                          estimate = {};
+                          const hoursMatch = estimatText.match(
+                            /(\d+(?:[.,]\d+)?)\s*timer/i
+                          );
+                          if (hoursMatch)
+                            estimate.hours = hoursMatch[1].replace(",", ".");
+                          const priceMatch = estimatText.match(
+                            /(\d+(?:[.,]\d+)?)\s*kr/i
+                          );
+                          if (priceMatch)
+                            estimate.price = priceMatch[1].replace(",", ".");
+                        }
+
+                        return (
+                          <Card key={event.id}>
+                            <CardContent className="p-4">
+                              <div className="space-y-2">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                                    <div
+                                      className={`w-2 h-2 rounded-full ${eventColor} shrink-0`}
+                                    />
+                                    <div className="font-medium truncate">
+                                      {event.title || "(No Title)"}
+                                    </div>
+                                  </div>
+                                  <Badge
+                                    variant="secondary"
+                                    className="shrink-0"
+                                  >
+                                    {event.startTime
+                                      ? new Date(
+                                          event.startTime
+                                        ).toLocaleDateString("da-DK", {
+                                          day: "numeric",
+                                          month: "short",
+                                        })
+                                      : "N/A"}
+                                  </Badge>
                                 </div>
-                              )}
-                              {event.location && (
-                                <div className="flex items-center gap-1.5">
-                                  <span className="truncate">
-                                    {event.location}
-                                  </span>
+
+                                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                  {event.startTime && (
+                                    <div className="flex items-center gap-1.5">
+                                      <Calendar className="w-3.5 h-3.5" />
+                                      <span>
+                                        {new Date(
+                                          event.startTime
+                                        ).toLocaleTimeString("da-DK", {
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        })}
+                                        {event.endTime &&
+                                          ` - ${new Date(
+                                            event.endTime
+                                          ).toLocaleTimeString("da-DK", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}`}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {estimate?.hours && (
+                                    <span>⏱️ {estimate.hours}t</span>
+                                  )}
+                                  {estimate?.price && (
+                                    <span className="font-semibold">
+                                      💰 {estimate.price} kr
+                                    </span>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+
+                                {event.location && (
+                                  <div className="text-xs text-muted-foreground truncate">
+                                    📍 {event.location}
+                                  </div>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
@@ -541,6 +634,26 @@ export default function CustomerProfile({
                     customer.
                   </p>
                 </div>
+              </TabsContent>
+
+              {/* Case Analysis Tab */}
+              <TabsContent value="case" className="m-0 p-6">
+                {caseLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  </div>
+                ) : caseData?.caseAnalysis ? (
+                  <CaseAnalysisTab analysis={caseData.caseAnalysis} />
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <AlertTriangle className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No case analysis available</p>
+                    <p className="text-sm mt-2">
+                      Case analysis will appear here for customers with detected
+                      patterns or conflicts.
+                    </p>
+                  </div>
+                )}
               </TabsContent>
             </ScrollArea>
           </Tabs>

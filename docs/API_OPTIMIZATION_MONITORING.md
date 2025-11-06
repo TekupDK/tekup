@@ -33,15 +33,15 @@ window.__apiMonitor?.getCacheHitRate(); // Returns percentage
 window.__apiMonitor?.getRecentMetrics(20);
 
 // Metrics for specific endpoint
-window.__apiMonitor?.getMetricsByEndpoint('inbox.email.list');
+window.__apiMonitor?.getMetricsByEndpoint("inbox.email.list");
 
 // Average response time
 window.__apiMonitor?.getAverageResponseTime(); // All endpoints
-window.__apiMonitor?.getAverageResponseTime('inbox.email.list'); // Specific endpoint
+window.__apiMonitor?.getAverageResponseTime("inbox.email.list"); // Specific endpoint
 
 // Error rate
 window.__apiMonitor?.getErrorRate(); // All endpoints
-window.__apiMonitor?.getErrorRate('inbox.email.list'); // Specific endpoint
+window.__apiMonitor?.getErrorRate("inbox.email.list"); // Specific endpoint
 
 // Clear metrics
 window.__apiMonitor?.clear();
@@ -55,12 +55,12 @@ window.__apiMonitor?.clear();
 // Run in browser console after 10 minutes of use
 const summary = window.__apiMonitor?.getSummary();
 
-console.log('📊 API Performance Summary:', {
-  'Total Calls': summary.totalCalls,
-  'Success Rate': `${summary.successRate.toFixed(1)}%`,
-  'Cache Hit Rate': `${summary.cacheHitRate.toFixed(1)}%`,
-  'Average Response Time': `${summary.averageResponseTime}ms`,
-  'Error Rate': `${summary.errorRate.toFixed(1)}%`,
+console.log("📊 API Performance Summary:", {
+  "Total Calls": summary.totalCalls,
+  "Success Rate": `${summary.successRate.toFixed(1)}%`,
+  "Cache Hit Rate": `${summary.cacheHitRate.toFixed(1)}%`,
+  "Average Response Time": `${summary.averageResponseTime}ms`,
+  "Error Rate": `${summary.errorRate.toFixed(1)}%`,
 });
 ```
 
@@ -71,9 +71,9 @@ console.log('📊 API Performance Summary:', {
 const isLimited = window.__requestQueue?.isRateLimited();
 const queueSize = window.__requestQueue?.getQueueSize();
 
-console.log('⚠️ Rate Limit Status:', {
-  'Is Rate Limited': isLimited,
-  'Queue Size': queueSize,
+console.log("⚠️ Rate Limit Status:", {
+  "Is Rate Limited": isLimited,
+  "Queue Size": queueSize,
 });
 ```
 
@@ -151,11 +151,13 @@ console.log('⚠️ Rate Limit Status:', {
 // Find which endpoints are failing
 const metrics = window.__apiMonitor?.getRecentMetrics(100);
 const errors = metrics.filter(m => !m.success);
-console.table(errors.map(m => ({
-  endpoint: m.endpoint,
-  errorType: m.errorType,
-  timestamp: new Date(m.timestamp).toLocaleString()
-})));
+console.table(
+  errors.map(m => ({
+    endpoint: m.endpoint,
+    errorType: m.errorType,
+    timestamp: new Date(m.timestamp).toLocaleString(),
+  }))
+);
 ```
 
 ### Low Cache Hit Rate
@@ -163,10 +165,10 @@ console.table(errors.map(m => ({
 ```javascript
 // Check which endpoints have low cache usage
 const summary = window.__apiMonitor?.getSummary();
-console.log('Cache Stats:', {
+console.log("Cache Stats:", {
   hits: summary.cacheHits,
   misses: summary.cacheMisses,
-  hitRate: `${summary.cacheHitRate.toFixed(1)}%`
+  hitRate: `${summary.cacheHitRate.toFixed(1)}%`,
 });
 
 // If low, check QueryClient staleTime settings
@@ -178,8 +180,8 @@ console.log('Cache Stats:', {
 // Check rate limit state
 const isLimited = window.__requestQueue?.isRateLimited();
 if (isLimited) {
-  console.warn('⚠️ Currently rate limited!');
-  console.log('Queue size:', window.__requestQueue?.getQueueSize());
+  console.warn("⚠️ Currently rate limited!");
+  console.log("Queue size:", window.__requestQueue?.getQueueSize());
 
   // Manual clear if needed (use with caution)
   // window.__requestQueue?.clearRateLimit();
@@ -202,4 +204,3 @@ if (isLimited) {
 ---
 
 **For more details:** See `API_OPTIMIZATION_IMPLEMENTATION_NOTES.md`
-

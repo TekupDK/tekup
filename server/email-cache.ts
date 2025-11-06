@@ -115,4 +115,3 @@ export async function cacheEmailsToDatabase(
     throw error;
   }
 }
-

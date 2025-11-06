@@ -24,6 +24,7 @@ Context: see `docs/CHAT_APPROVALS_SPEC.md` and `docs/FRIDAY_ACTION_ROLLOUT.md`.
 - [ ] `dryRunAction` blocks approve on failure.
 - [ ] `executeAction` enforces idempotencyKey.
 - [ ] Audit logs include conversationId and correlationId.
+- [ ] Supabase tabeller (users, conversations, messages, analytics_events, audit_logs) matcher Drizzle-schema inden rollout.
 
 ## Risks & mitigations
 
@@ -60,14 +61,15 @@ Context: see `docs/CHAT_APPROVALS_SPEC.md` and `docs/FRIDAY_ACTION_ROLLOUT.md`.
 
 ### Phase 3.5: Production Configuration (✅ Completed)
 
-- [x] Configure all API keys from tekup-secrets (OpenAI, Gemini, Billy, Google Workspace).
-- [x] Update `.env.prod` with production credentials.
-- [x] Deploy container with full production configuration.
-- [x] Verify all services are operational.
+- [x] Configure all API keys via tekup secret manager (OpenAI, Gemini, Billy, Google Workspace, Supabase).
+- [x] Sørg for at `.env.prod` i repo kun er template uden hemmeligheder; deployment læser fra secrets.
+- [x] Deploy container med fuld production configuration.
+- [x] Verificér at Supabase-tabeller og migrationer er ajour (chat + metrics) og at tjenesterne er operational.
 
 ### Phase 4: Rollout (✅ Completed)
 
 **Rate Limiting:**
+
 - [x] Implement in-memory rate limiter with Map storage (`server/rate-limiter.ts`).
 - [x] Add rate limiting to `getSuggestions` endpoint (20 requests/minute per user).
 - [x] Add rate limiting to `executeAction` endpoint (10 requests/minute per user).
@@ -75,6 +77,7 @@ Context: see `docs/CHAT_APPROVALS_SPEC.md` and `docs/FRIDAY_ACTION_ROLLOUT.md`.
 - [x] Configure rate limits for all critical endpoints (AI_SUGGESTIONS, ACTION_EXECUTION, DRY_RUN, CHAT_MESSAGES).
 
 **Role-Based Access Control:**
+
 - [x] Create RBAC module with 4 roles (owner, admin, user, guest) (`server/rbac.ts`).
 - [x] Define action permissions (low-risk: all users, high-risk: admin/owner).
 - [x] Integrate permission checks into `executeAction` endpoint.
@@ -82,6 +85,7 @@ Context: see `docs/CHAT_APPROVALS_SPEC.md` and `docs/FRIDAY_ACTION_ROLLOUT.md`.
 - [x] Special protection for critical actions (create_invoice requires owner role).
 
 **Feature Rollout:**
+
 - [x] Implement gradual rollout system with configurable percentages (`server/feature-rollout.ts`).
 - [x] Use consistent hash-based user bucketing (MD5 hash of userId + feature name).
 - [x] Configure rollout percentages: ai_suggestions (100%), action_execution (100%), email_automation (50%), invoice_creation (10%).
@@ -89,6 +93,7 @@ Context: see `docs/CHAT_APPROVALS_SPEC.md` and `docs/FRIDAY_ACTION_ROLLOUT.md`.
 - [x] Log rollout metrics for monitoring.
 
 **A/B Testing Metrics:**
+
 - [x] Create metrics tracking system (`server/metrics.ts`).
 - [x] Track suggestion_shown, suggestion_accepted, suggestion_rejected, action_executed, action_failed events.
 - [x] Calculate suggestion acceptance rate, time-to-action, error rates.
@@ -97,6 +102,7 @@ Context: see `docs/CHAT_APPROVALS_SPEC.md` and `docs/FRIDAY_ACTION_ROLLOUT.md`.
 - [x] Implement automatic cleanup for old metrics (24h retention).
 
 **Testing & Documentation:**
+
 - [x] Create comprehensive test script (`test-phase-4.ps1`).
 - [x] Document rate limiting, RBAC, rollout strategy, metrics.
 - [x] Update PLAN.md with Phase 4 completion details.

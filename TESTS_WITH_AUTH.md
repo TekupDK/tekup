@@ -9,12 +9,14 @@ Alle integration tests i `tekup-ai-v2` bruger nu **real authentication** gennem 
 ### 1. Authentication Helper
 
 `client/src/__tests__/auth-helper.ts` indeholder:
+
 - `loginTestUser()` - Logger automatisk ind via `/api/auth/login`
 - `verifyAuthentication()` - Verificerer at bruger er autentificeret
 
 ### 2. Test Files
 
 Alle test filer har nu:
+
 ```typescript
 import { loginTestUser, verifyAuthentication } from "@/__tests__/auth-helper";
 
@@ -36,6 +38,7 @@ beforeAll(async () => {
 ## Dev Login Endpoint
 
 `/api/auth/login` endpointet:
+
 - Opretter/henter OWNER user (openId: `OWNER_OPEN_ID` env var)
 - Opretter session cookie
 - Redirecter til `/`
@@ -43,10 +46,12 @@ beforeAll(async () => {
 ## Tests Status
 
 ✅ **2 tests passerer:**
+
 - CalendarTab.test.tsx (2 tests)
 - TasksTab.test.tsx (2 tests)
 
 ⚠️ **3 tests fejler pga. CSS import:**
+
 - EmailTab.test.tsx
 - InvoicesTab.test.tsx
 - LeadsTab.test.tsx
@@ -68,4 +73,3 @@ pnpm test
 1. Fix CSS import problem (katex)
 2. Verify alle 5 tests passerer
 3. Opret test guide dokumentation
-

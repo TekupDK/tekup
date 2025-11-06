@@ -240,4 +240,3 @@ mysql -h localhost -u friday_user -p friday_ai -e "SELECT COUNT(*) FROM users;"
 5. **Test i browser:** http://localhost:3000
 
 Ved problemer, tjek `DOCKER_SETUP.md` for mere detaljeret guide.
-

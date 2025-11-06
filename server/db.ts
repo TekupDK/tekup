@@ -310,8 +310,8 @@ export async function getUserCalendarEvents(
   if (startTime && endTime) {
     conditions.push(
       and(
-        gte(calendarEvents.startTime, startTime),
-        lte(calendarEvents.endTime, endTime)
+        gte(calendarEvents.startTime, startTime.toISOString()),
+        lte(calendarEvents.endTime, endTime.toISOString())
       )!
     );
   }
@@ -548,8 +548,8 @@ export async function getHistoricalBillyInvoices(
   fromDate: Date = new Date("2025-07-01")
 ): Promise<
   Array<{
-    billyInvoiceId: string;
-    customerId?: string | null;
+    billyInvoiceId?: string | null;
+    customerId?: number | null;
     customerName?: string | null;
     customerEmail?: string | null;
     customerPhone?: string | null;
@@ -564,18 +564,23 @@ export async function getHistoricalBillyInvoices(
   const localInvoices = await db
     .select()
     .from(invoices)
-    .where(and(eq(invoices.userId, userId), gte(invoices.createdAt, fromDate)))
+    .where(
+      and(
+        eq(invoices.userId, userId),
+        gte(invoices.createdAt, fromDate.toISOString())
+      )
+    )
     .orderBy(desc(invoices.createdAt));
 
   // Transform to include customer info from invoices table
   return localInvoices.map(inv => ({
-    billyInvoiceId: inv.billyInvoiceId,
-    customerId: inv.customerId || null,
+    billyInvoiceId: null,
+    customerId: null,
     customerName: inv.customerName || null,
     customerEmail: null, // Email not stored in invoices table, will need to fetch from Billy
     customerPhone: null, // Phone not stored in invoices table
-    amount: inv.amount,
-    entryDate: inv.createdAt,
+    amount: Number(inv.amount ?? 0),
+    entryDate: inv.createdAt ? new Date(inv.createdAt) : null,
   }));
 }
 
@@ -588,11 +593,11 @@ export async function getHistoricalCalendarEvents(
   fromDate: Date = new Date("2025-07-01")
 ): Promise<
   Array<{
-    googleEventId: string;
-    title: string;
+    googleEventId: string | null;
+    title: string | null;
     description: string | null;
-    startTime: Date;
-    endTime: Date;
+    startTime: string | null;
+    endTime: string | null;
     location: string | null;
   }>
 > {
@@ -612,7 +617,7 @@ export async function getHistoricalCalendarEvents(
     .where(
       and(
         eq(calendarEvents.userId, userId),
-        gte(calendarEvents.startTime, fromDate)
+        gte(calendarEvents.startTime, fromDate.toISOString())
       )
     )
     .orderBy(desc(calendarEvents.startTime));
@@ -625,8 +630,20 @@ export async function getHistoricalCalendarEvents(
 export async function createTask(data: InsertTask): Promise<Task> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  // Determine next order index for this user if not provided
+  let values = { ...data } as InsertTask & { orderIndex?: number };
+  if (values.userId && (values as any).orderIndex == null) {
+    const [last] = await db
+      .select({ idx: tasks.orderIndex })
+      .from(tasks)
+      .where(eq(tasks.userId, values.userId as number))
+      .orderBy(desc(tasks.orderIndex))
+      .limit(1);
+    const nextIndex = (last?.idx ?? -1) + 1;
+    (values as any).orderIndex = nextIndex;
+  }
 
-  const result = await db.insert(tasks).values(data).returning();
+  const result = await db.insert(tasks).values(values).returning();
   return result[0];
 }
 
@@ -775,10 +792,14 @@ export async function getAnalyticsEvents(
     conditions.push(eq(analyticsEvents.eventType, eventType));
   }
   if (startDate && endDate) {
+    const startIso =
+      startDate instanceof Date ? startDate.toISOString() : String(startDate);
+    const endIso =
+      endDate instanceof Date ? endDate.toISOString() : String(endDate);
     conditions.push(
       and(
-        gte(analyticsEvents.createdAt, startDate),
-        lte(analyticsEvents.createdAt, endDate)
+        gte(analyticsEvents.createdAt, startIso),
+        lte(analyticsEvents.createdAt, endIso)
       )!
     );
   }
@@ -822,9 +843,8 @@ export async function getUserPreferences(
       .values({
         userId,
         theme: "dark",
-        language: "da",
         emailNotifications: true,
-        pushNotifications: false,
+        desktopNotifications: false,
       })
       .execute();
 
@@ -888,9 +908,8 @@ export async function updateUserPreferences(
         .values({
           userId,
           theme: "dark",
-          language: "da",
           emailNotifications: true,
-          pushNotifications: false,
+          desktopNotifications: false,
           ...preferences,
         })
         .execute();
@@ -1030,7 +1049,7 @@ export async function updatePipelineStage(
         threadId,
         fromStage,
         toStage: stage,
-        triggeredBy,
+        transitionedBy: triggeredBy,
       })
       .execute();
 

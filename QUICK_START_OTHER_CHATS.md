@@ -44,4 +44,3 @@ git branch --show-current
 ```
 
 **Nu kan du arbejde isoleret fra migration branch! 🎉**
-

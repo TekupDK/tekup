@@ -11,6 +11,7 @@ This guide documents the setup for Phase 0 email infrastructure using self-hoste
 **Location:** `docker-compose.yml`
 
 **Service Configuration:**
+
 - **Ports:** 25 (SMTP), 587 (SMTP Submission)
 - **Webhook:** `http://friday-ai:3000/api/inbound/email`
 - **Storage:** Volume-mounted at `/app/storage`
@@ -18,6 +19,7 @@ This guide documents the setup for Phase 0 email infrastructure using self-hoste
 ### 2. Database Schema
 
 **New Tables:**
+
 - `emails` - Individual email messages
 - `attachments` - Email attachments
 - `emailPipelineState` - Pipeline stage tracking
@@ -33,6 +35,7 @@ This guide documents the setup for Phase 0 email infrastructure using self-hoste
 **Location:** `server/api/inbound-email.ts`
 
 **Functionality:**
+
 - Receives parsed email data from SMTP server
 - Stores emails in database
 - Handles attachments (local filesystem)
@@ -43,6 +46,7 @@ This guide documents the setup for Phase 0 email infrastructure using self-hoste
 **Location:** `server/email-enrichment.ts`
 
 **Functionality:**
+
 - Billy customer lookup
 - Lead source detection (Rengøring.nu, Rengøring Århus, AdHelp)
 - Auto-labeling ("Needs Action", source labels)
@@ -67,6 +71,7 @@ drizzle-kit migrate
 ```
 
 **Verify Migration:**
+
 - Check that new tables exist in database
 - Verify foreign key relationships
 
@@ -182,7 +187,7 @@ curl -X POST http://localhost:3000/api/inbound/email \
 Create test script `test-inbound-email.js`:
 
 ```javascript
-const http = require('http');
+const http = require("http");
 
 const payload = JSON.stringify({
   from: "lead@rengoring.nu",
@@ -191,28 +196,28 @@ const payload = JSON.stringify({
   text: "Hej, jeg leder efter rengøring.",
   html: "<p>Hej, jeg leder efter rengøring.</p>",
   receivedAt: new Date().toISOString(),
-  messageId: `test-${Date.now()}`
+  messageId: `test-${Date.now()}`,
 });
 
 const options = {
-  hostname: 'localhost',
+  hostname: "localhost",
   port: 3000,
-  path: '/api/inbound/email',
-  method: 'POST',
+  path: "/api/inbound/email",
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
-    'Content-Length': payload.length
-  }
+    "Content-Type": "application/json",
+    "Content-Length": payload.length,
+  },
 };
 
-const req = http.request(options, (res) => {
+const req = http.request(options, res => {
   console.log(`Status: ${res.statusCode}`);
-  res.on('data', (d) => {
+  res.on("data", d => {
     process.stdout.write(d);
   });
 });
 
-req.on('error', (e) => {
+req.on("error", e => {
   console.error(`Problem with request: ${e.message}`);
 });
 
@@ -221,6 +226,7 @@ req.end();
 ```
 
 Run:
+
 ```bash
 node test-inbound-email.js
 ```
@@ -230,6 +236,7 @@ node test-inbound-email.js
 ### Issue: Webhook Not Receiving Emails
 
 **Check:**
+
 1. Verify webhook endpoint is accessible:
    ```bash
    curl http://localhost:3000/api/inbound/email
@@ -246,6 +253,7 @@ node test-inbound-email.js
 ### Issue: Database Connection Errors
 
 **Check:**
+
 1. Verify database is running:
    ```bash
    docker-compose ps db
@@ -262,6 +270,7 @@ node test-inbound-email.js
 ### Issue: Enrichment Not Running
 
 **Check:**
+
 1. Verify enrichment function is called:
    ```bash
    docker-compose logs friday-ai | grep "EmailEnrichment"
@@ -276,6 +285,7 @@ node test-inbound-email.js
 ### Issue: Attachments Not Saving
 
 **Check:**
+
 1. Verify storage directory exists:
    ```bash
    docker exec inbound-email-container ls -la /app/storage
@@ -301,4 +311,3 @@ After Phase 0 is complete:
 - **Plan Document:** `docs/EMAIL_TAB_COMPLETE_ROADMAP.md`
 - **Alternatives Analysis:** `docs/GMAIL_RATE_LIMIT_ALTERNATIVES.md`
 - **Workflow Analysis:** `docs/SHORTWAVE_WORKFLOW_ANALYSIS.md`
-

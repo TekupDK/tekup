@@ -10,6 +10,7 @@
 ## 🎯 Problem Statement
 
 ### Current Issue:
+
 - **Gmail API Rate Limits:** 429 (RESOURCE_EXHAUSTED) fejl ved for mange API-kald
 - **Impact:**
   - Rapporter kan ikke køre uden rate limits
@@ -18,11 +19,13 @@
   - UI opdateringer bliver blokeret
 
 ### Root Cause:
+
 - Gmail API har lave per-user burst-tolerancer (~1 kald/sek)
 - Manglende global throttling i current implementation
 - Ingen alternativ til Gmail API for email modtagelse
 
 ### Solution Goal:
+
 - **Self-hosted SMTP email server** der modtager emails direkte
 - **Zero Gmail API dependency** for email ingestion
 - **Local email parsing** til Supabase integration
@@ -39,6 +42,7 @@
 **Language:** Node.js/TypeScript
 
 #### Features:
+
 - ✅ Local SMTP server (modtager emails på port 25/587)
 - ✅ MIME parsing via mailparser
 - ✅ Webhook integration (sender parsed JSON til HTTP endpoint)
@@ -47,6 +51,7 @@
 - ✅ Docker support
 
 #### Pros:
+
 - **Perfect for Node/TS stack** - Matcher vores codebase
 - **Webhook-based** - Kan integreres direkte med vores `/api/inbound/email` endpoint
 - **Robust** - Queue system håndterer spikes
@@ -54,11 +59,13 @@
 - **Attachments** - Fuldt support for vedhæftninger
 
 #### Cons:
+
 - **Requires SMTP setup** - DNS MX records eller forwarding fra Google Workspace
 - **Attachment storage** - Kræver S3 eller local filesystem
 - **Single purpose** - Kun SMTP modtagelse, ingen sending
 
 #### Integration Compatibility:
+
 - ⭐⭐⭐⭐⭐ **Perfect match** for vores stack
 - TypeScript native
 - Kan bruge eksisterende Supabase integration
@@ -73,6 +80,7 @@
 **Language:** Node.js/TypeScript
 
 #### Features:
+
 - ✅ Full RFC compliance
 - ✅ Header parsing (from, to, subject, date)
 - ✅ Body parsing (text/html/attachments)
@@ -80,16 +88,19 @@
 - ✅ Offline .eml file parsing
 
 #### Pros:
+
 - **Industry standard** - Brugt i inbound-email og andre projekter
 - **Lightweight** - Kun parsing, ingen server
 - **Flexible** - Kan parses fra streams, files, eller strings
 - **Well maintained** - Part of nodemailer ecosystem
 
 #### Cons:
+
 - **Parsing only** - Ingen SMTP server, skal kombineres med inbound-email
 - **No webhook** - Skal integreres manuelt
 
 #### Integration Compatibility:
+
 - ⭐⭐⭐⭐⭐ **Best used together** med inbound-email
 - Kan erstatte parsing logic i vores eksisterende setup
 - Perfect for Supabase mapping
@@ -103,6 +114,7 @@
 **Language:** Node.js
 
 #### Features:
+
 - ✅ Minimal footprint
 - ✅ Email → JSON conversion
 - ✅ Webhook forwarding
@@ -110,16 +122,19 @@
 - ✅ Docker support
 
 #### Pros:
+
 - **Very lightweight** - Minimal overhead
 - **Simple** - Easy to understand and modify
 - **Fast** - Optimized for speed
 
 #### Cons:
+
 - **No attachments** - Kun email essentials (from/to/subject/body)
 - **Limited parsing** - Ingen avanceret MIME parsing
 - **Less maintained** - Mindre aktivt community
 
 #### Integration Compatibility:
+
 - ⭐⭐⭐ **Good for simple use cases**
 - Mangler attachment support (vigtigt for os)
 - Kan bruges hvis attachments ikke er kritisk
@@ -133,6 +148,7 @@
 **Language:** TypeScript
 
 #### Features:
+
 - ✅ Full RFC822 compliance
 - ✅ Browser + Node.js support
 - ✅ Attachment extraction
@@ -140,17 +156,20 @@
 - ✅ TypeScript native
 
 #### Pros:
+
 - **TypeScript first** - Perfekt for vores stack
 - **RFC compliant** - Håndterer edge cases
 - **Universal** - Virker i browser og Node.js
 - **Modern** - Aktive udvikling
 
 #### Cons:
+
 - **Parsing only** - Ingen SMTP server
 - **Less mature** - Yngre end mailparser
 - **Smaller community** - Mindre dokumentation
 
 #### Integration Compatibility:
+
 - ⭐⭐⭐⭐ **Great TypeScript alternative** til mailparser
 - Kan erstatte mailparser i vores pipeline
 - Perfect for vores TypeScript codebase
@@ -164,22 +183,26 @@
 **Language:** Python
 
 #### Features:
+
 - ✅ Advanced email forensics
 - ✅ .msg file support (Outlook)
 - ✅ Security analysis
 - ✅ Defect detection
 
 #### Pros:
+
 - **Advanced features** - Forensic-level parsing
 - **Security focused** - Detekterer threats
 - **Outlook support** - Håndterer .msg files
 
 #### Cons:
+
 - **Python stack** - Kræver Python runtime (vi er Node.js)
 - **Overkill** - For avanceret til vores behov
 - **Not ideal** - Mismatch med vores stack
 
 #### Integration Compatibility:
+
 - ⭐⭐ **Not recommended** - Python/Node.js mismatch
 - Kun relevant hvis vi skal have security analysis
 
@@ -233,14 +256,17 @@
 ### Phase 1: Setup SMTP Infrastructure (2-4 timer)
 
 #### 1.1 Google Workspace Forwarding
+
 - Opsæt auto-forward fra `info@rendetalje.dk` → `parse@tekup.dk`
 - Eller Dual Delivery (kopi til vores SMTP server)
 
 #### 1.2 DNS Configuration
+
 - MX records for `parse.tekup.dk` → Vores SMTP server IP
 - SPF/DKIM records for email deliverability
 
 #### 1.3 inbound-email Setup
+
 ```bash
 # Clone repo
 git clone https://github.com/sendbetter/inbound-email.git
@@ -277,12 +303,16 @@ const InboundEmailSchema = z.object({
   subject: z.string(),
   text: z.string().optional(),
   html: z.string().optional(),
-  attachments: z.array(z.object({
-    filename: z.string(),
-    contentType: z.string(),
-    size: z.number(),
-    data: z.string(), // Base64 encoded
-  })).optional(),
+  attachments: z
+    .array(
+      z.object({
+        filename: z.string(),
+        contentType: z.string(),
+        size: z.number(),
+        data: z.string(), // Base64 encoded
+      })
+    )
+    .optional(),
   messageId: z.string(),
   threadId: z.string().optional(),
   headers: z.record(z.string()).optional(),
@@ -335,12 +365,17 @@ export async function handleInboundEmail(req: Request) {
 // server/email-enrichment.ts
 
 export async function enrichEmailFromSources(emailId: string) {
-  const email = await db.select().from(emails).where(eq(emails.id, emailId)).one();
+  const email = await db
+    .select()
+    .from(emails)
+    .where(eq(emails.id, emailId))
+    .one();
 
   // 1. Billy contactPersons lookup (already implemented)
   const customer = await findCustomerByEmail(email.from_email);
   if (customer) {
-    await db.update(emails)
+    await db
+      .update(emails)
       .set({ customer_id: customer.id })
       .where(eq(emails.id, emailId));
   }
@@ -366,11 +401,13 @@ export async function enrichEmailFromSources(emailId: string) {
 ### Phase 3: Migration Strategy (4-6 timer)
 
 #### 3.1 Dual Mode Operation
+
 - **Keep Gmail API** for labels, sending, modifications
 - **Use SMTP** for email ingestion (reading)
 - Gradual migration fra Gmail API → SMTP
 
 #### 3.2 Data Consistency
+
 ```typescript
 // server/email-sync-strategy.ts
 
@@ -390,6 +427,7 @@ export async function syncEmailSources() {
 ```
 
 #### 3.3 Rate Limiter Integration
+
 ```typescript
 // server/gmail-rate-limiter.ts (already exists)
 
@@ -408,18 +446,21 @@ export async function syncEmailSources() {
 ## 🔒 Security Considerations
 
 ### 1. Webhook Security
+
 - ✅ **HMAC signature verification** - Verify webhook authenticity
 - ✅ **Rate limiting** - Prevent abuse
 - ✅ **IP whitelisting** - Only accept fra inbound-email server
 - ✅ **Max body size** - Limit email size (fx 25MB)
 
 ### 2. SMTP Security
+
 - ✅ **TLS/SSL encryption** - Require TLS for SMTP
 - ✅ **SPF/DKIM verification** - Verify sender authenticity
 - ✅ **Spam filtering** - Basic spam detection
 - ✅ **Virus scanning** - Scan attachments (optional)
 
 ### 3. Data Privacy
+
 - ✅ **Secure storage** - Encrypt sensitive data
 - ✅ **Access control** - Role-based access
 - ✅ **Audit logging** - Log all email operations
@@ -429,6 +470,7 @@ export async function syncEmailSources() {
 ## 📊 Benefits Over Gmail API
 
 ### Before (Gmail API):
+
 - ❌ Rate limits (429 errors)
 - ❌ Complex authentication
 - ❌ Slow response times
@@ -436,6 +478,7 @@ export async function syncEmailSources() {
 - ❌ Limited control
 
 ### After (SMTP + Self-Hosted):
+
 - ✅ **Zero rate limits** - Unlimited email ingestion
 - ✅ **Real-time delivery** - Instant webhook on receipt
 - ✅ **Full control** - Custom parsing logic
@@ -448,18 +491,21 @@ export async function syncEmailSources() {
 ## 🚀 Next Steps
 
 ### Immediate Actions:
+
 1. ✅ **Clone inbound-email** - Start with local testing
 2. ✅ **Setup test environment** - Local SMTP server
 3. ✅ **Create webhook endpoint** - `/api/inbound/email`
 4. ✅ **Test email parsing** - Verify Supabase integration
 
 ### Short-term (1-2 uger):
+
 5. ✅ **Production deployment** - Deploy inbound-email server
 6. ✅ **DNS configuration** - MX records for parse.tekup.dk
 7. ✅ **Google Workspace forwarding** - Auto-forward setup
 8. ✅ **Migration** - Gradually migrate fra Gmail API
 
 ### Long-term (1 måned):
+
 9. ✅ **Full migration** - Stop using Gmail API for reading
 10. ✅ **Gmail API only for sending** - Labels, modifications
 11. ✅ **Monitoring** - Metrics and alerts
@@ -483,15 +529,18 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     // Insert email
-    const [emailRecord] = await db.insert(emails).values({
-      provider_id: `inbound-${body.messageId}`,
-      from_email: body.from,
-      to_email: body.to,
-      subject: body.subject,
-      text: body.text || "",
-      html: body.html || "",
-      received_at: new Date(),
-    }).returning();
+    const [emailRecord] = await db
+      .insert(emails)
+      .values({
+        provider_id: `inbound-${body.messageId}`,
+        from_email: body.from,
+        to_email: body.to,
+        subject: body.subject,
+        text: body.text || "",
+        html: body.html || "",
+        received_at: new Date(),
+      })
+      .returning();
 
     // Handle attachments
     if (body.attachments) {
@@ -527,4 +576,3 @@ export async function POST(req: Request) {
 
 **Status:** ✅ Analysis Complete
 **Next:** Start implementation af Phase 1 (SMTP Infrastructure)
-

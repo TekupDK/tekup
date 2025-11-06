@@ -5,7 +5,12 @@
  * Based on SHORTWAVE_WORKFLOW_ANALYSIS.md patterns.
  */
 
-export type LeadSource = "rengoring_nu" | "rengoring_aarhus" | "adhelp" | "direct" | null;
+export type LeadSource =
+  | "rengoring_nu"
+  | "rengoring_aarhus"
+  | "adhelp"
+  | "direct"
+  | null;
 
 interface EmailData {
   from: string;
@@ -65,4 +70,3 @@ export function detectLeadSource(email: EmailData): LeadSource {
   // 4. Default: direct inquiry
   return "direct";
 }
-

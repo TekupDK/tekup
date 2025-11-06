@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useEmailContext } from "@/contexts/EmailContext";
 import {
   AlertTriangle,
   Archive,
@@ -21,6 +22,7 @@ import {
   Mail,
   Plus,
   Send,
+  Sparkles,
   Trash2,
   UserPlus,
 } from "lucide-react";
@@ -40,7 +42,12 @@ export interface PendingAction {
     | "delete_email"
     | "archive_email"
     | "snooze_email"
-    | "mark_email_done";
+    | "mark_email_done"
+    | "ai_generate_summaries"
+    | "ai_suggest_labels"
+    | "update_calendar_event"
+    | "delete_calendar_event"
+    | "check_calendar_conflicts";
   params: Record<string, any>;
   impact: string;
   preview: string;
@@ -67,6 +74,11 @@ export const ACTION_ICONS = {
   archive_email: Archive,
   snooze_email: Clock,
   mark_email_done: FileCheck,
+  ai_generate_summaries: Sparkles,
+  ai_suggest_labels: Sparkles,
+  update_calendar_event: Calendar,
+  delete_calendar_event: Trash2,
+  check_calendar_conflicts: AlertTriangle,
 };
 
 export const ACTION_LABELS = {
@@ -82,6 +94,11 @@ export const ACTION_LABELS = {
   archive_email: "Arkiver E-mail",
   snooze_email: "Udsæt E-mail",
   mark_email_done: "Marker E-mail som Færdig",
+  ai_generate_summaries: "AI: Generér Resuméer",
+  ai_suggest_labels: "AI: Foreslå Labels",
+  update_calendar_event: "Rediger Kalender Booking",
+  delete_calendar_event: "Slet Kalender Booking",
+  check_calendar_conflicts: "Tjek Kalender Konflikter",
 };
 
 export const RISK_COLORS = {
@@ -103,6 +120,8 @@ export function ActionApprovalModal({
   onReject,
 }: ActionApprovalModalProps) {
   const [alwaysApprove, setAlwaysApprove] = useState(false);
+  const emailContext = useEmailContext();
+  const selectedCount = emailContext.state.selectedThreads.size;
 
   // Keyboard shortcuts: Cmd/Ctrl+Enter to approve, Escape to reject
   useEffect(() => {
@@ -161,6 +180,15 @@ export function ActionApprovalModal({
               Handlingstype
             </Label>
             <p className="text-base mt-1">{label}</p>
+            {/* Selection hint for inbox AI actions */}
+            {(action.type === "ai_generate_summaries" ||
+              action.type === "ai_suggest_labels") && (
+              <p className="text-xs text-muted-foreground mt-1">
+                {selectedCount > 0
+                  ? `Du har ${selectedCount} tråd(e) valgt – de bruges ved godkendelse (ellers seneste 25).`
+                  : "Ingen tråde valgt – seneste 25 i Indbakken bruges."}
+              </p>
+            )}
           </div>
 
           {/* Impact */}

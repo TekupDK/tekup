@@ -67,31 +67,31 @@
 
 ```typescript
 type PipelineStage =
-  | "needs_action"     // Nye leads
-  | "venter_pa_svar"   // Tilbud sendt
-  | "i_kalender"       // Booking bekræftet
-  | "finance"          // Faktura sendt
-  | "afsluttet"        // Opgave udført + betalt
+  | "needs_action" // Nye leads
+  | "venter_pa_svar" // Tilbud sendt
+  | "i_kalender" // Booking bekræftet
+  | "finance" // Faktura sendt
+  | "afsluttet"; // Opgave udført + betalt
 ```
 
 ### Lead Sources:
 
 ```typescript
 type LeadSource =
-  | "rengoring_nu"      // Leadmail.no/Nettbureau
-  | "rengoring_aarhus"  // Leadpoint.dk
-  | "adhelp"            // AdHelp
-  | "direct"            // Direkte henvendelse
+  | "rengoring_nu" // Leadmail.no/Nettbureau
+  | "rengoring_aarhus" // Leadpoint.dk
+  | "adhelp" // AdHelp
+  | "direct"; // Direkte henvendelse
 ```
 
 ### Task Types:
 
 ```typescript
 type TaskType =
-  | "fast_rengoring"    // Recurring
-  | "flytterengoring"   // Move-out
-  | "hovedrengoring"    // Deep clean
-  | "engangsopgaver"    // One-time
+  | "fast_rengoring" // Recurring
+  | "flytterengoring" // Move-out
+  | "hovedrengoring" // Deep clean
+  | "engangsopgaver"; // One-time
 ```
 
 ---
@@ -104,6 +104,7 @@ type TaskType =
 Se `GMAIL_RATE_LIMIT_ALTERNATIVES.md` for fuld implementation guide.
 
 ### Quick Setup:
+
 1. Deploy `inbound-email` SMTP server
 2. Setup Google Workspace forwarding
 3. Create `/api/inbound/email` webhook endpoint
@@ -115,11 +116,10 @@ Se `GMAIL_RATE_LIMIT_ALTERNATIVES.md` for fuld implementation guide.
 
 **Skal vi starte med implementeringen?**
 Jeg kan starte med:
+
 1. **Priority 0:** Setup SMTP infrastructure (inbound-email)
 2. **Priority 1:** Database schema for pipeline
 3. **Priority 2:** Backend API endpoints
 4. **Priority 3:** Frontend Pipeline View component
 
 Eller vil du først se en mere detaljeret design spec?
-
-

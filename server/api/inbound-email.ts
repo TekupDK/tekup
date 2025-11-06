@@ -90,9 +90,7 @@ function verifyWebhookSignature(req: Request): boolean {
   // We need the raw body - for now, use stringified version
   // TODO: Consider using express.raw() middleware for webhook route
   const bodyString =
-    typeof req.body === "string"
-      ? req.body
-      : JSON.stringify(req.body || {});
+    typeof req.body === "string" ? req.body : JSON.stringify(req.body || {});
 
   // Calculate expected HMAC
   const expectedSignature = createHmac("sha256", WEBHOOK_SECRET)
@@ -187,9 +185,7 @@ export async function handleInboundEmail(req: Request, res: Response) {
         subject: body.subject || null,
         text: body.text || null,
         html: body.html || null,
-        receivedAt: new Date(
-          body.receivedAt || Date.now()
-        ).toISOString(),
+        receivedAt: new Date(body.receivedAt || Date.now()).toISOString(),
         threadKey,
         customerId: null, // Will be set by enrichment
         emailThreadId: null, // Will be linked after enrichment
@@ -215,7 +211,8 @@ export async function handleInboundEmail(req: Request, res: Response) {
               filename: attachment.filename,
               mimeType: attachment.contentType || null,
               size: attachment.size || null,
-              storageKey,
+              // drizzle schema uses storageUrl (text)
+              storageUrl: storageKey,
             })
             .returning();
 
@@ -254,7 +251,9 @@ export async function handleInboundEmail(req: Request, res: Response) {
             subject: body.subject || null,
             snippet: body.text?.substring(0, 200) || body.snippet || null,
             labels: [],
-            lastMessageAt: new Date(body.receivedAt || Date.now()).toISOString(),
+            lastMessageAt: new Date(
+              body.receivedAt || Date.now()
+            ).toISOString(),
             isRead: false,
           })
           .returning();

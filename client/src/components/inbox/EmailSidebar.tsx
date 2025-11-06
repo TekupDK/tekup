@@ -1,9 +1,21 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { trpc } from "@/lib/trpc";
-import { Archive, Filter, Inbox, Mail, Send, Star } from "lucide-react";
+import {
+  Archive,
+  Clock,
+  DollarSign,
+  Filter,
+  Inbox,
+  Mail,
+  Send,
+  Sparkles,
+  Star,
+  Tag,
+} from "lucide-react";
 
 interface EmailSidebarProps {
   selectedFolder: "inbox" | "sent" | "archive" | "starred";
@@ -11,6 +23,12 @@ interface EmailSidebarProps {
   selectedLabels: string[];
   onLabelToggle: (labelName: string) => void;
   onCompose?: () => void;
+  aiStatsToday?: {
+    summariesCount: number;
+    labelsCount: number;
+    timeSaved: number;
+    cost: number;
+  };
 }
 
 export default function EmailSidebar({
@@ -19,6 +37,7 @@ export default function EmailSidebar({
   selectedLabels,
   onLabelToggle,
   onCompose,
+  aiStatsToday,
 }: EmailSidebarProps) {
   const { data: labels, isLoading: labelsLoading } =
     trpc.inbox.email.getLabels.useQuery(undefined, {
@@ -26,6 +45,17 @@ export default function EmailSidebar({
       gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutter (fixed: cacheTime → gcTime)
       retry: false, // Don't retry on error - labels change rarely
     });
+
+  // Get unread counts for folders and labels
+  const { data: unreadCounts } = trpc.inbox.email.getUnreadCounts.useQuery(
+    undefined,
+    {
+      staleTime: 2 * 60 * 1000, // Cache for 2 minutes - fresher than labels
+      gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+      refetchInterval: 60 * 1000, // Auto-refresh every 60 seconds
+      retry: false,
+    }
+  );
 
   // Standard folders
   const folders = [
@@ -69,14 +99,75 @@ export default function EmailSidebar({
   return (
     <div className="flex flex-col h-full border-r bg-muted/30">
       {/* Compose Button */}
-      <div className="p-4 border-b">
+      <div className="p-4 border-b shrink-0">
         <Button className="w-full" size="sm" onClick={onCompose}>
           <Mail className="w-4 h-4 mr-2" />
           Ny mail
         </Button>
       </div>
 
-      <ScrollArea className="flex-1">
+      {/* AI Stats Card */}
+      {aiStatsToday &&
+        (aiStatsToday.summariesCount > 0 || aiStatsToday.labelsCount > 0) && (
+          <div className="p-4 border-b shrink-0">
+            <Card className="p-3 bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 border-purple-200 dark:border-purple-800">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                <h3 className="text-xs font-semibold text-purple-900 dark:text-purple-100">
+                  AI Aktivitet I Dag
+                </h3>
+              </div>
+              <div className="space-y-2 text-xs">
+                {aiStatsToday.summariesCount > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <Mail className="w-3 h-3" />
+                      Summaries
+                    </span>
+                    <span className="font-medium text-purple-700 dark:text-purple-300">
+                      {aiStatsToday.summariesCount}
+                    </span>
+                  </div>
+                )}
+                {aiStatsToday.labelsCount > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <Tag className="w-3 h-3" />
+                      Labels
+                    </span>
+                    <span className="font-medium text-purple-700 dark:text-purple-300">
+                      {aiStatsToday.labelsCount}
+                    </span>
+                  </div>
+                )}
+                {aiStatsToday.timeSaved > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <Clock className="w-3 h-3" />
+                      Tid sparet
+                    </span>
+                    <span className="font-medium text-green-700 dark:text-green-300">
+                      {Math.round(aiStatsToday.timeSaved)}m
+                    </span>
+                  </div>
+                )}
+                {aiStatsToday.cost > 0 && (
+                  <div className="flex items-center justify-between pt-2 border-t border-purple-200/50 dark:border-purple-700/50">
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <DollarSign className="w-3 h-3" />
+                      Pris i dag
+                    </span>
+                    <span className="font-medium text-xs text-muted-foreground">
+                      ${aiStatsToday.cost.toFixed(4)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </Card>
+          </div>
+        )}
+
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="p-4 space-y-6">
           {/* Folders */}
           <div>
@@ -87,6 +178,7 @@ export default function EmailSidebar({
               {folders.map(folder => {
                 const Icon = folder.icon;
                 const isSelected = selectedFolder === folder.id;
+                const unreadCount = unreadCounts?.folders[folder.id] || 0;
                 return (
                   <button
                     key={folder.id}
@@ -99,6 +191,11 @@ export default function EmailSidebar({
                   >
                     <Icon className="w-4 h-4" />
                     <span className="flex-1 text-left">{folder.label}</span>
+                    {unreadCount > 0 && (
+                      <Badge variant="secondary" className="ml-auto text-xs">
+                        {unreadCount}
+                      </Badge>
+                    )}
                   </button>
                 );
               })}
@@ -123,6 +220,9 @@ export default function EmailSidebar({
               <div className="space-y-1">
                 {standardLabels.map(label => {
                   const isChecked = selectedLabels.includes(label.name);
+                  const unreadCount =
+                    unreadCounts?.labels.find(l => l.labelId === label.id)
+                      ?.unreadCount || 0;
 
                   // Color coding for labels
                   const getLabelColor = (name: string) => {
@@ -174,6 +274,14 @@ export default function EmailSidebar({
                           }`}
                         />
                         <span className="flex-1">{label.name}</span>
+                        {unreadCount > 0 && (
+                          <Badge
+                            variant="secondary"
+                            className="ml-auto text-xs"
+                          >
+                            {unreadCount}
+                          </Badge>
+                        )}
                       </label>
                     </div>
                   );
@@ -202,6 +310,9 @@ export default function EmailSidebar({
                 <div className="space-y-1">
                   {otherLabels.slice(0, 10).map(label => {
                     const isChecked = selectedLabels.includes(label.name);
+                    const unreadCount =
+                      unreadCounts?.labels.find(l => l.labelId === label.id)
+                        ?.unreadCount || 0;
                     return (
                       <div
                         key={label.id}
@@ -215,9 +326,17 @@ export default function EmailSidebar({
                         />
                         <label
                           htmlFor={`label-other-${label.id}`}
-                          className="flex-1 text-sm cursor-pointer"
+                          className="flex-1 text-sm cursor-pointer flex items-center gap-2"
                         >
-                          {label.name}
+                          <span className="flex-1">{label.name}</span>
+                          {unreadCount > 0 && (
+                            <Badge
+                              variant="secondary"
+                              className="ml-auto text-xs"
+                            >
+                              {unreadCount}
+                            </Badge>
+                          )}
                         </label>
                       </div>
                     );
@@ -227,7 +346,7 @@ export default function EmailSidebar({
             </>
           )}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }

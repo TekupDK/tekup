@@ -81,14 +81,14 @@ export function registerOAuthRoutes(app: Express) {
       // CRITICAL FIX: For localhost development, override sameSite/secure settings
       // The default production settings (sameSite="none" + secure=false) are INVALID
       // and cause browsers to reject the cookie entirely
-        const finalCookieOptions = {
-          maxAge: ONE_YEAR_MS,
-          httpOnly: true,
-          path: "/",
-          domain: undefined,
-          sameSite: "lax" as const,
-          secure: process.env.NODE_ENV === 'production'
-        };
+      const finalCookieOptions = {
+        maxAge: ONE_YEAR_MS,
+        httpOnly: true,
+        path: "/",
+        domain: undefined,
+        sameSite: "lax" as const,
+        secure: process.env.NODE_ENV === "production",
+      };
       res.cookie(COOKIE_NAME, sessionToken, finalCookieOptions);
 
       console.log("[AUTH] Session cookie set successfully:", {

@@ -137,4 +137,3 @@ Alle 3 chats kan nu arbejde parallelt uden konflikter! 🎉
 ---
 
 **Opdateret:** $(Get-Date -Format "yyyy-MM-dd HH:mm")
-

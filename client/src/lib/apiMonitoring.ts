@@ -156,4 +156,3 @@ export const apiMonitor = new APIMonitor();
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
   (window as any).__apiMonitor = apiMonitor;
 }
-

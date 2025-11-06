@@ -3,11 +3,21 @@ import { Calendar, CheckSquare, FileText, Mail, Users } from "lucide-react";
 import { lazy, Suspense, memo } from "react";
 
 // Lazy load tabs for better initial performance
-const EmailTab = lazy(() => import("@/components/inbox/EmailTab").then(m => ({ default: m.default })));
-const InvoicesTab = lazy(() => import("@/components/inbox/InvoicesTab").then(m => ({ default: m.default })));
-const CalendarTab = lazy(() => import("@/components/inbox/CalendarTab").then(m => ({ default: m.default })));
-const LeadsTab = lazy(() => import("@/components/inbox/LeadsTab").then(m => ({ default: m.default })));
-const TasksTab = lazy(() => import("@/components/inbox/TasksTab").then(m => ({ default: m.default })));
+const EmailTab = lazy(() =>
+  import("@/components/inbox/EmailTab").then(m => ({ default: m.default }))
+);
+const InvoicesTab = lazy(() =>
+  import("@/components/inbox/InvoicesTab").then(m => ({ default: m.default }))
+);
+const CalendarTab = lazy(() =>
+  import("@/components/inbox/CalendarTab").then(m => ({ default: m.default }))
+);
+const LeadsTab = lazy(() =>
+  import("@/components/inbox/LeadsTab").then(m => ({ default: m.default }))
+);
+const TasksTab = lazy(() =>
+  import("@/components/inbox/TasksTab").then(m => ({ default: m.default }))
+);
 
 const TabSkeleton = () => (
   <div className="space-y-4 p-4">
@@ -24,30 +34,27 @@ interface InboxPanelProps {
   ) => void;
 }
 
-function InboxPanel({
-  activeTab,
-  onTabChange,
-}: InboxPanelProps) {
+function InboxPanel({ activeTab, onTabChange }: InboxPanelProps) {
   return (
-    <div className="h-full flex flex-col bg-muted/30">
+    <div className="h-full flex flex-col bg-background">
       <Tabs
         value={activeTab}
         onValueChange={v => onTabChange(v as any)}
         className="flex-1 flex flex-col"
       >
-        <div className="border-b border-border px-2 sm:px-4">
+        <div className="border-b border-border px-2 sm:px-4 bg-muted/20">
           <TabsList className="w-full justify-start bg-transparent gap-1">
             <TabsTrigger value="email" className="flex items-center gap-2">
               <Mail className="w-4 h-4" />
-              <span className="hidden sm:inline">Email</span>
+              <span className="hidden sm:inline">Emails</span>
             </TabsTrigger>
             <TabsTrigger value="invoices" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Invoices</span>
+              <span className="hidden sm:inline">Fakturaer</span>
             </TabsTrigger>
             <TabsTrigger value="calendar" className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              <span className="hidden sm:inline">Calendar</span>
+              <span className="hidden sm:inline">Kalender</span>
             </TabsTrigger>
             <TabsTrigger value="leads" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
@@ -55,7 +62,7 @@ function InboxPanel({
             </TabsTrigger>
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <CheckSquare className="w-4 h-4" />
-              <span className="hidden sm:inline">Tasks</span>
+              <span className="hidden sm:inline">Opgaver</span>
             </TabsTrigger>
           </TabsList>
         </div>

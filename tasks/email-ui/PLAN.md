@@ -5,13 +5,16 @@ Context: EmailTab has visual and UX issues affecting usability.
 ## Identified Issues
 
 ### 1. Scroll Behavior 🐛 Critical
+
 **Problem:** Virtual scrolling implementation has layout issues
+
 - Absolute positioning conflicts with container height
 - Section headers and email cards may overlap
 - Scroll jumps or doesn't smooth scroll properly
 - Parent ref height calculation incorrect
 
 **Root Cause:**
+
 ```tsx
 // Line ~700: Absolute positioning in virtualizer
 style={{
@@ -26,7 +29,9 @@ style={{
 **Impact:** Users can't reliably browse email list; poor UX.
 
 ### 2. Navigation Bar Layout 🐛 High Priority
+
 **Problem:** Top navigation bar with search, view toggle, and refresh button has spacing/alignment issues
+
 - Elements may not align vertically
 - Responsive behavior breaks on smaller screens
 - Rate limit warning overlaps other elements
@@ -37,7 +42,9 @@ style={{
 **Impact:** Cluttered header; hard to use on laptop screens.
 
 ### 3. Dialog/Modal Compactness ⚠️ Medium Priority
+
 **Problem:** Modals take up too much space or don't adapt to content
+
 - EmailPreviewModal may be too wide
 - CustomerProfile drawer too large
 - EmailComposer modal not optimized
@@ -84,6 +91,7 @@ style={{
 ## Steps (suggested)
 
 ### Phase 1: Scroll Fix (🔴 Critical)
+
 - [ ] Debug virtualizer parent ref and height calculation.
 - [ ] Fix absolute positioning to use relative container.
 - [ ] Add proper gap/margin between section headers and emails.
@@ -91,6 +99,7 @@ style={{
 - [ ] Verify no overlap between elements.
 
 ### Phase 2: Navigation Bar (🟡 High)
+
 - [ ] Reduce padding in search bar (p-4 → p-2).
 - [ ] Make view toggle buttons smaller (h-8 → h-7).
 - [ ] Move rate limit warning to toast instead of inline.
@@ -98,6 +107,7 @@ style={{
 - [ ] Add max-width constraint to search input.
 
 ### Phase 3: Modal Optimization (🟢 Medium)
+
 - [ ] Set EmailPreviewModal max-width: 80vw.
 - [ ] Set CustomerProfile max-width: 500px.
 - [ ] Reduce EmailComposer padding (p-6 → p-4).
@@ -105,6 +115,7 @@ style={{
 - [ ] Test modal stacking (preview → composer → profile).
 
 ### Phase 4: Testing & Validation
+
 - [ ] Visual regression test with Playwright screenshots.
 - [ ] Test on mobile (375px), tablet (768px), desktop (1920px).
 - [ ] Verify accessibility (keyboard nav, screen reader).
@@ -113,6 +124,7 @@ style={{
 ## Technical Notes
 
 ### Virtualizer Best Practices
+
 ```tsx
 // Correct pattern:
 const parentRef = useRef<HTMLDivElement>(null);
@@ -130,6 +142,7 @@ const virtualizer = useVirtualizer({
 ```
 
 ### Modal Size Constraints
+
 ```tsx
 // Good practice:
 <Dialog>

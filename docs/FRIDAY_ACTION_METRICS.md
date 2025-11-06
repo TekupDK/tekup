@@ -19,4 +19,3 @@
 
 - Brug `analyticsEvents` (drizzle/schema.ts) til logning
 - BI‑view: simple SQL over events (dag/uge) for dashboard
-

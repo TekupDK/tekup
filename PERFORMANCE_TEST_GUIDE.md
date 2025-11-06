@@ -102,4 +102,3 @@ Når test er gennemført, noter:
 - [ ] Initial load: \_\_\_ ms
 - [ ] Memory usage: \_\_\_ MB
 - [ ] Issues fundet: \_\_\_
-

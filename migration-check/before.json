@@ -1,0 +1,164 @@
+{
+  "when": "2025-11-03T22:16:13.945Z",
+  "schema": "friday_ai",
+  "stats": {
+    "email_threads": {
+      "exists": true,
+      "rows": 1,
+      "columns": [
+        {
+          "column_name": "id",
+          "is_nullable": "NO",
+          "data_type": "integer"
+        },
+        {
+          "column_name": "userId",
+          "is_nullable": "NO",
+          "data_type": "integer"
+        },
+        {
+          "column_name": "gmailThreadId",
+          "is_nullable": "NO",
+          "data_type": "character varying"
+        },
+        {
+          "column_name": "subject",
+          "is_nullable": "YES",
+          "data_type": "text"
+        },
+        {
+          "column_name": "lastMessageAt",
+          "is_nullable": "YES",
+          "data_type": "timestamp without time zone"
+        },
+        {
+          "column_name": "createdAt",
+          "is_nullable": "NO",
+          "data_type": "timestamp without time zone"
+        },
+        {
+          "column_name": "updatedAt",
+          "is_nullable": "NO",
+          "data_type": "timestamp without time zone"
+        },
+        {
+          "column_name": "snippet",
+          "is_nullable": "YES",
+          "data_type": "text"
+        },
+        {
+          "column_name": "labels",
+          "is_nullable": "YES",
+          "data_type": "jsonb"
+        },
+        {
+          "column_name": "isRead",
+          "is_nullable": "NO",
+          "data_type": "boolean"
+        },
+        {
+          "column_name": "participants",
+          "is_nullable": "YES",
+          "data_type": "jsonb"
+        }
+      ],
+      "indexes": ["email_threads_gmailThreadId_key", "email_threads_pkey"]
+    },
+    "email_pipeline_state": {
+      "exists": true,
+      "rows": 0,
+      "columns": [
+        {
+          "column_name": "id",
+          "is_nullable": "NO",
+          "data_type": "integer"
+        },
+        {
+          "column_name": "userId",
+          "is_nullable": "NO",
+          "data_type": "integer"
+        },
+        {
+          "column_name": "threadId",
+          "is_nullable": "NO",
+          "data_type": "character varying"
+        },
+        {
+          "column_name": "stage",
+          "is_nullable": "NO",
+          "data_type": "USER-DEFINED"
+        },
+        {
+          "column_name": "transitionedAt",
+          "is_nullable": "NO",
+          "data_type": "timestamp without time zone"
+        },
+        {
+          "column_name": "createdAt",
+          "is_nullable": "NO",
+          "data_type": "timestamp without time zone"
+        },
+        {
+          "column_name": "updatedAt",
+          "is_nullable": "NO",
+          "data_type": "timestamp without time zone"
+        }
+      ],
+      "indexes": [
+        "email_pipeline_state_pkey",
+        "email_pipeline_state_threadId_userId_key",
+        "idx_pipeline_state_stage_user"
+      ]
+    },
+    "email_pipeline_transitions": {
+      "exists": true,
+      "rows": 0,
+      "columns": [
+        {
+          "column_name": "id",
+          "is_nullable": "NO",
+          "data_type": "integer"
+        },
+        {
+          "column_name": "userId",
+          "is_nullable": "NO",
+          "data_type": "integer"
+        },
+        {
+          "column_name": "threadId",
+          "is_nullable": "NO",
+          "data_type": "character varying"
+        },
+        {
+          "column_name": "fromStage",
+          "is_nullable": "YES",
+          "data_type": "USER-DEFINED"
+        },
+        {
+          "column_name": "toStage",
+          "is_nullable": "NO",
+          "data_type": "USER-DEFINED"
+        },
+        {
+          "column_name": "transitionedBy",
+          "is_nullable": "YES",
+          "data_type": "character varying"
+        },
+        {
+          "column_name": "reason",
+          "is_nullable": "YES",
+          "data_type": "text"
+        },
+        {
+          "column_name": "createdAt",
+          "is_nullable": "NO",
+          "data_type": "timestamp without time zone"
+        }
+      ],
+      "indexes": [
+        "email_pipeline_transitions_pkey",
+        "idx_pipeline_transitions_thread_user"
+      ]
+    }
+  }
+}

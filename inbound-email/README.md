@@ -16,6 +16,7 @@ npm install
 ### Option 2: Use Pre-built Image (If Available)
 
 If a Docker image is available, update `docker-compose.yml` to use:
+
 ```yaml
 image: sendbetter/inbound-email:latest
 ```
@@ -34,6 +35,7 @@ npm install inbound-email mailparser
 ## Configuration
 
 Environment variables (set in docker-compose.yml or .env):
+
 - `WEBHOOK_URL`: http://host.docker.internal:3000/api/inbound/email
 - `WEBHOOK_SECRET`: (optional) HMAC secret for webhook verification
 - `STORAGE_TYPE`: local (default) or supabase
@@ -43,7 +45,7 @@ Environment variables (set in docker-compose.yml or .env):
 ## Testing
 
 After starting the service:
+
 1. Test SMTP connection: `telnet localhost 25`
 2. Send test email to the SMTP server
 3. Verify webhook receives data at `/api/inbound/email`
-

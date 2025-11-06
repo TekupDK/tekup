@@ -9,6 +9,7 @@
 ## 🎯 Mål
 
 **Komplet email sync løsning der:**
+
 1. ✅ Syncer eksisterende emails fra Gmail til Supabase database
 2. ✅ Sikrer automatisk sync for fremtidige emails (Gmail API + SMTP inbound)
 3. ✅ Integrerer alle komponenter (inbound-email, inbox-orchestrator)
@@ -50,6 +51,7 @@
 **Løsning:** Brug direkte Google API i stedet for MCP server
 
 **Tasks:**
+
 - [x] Fix dotenv config i sync script
 - [x] Fix search_path problem
 - [ ] Opdater script til at bruge direkte Google API (ikke MCP)
@@ -62,6 +64,7 @@
 **Løsning:** Database-first, kun fallback hvis database er tom
 
 **Tasks:**
+
 - [ ] Opdater `routers.ts` email.list til at prioritere database
 - [ ] Kun kalde Gmail API hvis database query returnerer tom
 - [ ] Automatisk cache nye emails til database efter Gmail API call
@@ -73,6 +76,7 @@
 **Løsning:** Fix Dockerfile eller brug alternativ
 
 **Tasks:**
+
 - [ ] Fix inbound-email Dockerfile til at bruge npm package
 - [ ] Eller byg custom SMTP server der sender webhook
 - [ ] Test webhook modtagelse i backend
@@ -84,6 +88,7 @@
 **Løsning:** Integrer inbox-orchestrator med Supabase email sync
 
 **Tasks:**
+
 - [ ] Dokumenter inbox-orchestrator funktionalitet
 - [ ] Opdater til at skrive til Supabase (ikke kun local postgres)
 - [ ] Setup periodic sync job
@@ -92,6 +97,7 @@
 ### Phase 5: Complete Solution Verification
 
 **Tasks:**
+
 - [ ] Verificer alle 3 veje virker (Gmail API, SMTP, Orchestrator)
 - [ ] Test fallback scenarios
 - [ ] Performance test med mange emails
@@ -105,20 +111,20 @@
 
 ```typescript
 // I stedet for MCP, brug direkte Google API
-import { google } from 'googleapis';
+import { google } from "googleapis";
 
 // Get Gmail API client
 const auth = new google.auth.GoogleAuth({
   credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY!),
-  scopes: ['https://www.googleapis.com/auth/gmail.readonly'],
+  scopes: ["https://www.googleapis.com/auth/gmail.readonly"],
 });
 
-const gmail = google.gmail({ version: 'v1', auth });
+const gmail = google.gmail({ version: "v1", auth });
 
 // Fetch threads direkte
 const threads = await gmail.users.messages.list({
-  userId: 'me',
-  q: 'in:inbox',
+  userId: "me",
+  q: "in:inbox",
   maxResults: 50,
 });
 ```
@@ -168,7 +174,7 @@ async function backgroundEmailSync() {
   if (!db) return;
 
   // Fetch fra Gmail API
-  const threads = await fetchFromGmailAPI('in:inbox', 100);
+  const threads = await fetchFromGmailAPI("in:inbox", 100);
 
   // Sync til database
   for (const thread of threads) {
@@ -202,4 +208,3 @@ async function backgroundEmailSync() {
 ---
 
 **Last Updated:** 3. november 2025, 01:15
-

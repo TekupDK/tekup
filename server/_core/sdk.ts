@@ -43,6 +43,10 @@ class OAuthService {
     code: string,
     state: string
   ): Promise<ExchangeTokenResponse> {
+    if (!this.client) {
+      throw new Error("OAuth client not initialized");
+    }
+
     const payload: ExchangeTokenRequest = {
       clientId: ENV.appId,
       grantType: "authorization_code",
@@ -61,6 +65,10 @@ class OAuthService {
   async getUserInfoByToken(
     token: ExchangeTokenResponse
   ): Promise<GetUserInfoResponse> {
+    if (!this.client) {
+      throw new Error("OAuth client not initialized");
+    }
+
     const { data } = await this.client.post<GetUserInfoResponse>(
       GET_USER_INFO_PATH,
       {
@@ -119,6 +127,9 @@ class SDKServer {
     code: string,
     state: string
   ): Promise<ExchangeTokenResponse> {
+    if (!this.oauthService) {
+      throw new Error("OAuth service not initialized");
+    }
     return this.oauthService.getTokenByCode(code, state);
   }
 
@@ -128,6 +139,9 @@ class SDKServer {
    * const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
    */
   async getUserInfo(accessToken: string): Promise<GetUserInfoResponse> {
+    if (!this.oauthService) {
+      throw new Error("OAuth service not initialized");
+    }
     const data = await this.oauthService.getUserInfoByToken({
       accessToken,
     } as ExchangeTokenResponse);
@@ -232,6 +246,10 @@ class SDKServer {
   async getUserInfoWithJwt(
     jwtToken: string
   ): Promise<GetUserInfoWithJwtResponse> {
+    if (!this.client) {
+      throw new Error("OAuth client not initialized");
+    }
+
     const payload: GetUserInfoWithJwtRequest = {
       jwtToken,
       projectId: ENV.appId,
@@ -264,7 +282,7 @@ class SDKServer {
     }
 
     const sessionUserId = session.openId;
-    const signedInAt = new Date();
+    const signedInAt = new Date().toISOString();
     let user = await db.getUserByOpenId(sessionUserId);
 
     // If user not in DB, create it from session (dev mode)

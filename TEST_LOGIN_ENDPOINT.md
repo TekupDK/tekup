@@ -9,6 +9,7 @@ Login endpointet `/api/auth/login` er nu opdateret til at understøtte **både b
 ### 1. Test Mode Detection
 
 Endpointet detekterer automatisk test mode via:
+
 - Query parameter: `?mode=test` eller `?test=true`
 - Header: `X-Test-Mode: true`
 - User-Agent: `vitest` eller `jsdom`
@@ -16,10 +17,12 @@ Endpointet detekterer automatisk test mode via:
 ### 2. Response Format
 
 **Browser Mode (default):**
+
 - Redirecter til `/` (302)
 - Sætter session cookie
 
 **Test Mode:**
+
 - Returnerer JSON (200)
 - Inkluderer cookie værdi i response body
 - Lettere for tests at hente cookie
@@ -27,6 +30,7 @@ Endpointet detekterer automatisk test mode via:
 ### 3. Cookie Options
 
 I test mode:
+
 - `sameSite: "none"` (mest permissiv)
 - `httpOnly: false` (kan læses i tests)
 - `secure: false` (virker over HTTP)
@@ -68,22 +72,19 @@ pnpm test
 `auth-helper.ts` bruger automatisk test mode:
 
 ```typescript
-const response = await fetch(
-  `${BACKEND_URL}/api/auth/login?mode=test`,
-  {
-    headers: {
-      "X-Test-Mode": "true",
-      "User-Agent": "vitest/jsdom",
-    },
-  }
-);
+const response = await fetch(`${BACKEND_URL}/api/auth/login?mode=test`, {
+  headers: {
+    "X-Test-Mode": "true",
+    "User-Agent": "vitest/jsdom",
+  },
+});
 ```
 
 ## Fejlfinding
 
 Hvis login fejler med 500:
+
 1. Check at backend kører (`pnpm dev`)
 2. Check at DATABASE_URL er sat korrekt
 3. Check at JWT_SECRET er sat
 4. Check server logs for specifik fejl
-

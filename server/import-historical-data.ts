@@ -14,6 +14,9 @@ interface ImportResult {
   errors: string[];
 }
 
+// Legacy type for Billy invoice with contact info
+type BillyInvoiceWithContact = any;
+
 /**
  * Extract customer info from Billy invoice
  */
@@ -207,7 +210,7 @@ async function importLeadsFromInvoices(
         await createLead({
           userId,
           source: "billy_import",
-          name: customerInfo.name || undefined,
+          name: customerInfo.name || "Unknown",
           email: customerInfo.email || undefined,
           phone: customerInfo.phone || undefined,
           status: "new",
@@ -272,7 +275,10 @@ async function importLeadsFromEvents(
     // Process each event
     for (const event of events) {
       try {
-        const customerInfo = extractCustomerInfoFromEvent(event);
+        const customerInfo = extractCustomerInfoFromEvent({
+          title: event.title || "",
+          description: event.description,
+        });
 
         // Skip if no name or email
         if (!customerInfo.name && !customerInfo.email) {
@@ -306,12 +312,14 @@ async function importLeadsFromEvents(
         await createLead({
           userId,
           source: "calendar_import",
-          name: customerInfo.name || undefined,
+          name: customerInfo.name || "Unknown",
           email: customerInfo.email || undefined,
           status: "new",
           metadata: {
             googleEventId: event.googleEventId,
-            eventDate: event.startTime.toISOString(),
+            eventDate: event.startTime
+              ? new Date(event.startTime).toISOString()
+              : new Date().toISOString(),
             importDate: new Date().toISOString(),
           },
         });

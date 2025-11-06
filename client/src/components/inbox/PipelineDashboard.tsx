@@ -4,7 +4,8 @@ import { trpc } from "@/lib/trpc";
 import { Calendar, DollarSign, Mail, Send, TrendingUp } from "lucide-react";
 
 export default function PipelineDashboard() {
-  const { data: pipelineStates, isLoading } = trpc.inbox.email.getPipelineStates.useQuery({});
+  const { data: pipelineStates, isLoading } =
+    trpc.inbox.email.getPipelineStates.useQuery({});
 
   if (isLoading) {
     return (
@@ -21,9 +22,12 @@ export default function PipelineDashboard() {
 
   // Count emails by stage
   const stageCounts = {
-    needs_action: pipelineStates?.filter(s => s.stage === "needs_action").length || 0,
-    venter_pa_svar: pipelineStates?.filter(s => s.stage === "venter_pa_svar").length || 0,
-    i_kalender: pipelineStates?.filter(s => s.stage === "i_kalender").length || 0,
+    needs_action:
+      pipelineStates?.filter(s => s.stage === "needs_action").length || 0,
+    venter_pa_svar:
+      pipelineStates?.filter(s => s.stage === "venter_pa_svar").length || 0,
+    i_kalender:
+      pipelineStates?.filter(s => s.stage === "i_kalender").length || 0,
     finance: pipelineStates?.filter(s => s.stage === "finance").length || 0,
     afsluttet: pipelineStates?.filter(s => s.stage === "afsluttet").length || 0,
   };
@@ -32,18 +36,27 @@ export default function PipelineDashboard() {
 
   // Calculate conversion rates
   const conversionRates = {
-    needsToQuoted: stageCounts.needs_action > 0
-      ? ((stageCounts.venter_pa_svar / stageCounts.needs_action) * 100).toFixed(1)
-      : "0",
-    quotedToBooked: stageCounts.venter_pa_svar > 0
-      ? ((stageCounts.i_kalender / stageCounts.venter_pa_svar) * 100).toFixed(1)
-      : "0",
-    bookedToInvoiced: stageCounts.i_kalender > 0
-      ? ((stageCounts.finance / stageCounts.i_kalender) * 100).toFixed(1)
-      : "0",
-    invoicedToCompleted: stageCounts.finance > 0
-      ? ((stageCounts.afsluttet / stageCounts.finance) * 100).toFixed(1)
-      : "0",
+    needsToQuoted:
+      stageCounts.needs_action > 0
+        ? (
+            (stageCounts.venter_pa_svar / stageCounts.needs_action) *
+            100
+          ).toFixed(1)
+        : "0",
+    quotedToBooked:
+      stageCounts.venter_pa_svar > 0
+        ? ((stageCounts.i_kalender / stageCounts.venter_pa_svar) * 100).toFixed(
+            1
+          )
+        : "0",
+    bookedToInvoiced:
+      stageCounts.i_kalender > 0
+        ? ((stageCounts.finance / stageCounts.i_kalender) * 100).toFixed(1)
+        : "0",
+    invoicedToCompleted:
+      stageCounts.finance > 0
+        ? ((stageCounts.afsluttet / stageCounts.finance) * 100).toFixed(1)
+        : "0",
   };
 
   const metrics = [
@@ -141,13 +154,18 @@ export default function PipelineDashboard() {
       <Card className="p-4 bg-primary/5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-muted-foreground">Total Emails i Pipeline</p>
+            <p className="text-sm text-muted-foreground">
+              Total Emails i Pipeline
+            </p>
             <p className="text-3xl font-bold">{total}</p>
           </div>
           <div className="text-right">
             <p className="text-sm text-muted-foreground">Completion Rate</p>
             <p className="text-3xl font-bold">
-              {total > 0 ? ((stageCounts.afsluttet / total) * 100).toFixed(1) : "0"}%
+              {total > 0
+                ? ((stageCounts.afsluttet / total) * 100).toFixed(1)
+                : "0"}
+              %
             </p>
           </div>
         </div>
@@ -155,4 +173,3 @@ export default function PipelineDashboard() {
     </div>
   );
 }
-

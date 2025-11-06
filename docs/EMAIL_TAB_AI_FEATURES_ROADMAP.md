@@ -408,4 +408,3 @@ CREATE TABLE label_patterns (
 2. Smart Auto-Labeling - Kritisk for workflow
 
 Skal vi starte med Phase 1, eller vil du se flere detaljer først?
-

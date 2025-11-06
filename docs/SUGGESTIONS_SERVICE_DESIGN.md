@@ -10,11 +10,11 @@ Mål: Lever 1–3 relevante forslag i kontekst (chips/kort) inden for 100–300 
 
 ## Regler (første 5)
 
-1) Åbner mail‑tråd → `email.reply_with_quote` + `pipeline.move_stage(needs_action)`
-2) Klikker “Svar” → `email.reply_with_quote` (draft)
-3) Stage=Gennemført → `billing.create_invoice`, `email.reply_with_quote(template=confirmation)`, `calendar.create_confirmation_event`
-4) Login mandag → `email.follow_up_reminder` for 3 ældre leads
-5) Overdue faktura → anbefalet kanal + `email.follow_up_reminder`
+1. Åbner mail‑tråd → `email.reply_with_quote` + `pipeline.move_stage(needs_action)`
+2. Klikker “Svar” → `email.reply_with_quote` (draft)
+3. Stage=Gennemført → `billing.create_invoice`, `email.reply_with_quote(template=confirmation)`, `calendar.create_confirmation_event`
+4. Login mandag → `email.follow_up_reminder` for 3 ældre leads
+5. Overdue faktura → anbefalet kanal + `email.follow_up_reminder`
 
 ## Prioritering
 
@@ -49,4 +49,3 @@ type Suggestion = {
 ## Telemetri
 
 - `action_suggested` (visning), `action_chip_clicked`, `action_approved`, `action_executed`, `action_failed`.
-

@@ -62,7 +62,7 @@ const ACTION_PERMISSIONS: Record<ActionPermission, UserRole> = {
 export function getUserRole(userId: number, ownerOpenId?: string): UserRole {
   // For now, we'll use a simple check
   // In production, this should query the database for user roles
-  
+
   // If user ID matches owner (typically user 1 or based on OWNER_OPEN_ID), they're owner
   if (userId === 1) {
     return "owner";
@@ -76,12 +76,9 @@ export function getUserRole(userId: number, ownerOpenId?: string): UserRole {
 /**
  * Check if a user has permission to execute an action
  */
-export function hasPermission(
-  userRole: UserRole,
-  actionType: string
-): boolean {
+export function hasPermission(userRole: UserRole, actionType: string): boolean {
   const requiredRole = ACTION_PERMISSIONS[actionType as ActionPermission];
-  
+
   // If action not in permission list, deny by default
   if (!requiredRole) {
     console.warn(`[RBAC] Unknown action type: ${actionType}`);
@@ -100,7 +97,7 @@ export function hasPermission(
  */
 export function getAllowedActions(userRole: UserRole): ActionPermission[] {
   const userLevel = ROLE_HIERARCHY[userRole];
-  
+
   return Object.entries(ACTION_PERMISSIONS)
     .filter(([_, requiredRole]) => {
       const requiredLevel = ROLE_HIERARCHY[requiredRole];

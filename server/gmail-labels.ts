@@ -317,3 +317,51 @@ export async function archiveThread(threadId: string): Promise<void> {
     throw error;
   }
 }
+
+/**
+ * Map label IDs to human-readable label names
+ * System labels (INBOX, SENT, etc.) are filtered out
+ */
+export async function mapLabelIdsToNames(
+  labelIds: string[]
+): Promise<string[]> {
+  try {
+    // System labels to filter out (ikke bruger-synlige)
+    const systemLabels = [
+      "INBOX",
+      "SENT",
+      "DRAFT",
+      "SPAM",
+      "TRASH",
+      "UNREAD",
+      "STARRED",
+      "IMPORTANT",
+      "CATEGORY_PERSONAL",
+      "CATEGORY_SOCIAL",
+      "CATEGORY_PROMOTIONS",
+      "CATEGORY_UPDATES",
+      "CATEGORY_FORUMS",
+    ];
+
+    // Filter out system labels
+    const userLabelIds = labelIds.filter(id => !systemLabels.includes(id));
+    if (userLabelIds.length === 0) return [];
+
+    // Get all labels (uses cache if available)
+    const allLabels = await getGmailLabels();
+
+    // Map IDs to names
+    const labelNames = userLabelIds
+      .map(id => {
+        const label = allLabels.find(l => l.id === id);
+        return label?.name || id; // Fallback til ID hvis navn ikke findes
+      })
+      .filter(Boolean);
+
+    return labelNames;
+  } catch (error) {
+    console.error("Error mapping label IDs to names:", error);
+    // Fallback: return IDs as-is hvis mapping fejler
+    return labelIds;
+  }
+}

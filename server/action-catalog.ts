@@ -196,6 +196,37 @@ export const ACTION_CATALOG: Record<string, ActionCatalogEntry> = {
     paramsSchema: z.object({}),
     description: "Tjekker kommende kalenderaftaler",
   },
+
+  // Inbox AI tools
+  ai_generate_summaries: {
+    type: "ai_generate_summaries",
+    label: "AI: Generér Resuméer",
+    riskLevel: "low",
+    requiresApproval: false,
+    rateLimitPerHour: 60,
+    paramsSchema: z.object({
+      emailIds: z.array(z.number()).optional(),
+      maxConcurrent: z.number().int().min(1).max(10).optional(),
+      skipCached: z.boolean().optional(),
+    }),
+    description:
+      "Genererer AI-resuméer for valgte eller seneste emails. Hvis ingen emailIds angives, bruges de seneste 25 i Indbakken.",
+  },
+  ai_suggest_labels: {
+    type: "ai_suggest_labels",
+    label: "AI: Foreslå Labels",
+    riskLevel: "low",
+    requiresApproval: false,
+    rateLimitPerHour: 60,
+    paramsSchema: z.object({
+      emailIds: z.array(z.number()).optional(),
+      maxConcurrent: z.number().int().min(1).max(10).optional(),
+      skipCached: z.boolean().optional(),
+      autoApply: z.boolean().optional(),
+    }),
+    description:
+      "Foreslår og (valgfrit) auto-anvender labels på valgte eller seneste emails. Hvis ingen emailIds angives, bruges de seneste 25 i Indbakken.",
+  },
 };
 
 /**

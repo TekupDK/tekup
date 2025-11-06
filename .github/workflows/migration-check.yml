@@ -3,11 +3,11 @@ name: Migration Check
 on:
   pull_request:
     paths:
-      - 'drizzle/migrations/**'
-      - 'scripts/migration-check.mjs'
-      - 'run-pipeline-migration.mjs'
-      - 'server/**'
-      - 'drizzle/schema.ts'
+      - "drizzle/migrations/**"
+      - "scripts/migration-check.mjs"
+      - "run-pipeline-migration.mjs"
+      - "server/**"
+      - "drizzle/schema.ts"
 
 jobs:
   check:

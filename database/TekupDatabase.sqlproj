@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.Build.Sql/0.2.0-preview">
+  <PropertyGroup>
+    <Name>TekupDatabase</Name>
+    <ProjectGuid>{$(NewGuid())}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlDatabaseSchemaProvider</DSP>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>true</DeployToDatabase>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>false</SqlServerVerification>
+    <IncludeCompositeObjects>true</IncludeCompositeObjects>
+    <TargetDatabaseSet>true</TargetDatabaseSet>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Tables\" />
+    <Folder Include="Views\" />
+    <Folder Include="StoredProcedures\" />
+    <Folder Include="Functions\" />
+    <Folder Include="Schemas\" />
+    <Folder Include="Scripts\" />
+    <Folder Include="Scripts\PreDeployment\" />
+    <Folder Include="Scripts\PostDeployment\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\users.sql" />
+  </ItemGroup>
+</Project>

@@ -30,4 +30,3 @@
 ## Estimater (grove)
 
 - E1: 2–3 dage, E2: 2–3 dage, E3: 2 dage, E4: 2–3 dage, E5: 1 dag
-

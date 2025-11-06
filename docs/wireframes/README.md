@@ -8,4 +8,3 @@ Eksporter wireframes (png) hertil. Foreslåede filer:
 - chat/assistant_suggestions.png
 
 Wireframe‑indhold beskrives i `../SUGGESTIONS_SERVICE_DESIGN.md` og `../CHAT_APPROVALS_SPEC.md`.
-

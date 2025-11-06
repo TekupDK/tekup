@@ -10,7 +10,13 @@
  * This context is sent to AI with every message for better understanding.
  */
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+} from "react";
 
 export interface EmailContextState {
   // Selected emails (by thread ID)
@@ -103,7 +109,9 @@ export function EmailContextProvider({ children }: { children: ReactNode }) {
 
     // Selected emails
     if (state.selectedThreads.size > 0) {
-      parts.push(`User has ${state.selectedThreads.size} email thread(s) selected`);
+      parts.push(
+        `User has ${state.selectedThreads.size} email thread(s) selected`
+      );
       if (state.selectedThreads.size <= 5) {
         const threadIds = Array.from(state.selectedThreads);
         parts.push(`Selected thread IDs: ${threadIds.join(", ")}`);
@@ -117,7 +125,9 @@ export function EmailContextProvider({ children }: { children: ReactNode }) {
 
     // Preview modal
     if (state.previewThreadId) {
-      parts.push(`User has preview modal open for thread: ${state.previewThreadId}`);
+      parts.push(
+        `User has preview modal open for thread: ${state.previewThreadId}`
+      );
     }
 
     // Selected labels
@@ -178,4 +188,3 @@ export function useEmailContext() {
   }
   return context;
 }
-
