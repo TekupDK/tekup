@@ -1,5 +1,43 @@
 # Changelog - Billy-mcp By Tekup
 
+## [2.0.3] - 2025-11-26
+
+### 🔒 Security & Cache Enhancement
+
+#### Smart Cache Fallback - Authentication-Aware
+
+**Problem:** MCP endpoint returned cached data even when Billy API authentication failed, making it unclear whether credentials were valid or if data was stale.
+
+**Fixed:**
+
+- **Authentication Error Detection** - Track Billy API 401/403 errors separately from network errors
+- **No Cache for Auth Errors** - NEVER serve cached data when authentication fails
+- **Cache Metadata** - Add `_cached`, `_cachedAt`, `_cacheAge`, `_warning` fields to cached responses
+- **Clear Error Messages** - "Billy API authentication failed (401). Please check your API credentials."
+- **Smart Fallback** - Still serve cache for network/server errors (500, timeout) for high availability
+
+**Implementation:**
+
+- Added `lastErrorStatus` tracking in `BillyClient` (line 123)
+- Enhanced response interceptor to detect auth errors (lines 200-221)
+- Updated `handleCircuitBreakerFallback()` to check error type (lines 244-291)
+- Cache metadata added to all cached responses (lines 279-290)
+
+**Impact:**
+
+- ✅ Clear feedback when Billy API credentials are invalid
+- ✅ Users can see when data is cached vs fresh
+- ✅ High availability maintained for non-auth errors
+- ✅ No more confusion about "old data"
+
+**Behavior:**
+
+| Error Type | Cache Behavior | User Experience |
+|------------|---------------|-----------------|
+| 401/403 (Auth) | ❌ No cache | Clear error: "Check your credentials" |
+| 500/503 (Server) | ✅ Serve cache | Warning: "_cached: true, _cacheAge: 120s" |
+| Timeout/Network | ✅ Serve cache | Warning: "_cached: true, _warning: API unavailable" |
+
 ## [2.0.2] - 2025-11-26
 
 ### 🐛 Bug Fix
