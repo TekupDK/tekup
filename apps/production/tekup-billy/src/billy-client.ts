@@ -120,6 +120,7 @@ export class BillyClient {
   private circuitBreaker: CircuitBreaker;
   private requestDeduplicator: RequestDeduplicator;
   private fallbackCache = new Map<string, { data: any; timestamp: number }>();
+  private lastErrorStatus: number | null = null; // Track last error for fallback decisions
 
   constructor(config: BillyConfig) {
     this.config = config;
@@ -196,14 +197,27 @@ export class BillyClient {
 
     // Add response interceptor for enhanced error handling
     this.client.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        // Reset error status on successful response
+        this.lastErrorStatus = null;
+        return response;
+      },
       (error) => {
+        // Track error status for fallback decisions
+        this.lastErrorStatus = error.response?.status || null;
+
         // Enhanced error logging
         if (error.response?.status >= 500) {
           log.error("Billy API server error", error, {
             status: error.response.status,
             endpoint: error.config?.url,
             method: error.config?.method,
+          });
+        } else if (error.response?.status === 401 || error.response?.status === 403) {
+          log.error("Billy API authentication error", error, {
+            status: error.response.status,
+            endpoint: error.config?.url,
+            message: "Invalid or missing Billy API credentials",
           });
         }
         throw error;
@@ -236,14 +250,47 @@ export class BillyClient {
     endpoint: string,
     data?: any
   ): Promise<T> {
-    // Try to serve from fallback cache for GET requests
+    // Check if error was authentication-related (401, 403)
+    const isAuthError = this.lastErrorStatus === 401 || this.lastErrorStatus === 403;
+
+    if (isAuthError) {
+      // NEVER serve cached data for authentication errors
+      log.error("Billy API authentication failed - cached data disabled", {
+        endpoint,
+        status: this.lastErrorStatus,
+        message: "Please verify BILLY_API_KEY and BILLY_ORGANIZATION_ID environment variables",
+      });
+      throw new Error(
+        `Billy API authentication failed (${this.lastErrorStatus}). Please check your API credentials.`
+      );
+    }
+
+    // Try to serve from fallback cache for GET requests (only for non-auth errors)
     if (method === "GET") {
       const cacheKey = `${method}:${endpoint}`;
       const cached = this.fallbackCache.get(cacheKey);
 
       if (cached && Date.now() - cached.timestamp < 3600000) {
         // 1 hour cache
-        log.info("Serving from fallback cache", { endpoint });
+        const cacheAge = Math.floor((Date.now() - cached.timestamp) / 1000);
+        log.warn("Serving from fallback cache due to Billy API unavailability", {
+          endpoint,
+          cacheAge: `${cacheAge}s`,
+          lastErrorStatus: this.lastErrorStatus,
+          reason: "Network/server error (not authentication)",
+        });
+
+        // Add cache metadata to response so clients know data is stale
+        const cachedResponse = cached.data as any;
+        if (typeof cachedResponse === "object" && cachedResponse !== null) {
+          return {
+            ...cachedResponse,
+            _cached: true,
+            _cachedAt: new Date(cached.timestamp).toISOString(),
+            _cacheAge: `${cacheAge}s`,
+            _warning: "Data served from cache due to Billy API unavailability",
+          } as T;
+        }
         return cached.data;
       }
     }

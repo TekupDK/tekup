@@ -6,11 +6,20 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-**Status:** ✅ **PRODUCTION READY** | **Version:** 2.0.2 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
+**Status:** ✅ **PRODUCTION READY** | **Version:** 2.0.3 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
 
 Billy-mcp By Tekup - Model Context Protocol (MCP) server til integration med Billy.dk API. Denne server giver adgang til faktura-, kunde-, produkt- og omsætningsstyring gennem Billy.dk's API med fuld Supabase-integration for caching, audit logging og usage metrics.
 
-**🆕 v2.0.2: createContact Bug Fix - 26. November 2025**
+**🆕 v2.0.3: Smart Cache Fallback - Authentication-Aware - 26. November 2025**
+
+**🔒 Security & Cache Enhancement:**
+
+- 🔐 **Authentication Error Detection** - No cached data for invalid credentials
+- 📊 **Cache Metadata** - All cached responses include `_cached`, `_cacheAge`, `_warning` fields
+- ✅ **Clear Error Messages** - "Billy API authentication failed (401). Please check your API credentials."
+- 🎯 **Smart Fallback** - Cache still works for network/server errors (high availability)
+
+**v2.0.2: createContact Bug Fix - 26. November 2025**
 
 **🐛 Bug Fix:**
 
