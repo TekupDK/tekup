@@ -1,5 +1,28 @@
 # Changelog - Billy-mcp By Tekup
 
+## [2.0.2] - 2025-11-26
+
+### 🐛 Bug Fix
+
+#### createContact Response Format Fix
+
+**Problem:** The `createContact` method was not using the `parseResponse` helper function introduced in v2.0.1, causing it to fail when Billy API returned `{contact: {...}}` instead of `{contacts: [...]}`.
+
+**Fixed:**
+
+- Updated `createContact()` in `src/billy-client.ts` (lines 881-901)
+- Now uses `parseResponse<BillyContact>()` helper to handle both formats:
+  - `{contact: {...}}` (singular)
+  - `{contacts: [...]}` (plural)
+- Consistent with `createInvoice`, `createProduct`, and `updateContact` implementations
+- Improved error message: "expected contact or contacts"
+
+**Impact:**
+
+- ✅ `create_customer` MCP tool now works reliably
+- ✅ No more "Invalid response format from Billy API - expected contacts array" errors
+- ✅ Complete Billy API response format inconsistency coverage
+
 ## [2.0.1] - 2025-11-01
 
 ### 🐛 Critical Bug Fixes

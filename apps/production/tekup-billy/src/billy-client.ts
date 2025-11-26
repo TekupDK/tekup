@@ -879,25 +879,25 @@ export class BillyClient {
     log.debug("Creating contact", { endpoint, payload });
 
     try {
-      // Billy API returns { meta, contacts: [...] } not { contact: {...} }
-      const response = await this.makeRequest<{
-        meta: any;
-        contacts: BillyContact[];
-      }>("POST", endpoint, payload);
+      // Billy API can return either { contact: {...} } or { contacts: [...] }
+      const response = await this.makeRequest<Record<string, any>>(
+        "POST",
+        endpoint,
+        payload
+      );
 
-      if (!response || !response.contacts || response.contacts.length === 0) {
-        log.error("Invalid create contact response structure", null, {
-          response,
-        });
-        throw new Error(
-          "Invalid response format from Billy API - expected contacts array"
-        );
-      }
+      // Use parseResponse helper to handle both singular and plural formats
+      const createdContact = this.parseResponse<BillyContact>(
+        response,
+        "contact",
+        "contacts",
+        "create contact"
+      );
 
-      // Return the first (and should be only) contact from the array
-      const createdContact = response.contacts[0];
       if (!createdContact) {
-        throw new Error("Billy API returned empty contacts array");
+        throw new Error(
+          "Invalid response format from Billy API - expected contact or contacts"
+        );
       }
 
       // NOTE: Billy API does NOT support email or phone on contacts when using OAuth tokens
