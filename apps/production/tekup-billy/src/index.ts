@@ -64,13 +64,27 @@ import {
   listTestScenarios,
   runTestScenario,
 } from "./tools/test-runner.js";
+import {
+  getInvoiceSummary,
+  getCustomerSummary,
+  getBusinessOverview,
+  listUnpaidInvoices,
+  listOverdueInvoices,
+  listRecentInvoices,
+  searchCustomers,
+  listActiveCustomers,
+  searchInvoices,
+  getInvoiceDetails,
+  getCustomerDetails,
+  getProductDetails,
+} from "./tools/hierarchical-v3.js";
 
 // Server information
 const SERVER_INFO = {
   name: "billy-mcp-by-tekup",
-  version: "2.0.0",
+  version: "3.0.0",
   description:
-    "Billy-mcp By Tekup - MCP server for Billy.dk API integration - invoice, customer, product, revenue management, and data analytics",
+    "Billy-mcp By Tekup - MCP server for Billy.dk API integration - invoice, customer, product, revenue management, data analytics, and v3.0 hierarchical tools for optimal LLM performance",
 };
 
 class TekupBillyServer {
@@ -1155,6 +1169,299 @@ class TekupBillyServer {
         const client = await this.initializeBillyClient();
         const result = await analyzeSegmentAdoption(client, args);
         return result;
+      }
+    );
+
+    // ========================================================================
+    // v3.0 HIERARCHICAL TOOLS
+    // Research-based architecture for optimal LLM performance
+    // ========================================================================
+
+    // LEVEL 1: SUMMARY TOOLS (10-50 tokens)
+    this.server.registerTool(
+      "get_invoice_summary",
+      {
+        description:
+          "Get high-level invoice statistics summary (total, unpaid, overdue, paid, draft). Returns ~15 tokens. Use this FIRST before listing invoices.",
+        inputSchema: {},
+      },
+      async () => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("get_invoice_summary", {}, getInvoiceSummary, client);
+      }
+    );
+
+    this.server.registerTool(
+      "get_customer_summary",
+      {
+        description:
+          "Get high-level customer statistics summary (total, active, dormant, new this month). Returns ~12 tokens. Use this FIRST before listing customers.",
+        inputSchema: {},
+      },
+      async () => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("get_customer_summary", {}, getCustomerSummary, client);
+      }
+    );
+
+    this.server.registerTool(
+      "get_business_overview",
+      {
+        description:
+          "Get complete business snapshot combining invoices, customers, and products. Returns ~35 tokens. Perfect for checking overall business status.",
+        inputSchema: {},
+      },
+      async () => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("get_business_overview", {}, getBusinessOverview, client);
+      }
+    );
+
+    // LEVEL 2: FILTERED LISTS (100-500 tokens)
+    this.server.registerTool(
+      "list_unpaid_invoices",
+      {
+        description:
+          "List ONLY unpaid invoices in compact format (limited to 20 items by default, max 100). Returns ~120 tokens. Much more efficient than list_invoices.",
+        inputSchema: {
+          limit: z
+            .number()
+            .min(1)
+            .max(100)
+            .optional()
+            .default(20)
+            .describe("Maximum number of invoices to return"),
+          sortBy: z
+            .enum(["dueDate", "amount", "createdDate"])
+            .optional()
+            .default("dueDate")
+            .describe("Sort order: dueDate (oldest first), amount (highest first), or createdDate (newest first)"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("list_unpaid_invoices", args, listUnpaidInvoices, client);
+      }
+    );
+
+    this.server.registerTool(
+      "list_overdue_invoices",
+      {
+        description:
+          "List ONLY overdue invoices in compact format (limited to 20 items by default). Returns ~80 tokens. Use for urgent collection tasks.",
+        inputSchema: {
+          limit: z
+            .number()
+            .min(1)
+            .max(100)
+            .optional()
+            .default(20)
+            .describe("Maximum number of invoices to return"),
+          minDaysOverdue: z
+            .number()
+            .min(0)
+            .optional()
+            .default(0)
+            .describe("Minimum days overdue (e.g., 30 for invoices over 30 days late)"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("list_overdue_invoices", args, listOverdueInvoices, client);
+      }
+    );
+
+    this.server.registerTool(
+      "list_recent_invoices",
+      {
+        description:
+          "List recent invoices from last N days (default 7). Returns ~100 tokens. Good for weekly summaries.",
+        inputSchema: {
+          days: z
+            .number()
+            .min(1)
+            .max(365)
+            .optional()
+            .default(7)
+            .describe("Number of days to look back"),
+          limit: z
+            .number()
+            .min(1)
+            .max(100)
+            .optional()
+            .default(20)
+            .describe("Maximum number of invoices to return"),
+          state: z
+            .enum(["all", "paid", "unpaid", "draft"])
+            .optional()
+            .default("all")
+            .describe("Filter by invoice state"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("list_recent_invoices", args, listRecentInvoices, client);
+      }
+    );
+
+    this.server.registerTool(
+      "search_customers",
+      {
+        description:
+          "Fuzzy search for customers by name (handles Danish characters æ, ø, å). Returns ~80 tokens. Provides spelling suggestions if no exact match.",
+        inputSchema: {
+          query: z
+            .string()
+            .min(1)
+            .describe("Customer name to search for (supports partial matches)"),
+          limit: z
+            .number()
+            .min(1)
+            .max(50)
+            .optional()
+            .default(10)
+            .describe("Maximum number of customers to return"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("search_customers", args, searchCustomers, client);
+      }
+    );
+
+    this.server.registerTool(
+      "list_active_customers",
+      {
+        description:
+          "List customers with invoices in last N days (default 90). Returns ~150 tokens. Shows most recently active customers first.",
+        inputSchema: {
+          activeDays: z
+            .number()
+            .min(1)
+            .max(365)
+            .optional()
+            .default(90)
+            .describe("Days to consider for activity (customers with invoices in this period)"),
+          limit: z
+            .number()
+            .min(1)
+            .max(50)
+            .optional()
+            .default(20)
+            .describe("Maximum number of customers to return"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("list_active_customers", args, listActiveCustomers, client);
+      }
+    );
+
+    this.server.registerTool(
+      "search_invoices",
+      {
+        description:
+          "Search/filter invoices by customer name, state, amount range, or date range. Returns ~150 tokens. More flexible than list_unpaid_invoices.",
+        inputSchema: {
+          customerName: z
+            .string()
+            .optional()
+            .describe("Filter by customer name (fuzzy match)"),
+          state: z
+            .enum(["all", "paid", "unpaid", "draft", "overdue"])
+            .optional()
+            .default("all")
+            .describe("Filter by invoice state"),
+          minAmount: z
+            .number()
+            .optional()
+            .describe("Minimum invoice amount"),
+          maxAmount: z
+            .number()
+            .optional()
+            .describe("Maximum invoice amount"),
+          dateFrom: z
+            .string()
+            .optional()
+            .describe("Start date (YYYY-MM-DD)"),
+          dateTo: z
+            .string()
+            .optional()
+            .describe("End date (YYYY-MM-DD)"),
+          limit: z
+            .number()
+            .min(1)
+            .max(100)
+            .optional()
+            .default(20)
+            .describe("Maximum number of invoices to return"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("search_invoices", args, searchInvoices, client);
+      }
+    );
+
+    // LEVEL 3: DETAILED RETRIEVAL (500-2000 tokens)
+    this.server.registerTool(
+      "get_invoice_details",
+      {
+        description:
+          "Get complete invoice details including all line items, customer info, and related invoices. Returns ~500 tokens. Use AFTER finding specific invoice via summary/list tools.",
+        inputSchema: {
+          invoiceId: z
+            .string()
+            .optional()
+            .describe("Billy invoice ID"),
+          invoiceNo: z
+            .string()
+            .optional()
+            .describe("Invoice number (e.g., '2024-0042')"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("get_invoice_details", args, getInvoiceDetails, client);
+      }
+    );
+
+    this.server.registerTool(
+      "get_customer_details",
+      {
+        description:
+          "Get complete customer details including all invoice statistics and recent invoices. Returns ~400 tokens. Use AFTER finding specific customer via search_customers.",
+        inputSchema: {
+          customerId: z
+            .string()
+            .optional()
+            .describe("Billy customer ID"),
+          customerName: z
+            .string()
+            .optional()
+            .describe("Customer name (must be exact match)"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("get_customer_details", args, getCustomerDetails, client);
+      }
+    );
+
+    this.server.registerTool(
+      "get_product_details",
+      {
+        description:
+          "Get complete product details including usage statistics and recent invoices using this product. Returns ~300 tokens.",
+        inputSchema: {
+          productId: z
+            .string()
+            .describe("Billy product ID"),
+        },
+      },
+      async (args: any) => {
+        const client = await this.initializeBillyClient();
+        return await this.wrapToolWithAudit("get_product_details", args, getProductDetails, client);
       }
     );
   }

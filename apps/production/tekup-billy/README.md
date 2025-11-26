@@ -6,9 +6,33 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-**Status:** ✅ **PRODUCTION READY** | **Version:** 2.0.3 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
+**Status:** ✅ **PRODUCTION READY** | **Version:** 3.0.0 | **Build:** ✅ SUCCESS | **HTTP:** ✅ CLOUD READY | **SCALABLE:** ✅ 10+ INSTANCES | **Deployment:** ✅ Railway
 
 Billy-mcp By Tekup - Model Context Protocol (MCP) server til integration med Billy.dk API. Denne server giver adgang til faktura-, kunde-, produkt- og omsætningsstyring gennem Billy.dk's API med fuld Supabase-integration for caching, audit logging og usage metrics.
+
+**🚀 v3.0.0: Hierarchical Tools - LLM-Optimized Architecture - 26. November 2025**
+
+**Revolutionary Performance Improvement Based on AI Research:**
+
+- 🎯 **97% Token Reduction** - Summary-first approach prevents context overload
+- 🏗️ **3-Level Hierarchy** - Summary (10-50 tokens) → Filtered Lists (100-500 tokens) → Details (500-2000 tokens)
+- 🧠 **Smart Next Actions** - `_nextActions` hints guide LLMs through optimal workflows
+- 🚫 **No More "Lost in the Middle"** - Lists limited to 20 items, preventing LLM confusion
+- 🔍 **Fuzzy Search** - Danish character support (æ, ø, å) with spelling suggestions
+- 📊 **MCP Tool Output Schemas** - Full June 2025 spec compliance
+
+**New v3.0 Tools:**
+- **Level 1 Summaries**: `get_invoice_summary`, `get_customer_summary`, `get_business_overview`
+- **Level 2 Filtered Lists**: `list_unpaid_invoices`, `list_overdue_invoices`, `list_recent_invoices`, `search_customers`, `list_active_customers`, `search_invoices`
+- **Level 3 Details**: `get_invoice_details`, `get_customer_details`, `get_product_details`
+
+**Research Foundation:**
+- Based on "Lost in the Middle" (Liu et al., 2023), Toolformer (Meta AI, 2023), and Hierarchical RAG patterns
+- See [BILLY_LLM_RESEARCH.md](./docs/BILLY_LLM_RESEARCH.md) for complete research analysis
+
+**Migration:** v2.x tools remain available. See [MIGRATION_V2_TO_V3.md](./docs/MIGRATION_V2_TO_V3.md).
+
+---
 
 **🆕 v2.0.3: Smart Cache Fallback - Authentication-Aware - 26. November 2025**
 

@@ -24,6 +24,28 @@ import {
   CreateProductInput,
   RevenueData,
 } from "./types.js";
+import type {
+  InvoiceSummary,
+  CustomerSummary,
+  BusinessOverview,
+  InvoiceList,
+  CustomerSearchResult,
+  InvoiceSearchResult,
+  InvoiceDetails,
+  CustomerDetails,
+  ProductDetails,
+  CompactInvoice,
+  CompactCustomer,
+  ListUnpaidInvoicesInput,
+  ListOverdueInvoicesInput,
+  ListRecentInvoicesInput,
+  SearchCustomersInput,
+  ListActiveCustomersInput,
+  SearchInvoicesInput,
+  GetInvoiceDetailsInput,
+  GetCustomerDetailsInput,
+  GetProductDetailsInput,
+} from "./types-v3.js";
 import { log } from "./utils/logger.js";
 
 /**
@@ -1529,6 +1551,785 @@ export class BillyClient {
     }
 
     return product;
+  }
+
+  // ============================================================================
+  // v3.0 HIERARCHICAL TOOLS
+  // ============================================================================
+
+  /**
+   * Helper: Convert Billy invoice to compact format
+   */
+  private toCompactInvoice(invoice: BillyInvoice): CompactInvoice {
+    const dueDate = invoice.paymentTerms?.paymentTermsType === "net"
+      ? new Date(new Date(invoice.createdTime).getTime() + (invoice.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+      : new Date(invoice.createdTime);
+
+    const now = new Date();
+    const daysOverdue = invoice.state !== "paid" && dueDate < now
+      ? Math.floor((now.getTime() - dueDate.getTime()) / (24 * 60 * 60 * 1000))
+      : 0;
+
+    return {
+      id: invoice.id,
+      invoiceNo: invoice.invoiceNo || "DRAFT",
+      customerName: invoice.contact?.name || "Unknown",
+      customerEmail: invoice.contact?.email,
+      amount: invoice.totalAmount || 0,
+      currency: invoice.currency || "DKK",
+      dueDate: dueDate.toISOString().split('T')[0],
+      state: invoice.state || "draft",
+      daysOverdue,
+      _customerId: invoice.contactId || "",
+    };
+  }
+
+  /**
+   * Helper: Convert Billy contact to compact format
+   */
+  private toCompactCustomer(contact: BillyContact, invoices?: BillyInvoice[]): CompactCustomer {
+    const customerInvoices = invoices || [];
+    const lastInvoice = customerInvoices
+      .sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime())[0];
+
+    return {
+      id: contact.id,
+      name: contact.name,
+      email: contact.contactPersons?.[0]?.email || contact.email || "",
+      phone: contact.phone,
+      _lastInvoiceDate: lastInvoice ? new Date(lastInvoice.createdTime).toISOString().split('T')[0] : undefined,
+      _totalInvoices: customerInvoices.length,
+    };
+  }
+
+  // ============================================================================
+  // LEVEL 1: SUMMARY TOOLS (10-50 tokens)
+  // ============================================================================
+
+  /**
+   * get_invoice_summary - High-level invoice statistics
+   * Token budget: 15 tokens
+   */
+  async getInvoiceSummary(): Promise<InvoiceSummary> {
+    const invoices = await this.getInvoices();
+
+    const unpaid = invoices.filter(i => i.state === "approved" || i.state === "sent");
+    const now = new Date();
+    const overdue = unpaid.filter(i => {
+      const dueDate = i.paymentTerms?.paymentTermsType === "net"
+        ? new Date(new Date(i.createdTime).getTime() + (i.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+        : new Date(i.createdTime);
+      return dueDate < now;
+    });
+
+    const paid = invoices.filter(i => i.state === "paid");
+    const draft = invoices.filter(i => i.state === "draft");
+
+    const totalAmount = invoices.reduce((sum, i) => sum + (i.totalAmount || 0), 0);
+    const avgAmount = invoices.length > 0 ? totalAmount / invoices.length : 0;
+
+    const totalUnpaidAmount = unpaid.reduce((sum, i) => sum + (i.totalAmount || 0), 0);
+
+    const oldestUnpaid = unpaid.length > 0
+      ? unpaid.reduce((oldest, i) => {
+          const date = new Date(i.createdTime);
+          return date < oldest ? date : oldest;
+        }, new Date())
+      : new Date();
+    const oldestUnpaidDays = unpaid.length > 0
+      ? Math.floor((now.getTime() - oldestUnpaid.getTime()) / (24 * 60 * 60 * 1000))
+      : 0;
+
+    return {
+      total: invoices.length,
+      unpaid: unpaid.length,
+      overdue: overdue.length,
+      paid: paid.length,
+      draft: draft.length,
+      _avgAmount: Math.round(avgAmount * 100) / 100,
+      _oldestUnpaidDays: oldestUnpaidDays,
+      _totalUnpaidAmount: Math.round(totalUnpaidAmount * 100) / 100,
+      _schema: "BillyInvoiceSummary",
+      _nextActions: ["list_unpaid_invoices", "list_overdue_invoices", "list_recent_invoices"],
+      _tokenUsage: 15,
+    };
+  }
+
+  /**
+   * get_customer_summary - High-level customer statistics
+   * Token budget: 12 tokens
+   */
+  async getCustomerSummary(): Promise<CustomerSummary> {
+    const contacts = await this.getContacts();
+    const invoices = await this.getInvoices();
+
+    const now = new Date();
+    const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+
+    const active = contacts.filter(contact => {
+      const customerInvoices = invoices.filter(i => i.contactId === contact.id);
+      return customerInvoices.some(i => new Date(i.createdTime) > ninetyDaysAgo);
+    });
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const newThisMonth = contacts.filter(c => new Date(c.createdTime) >= startOfMonth);
+
+    const totalInvoices = invoices.length;
+    const avgInvoicesPerCustomer = contacts.length > 0 ? totalInvoices / contacts.length : 0;
+
+    return {
+      total: contacts.length,
+      active: active.length,
+      dormant: contacts.length - active.length,
+      _newThisMonth: newThisMonth.length,
+      _avgInvoicesPerCustomer: Math.round(avgInvoicesPerCustomer * 10) / 10,
+      _schema: "BillyCustomerSummary",
+      _nextActions: ["search_customers", "list_active_customers"],
+      _tokenUsage: 12,
+    };
+  }
+
+  /**
+   * get_business_overview - Complete business snapshot
+   * Token budget: 35 tokens
+   */
+  async getBusinessOverview(): Promise<BusinessOverview> {
+    // Fetch all data in parallel for speed
+    const [invoices, contacts, products] = await Promise.all([
+      this.getInvoices(),
+      this.getContacts(),
+      this.getProducts(),
+    ]);
+
+    const now = new Date();
+    const unpaid = invoices.filter(i => i.state === "approved" || i.state === "sent");
+    const overdue = unpaid.filter(i => {
+      const dueDate = i.paymentTerms?.paymentTermsType === "net"
+        ? new Date(new Date(i.createdTime).getTime() + (i.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+        : new Date(i.createdTime);
+      return dueDate < now;
+    });
+    const draft = invoices.filter(i => i.state === "draft");
+    const totalUnpaidAmount = unpaid.reduce((sum, i) => sum + (i.totalAmount || 0), 0);
+
+    const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    const activeCustomers = contacts.filter(contact => {
+      const customerInvoices = invoices.filter(i => i.contactId === contact.id);
+      return customerInvoices.some(i => new Date(i.createdTime) > ninetyDaysAgo);
+    });
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const newCustomersThisMonth = contacts.filter(c => new Date(c.createdTime) >= startOfMonth);
+
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const recentInvoices = invoices.filter(i => new Date(i.createdTime) > sevenDaysAgo);
+
+    const alerts: string[] = [];
+    if (overdue.length > 0) alerts.push(`${overdue.length} overdue invoice${overdue.length > 1 ? 's' : ''}`);
+    if (newCustomersThisMonth.length > 0) alerts.push(`${newCustomersThisMonth.length} new customer${newCustomersThisMonth.length > 1 ? 's' : ''} this month`);
+    if (draft.length > 5) alerts.push(`${draft.length} draft invoices pending`);
+
+    return {
+      invoices: {
+        total: invoices.length,
+        unpaid: unpaid.length,
+        overdue: overdue.length,
+        draft: draft.length,
+        _totalUnpaidAmount: Math.round(totalUnpaidAmount * 100) / 100,
+      },
+      customers: {
+        total: contacts.length,
+        active: activeCustomers.length,
+        _newThisMonth: newCustomersThisMonth.length,
+      },
+      products: {
+        total: products.length,
+        active: products.length, // Billy doesn't have inactive products
+      },
+      _recentActivity: `${recentInvoices.length} invoice${recentInvoices.length !== 1 ? 's' : ''} created this week`,
+      _alerts: alerts,
+      _schema: "BillyBusinessOverview",
+      _nextActions: unpaid.length > 0 ? ["list_unpaid_invoices", "search_customers"] : ["create_invoice", "search_customers"],
+      _tokenUsage: 35,
+    };
+  }
+
+  // ============================================================================
+  // LEVEL 2: FILTERED LISTS (100-500 tokens)
+  // ============================================================================
+
+  /**
+   * list_unpaid_invoices - Compact list of unpaid invoices
+   * Token budget: 120 tokens (12 invoices × 10 tokens each)
+   */
+  async listUnpaidInvoices(input: ListUnpaidInvoicesInput = {}): Promise<InvoiceList> {
+    const { limit = 20, sortBy = "dueDate" } = input;
+    const maxLimit = Math.min(limit, 100);
+
+    const allInvoices = await this.getInvoices();
+    let unpaid = allInvoices.filter(i => i.state === "approved" || i.state === "sent");
+
+    // Sort
+    if (sortBy === "dueDate") {
+      unpaid.sort((a, b) => {
+        const dateA = a.paymentTerms?.paymentTermsType === "net"
+          ? new Date(new Date(a.createdTime).getTime() + (a.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+          : new Date(a.createdTime);
+        const dateB = b.paymentTerms?.paymentTermsType === "net"
+          ? new Date(new Date(b.createdTime).getTime() + (b.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+          : new Date(b.createdTime);
+        return dateA.getTime() - dateB.getTime(); // Oldest first
+      });
+    } else if (sortBy === "amount") {
+      unpaid.sort((a, b) => (b.totalAmount || 0) - (a.totalAmount || 0)); // Highest first
+    } else if (sortBy === "createdDate") {
+      unpaid.sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime()); // Newest first
+    }
+
+    const total = unpaid.length;
+    const limited = unpaid.slice(0, maxLimit);
+    const compact = limited.map(i => this.toCompactInvoice(i));
+    const totalAmount = unpaid.reduce((sum, i) => sum + (i.totalAmount || 0), 0);
+
+    return {
+      invoices: compact,
+      _total: total,
+      _hasMore: total > maxLimit,
+      _totalAmount: Math.round(totalAmount * 100) / 100,
+      _schema: "BillyUnpaidInvoiceList",
+      _nextActions: ["get_invoice_details", "send_invoice", "mark_invoice_paid"],
+      _tokenUsage: compact.length * 10,
+    };
+  }
+
+  /**
+   * list_overdue_invoices - Compact list of overdue invoices
+   * Token budget: 80 tokens
+   */
+  async listOverdueInvoices(input: ListOverdueInvoicesInput = {}): Promise<InvoiceList> {
+    const { limit = 20, minDaysOverdue = 0 } = input;
+    const maxLimit = Math.min(limit, 100);
+
+    const allInvoices = await this.getInvoices();
+    const now = new Date();
+
+    let overdue = allInvoices.filter(i => {
+      if (i.state !== "approved" && i.state !== "sent") return false;
+
+      const dueDate = i.paymentTerms?.paymentTermsType === "net"
+        ? new Date(new Date(i.createdTime).getTime() + (i.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+        : new Date(i.createdTime);
+
+      const daysOverdue = Math.floor((now.getTime() - dueDate.getTime()) / (24 * 60 * 60 * 1000));
+      return daysOverdue >= minDaysOverdue;
+    });
+
+    // Sort by days overdue (most urgent first)
+    overdue.sort((a, b) => {
+      const dateA = a.paymentTerms?.paymentTermsType === "net"
+        ? new Date(new Date(a.createdTime).getTime() + (a.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+        : new Date(a.createdTime);
+      const dateB = b.paymentTerms?.paymentTermsType === "net"
+        ? new Date(new Date(b.createdTime).getTime() + (b.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+        : new Date(b.createdTime);
+      return dateA.getTime() - dateB.getTime(); // Oldest due date first
+    });
+
+    const total = overdue.length;
+    const limited = overdue.slice(0, maxLimit);
+    const compact = limited.map(i => this.toCompactInvoice(i));
+    const totalAmount = overdue.reduce((sum, i) => sum + (i.totalAmount || 0), 0);
+
+    return {
+      invoices: compact,
+      _total: total,
+      _hasMore: total > maxLimit,
+      _totalAmount: Math.round(totalAmount * 100) / 100,
+      _schema: "BillyOverdueInvoiceList",
+      _nextActions: ["get_invoice_details", "send_invoice"],
+      _tokenUsage: compact.length * 10,
+    };
+  }
+
+  /**
+   * list_recent_invoices - Recent invoices (any state)
+   * Token budget: 100 tokens
+   */
+  async listRecentInvoices(input: ListRecentInvoicesInput = {}): Promise<InvoiceList> {
+    const { days = 7, limit = 20, state = "all" } = input;
+    const maxLimit = Math.min(limit, 100);
+
+    const allInvoices = await this.getInvoices();
+    const now = new Date();
+    const cutoffDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+
+    let recent = allInvoices.filter(i => new Date(i.createdTime) > cutoffDate);
+
+    if (state !== "all") {
+      if (state === "unpaid") {
+        recent = recent.filter(i => i.state === "approved" || i.state === "sent");
+      } else {
+        recent = recent.filter(i => i.state === state);
+      }
+    }
+
+    // Sort by created date (newest first)
+    recent.sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime());
+
+    const total = recent.length;
+    const limited = recent.slice(0, maxLimit);
+    const compact = limited.map(i => this.toCompactInvoice(i));
+
+    return {
+      invoices: compact,
+      _total: total,
+      _hasMore: total > maxLimit,
+      _period: `last_${days}_days`,
+      _schema: "BillyRecentInvoiceList",
+      _nextActions: ["get_invoice_details"],
+      _tokenUsage: compact.length * 10,
+    };
+  }
+
+  /**
+   * search_customers - Fuzzy search for customers by name
+   * Token budget: 80 tokens (10 customers × 8 tokens each)
+   */
+  async searchCustomers(input: SearchCustomersInput): Promise<CustomerSearchResult> {
+    const { query, limit = 10 } = input;
+    const maxLimit = Math.min(limit, 50);
+
+    const allContacts = await this.getContacts();
+    const allInvoices = await this.getInvoices();
+
+    // Normalize query for fuzzy matching
+    const normalizedQuery = query.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove accents
+
+    // Score each contact
+    const scored = allContacts.map(contact => {
+      const normalizedName = contact.name.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      let score = 0;
+
+      // Exact match
+      if (normalizedName === normalizedQuery) score = 100;
+      // Starts with
+      else if (normalizedName.startsWith(normalizedQuery)) score = 90;
+      // Contains
+      else if (normalizedName.includes(normalizedQuery)) score = 70;
+      // Partial word match
+      else {
+        const queryWords = normalizedQuery.split(/\s+/);
+        const nameWords = normalizedName.split(/\s+/);
+        const matchingWords = queryWords.filter(qw =>
+          nameWords.some(nw => nw.startsWith(qw) || nw.includes(qw))
+        );
+        score = (matchingWords.length / queryWords.length) * 60;
+      }
+
+      return { contact, score };
+    });
+
+    // Filter and sort
+    const matches = scored
+      .filter(s => s.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, maxLimit);
+
+    const exactMatch = matches.length > 0 && matches[0].score === 100;
+
+    // Generate suggestions if no exact match
+    const suggestions: string[] = [];
+    if (!exactMatch && matches.length > 0) {
+      suggestions.push(...matches.slice(0, 3).map(m => m.contact.name));
+    }
+
+    const compact = matches.map(m => {
+      const customerInvoices = allInvoices.filter(i => i.contactId === m.contact.id);
+      const result = this.toCompactCustomer(m.contact, customerInvoices);
+      return { ...result, _matchScore: Math.round(m.score) };
+    });
+
+    return {
+      customers: compact,
+      _exactMatch: exactMatch,
+      _suggestions: suggestions,
+      _total: matches.length,
+      _schema: "BillyCustomerSearchResult",
+      _nextActions: exactMatch ? ["get_customer_details", "create_invoice"] : ["create_customer"],
+      _tokenUsage: compact.length * 8,
+    };
+  }
+
+  /**
+   * list_active_customers - Customers with recent invoices
+   * Token budget: 150 tokens
+   */
+  async listActiveCustomers(input: ListActiveCustomersInput = {}): Promise<CustomerSearchResult> {
+    const { activeDays = 90, limit = 20 } = input;
+    const maxLimit = Math.min(limit, 50);
+
+    const allContacts = await this.getContacts();
+    const allInvoices = await this.getInvoices();
+
+    const now = new Date();
+    const cutoffDate = new Date(now.getTime() - activeDays * 24 * 60 * 60 * 1000);
+
+    const active = allContacts.filter(contact => {
+      const customerInvoices = allInvoices.filter(i => i.contactId === contact.id);
+      return customerInvoices.some(i => new Date(i.createdTime) > cutoffDate);
+    });
+
+    // Sort by most recent invoice
+    active.sort((a, b) => {
+      const aInvoices = allInvoices.filter(i => i.contactId === a.id);
+      const bInvoices = allInvoices.filter(i => i.contactId === b.id);
+      const aLatest = aInvoices.reduce((latest, i) => {
+        const date = new Date(i.createdTime);
+        return date > latest ? date : latest;
+      }, new Date(0));
+      const bLatest = bInvoices.reduce((latest, i) => {
+        const date = new Date(i.createdTime);
+        return date > latest ? date : latest;
+      }, new Date(0));
+      return bLatest.getTime() - aLatest.getTime(); // Most recent first
+    });
+
+    const total = active.length;
+    const limited = active.slice(0, maxLimit);
+    const compact = limited.map(c => {
+      const customerInvoices = allInvoices.filter(i => i.contactId === c.id);
+      return this.toCompactCustomer(c, customerInvoices);
+    });
+
+    return {
+      customers: compact,
+      _total: total,
+      _schema: "BillyCustomerSearchResult",
+      _nextActions: ["get_customer_details", "create_invoice"],
+      _tokenUsage: compact.length * 8,
+    };
+  }
+
+  /**
+   * search_invoices - Search/filter invoices
+   * Token budget: 150 tokens
+   */
+  async searchInvoices(input: SearchInvoicesInput = {}): Promise<InvoiceSearchResult> {
+    const { customerName, state = "all", minAmount, maxAmount, dateFrom, dateTo, limit = 20 } = input;
+    const maxLimit = Math.min(limit, 100);
+
+    let invoices = await this.getInvoices();
+
+    // Filter by customer name
+    if (customerName) {
+      const normalizedQuery = customerName.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      invoices = invoices.filter(i => {
+        const normalizedName = (i.contact?.name || "").toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return normalizedName.includes(normalizedQuery);
+      });
+    }
+
+    // Filter by state
+    if (state !== "all") {
+      if (state === "unpaid") {
+        invoices = invoices.filter(i => i.state === "approved" || i.state === "sent");
+      } else if (state === "overdue") {
+        const now = new Date();
+        invoices = invoices.filter(i => {
+          if (i.state !== "approved" && i.state !== "sent") return false;
+          const dueDate = i.paymentTerms?.paymentTermsType === "net"
+            ? new Date(new Date(i.createdTime).getTime() + (i.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+            : new Date(i.createdTime);
+          return dueDate < now;
+        });
+      } else {
+        invoices = invoices.filter(i => i.state === state);
+      }
+    }
+
+    // Filter by amount
+    if (minAmount !== undefined) {
+      invoices = invoices.filter(i => (i.totalAmount || 0) >= minAmount);
+    }
+    if (maxAmount !== undefined) {
+      invoices = invoices.filter(i => (i.totalAmount || 0) <= maxAmount);
+    }
+
+    // Filter by date
+    if (dateFrom) {
+      const fromDate = new Date(dateFrom);
+      invoices = invoices.filter(i => new Date(i.createdTime) >= fromDate);
+    }
+    if (dateTo) {
+      const toDate = new Date(dateTo);
+      invoices = invoices.filter(i => new Date(i.createdTime) <= toDate);
+    }
+
+    // Sort by created date (newest first)
+    invoices.sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime());
+
+    const total = invoices.length;
+    const limited = invoices.slice(0, maxLimit);
+    const compact = limited.map(i => this.toCompactInvoice(i));
+
+    return {
+      invoices: compact,
+      _total: total,
+      _hasMore: total > maxLimit,
+      _filters: {
+        state: state !== "all" ? state : undefined,
+        customerName,
+        minAmount,
+        maxAmount,
+        dateFrom,
+        dateTo,
+      },
+      _schema: "BillyInvoiceSearchResult",
+      _nextActions: ["get_invoice_details"],
+      _tokenUsage: compact.length * 10,
+    };
+  }
+
+  // ============================================================================
+  // LEVEL 3: DETAILED RETRIEVAL (500-2000 tokens)
+  // ============================================================================
+
+  /**
+   * get_invoice_details - Complete invoice data
+   * Token budget: 500 tokens
+   */
+  async getInvoiceDetails(input: GetInvoiceDetailsInput): Promise<InvoiceDetails> {
+    const { invoiceId, invoiceNo } = input;
+
+    if (!invoiceId && !invoiceNo) {
+      throw new Error("Either invoiceId or invoiceNo must be provided");
+    }
+
+    // Find invoice
+    const allInvoices = await this.getInvoices();
+    let invoice: BillyInvoice | undefined;
+
+    if (invoiceId) {
+      invoice = allInvoices.find(i => i.id === invoiceId);
+    } else if (invoiceNo) {
+      invoice = allInvoices.find(i => i.invoiceNo === invoiceNo);
+    }
+
+    if (!invoice) {
+      throw new Error(`Invoice not found: ${invoiceId || invoiceNo}`);
+    }
+
+    // Get full invoice with lines
+    const fullInvoice = await this.getInvoice(invoice.id);
+
+    // Get related invoices for same customer
+    const relatedInvoices = allInvoices
+      .filter(i => i.contactId === invoice.contactId && i.id !== invoice.id)
+      .sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime())
+      .slice(0, 5)
+      .map(i => ({
+        id: i.id,
+        invoiceNo: i.invoiceNo || "DRAFT",
+        amount: i.totalAmount || 0,
+        state: i.state || "draft",
+        dueDate: i.paymentTerms?.paymentTermsType === "net"
+          ? new Date(new Date(i.createdTime).getTime() + (i.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+          : new Date(i.createdTime).toISOString().split('T')[0],
+      }));
+
+    return {
+      invoice: {
+        id: fullInvoice.id,
+        invoiceNo: fullInvoice.invoiceNo || "DRAFT",
+        state: fullInvoice.state || "draft",
+        createdDate: new Date(fullInvoice.createdTime).toISOString().split('T')[0],
+        dueDate: fullInvoice.paymentTerms?.paymentTermsType === "net"
+          ? new Date(new Date(fullInvoice.createdTime).getTime() + (fullInvoice.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+          : new Date(fullInvoice.createdTime).toISOString().split('T')[0],
+        sentDate: fullInvoice.sentAt ? new Date(fullInvoice.sentAt).toISOString().split('T')[0] : undefined,
+        paidDate: fullInvoice.state === "paid" ? new Date(fullInvoice.createdTime).toISOString().split('T')[0] : undefined,
+        customer: {
+          id: fullInvoice.contactId || "",
+          name: fullInvoice.contact?.name || "Unknown",
+          email: fullInvoice.contact?.contactPersons?.[0]?.email || fullInvoice.contact?.email || "",
+          phone: fullInvoice.contact?.phone,
+          address: {
+            street: fullInvoice.contact?.street || "",
+            city: fullInvoice.contact?.city || "",
+            zipcode: fullInvoice.contact?.zipcode || "",
+            country: fullInvoice.contact?.countryId || "DK",
+          },
+        },
+        lines: (fullInvoice.lines || []).map(line => ({
+          productId: line.productId,
+          productName: line.description || "Unknown",
+          description: line.description || "",
+          quantity: line.quantity || 1,
+          unitPrice: line.unitPrice || 0,
+          discountPercent: line.discountPercent,
+          taxPercent: line.taxPercent || 25,
+          total: (line.quantity || 1) * (line.unitPrice || 0),
+        })),
+        subtotal: fullInvoice.subtotalAmount || 0,
+        taxAmount: fullInvoice.taxAmount || 0,
+        totalAmount: fullInvoice.totalAmount || 0,
+        paidAmount: fullInvoice.state === "paid" ? fullInvoice.totalAmount || 0 : 0,
+        currency: fullInvoice.currency || "DKK",
+      },
+      _relatedInvoices: relatedInvoices,
+      _schema: "BillyInvoiceDetails",
+      _nextActions: fullInvoice.state === "draft" ? ["send_invoice", "update_invoice"] : ["send_invoice", "mark_invoice_paid"],
+      _tokenUsage: 500,
+    };
+  }
+
+  /**
+   * get_customer_details - Complete customer data
+   * Token budget: 400 tokens
+   */
+  async getCustomerDetails(input: GetCustomerDetailsInput): Promise<CustomerDetails> {
+    const { customerId, customerName } = input;
+
+    if (!customerId && !customerName) {
+      throw new Error("Either customerId or customerName must be provided");
+    }
+
+    // Find customer
+    const allContacts = await this.getContacts();
+    let contact: BillyContact | undefined;
+
+    if (customerId) {
+      contact = allContacts.find(c => c.id === customerId);
+    } else if (customerName) {
+      // Exact match only
+      contact = allContacts.find(c => c.name.toLowerCase() === customerName.toLowerCase());
+    }
+
+    if (!contact) {
+      throw new Error(`Customer not found: ${customerId || customerName}`);
+    }
+
+    // Get all invoices for this customer
+    const allInvoices = await this.getInvoices();
+    const customerInvoices = allInvoices.filter(i => i.contactId === contact.id);
+
+    // Calculate statistics
+    const paid = customerInvoices.filter(i => i.state === "paid");
+    const unpaid = customerInvoices.filter(i => i.state === "approved" || i.state === "sent");
+    const now = new Date();
+    const overdue = unpaid.filter(i => {
+      const dueDate = i.paymentTerms?.paymentTermsType === "net"
+        ? new Date(new Date(i.createdTime).getTime() + (i.paymentTerms.numberOfDays || 0) * 24 * 60 * 60 * 1000)
+        : new Date(i.createdTime);
+      return dueDate < now;
+    });
+
+    const totalRevenue = paid.reduce((sum, i) => sum + (i.totalAmount || 0), 0);
+    const avgInvoiceAmount = customerInvoices.length > 0
+      ? customerInvoices.reduce((sum, i) => sum + (i.totalAmount || 0), 0) / customerInvoices.length
+      : 0;
+
+    // Get recent invoices
+    const recentInvoices = customerInvoices
+      .sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime())
+      .slice(0, 5)
+      .map(i => this.toCompactInvoice(i));
+
+    return {
+      customer: {
+        id: contact.id,
+        name: contact.name,
+        type: contact.type || "company",
+        email: contact.contactPersons?.[0]?.email || contact.email || "",
+        phone: contact.phone,
+        address: {
+          street: contact.street,
+          city: contact.city,
+          zipcode: contact.zipcode,
+          country: contact.countryId || "DK",
+        },
+        _createdDate: new Date(contact.createdTime).toISOString().split('T')[0],
+      },
+      _invoiceStats: {
+        total: customerInvoices.length,
+        paid: paid.length,
+        unpaid: unpaid.length,
+        overdue: overdue.length,
+        totalRevenue: Math.round(totalRevenue * 100) / 100,
+        avgInvoiceAmount: Math.round(avgInvoiceAmount * 100) / 100,
+      },
+      _recentInvoices: recentInvoices,
+      _schema: "BillyCustomerDetails",
+      _nextActions: ["create_invoice", "update_customer"],
+      _tokenUsage: 400,
+    };
+  }
+
+  /**
+   * get_product_details - Complete product data
+   * Token budget: 300 tokens
+   */
+  async getProductDetails(input: GetProductDetailsInput): Promise<ProductDetails> {
+    const { productId } = input;
+
+    const allProducts = await this.getProducts();
+    const product = allProducts.find(p => p.id === productId);
+
+    if (!product) {
+      throw new Error(`Product not found: ${productId}`);
+    }
+
+    // Get invoices using this product
+    const allInvoices = await this.getInvoices();
+    const productInvoices: Array<{
+      invoiceNo: string;
+      customerName: string;
+      quantity: number;
+      date: string;
+    }> = [];
+
+    for (const invoice of allInvoices) {
+      if (invoice.lines) {
+        for (const line of invoice.lines) {
+          if (line.productId === productId) {
+            productInvoices.push({
+              invoiceNo: invoice.invoiceNo || "DRAFT",
+              customerName: invoice.contact?.name || "Unknown",
+              quantity: line.quantity || 1,
+              date: new Date(invoice.createdTime).toISOString().split('T')[0],
+            });
+          }
+        }
+      }
+    }
+
+    // Sort by date and limit to 5 most recent
+    const recentUsage = productInvoices
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5);
+
+    return {
+      product: {
+        id: product.id,
+        name: product.name,
+        description: product.description || "",
+        unitPrice: product.prices?.[0]?.unitPrice || 0,
+        currency: product.prices?.[0]?.currencyId || "DKK",
+        taxPercent: 25, // Billy uses standard 25% VAT for Denmark
+        accountId: product.account?.id,
+        _createdDate: new Date(product.createdTime).toISOString().split('T')[0],
+        _usageCount: productInvoices.length,
+      },
+      _recentInvoices: recentUsage,
+      _schema: "BillyProductDetails",
+      _nextActions: ["create_invoice", "update_product"],
+      _tokenUsage: 300,
+    };
   }
 }
 // Force redeploy 2025-10-13 11:34:16

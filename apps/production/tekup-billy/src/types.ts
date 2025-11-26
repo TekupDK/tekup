@@ -7,41 +7,54 @@
 export interface BillyInvoice {
   id: string;
   invoiceNo: string;
-  state: 'draft' | 'approved' | 'voided'; // Billy API only returns these three states
+  state: 'draft' | 'approved' | 'voided' | 'sent' | 'paid' | 'cancelled'; // Billy API states (extended)
   contactId: string;
+  contact?: BillyContact; // Full contact object included in some responses
   currency: string;
   totalAmount: number;
+  subtotalAmount?: number;
+  taxAmount?: number;
   entryDate: string; // YYYY-MM-DD
+  createdTime: string; // ISO timestamp from Billy API
   paymentDate?: string; // YYYY-MM-DD (deprecated - use dueDate)
   dueDate?: string; // YYYY-MM-DD (actual due date from Billy API)
+  sentAt?: string; // ISO timestamp when invoice was sent
   paymentTermsDays?: number;
+  paymentTerms?: {
+    paymentTermsType: string;
+    numberOfDays: number;
+  };
   isPaid?: boolean; // Billy API payment status
   balance?: number; // Remaining balance
   sentState?: string; // Billy API sent status
-  lines: BillyInvoiceLine[];
+  lines?: BillyInvoiceLine[];
   organizationId: string;
 }
 
 export interface BillyInvoiceLine {
-  id: string;
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  amount: number;
+  id?: string;
+  description?: string;
+  quantity?: number;
+  unitPrice?: number;
+  amount?: number;
+  taxPercent?: number;
+  discountPercent?: number;
   productId?: string;
 }
 
 export interface BillyContact {
   id: string;
   contactNo: string;
-  type: 'customer' | 'supplier';
+  type: 'person' | 'company' | 'customer' | 'supplier';
   name: string;
+  email?: string; // Direct email field
   street?: string;
   zipcode?: string;
   city?: string;
   countryId?: string;
   phone?: string;
-  contactPersons: Array<{
+  createdTime: string; // ISO timestamp
+  contactPersons?: Array<{
     name: string;
     email: string;
     phone?: string;

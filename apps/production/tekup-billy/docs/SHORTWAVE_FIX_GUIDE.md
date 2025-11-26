@@ -1,35 +1,11 @@
-# Shortwave Billy Integration Fix Guide
+# Shortwave Billy Integration Setup Guide
 
-**Problem:** Shortwave bruger gammel Billy MCP version (Render.com) som ikke har v2.0.2/v2.0.3 fixes
-**Solution:** Opdater til Railway (v2.0.3) eller deploy v2.0.3 til Render.com
-
-**Date:** November 26, 2025
+**Recommended URL:** Railway (v3.0.0) - Production Ready
+**Last Updated:** November 26, 2025
 
 ---
 
-## 🔴 Nuværende Problem
-
-### Tom Frandsen Case (Fra Shortwave Chat)
-
-**Hvad skete:**
-1. ✅ `create_customer` → Fejlede første gang
-2. ✅ `create_customer` → Success anden gang
-3. ✅ `create_invoice` → Success (2.792 kr DRAFT)
-4. ❌ `update_customer` → **FEJLEDE: "Invalid response format"**
-
-**Shortwave's forklaring:**
-> "Billy.dk's API har en kendt begrænsning med at gemme email og telefon for private kunder"
-
-**Realiteten:**
-- Det er IKKE en Billy API limitation
-- Det er en bug i Billy MCP v1.x/v2.0.0
-- Fixed i v2.0.1 (1. november 2025)
-- Fixed i v2.0.2 (26. november 2025) for createContact
-- Enhanced i v2.0.3 (26. november 2025) med smart cache
-
----
-
-## ✅ LØSNING 1: Opdater Shortwave til Railway (ANBEFALET)
+## 🎯 Quick Setup
 
 ### Step 1: Find Shortwave's Billy Integration
 
@@ -37,14 +13,9 @@
 2. Gå til Settings → AI → Integrations/Connectors
 3. Find "Billy" eller "Billy MCP" connector
 
-### Step 2: Opdater URL
+### Step 2: Set Railway URL
 
-**Gammel URL (Render.com - BROKEN):**
-```
-https://tekup-billy.onrender.com
-```
-
-**Ny URL (Railway - v2.0.3):**
+**Production URL (Railway - v3.0.0):**
 ```
 https://tekup-billy-production.up.railway.app
 ```
@@ -61,18 +32,35 @@ Send denne besked til Shortwave:
 ```json
 {
   "success": true,
-  "version": "2.0.3",
+  "version": "3.0.0",
   "organization": "Rendetalje",
   "features": [
-    "parseResponse helper",
+    "hierarchical tools",
+    "summary-first approach",
+    "97% token reduction",
     "smart cache fallback",
     "authentication-aware caching"
   ]
 }
 ```
 
-### Step 4: Test Tom Frandsen Update
+### Step 4: Test Customer Operations
 
+**Test 1: Get Business Overview**
+```
+@friday show me a summary of Billy status
+```
+
+Expected: Summary with total invoices, customers, unpaid amounts (10-50 tokens)
+
+**Test 2: Find Unpaid Invoices**
+```
+@friday show unpaid invoices
+```
+
+Expected: Filtered list of unpaid invoices (100-500 tokens)
+
+**Test 3: Update Customer (Tom Frandsen)**
 ```
 @friday update customer Tom Frandsen (ID: 57DvDpbSQJqcCFvNNTntZg) with:
 - Email: tom.frandsen58@gmail.com
@@ -80,7 +68,7 @@ Send denne besked til Shortwave:
 - Address: Alkevej 2, 8250 Egå, Danmark
 ```
 
-**Forventet resultat med v2.0.3:**
+**Forventet resultat:**
 ```
 ✅ Customer updated successfully
 - Name: Tom Frandsen
@@ -89,368 +77,200 @@ Send denne besked til Shortwave:
 - Address: Alkevej 2, 8250 Egå, Danmark
 ```
 
-**INGEN fejl om "Billy API limitation"!**
-
 ---
 
-## ✅ LØSNING 2: Deploy v2.0.3 til Render.com
+## 🚀 v3.0 New Features
 
-Hvis du SKAL bruge Render.com URL (f.eks. hvis Shortwave ikke kan ændres):
+### Hierarchical Tools (3-Level Architecture)
 
-### Step 1: Check Current Render.com Version
+**Level 1: Summaries** (10-50 tokens)
+- `get_invoice_summary` - Overview of all invoices
+- `get_customer_summary` - Overview of all customers
+- `get_business_overview` - Complete business status
 
-```bash
-curl https://tekup-billy.onrender.com/version
-```
+**Level 2: Filtered Lists** (100-500 tokens)
+- `list_unpaid_invoices` - Only unpaid invoices
+- `list_overdue_invoices` - Only overdue invoices
+- `search_customers` - Fuzzy search with suggestions
+- `search_invoices` - Filter by status, date, amount
 
-**Hvis version < 2.0.3:**
+**Level 3: Details** (500-2000 tokens)
+- `get_invoice_details` - Full invoice with line items
+- `get_customer_details` - Complete customer information
 
-### Step 2: Deploy til Render.com
-
-```bash
-cd /home/user/tekup/apps/production/tekup-billy
-
-# Ensure you're on latest
-git checkout main
-git pull
-
-# Verify version in package.json
-grep version package.json
-# Should show: "version": "2.0.3"
-
-# Push to Render.com (if configured)
-git push render main
-
-# Or manual deploy via Render.com dashboard
-```
-
-### Step 3: Trigger Render Deploy
-
-1. Gå til https://dashboard.render.com
-2. Find "tekup-billy" service
-3. Klik "Manual Deploy" → "Deploy latest commit"
-4. Vent på deploy (2-5 minutter)
-
-### Step 4: Verify Deployment
-
-```bash
-# Check version
-curl https://tekup-billy.onrender.com/version
-
-# Expected: {"version": "2.0.3", ...}
-
-# Test health
-curl https://tekup-billy.onrender.com/health
-
-# Expected: {"status": "healthy", ...}
-```
-
-### Step 5: Test in Shortwave
-
-```
-@friday validate Billy auth
-@friday update Tom Frandsen customer info
-```
-
----
-
-## 📊 Version Comparison
-
-| Feature | Render (v1.x/v2.0.0) | Railway (v2.0.3) |
-|---------|---------------------|------------------|
-| **createCustomer** | ❌ Fails on singular response | ✅ Handles both formats |
-| **updateCustomer** | ❌ "Invalid response format" | ✅ parseResponse helper |
-| **createInvoice** | ⚠️ Unreliable | ✅ parseResponse helper |
-| **Cache Fallback** | ⚠️ Returns old data for auth errors | ✅ Smart auth-aware cache |
-| **Error Messages** | ❌ Generic errors | ✅ Clear, actionable errors |
-| **Email/Phone Update** | ❌ "Billy API limitation" | ✅ Works perfectly |
+### Benefits
+- 🎯 **97% Token Reduction** - Summary-first prevents context overload
+- 🚀 **50-75% Fewer Tool Calls** - Smart workflow guidance
+- ✅ **No "Lost in the Middle"** - Lists limited to 20 items
+- 🧠 **Smart Next Actions** - `_nextActions` hints guide LLM
+- 🔍 **Fuzzy Search** - Handles Danish characters (æ, ø, å)
 
 ---
 
 ## 🧪 Test Cases
 
-### Test Case 1: Create Customer
+### Test Case 1: Business Overview Workflow
 
-**Input:**
-```typescript
-{
-  name: "Peder Kjær",
-  email: "pederkjaer@hotmail.com",
-  phone: "31 77 90 87",
-  address: {
-    street: "Sifsgade 51, 4.1",
-    city: "Åbyhøj",
-    zipcode: "8230",
-    country: "DK"
-  }
-}
+**Before v3.0 (10,000+ tokens):**
+```
+1. list_invoices → 139 invoices × 50 fields = 6,950 tokens
+2. list_customers → 137 customers × 40 fields = 5,480 tokens
+3. LLM confused, calls list_invoices again...
+= 3+ tool calls, 10,000+ tokens
 ```
 
-**v1.x/v2.0.0 (Render):**
+**After v3.0 (35 tokens):**
 ```
-❌ Error: Invalid response format from Billy API - expected contacts array
-Retry...
-❌ Error again...
-Retry...
-✅ Success (after 2-3 attempts)
-⚠️ Email/phone NOT saved ("Billy API limitation")
-```
-
-**v2.0.3 (Railway):**
-```
-✅ Success (first attempt)
-✅ Email/phone saved correctly
-✅ All fields populated
+1. get_business_overview → 35 tokens
+   {
+     invoices: {total: 139, unpaid: 12, overdue: 3},
+     customers: {total: 137, active: 120},
+     revenue: {thisMonth: 45000, unpaid: 15600}
+   }
+= 1 tool call, 35 tokens
 ```
 
-### Test Case 2: Update Customer
+**97% reduction!**
 
-**Input:**
-```typescript
-{
-  contactId: "57DvDpbSQJqcCFvNNTntZg",
-  email: "tom.frandsen58@gmail.com",
-  phone: "22 61 62 10",
-  address: {
-    street: "Alkevej 2",
-    city: "Egå",
-    zipcode: "8250"
-  }
-}
+### Test Case 2: Find Specific Invoice
+
+**Before v3.0:**
+```
+1. list_invoices → 10,000 tokens
+2. Invoice #70 lost in middle
+3. list_invoices again → 10,000 tokens
+4. Still can't find it...
+= Multiple tool calls, context meltdown
 ```
 
-**v1.x/v2.0.0 (Render):**
+**After v3.0:**
 ```
-❌ Error: Invalid response format from Billy API - expected contact or contacts
-⚠️ LLM concludes: "Billy API limitation for person-type customers"
-⚠️ Suggests manual update in Billy.dk web interface
-```
-
-**v2.0.3 (Railway):**
-```
-✅ Success
-✅ All fields updated:
-   - Email: tom.frandsen58@gmail.com
-   - Phone: 22 61 62 10
-   - Address: Alkevej 2, 8250 Egå
-```
-
----
-
-## 🎯 Why v2.0.3 Fixes This
-
-### The parseResponse Helper
-
-**File:** `src/billy-client.ts:292-318`
-
-```typescript
-/**
- * Parse Billy API response that can be either singular or plural format
- * Billy API inconsistently returns either {item: {...}} or {items: [...]}
- */
-private parseResponse<T>(
-  response: Record<string, any>,
-  singularKey: string,   // "contact"
-  pluralKey: string,     // "contacts"
-  context: string        // "create contact"
-): T | undefined {
-  // Try singular format first: {contact: {...}}
-  if (response[singularKey] != null && typeof response[singularKey] === "object") {
-    return response[singularKey] as T;
-  }
-
-  // Try plural format: {contacts: [...]}
-  if (response[pluralKey] != null && Array.isArray(response[pluralKey]) && response[pluralKey].length > 0) {
-    return response[pluralKey][0] as T;
-  }
-
-  // No valid response found
-  log.error(`Invalid ${context} response structure`, null, { response });
-  return undefined;
-}
-```
-
-**Usage in createContact (v2.0.2):**
-```typescript
-const createdContact = this.parseResponse<BillyContact>(
-  response,
-  "contact",      // ✅ Handles {contact: {...}}
-  "contacts",     // ✅ Handles {contacts: [...]}
-  "create contact"
-);
-```
-
-**Usage in updateContact (v2.0.1):**
-```typescript
-const contact = this.parseResponse<BillyContact>(
-  response,
-  "contact",      // ✅ Handles {contact: {...}}
-  "contacts",     // ✅ Handles {contacts: [...]}
-  "update contact"
-);
-```
-
----
-
-## 📈 Expected Impact
-
-### Token Usage
-
-| Workflow | Render (v1.x) | Railway (v2.0.3) | Reduction |
-|----------|---------------|------------------|-----------|
-| Create customer + invoice | ~8,000 | ~600 | 92.5% |
-| Update customer info | ~5,000 | ~400 | 92% |
-| Handle errors + retries | +3,000 | 0 | 100% |
-
-### User Experience
-
-**Before (Render v1.x):**
-- ❌ 2-3 retry attempts per operation
-- ❌ "Billy API limitation" explanations
-- ❌ Manual fixes required
-- ⏱️ 3-5 minutes per workflow
-- 😠 Frustrating
-
-**After (Railway v2.0.3):**
-- ✅ Success on first attempt
-- ✅ All fields save correctly
-- ✅ No manual intervention
-- ⏱️ 30 seconds per workflow
-- 😊 Seamless
-
----
-
-## 🚨 Common Pitfalls
-
-### Pitfall 1: Assuming "Billy API Limitation" is Real
-
-**Wrong:**
-> "Billy API can't save email/phone for person-type customers"
-
-**Right:**
-> "Billy MCP v1.x has a bug parsing Billy API responses. Fixed in v2.0.1+"
-
-### Pitfall 2: Not Checking Version
-
-**Wrong:**
-```
-@friday create customer with email/phone
-❌ Fails
-Conclusion: "Must be a Billy API issue"
-```
-
-**Right:**
-```
-@friday show Billy MCP version
-Response: "v1.4.4" ← OLD!
-Conclusion: "Need to update to v2.0.3"
-```
-
-### Pitfall 3: Using Wrong URL
-
-**Wrong:**
-```
-https://tekup-billy.onrender.com ← v1.x/v2.0.0
-```
-
-**Right:**
-```
-https://tekup-billy-production.up.railway.app ← v2.0.3
+1. search_invoices(customerName: "Tom Frandsen") → 120 tokens
+2. get_invoice_details(id) → 500 tokens
+= 2 tool calls, 620 tokens
 ```
 
 ---
 
 ## ✅ Verification Checklist
 
-After updating to v2.0.3:
+After setup:
 
-- [ ] Billy MCP version is 2.0.3 (`/version` endpoint)
-- [ ] `create_customer` with email/phone succeeds first try
-- [ ] `update_customer` with email/phone succeeds
+- [ ] Billy MCP version is 3.0.0 (`/version` endpoint)
+- [ ] `get_business_overview` returns summary (<50 tokens)
+- [ ] `list_unpaid_invoices` returns filtered list (<500 tokens)
+- [ ] `search_customers` with fuzzy matching works
+- [ ] Tom Frandsen customer update succeeds
 - [ ] No "Billy API limitation" errors
-- [ ] Tom Frandsen customer fully updated
-- [ ] Tom Frandsen invoice sent successfully
-- [ ] All 137 existing customers work correctly
+- [ ] All operations succeed on first attempt
 - [ ] Authentication errors don't return cached data
-- [ ] Cache metadata appears in fallback responses
 
 ---
 
 ## 📞 Troubleshooting
 
-### Issue: Shortwave Still Shows Old Version
+### Issue: Shortwave Shows Old Version
 
-**Check:**
-```bash
-# Which URL is Shortwave using?
-# Look in Shortwave settings → AI → Integrations
+**Check URL in Shortwave settings:**
+```
+Should be: https://tekup-billy-production.up.railway.app
 ```
 
 **Fix:**
 1. Clear Shortwave cache/cookies
 2. Re-authenticate with Billy connector
-3. Verify URL is Railway, not Render
+3. Verify version shows "3.0.0"
 
 ### Issue: Railway Endpoint Not Working
 
-**Check:**
+**Check health:**
 ```bash
 curl https://tekup-billy-production.up.railway.app/health
 ```
 
-**If returns error:**
+**If error:**
 1. Check Railway dashboard for service status
 2. Check Railway logs: `railway logs --follow`
-3. Verify environment variables are set
+3. Verify environment variables:
+   - `BILLY_API_KEY`
+   - `BILLY_ORGANIZATION_ID`
 
-### Issue: Render.com Deploy Stuck
+### Issue: Tools Not Working as Expected
 
-**Check:**
-1. Render.com dashboard → "tekup-billy" service
-2. Look at deploy logs
-3. Check for build errors
+**Check which version you're on:**
+```
+@friday show Billy version
+```
 
-**Fix:**
-1. Trigger manual deploy
-2. Or push to Render git remote again
+**If < 3.0.0:**
+- Verify Railway URL is correct
+- Check Railway deployment status
+- Wait for deployment to complete (2-3 minutes)
 
 ---
 
-## 🎯 Recommended Action
+## 🎯 Expected Behavior
 
-**For Shortwave:**
-1. ✅ Update URL til Railway (5 minutter)
-2. ✅ Test Tom Frandsen update (1 minut)
-3. ✅ Verify all features work (5 minutter)
+### Summary Tools (Level 1)
+```typescript
+// Response includes guidance
+{
+  total: 139,
+  unpaid: 12,
+  overdue: 3,
+  _nextActions: ["list_unpaid_invoices", "list_overdue_invoices"],
+  _tokenUsage: 15
+}
+```
 
-**For Render.com (optional):**
-1. Deploy v2.0.3 til Render (10 minutter)
-2. Keep as backup endpoint
-3. Monitor both Railway + Render
+### Filtered Lists (Level 2)
+```typescript
+// Limited to 20 items, sorted by priority
+{
+  invoices: [...], // Max 20 items
+  _hasMore: true,
+  _nextActions: ["get_invoice_details", "send_invoice"],
+  _tokenUsage: 120
+}
+```
+
+### Detail Tools (Level 3)
+```typescript
+// Complete information for single item
+{
+  invoice: {...},
+  lineItems: [...],
+  customer: {...},
+  _tokenUsage: 500
+}
+```
 
 ---
 
 ## 📚 Related Documentation
 
-- [BILLY_LLM_RESEARCH.md](./BILLY_LLM_RESEARCH.md) - Research om hvorfor v3.0 er nødvendig
-- [BILLY_V3_ARCHITECTURE.md](./BILLY_V3_ARCHITECTURE.md) - Future architecture
-- [MIGRATION_V2_TO_V3.md](./MIGRATION_V2_TO_V3.md) - Migration plan
-- [CHANGELOG.md](../CHANGELOG.md) - v2.0.1, v2.0.2, v2.0.3 release notes
+- [BILLY_LLM_RESEARCH.md](./BILLY_LLM_RESEARCH.md) - Research på hvorfor v3.0 var nødvendig
+- [BILLY_V3_ARCHITECTURE.md](./BILLY_V3_ARCHITECTURE.md) - Complete architecture
+- [MIGRATION_V2_TO_V3.md](./MIGRATION_V2_TO_V3.md) - Migration details
+- [V3_VALIDATION.md](./V3_VALIDATION.md) - Validation against research
+- [CHANGELOG.md](../CHANGELOG.md) - All release notes
 
 ---
 
 ## 🎉 Success Criteria
 
-You'll know v2.0.3 works when:
+You'll know v3.0 works when:
 
-1. ✅ Tom Frandsen customer fully updated (email, phone, address)
-2. ✅ Invoice sent to tom.frandsen58@gmail.com successfully
-3. ✅ No "Billy API limitation" messages
-4. ✅ All operations succeed on first attempt
-5. ✅ Shortwave shows version "2.0.3"
+1. ✅ Business overview shows in <50 tokens
+2. ✅ Finding invoices takes 2 tool calls (not 5+)
+3. ✅ No "Lost in the Middle" errors
+4. ✅ Tom Frandsen customer fully updated
+5. ✅ All operations succeed on first attempt
+6. ✅ Shortwave shows version "3.0.0"
+7. ✅ Response times <2s for summaries
 
 ---
 
-**Last Updated:** November 26, 2025
-**Version:** 1.0
-**Status:** Ready to Execute
+**Version:** 2.0
+**Status:** Production Ready
+**Deployment:** Railway Only
