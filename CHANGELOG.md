@@ -11,6 +11,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Friday AI Comprehensive Documentation** (Nov 2, 2025)
+  - Added: `FRIDAY_AI_OVERVIEW.md` — Complete system documentation (23KB, 693 lines) in Danish
+  - Added: `FRIDAY_AI_STATUS_UPDATE_2025-11-02.md` — Implementation roadmap and status tracking
+  - Content: System overview, implementation details, architecture diagrams, missing features analysis
+  - Content: Setup guides for developers and business users, example commands in Danish
+  - Content: 5-phase implementation plan with time estimates and priorities
+  - Features documented:
+    - Customer Profile System (360° view with 4 tabs)
+    - 7 intent-based actions (lead creation, task management, booking, invoicing, etc.)
+    - 25 MEMORY business rules (Rendetalje-specific logic)
+    - Multi-AI support (Gemini 2.5 Flash, Claude 3.5, GPT-4o, Manus AI)
+    - 13-table database schema with customer support
+    - Billy.dk integration v2.0.0 and Google Workspace integration
+  - Missing items prioritized: Environment config, TypeScript errors, Customer Chat tab, deployment
+  - Purpose: Complete reference for Friday AI system - what it is, what Tekup built, how it works, and what's missing
+  - Repository: TekupDK/tekup-friday
+
 - **Commitlint & Git Governance** (Oct 29, 2025)
   - Added: `commitlint.config.cjs` — Conventional commits enforcement with TekupDK scopes
   - Added: `docs/CONVENTIONAL_COMMITS.md` — Complete guide with examples and rules
