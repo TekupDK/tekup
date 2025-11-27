@@ -5,6 +5,7 @@
 
 import { z } from "zod";
 import { BillyClient } from "../billy-client.js";
+import type { CreateProductInput } from "../types.js";
 import { dataLogger } from "../utils/data-logger.js";
 import { extractBillyErrorMessage } from "../utils/error-handler.js";
 import { log } from "../utils/logger.js";
@@ -198,7 +199,7 @@ export async function createProduct(client: BillyClient, args: unknown) {
       parameters: productData,
     });
 
-    const product = await client.createProduct(productData);
+    const product = await client.createProduct(productData as CreateProductInput);
 
     // Log successful completion
     await dataLogger.logAction({
@@ -298,7 +299,7 @@ export async function updateProduct(client: BillyClient, args: unknown) {
       parameters: { productId, updateData },
     });
 
-    const product = await client.updateProduct(productId, updateData);
+    const product = await client.updateProduct(productId, updateData as Partial<CreateProductInput>);
 
     await dataLogger.logAction({
       action: "updateProduct",

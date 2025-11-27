@@ -13,6 +13,7 @@
  * Implements MCP Tool Output Schema pattern
  */
 export interface ToolOutputSchema {
+  [x: string]: unknown;      // Index signature for MCP compatibility
   _schema: string;           // Schema name (e.g., "BillyInvoiceSummary")
   _nextActions?: string[];   // Suggested next tools to call
   _tokenUsage?: number;      // Actual tokens used in response
@@ -211,7 +212,7 @@ export interface InvoiceDetails extends ToolOutputSchema {
   invoice: {
     id: string;
     invoiceNo: string;
-    state: "draft" | "approved" | "sent" | "paid" | "cancelled";
+    state: "draft" | "approved" | "voided" | "sent" | "paid" | "cancelled";
     createdDate: string;
     dueDate: string;
     sentDate?: string;
@@ -255,7 +256,7 @@ export interface CustomerDetails extends ToolOutputSchema {
   customer: {
     id: string;
     name: string;
-    type: "person" | "company";
+    type: "person" | "company" | "customer" | "supplier";
     email: string;
     phone?: string;
     address: {

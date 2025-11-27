@@ -5,6 +5,7 @@
 
 import { z } from "zod";
 import { BillyClient } from "../billy-client.js";
+import type { CreateCustomerInput } from "../types.js";
 import { dataLogger } from "../utils/data-logger.js";
 import { extractBillyErrorMessage } from "../utils/error-handler.js";
 import { log } from "../utils/logger.js";
@@ -234,7 +235,7 @@ export async function createCustomer(client: BillyClient, args: unknown) {
       parameters: customerData,
     });
 
-    const contact = await client.createContact(customerData);
+    const contact = await client.createContact(customerData as CreateCustomerInput);
 
     // Add null checks
     if (!contact) {

@@ -67,11 +67,13 @@ export interface BillyProduct {
   productNo: string;
   name: string;
   description?: string;
+  createdTime?: string; // ISO timestamp
   account?: {
+    id?: string;
     accountNo: string;
     name: string;
   };
-  prices: Array<{
+  prices?: Array<{
     currencyId: string;
     unitPrice: number;
   }>;

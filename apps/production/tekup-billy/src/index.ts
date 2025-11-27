@@ -1186,8 +1186,7 @@ class TekupBillyServer {
         inputSchema: {},
       },
       async () => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("get_invoice_summary", {}, getInvoiceSummary, client);
+        return await this.wrapToolWithAudit("get_invoice_summary", "read", getInvoiceSummary, {});
       }
     );
 
@@ -1199,8 +1198,7 @@ class TekupBillyServer {
         inputSchema: {},
       },
       async () => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("get_customer_summary", {}, getCustomerSummary, client);
+        return await this.wrapToolWithAudit("get_customer_summary", "read", getCustomerSummary, {});
       }
     );
 
@@ -1212,8 +1210,7 @@ class TekupBillyServer {
         inputSchema: {},
       },
       async () => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("get_business_overview", {}, getBusinessOverview, client);
+        return await this.wrapToolWithAudit("get_business_overview", "read", getBusinessOverview, {});
       }
     );
 
@@ -1239,8 +1236,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("list_unpaid_invoices", args, listUnpaidInvoices, client);
+        return await this.wrapToolWithAudit("list_unpaid_invoices", "read", listUnpaidInvoices, args);
       }
     );
 
@@ -1266,8 +1262,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("list_overdue_invoices", args, listOverdueInvoices, client);
+        return await this.wrapToolWithAudit("list_overdue_invoices", "read", listOverdueInvoices, args);
       }
     );
 
@@ -1299,8 +1294,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("list_recent_invoices", args, listRecentInvoices, client);
+        return await this.wrapToolWithAudit("list_recent_invoices", "read", listRecentInvoices, args);
       }
     );
 
@@ -1324,8 +1318,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("search_customers", args, searchCustomers, client);
+        return await this.wrapToolWithAudit("search_customers", "read", searchCustomers, args);
       }
     );
 
@@ -1352,8 +1345,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("list_active_customers", args, listActiveCustomers, client);
+        return await this.wrapToolWithAudit("list_active_customers", "read", listActiveCustomers, args);
       }
     );
 
@@ -1398,8 +1390,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("search_invoices", args, searchInvoices, client);
+        return await this.wrapToolWithAudit("search_invoices", "read", searchInvoices, args);
       }
     );
 
@@ -1421,8 +1412,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("get_invoice_details", args, getInvoiceDetails, client);
+        return await this.wrapToolWithAudit("get_invoice_details", "read", getInvoiceDetails, args);
       }
     );
 
@@ -1443,8 +1433,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("get_customer_details", args, getCustomerDetails, client);
+        return await this.wrapToolWithAudit("get_customer_details", "read", getCustomerDetails, args);
       }
     );
 
@@ -1460,8 +1449,7 @@ class TekupBillyServer {
         },
       },
       async (args: any) => {
-        const client = await this.initializeBillyClient();
-        return await this.wrapToolWithAudit("get_product_details", args, getProductDetails, client);
+        return await this.wrapToolWithAudit("get_product_details", "read", getProductDetails, args);
       }
     );
   }

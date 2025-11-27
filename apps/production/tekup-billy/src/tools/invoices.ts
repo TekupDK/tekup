@@ -5,6 +5,7 @@
 
 import { z } from "zod";
 import { BillyClient } from "../billy-client.js";
+import type { CreateInvoiceInput } from "../types.js";
 import { dataLogger } from "../utils/data-logger.js";
 import { extractBillyErrorMessage } from "../utils/error-handler.js";
 import { log } from "../utils/logger.js";
@@ -235,7 +236,7 @@ export async function createInvoice(client: BillyClient, args: unknown) {
       parameters: invoiceData,
     });
 
-    const invoice = await client.createInvoice(invoiceData);
+    const invoice = await client.createInvoice(invoiceData as CreateInvoiceInput);
 
     // Add null checks
     if (!invoice) {
@@ -538,7 +539,7 @@ export async function updateInvoice(client: BillyClient, args: unknown) {
       parameters: { invoiceId, updateData },
     });
 
-    const invoice = await client.updateInvoice(invoiceId, updateData);
+    const invoice = await client.updateInvoice(invoiceId, updateData as Partial<CreateInvoiceInput>);
 
     await dataLogger.logAction({
       action: "updateInvoice",
