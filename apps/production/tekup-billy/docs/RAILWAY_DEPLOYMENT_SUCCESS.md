@@ -86,7 +86,7 @@ curl -H "X-API-Key: <MCP_API_KEY>" \
 
 ### 3. Configure TekupVault Sync
 
-- Remove old repository: `JonasAbde/Tekup-Billy`
+- Remove old repository (archived legacy repository)
 - Add new monorepo: `TekupDK/tekup` with path `apps/production/tekup-billy/**`
 - Trigger reindexing
 

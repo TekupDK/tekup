@@ -106,7 +106,7 @@ Billy-mcp By Tekup - Model Context Protocol (MCP) server til integration med Bil
 **Jonas Abde** - Solo Developer & Technical Lead
 
 - 🔗 LinkedIn: [jonas-abde-22691a12a](https://www.linkedin.com/in/jonas-abde-22691a12a/)
-- 🐙 GitHub: [JonasAbde](https://github.com/JonasAbde)
+- 🐙 GitHub: [TekupDK](https://github.com/TekupDK)
 - 📧 Tekup: Tekup-Billy MCP Server Project Lead
 
 **Klar til brug i:**

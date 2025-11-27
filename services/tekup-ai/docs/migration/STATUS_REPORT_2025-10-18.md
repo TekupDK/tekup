@@ -30,7 +30,7 @@
 ### Session Timeline
 
 **11:00** - User spurgte om TekupVault dataflow  
-**11:30** - Fandt 47 repositories under JonasAbde GitHub account  
+**11:30** - Fandt 47 repositories under TekupDK GitHub account  
 **12:00** - Opdaterede config.ts: 4 → 14 aktive repositories  
 **12:30** - Oprettede expansion rapport (287 linjer)  
 **13:00** - Oprettede dansk quick start guide (230 linjer)  

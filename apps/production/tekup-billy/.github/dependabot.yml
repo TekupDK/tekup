@@ -9,8 +9,6 @@ updates:
       time: "09:00"
       timezone: "Europe/Copenhagen"
     open-pull-requests-limit: 10
-    assignees:
-      - "JonasAbde"
     labels:
       - "dependencies"
       - "automated"

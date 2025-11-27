@@ -15,10 +15,10 @@ TekupVault er blevet opdateret til at synkronisere **14 aktive Tekup Portfolio r
 ### Før (4 repositories)
 
 ```typescript
-{ owner: 'JonasAbde', repo: 'renos-backend' }
-{ owner: 'JonasAbde', repo: 'renos-frontend' }
-{ owner: 'JonasAbde', repo: 'Tekup-Billy' }
-{ owner: 'JonasAbde', repo: 'tekup-unified-docs' }
+{ owner: 'TekupDK', repo: 'renos-backend' }
+{ owner: 'TekupDK', repo: 'renos-frontend' }
+{ owner: 'TekupDK', repo: 'Tekup-Billy' }
+{ owner: 'TekupDK', repo: 'tekup-unified-docs' }
 ```
 
 ### Efter (14 repositories)
@@ -305,7 +305,7 @@ CREATE TABLE vault_sync_status (
 - **API Documentation:** [docs/API_DOCS.md](./docs/API_DOCS.md)
 - **Deployment Guide:** [docs/DEPLOYMENT_READY.md](./docs/DEPLOYMENT_READY.md)
 - **MCP Integration:** [CURSOR_MCP_SETUP_COMPLETE.md](./CURSOR_MCP_SETUP_COMPLETE.md)
-- **GitHub JonasAbde:** <https://github.com/JonasAbde>
+- **GitHub TekupDK:** <https://github.com/TekupDK>
 - **GitHub TekupDK:** <https://github.com/TekupDK>
 
 ---

@@ -147,7 +147,7 @@ if (-not $SkipSubmodule) {
         Write-Info "3. Network issues or GitHub is down"
         Write-Info ""
         Write-Info "Solutions:"
-        Write-Info "- Request access: Ask @JonasAbde for invite to TekupDK organization"
+        Write-Info "- Request access: Ask @TekupDK for invite to TekupDK organization"
         Write-Info "- Setup PAT: https://github.com/settings/tokens (repo scope required)"
         Write-Info "- Setup SSH: https://github.com/settings/keys"
         Write-Info ""

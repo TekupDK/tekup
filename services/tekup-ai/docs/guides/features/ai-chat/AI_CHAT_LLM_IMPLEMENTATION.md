@@ -318,7 +318,7 @@ At 1000 messages/day: **~$13.50/month**
 } | ConvertTo-Json
 
 Invoke-RestMethod -Uri "<http://localhost:3000/api/chat>" `
-    -Method Post `
+-Method Post `
     -Body $body `
     -ContentType "application/json"
 \n\n```

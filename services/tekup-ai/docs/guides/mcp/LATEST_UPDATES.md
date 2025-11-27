@@ -27,7 +27,7 @@
 - ✅ **13 Documentation Pages** - Complete coverage
 - ✅ **Auto-deployment** - Updates via simple script
 
-**Live URL:** <https://JonasAbde.github.io/tekup-ai-assistant/>  
+**Live URL:** <https://TekupDK.github.io/tekup-ai-assistant/>  
 **Status:** Operational  
 **Implementation Time:** 5 minutes
 
@@ -76,7 +76,7 @@
 - **Type:** Development Tools + MCP Web Scraper
 - **Features:** Python Playwright implementation
 - **Status:** ✅ Online documentation
-- **URL:** <https://JonasAbde.github.io/tekup-ai-assistant/>
+- **URL:** <https://TekupDK.github.io/tekup-ai-assistant/>
 - **Use Case:** Development workflows
 
 ### **5. RendetaljeOS** - Monorepo System

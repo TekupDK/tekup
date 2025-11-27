@@ -75,31 +75,31 @@
 ```typescript
 // Før: 4 repositories
 export const GITHUB_REPOS = [
-  { owner: 'JonasAbde', repo: 'renos-backend' },
-  { owner: 'JonasAbde', repo: 'renos-frontend' },
-  { owner: 'JonasAbde', repo: 'Tekup-Billy' },
-  { owner: 'JonasAbde', repo: 'tekup-unified-docs' }
+  { owner: 'TekupDK', repo: 'renos-backend' },
+  { owner: 'TekupDK', repo: 'renos-frontend' },
+  { owner: 'TekupDK', repo: 'Tekup-Billy' },
+  { owner: 'TekupDK', repo: 'tekup-unified-docs' }
 ];
 
 // Efter: 14 repositories (+ 10 nye)
 export const GITHUB_REPOS = [
   // Tier 1: Production (4)
-  { owner: 'JonasAbde', repo: 'Tekup-Billy' },
-  { owner: 'JonasAbde', repo: 'renos-backend' },
-  { owner: 'JonasAbde', repo: 'renos-frontend' },
-  { owner: 'JonasAbde', repo: 'TekupVault' },
+  { owner: 'TekupDK', repo: 'Tekup-Billy' },
+  { owner: 'TekupDK', repo: 'renos-backend' },
+  { owner: 'TekupDK', repo: 'renos-frontend' },
+  { owner: 'TekupDK', repo: 'TekupVault' },
   // Tier 2: Documentation (2)
-  { owner: 'JonasAbde', repo: 'tekup-unified-docs' },
-  { owner: 'JonasAbde', repo: 'tekup-ai-assistant' },
+  { owner: 'TekupDK', repo: 'tekup-unified-docs' },
+  { owner: 'TekupDK', repo: 'tekup-ai-assistant' },
   // Tier 3: Active Development (8)
-  { owner: 'JonasAbde', repo: 'tekup-cloud-dashboard' },
-  { owner: 'JonasAbde', repo: 'tekup-renos' },
-  { owner: 'JonasAbde', repo: 'tekup-renos-dashboard' },
-  { owner: 'JonasAbde', repo: 'Tekup-org' },
-  { owner: 'JonasAbde', repo: 'Cleaning-og-Service' },
-  { owner: 'JonasAbde', repo: 'tekup-nexus-dashboard' },
-  { owner: 'JonasAbde', repo: 'rendetalje-os' },
-  { owner: 'JonasAbde', repo: 'Jarvis-lite' },
+  { owner: 'TekupDK', repo: 'tekup-cloud-dashboard' },
+  { owner: 'TekupDK', repo: 'tekup-renos' },
+  { owner: 'TekupDK', repo: 'tekup-renos-dashboard' },
+  { owner: 'TekupDK', repo: 'Tekup-org' },
+  { owner: 'TekupDK', repo: 'Cleaning-og-Service' },
+  { owner: 'TekupDK', repo: 'tekup-nexus-dashboard' },
+  { owner: 'TekupDK', repo: 'rendetalje-os' },
+  { owner: 'TekupDK', repo: 'Jarvis-lite' },
 ];
 ```
 
@@ -339,7 +339,7 @@ curl https://tekupvault.onrender.com/api/sync-status
 
 - **GitHub:** <https://github.com/TekupDK/TekupVault>
 - **Production:** <https://tekupvault.onrender.com>
-- **Owner:** JonasAbde
+- **Owner:** TekupDK
 
 ---
 

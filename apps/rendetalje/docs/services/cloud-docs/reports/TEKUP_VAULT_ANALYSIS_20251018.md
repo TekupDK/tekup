@@ -1006,7 +1006,7 @@ ADD COLUMN source_type TEXT CHECK (source_type IN ('github', 'notion', 'gdrive',
 
 ```typescript
 // Support multiple Tekup customers:
-// - Tekup internal (JonasAbde repos)
+// - Tekup internal (TekupDK repos)
 // - Client A (their GitHub org)
 // - Client B (their GitHub org)
 

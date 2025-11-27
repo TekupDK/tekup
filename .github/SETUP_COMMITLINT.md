@@ -258,4 +258,4 @@ For issues or questions:
 1. Check `.husky/README.md` for troubleshooting
 2. Review `docs/CONVENTIONAL_COMMITS.md` for format examples
 3. Test locally: `echo "your message" | npx commitlint`
-4. Contact workspace maintainer: @JonasAbde
+4. Contact workspace maintainer: @TekupDK

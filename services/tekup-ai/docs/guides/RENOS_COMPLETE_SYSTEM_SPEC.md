@@ -357,7 +357,7 @@ analyze_customer_reply(emailBody: string): Promise<{
 **Features:**
 \n\n- ✅ Auto-formatting med dit standard format:
 \n\n  ```
-  🏠 FAST RENGØRING #3 - Nadia Møllebjerg
+🏠 FAST RENGØRING #3 - Nadia Møllebjerg
 \n\n ```
 \n\n- ✅ Intelligent numbering:
 \n\n  - Tæller tidligere bookings for denne kunde

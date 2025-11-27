@@ -13,7 +13,7 @@ Successfully migrated `tekup-secrets` from a tracked folder in the main Tekup wo
 ### 1. Created Separate Repository ✅
 
 - **Repository:** <https://github.com/TekupDK/tekup-secrets> (private)
-- **Organization:** TekupDK (not personal JonasAbde account)
+- **Organization:** TekupDK (not personal TekupDK account)
 - **Visibility:** Private (only authorized team members)
 - **Purpose:** Central credential storage for all Tekup projects
 

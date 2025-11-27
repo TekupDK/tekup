@@ -27,7 +27,7 @@ const projects = [
     description:
       "Komplet business management system med AI-assistenter og automatisering.",
     tech: ["Next.js", "NestJS", "PostgreSQL", "AI"],
-    github: "JonasAbde/renos-backend",
+    github: "TekupDK/tekup",
     stars: "15",
     status: "Production",
   },

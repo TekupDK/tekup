@@ -394,12 +394,12 @@ renos-calendar-mcp/
 | Repo Name | Location | Status | Notes |
 |-----------|----------|--------|-------|
 | **RendetaljeOS** | `C:\Users\empir\RendetaljeOS` | ✅ Active | Main monorepo (local) |
-| **rendetalje-os** | GitHub (JonasAbde) | ❓ Unknown | Indexed by TekupVault (Public) |
+| **rendetalje-os** | GitHub (TekupDK) | ❓ Unknown | Indexed by TekupVault (Public) |
 | **rendetalje-assistant** | `Tekup Google AI` folder | 🔴 Legacy | Old name, now superseded |
-| **renos-backend** | GitHub (JonasAbde) | ✅ Active | Indexed by TekupVault (607 files) |
-| **renos-frontend** | GitHub (JonasAbde) | ✅ Active | Indexed by TekupVault (268 files) |
-| **tekup-renos** | GitHub (JonasAbde) | ❓ Unknown | Indexed by TekupVault |
-| **tekup-renos-dashboard** | GitHub (JonasAbde) | ❓ Unknown | Indexed by TekupVault |
+| **renos-backend** | GitHub (TekupDK) | ✅ Active | Indexed by TekupVault (607 files) |
+| **renos-frontend** | GitHub (TekupDK) | ✅ Active | Indexed by TekupVault (268 files) |
+| **tekup-renos** | GitHub (TekupDK) | ❓ Unknown | Indexed by TekupVault |
+| **tekup-renos-dashboard** | GitHub (TekupDK) | ❓ Unknown | Indexed by TekupVault |
 | **renos-calendar-mcp** | `Tekup-Cloud` subfolder | ✅ Active | NEW (Oct 22, 2025) |
 
 ### Questions to Clarify
@@ -450,7 +450,7 @@ Rendetalje-specific: 3 active + 1 duplicate + 1 legacy = 5
 ### By GitHub (from TekupVault index)
 
 ```
-GitHub Repositories (JonasAbde):
+GitHub Repositories (TekupDK):
 Tier 1 (Core):
 ├── Tekup-Billy                      ✅ 188 files indexed
 ├── renos-backend                    ✅ 607 files indexed
